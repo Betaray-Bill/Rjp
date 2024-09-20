@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+
 const trainerSchema = mongoose.Schema({
     name: {
         type: String,
@@ -23,6 +24,7 @@ const trainerSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    // Bank Details--------------------------------
     bank_Details: {
         account_Name: {
             type: String,
@@ -49,6 +51,7 @@ const trainerSchema = mongoose.Schema({
             required: true
         }
     },
+    // Contact Details--------------------------------
     contact_Details: {
         mobile_number: {
             type: String,
@@ -83,6 +86,7 @@ const trainerSchema = mongoose.Schema({
             }
         }]
     }
+    // Resume Details--------------------------------
 
 }, {
     timestamps: true,
@@ -98,7 +102,6 @@ userSchema.pre('save', async function(next) {
     if (!this.isModified('trainer_password')) {
         next();
     }
-
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.trainer_password, salt);
 });

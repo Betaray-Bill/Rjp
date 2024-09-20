@@ -1,9 +1,8 @@
 import express from "express";
 import dotenv from 'dotenv'
-import mongoose from "mongoose";
 import cookieParser from 'cookie-parser';
-import cors from 'cors'
 import connectDB from "./db/db.js";
+import adminRoutes from "./routes/AdminRoutes.js"
 dotenv.config()
 
 const PORT = process.env.PORT
@@ -17,8 +16,11 @@ connectDB()
 
 // Routes
 app.get("/", (req, res) => {
+    console.log(":")
     res.send("Hii, Good Request !!!")
 })
+
+app.use("/api/employee", adminRoutes)
 
 
 // PORT 

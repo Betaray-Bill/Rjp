@@ -8,7 +8,6 @@ import mongoose from "mongoose";
 
 
 
-
 // Register Trainer - Create a new Trainer
 // POST - /register
 
