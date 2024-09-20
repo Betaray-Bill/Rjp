@@ -1,10 +1,13 @@
 import express from 'express';
-import { createRole, login } from '../controllers/EmployeeController.js';
-import { addEmployee } from '../controllers/AdminController.js';
-// import protect from '../middleware/authMiddleware.js';
+import { addEmployee, createRole } from '../controllers/AdminController.js';
+import { login } from '../controllers/AuthController.js';
+import authorizeRole from '../middleware/roleMiddleware.js';
+import authMiddleware from '../middleware/authMiddleware.js';
+
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", authMiddleware, authorizeRole("ADMIN"), (req, res) => {
+
     res.status(200).send("HIii")
 })
 router.post("/login", login) // Login for an Employee

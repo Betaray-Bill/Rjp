@@ -20,6 +20,7 @@ app.get("/", (req, res) => {
     res.send("Hii, Good Request !!!")
 })
 
+
 app.use("/api/employee", adminRoutes)
 
 

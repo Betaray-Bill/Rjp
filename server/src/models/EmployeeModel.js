@@ -18,11 +18,6 @@ const employeeSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true
-    },
-    employeeId: {
-        type: String,
-        unique: true
     },
     password: {
         type: String,
@@ -34,22 +29,25 @@ const employeeSchema = new mongoose.Schema({
     },
     authorizations: [{
         type: String
-    }],
-    createdBy: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Employee'
-    }
+    }]
 }, {
     timestamps: true
 })
 
+// Match user entered password to hashed password in database
+employeeSchema.methods.matchPassword = async function(enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password)
+};
+
+
 // Pre-save hook to hash password
 employeeSchema.pre('save', async function(next) {
-    if (this.isModified('password')) {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
+    if (!this.isModified('password')) {
+        next();
     }
-    next();
+
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
 
