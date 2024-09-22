@@ -25,6 +25,14 @@ const login = asyncHandler(async(req, res) => {
 
 // Update the Profile
 
+
+// SignOut - GET - /signout
+const signOut = asyncHandler(async(req, res) => {
+    res.clearCookie('jwt').status(200).json('Signout success!');
+})
+
+
 export {
-    login
+    login,
+    signOut
 }

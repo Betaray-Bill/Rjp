@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import connectDB from "./db/db.js";
 import adminRoutes from "./routes/AdminRoutes.js"
 import trainerSourcerRoutes from "./routes/TrainerSourcerRoutes.js"
+import trainerRoutes from "./routes/TrainerRoutes.js"
 
 dotenv.config()
 
@@ -13,6 +14,7 @@ const app = express();
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
 const corsOptions = {
     origin: ["http://localhost:5173"], //(https://your-client-app.com)
     optionsSuccessStatus: 200,
@@ -36,7 +38,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/employee", adminRoutes)
 app.use("/api/trainersourcer", trainerSourcerRoutes)
-
+app.use("/api/trainer", trainerRoutes)
 
 
 // PORT 

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Employee from "../EmployeeModel";
+import Employee from "../EmployeeModel.js";
 
 const KeyAccountsSchema = new mongoose.Schema({
     registeredTrainers: [{

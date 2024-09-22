@@ -9,8 +9,8 @@ import Trainer from "../models/TrainerModel.js";
 // POST - /register
 const registerTrainer = asyncHandler(async(req, res) => {
     const trainerSourcerId = req.body.trainerSourcer_Id
-    console.log(req.body)
-        // check if the trainer is already registered
+
+    // check if the trainer is already registered
     const trainerSourcer = await Employee.findOne(trainerSourcerId)
 
     if (!trainerSourcer) {
@@ -18,12 +18,13 @@ const registerTrainer = asyncHandler(async(req, res) => {
     }
 
     // Create a new Trainer
-    const trainer = await Trainer.create({
+    const trainer = new Trainer({
         name: req.body.name,
         type_of_trainer: req.body.type_of_trainer,
         trainer_sourcer: req.body.trainer_sourcer,
         dob: req.body.dob,
-        password: "req.body.dob",
+        password: req.body.password,
+        trainerId: await generateTrainerId(),
         is_FirstLogin: req.body.is_FirstLogin || true,
         nda_Accepted: req.body.nda_Accepted || false,
         bank_Details: {
@@ -46,7 +47,12 @@ const registerTrainer = asyncHandler(async(req, res) => {
     try {
         await trainer.save();
         // Save the trainer's id in the Trainer Sourcer's Docs
-        console.log("Trainer Data ->>> ", trainer)
+        let trainerSrc = await Employee.findByIdAndUpdate(trainerSourcerId, {
+            $push: { registeredTrainers: trainer._id }
+        }, { new: true })
+        await trainerSourcer.save();
+
+        console.log("Trainer Src ---> ", trainerSrc)
         res.status(201).json({
             message: 'Trainer created successfully',
             Trainer: trainer,
@@ -54,7 +60,7 @@ const registerTrainer = asyncHandler(async(req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Trainer Not Added to the Server' });
+        res.status(500).json({ message: 'Trainer Not Added to the Server', err: err });
     }
 
 })
@@ -68,6 +74,18 @@ const registerTrainer = asyncHandler(async(req, res) => {
 
 
 
+// Generate Unique Id
+const generateTrainerId = async() => {
+    let trainerId;
+    let existingTrainer;
+
+    do {
+        trainerId = Math.floor(1000 + Math.random() * 9000).toString(); // Generate 4-digit random ID
+        existingTrainer = await Trainer.findOne({ trainerId: trainerId });
+    } while (existingTrainer); // Loop until a unique ID is found
+
+    return trainerId;
+};
 
 
 

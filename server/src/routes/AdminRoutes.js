@@ -1,6 +1,6 @@
 import express from 'express';
 import { addEmployee } from '../controllers/AdminController.js';
-import { login } from '../controllers/AuthController.js';
+import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 
@@ -12,6 +12,7 @@ router.get("/", authMiddleware, authorizeRole("ADMIN"), (req, res) => {
 
 router.post("/login", login) // Login for an Employee
 router.post("/register", authMiddleware, authorizeRole("ADMIN"), addEmployee) // Register an Employee
+router.get("/signout", authMiddleware, signOut)
 
 // Check if a user has the permission to access any deal/
 

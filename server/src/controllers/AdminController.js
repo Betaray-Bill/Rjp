@@ -24,9 +24,8 @@ import asyncHandler from "../utils/asyncHandler.js";
 const addEmployee = asyncHandler(async(req, res) => {
     try {
         const { name, email, password, role, authorizations } = req.body;
-        // const adminId = req.user._id; 
 
-
+        // Check if the employee already exist
         const existingEmp = await Employee.findOne({ email: email })
         console.log(existingEmp)
         if (existingEmp) {
@@ -42,9 +41,8 @@ const addEmployee = asyncHandler(async(req, res) => {
             },
             authorizations,
         })
-        console.log(1)
+
         try {
-            console.log(2)
             await employee.save();
         } catch (err) {
             return res.status(500).json({ message: err.message });

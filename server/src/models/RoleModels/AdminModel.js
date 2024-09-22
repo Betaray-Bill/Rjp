@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Employee from "../EmployeeModel";
+import Employee from "../EmployeeModel.js";
 
 const adminSchema = new mongoose.Schema({
     manageEmployees: {
@@ -9,4 +9,4 @@ const adminSchema = new mongoose.Schema({
 });
 
 const Admin = Employee.discriminator('ADMIN', adminSchema);
-export default Admin
+export default Admin;
