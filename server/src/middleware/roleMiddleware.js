@@ -1,11 +1,10 @@
-import { Role } from "../models/EmployeeModel.js"
+import Employee from "../models/EmployeeModel.js"
 
 const authorizeRole = (...allowedRoles) => {
-    console.log("Allowed : ", allowedRoles)
     return async(req, res, next) => {
-        const role = await Role.findById(req.user.role)
-        console.log(role)
-        if (!allowedRoles.includes(role.name)) {
+        const employee = await Employee.findById(req.user._id)
+        console.log("Emo=p : " + employee)
+        if (!allowedRoles.includes(employee.role.name)) {
             return res.status(403).json({
                 message: "Unauthorized Access"
             })

@@ -1,4 +1,4 @@
-import { Employee, Role } from "../models/EmployeeModel.js";
+import Employee from "../models/EmployeeModel.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import generateToken from "../utils/generateToken.js";
@@ -8,7 +8,7 @@ import generateToken from "../utils/generateToken.js";
 const login = asyncHandler(async(req, res) => {
     const { email, password } = req.body;
 
-    const employee = await Employee.findOne({ email }).select("-password").populate('role');
+    const employee = await Employee.findOne({ email }).select("-password");
     console.log(req.body)
     if (employee) {
         let token = generateToken(res, employee._id);
@@ -22,6 +22,8 @@ const login = asyncHandler(async(req, res) => {
         throw new Error('Invalid email or password');
     }
 })
+
+// Update the Profile
 
 export {
     login

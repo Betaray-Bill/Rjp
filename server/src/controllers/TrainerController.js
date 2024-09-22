@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 
 // Login - Trainer with trainerId and Trainer_password
 
-
 // Accept the NDA
 
 
@@ -23,3 +22,11 @@ import mongoose from "mongoose";
 
 
 //Raise Invoice
+
+
+
+
+
+export {
+    login
+}

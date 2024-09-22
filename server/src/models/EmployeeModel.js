@@ -1,15 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-const roleSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        enum: ['ADMIN', 'Manager', 'Trainer Sourcer', 'KeyAccount'],
-        required: true
-    },
-    permissions: [{ type: String }] // ['manage_employees', 'access_deals', 'register_trainers']
-});
-
 const employeeSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -24,14 +15,19 @@ const employeeSchema = new mongoose.Schema({
         required: true,
     },
     role: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Role'
+        name: {
+            type: String,
+            enum: ['ADMIN', 'Manager', 'Trainer Sourcer', 'KeyAccounts'],
+            required: true
+        },
+        permissions: [{ type: String }]
     },
     authorizations: [{
         type: String
     }]
 }, {
-    timestamps: true
+    timestamps: true,
+    discriminatorKey: 'roleType'
 })
 
 // Match user entered password to hashed password in database
@@ -51,7 +47,7 @@ employeeSchema.pre('save', async function(next) {
 });
 
 
-const Role = mongoose.model('Role', roleSchema);
+// const Role = mongoose.model('Role', roleSchema);
 const Employee = mongoose.model('Employee', employeeSchema);
 
-export { Employee, Role };
+export default Employee

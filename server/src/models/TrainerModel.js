@@ -16,6 +16,14 @@ const trainerSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TrainerSourcer'
     },
+    trainerId: {
+        type: String,
+        unique: true
+    },
+    password: {
+        required: true,
+        type: String,
+    },
     is_FirstLogin: {
         type: Boolean,
         default: true
@@ -68,14 +76,7 @@ const trainerSchema = mongoose.Schema({
             type: String
         }
     },
-    trainerId: {
-        type: String,
-        unique: true
-    },
-    trainer_password: {
-        type: String,
-        required: true
-    },
+
     availableDate: {
         type: [{
             startDate: {
@@ -94,16 +95,16 @@ const trainerSchema = mongoose.Schema({
 
 // Match user entered password to hashed password in database
 trainerSchema.methods.matchPassword = async function(enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.trainer_password);
+    return await bcrypt.compare(enteredPassword, this.password);
 };
 
 // Encrypt password using bcrypt
-userSchema.pre('save', async function(next) {
-    if (!this.isModified('trainer_password')) {
+trainerSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) {
         next();
     }
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.trainer_password, salt);
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
 const Trainer = mongoose.model('Trainer', trainerSchema);
