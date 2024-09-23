@@ -1,5 +1,5 @@
 import express from 'express';
-import { addEmployee } from '../controllers/AdminController.js';
+import { addEmployee, createCompany, getAllCompanyNamesAndIds, getCompanyDetails } from '../controllers/AdminController.js';
 import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import authMiddleware from '../middleware/authMiddleware.js';
@@ -10,9 +10,17 @@ router.get("/", authMiddleware, authorizeRole("ADMIN"), (req, res) => {
     res.status(200).send("HIii")
 })
 
-router.post("/login", login) // Login for an Employee
-router.post("/register", authMiddleware, authorizeRole("ADMIN"), addEmployee) // Register an Employee
+// Auth Based Routes
+router.post("/login", login)
+router.post("/register", authMiddleware, authorizeRole("ADMIN"), addEmployee)
 router.get("/signout", authMiddleware, signOut)
+
+// Company and Deal
+router.post("/create-company", authMiddleware, authorizeRole(["ADMIN", "Manager"]), createCompany)
+router.get("/company/:companyId", authMiddleware, getCompanyDetails)
+router.get("/getAllCompanyDetails", authMiddleware, authorizeRole(["ADMIN", "MANAGER"]), getAllCompanyNamesAndIds)
+
+
 
 // Check if a user has the permission to access any deal/
 

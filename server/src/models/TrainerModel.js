@@ -86,8 +86,39 @@ const trainerSchema = mongoose.Schema({
                 type: Date
             }
         }]
-    }
+    },
     // Resume Details--------------------------------
+    resume_details: {
+        professionalSummary: {
+            type: [String], // Array of sentences describing the professional summary
+        },
+        technicalSkills: {
+            type: [String],
+        },
+        careerHistory: {
+            type: [String],
+        },
+        certifications: {
+            type: [String],
+        },
+        education: {
+            type: [String],
+        },
+        trainingsDelivered: {
+            type: [String],
+        },
+        clientele: {
+            type: [String],
+        },
+        experience: {
+            type: [String],
+        },
+        file_url: {
+            type: String,
+            // required: true
+        }
+    }
+
 
 }, {
     timestamps: true,

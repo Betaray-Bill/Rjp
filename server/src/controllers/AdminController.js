@@ -1,3 +1,4 @@
+import Company from "../models/CompanyAndDealModels/CompanyModel.js";
 import Employee from "../models/EmployeeModel.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
@@ -54,7 +55,6 @@ const addEmployee = asyncHandler(async(req, res) => {
 })
 
 // Update the role
-
 const updateEmployeeRole = asyncHandler(async(req, res) => {
 
     // Get the Id of the Emp
@@ -66,6 +66,72 @@ const updateEmployeeRole = asyncHandler(async(req, res) => {
     // Save the employee
 })
 
+// Create a Company - new Company for a deal
+const createCompany = asyncHandler(async(req, res) => {
+    const {
+        company_name,
+        contact_name,
+        contact_email,
+        contact_phone_number,
+    } = req.body
+
+    // check if the company exists
+    const existingCompany = await Company.findOne({ company_name: company_name })
+    if (existingCompany) {
+        return res.status(400).json({ message: 'Company already exists' });
+    }
+
+    try {
+        const company = new Company({
+            company_name,
+            contact_details: {
+                contact_name,
+                contact_email,
+                contact_phone_number,
+            }
+        });
+
+        await company.save();
+        res.status(201).json({ message: 'Company created successfully', company });
+    } catch (err) {
+        return res.status(500).json({ message: 'Error creating company', error: err.message });
+    }
+
+})
+
+// Get Company Details By Id
+const getCompanyDetails = asyncHandler(async(req, res) => {
+    const { companyId } = req.query;
+
+    const company = await Company.findById(companyId).populate('Deals');
+
+    if (!company) {
+        return res.status(404).json({ message: 'Company not found' });
+    }
+
+    res.json(company);
+})
+
+// Get All Company Name and Id
+const getAllCompanyNamesAndIds = asyncHandler(async(req, res) => {
+    try {
+        // Find all companies and project only name and _id fields
+        const companies = await Company.find({}, { name: 1, _id: 1 });
+
+        if (!companies || companies.length === 0) {
+            return res.status(404).json({ message: "No companies found" });
+        }
+
+        res.status(200).json({
+            message: "Companies retrieved successfully",
+            companies
+        });
+    } catch (error) {
+        console.error("Error retrieving companies:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+})
+
 // Create Deal
 
 
@@ -73,5 +139,8 @@ const updateEmployeeRole = asyncHandler(async(req, res) => {
 
 export {
     updateEmployeeRole,
-    addEmployee
+    addEmployee,
+    createCompany,
+    getAllCompanyNamesAndIds,
+    getCompanyDetails
 }

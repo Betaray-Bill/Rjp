@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import asyncHandler from "../utils/asyncHandler.js";
 import Employee from "../models/EmployeeModel.js";
 import Trainer from "../models/TrainerModel.js";
@@ -42,6 +41,16 @@ const registerTrainer = asyncHandler(async(req, res) => {
             alternate_email_id: req.body.contact_Details.alternate_email_id
         },
         availableDate: req.body.availableDate,
+        resume_details: {
+            professionalSummary: req.body.professionalSummary,
+            technicalSkills: req.body.technicalSkills,
+            careerHistory: req.body.careerHistory,
+            certifications: req.body.certifications,
+            education: req.body.education,
+            trainingsDelivered: req.body.trainingsDelivered,
+            clientele: req.body.clientele,
+            experience: req.body.experience
+        }
     });
 
     try {
@@ -64,9 +73,6 @@ const registerTrainer = asyncHandler(async(req, res) => {
     }
 
 })
-
-
-
 
 //Send PO to the Trainer for the respective deal
 
