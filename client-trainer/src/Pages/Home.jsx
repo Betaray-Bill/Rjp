@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useLogoutQuery } from '../app/services/auth';
 import { useSelector } from 'react-redux';
-let i=0;
+
+
 function Home() {
   const userData = localStorage.getItem('user')
   const [users, setUser] = useState([])
@@ -12,19 +13,17 @@ function Home() {
   console.log(user)
   useEffect(() => {
     if(users !== null || users !== undefined) {
-      i++;
+
       setUser(JSON.parse(userData))
       console.log(JSON.parse(userData))
     }
-
-    console.log(i)
   }, [userData])
 
 
   // Sign out
   // const {logout} = useLogoutQuery()
   const signOut = async() => {
-    localStorage.removeItem('user')
+    // localStorage.removeItem('user')
     setUser(null)
     // logout()
 

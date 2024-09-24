@@ -9,7 +9,7 @@ import { Button } from '@mui/material';
 
 
 function Login() {
-    const [login, {isLoading}] = useLoginMutation()
+    const [login, {isLoading, isSuccess}] = useLoginMutation()
     const dispatch = useDispatch();
     const navigate = useNavigate()
     const {user} = useSelector((state)=> state.auth)
@@ -31,25 +31,13 @@ function Login() {
           const data = await login(formData).unwrap();
           dispatch(setCredentials(data));
           console.log(user)
-          localStorage.setItem('user', JSON.stringify(data))
-          const userData = localStorage.getItem('user')
-          // console.log(JSON.stringify(userData))
-          if (userData) {
+          if (user) {
             navigate('/home');
           }
       } catch (error) {
           console.log(error);
       }
     }
-
-
-    useEffect(() => {
-      const userData = localStorage.getItem('user')
-
-        if (userData) {
-            navigate('/home');
-        }
-    }, [user, navigate])
   
 
   return (

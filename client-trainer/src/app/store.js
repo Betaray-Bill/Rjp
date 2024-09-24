@@ -6,6 +6,7 @@ import authReducer from '.././features/authSlice';
 
 const rootReducer = combineReducers({
     auth: authReducer,
+    [authApi.reducerPath]: authApi.reducer
 });
 
 const persistConfig = {
@@ -16,10 +17,7 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-    reducer: {
-        persistedReducer,
-        [authApi.reducerPath]: authApi.reducer
-    },
+    reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false,

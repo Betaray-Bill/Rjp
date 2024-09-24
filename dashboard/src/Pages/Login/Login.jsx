@@ -1,84 +1,72 @@
-import { Box, Button, Container, TextField } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { signInStart, signInSuccess } from '../../features/authSlice'
-import { useLoginMutation } from '../../app/services/authService'
+import { setCredentials } from '../../features/authSlice'
+import axios from 'axios'
 
 function Login() {
+
     const dispatch = useDispatch()
+    const {currentUser} = useSelector(state => state.auth)
     const navigate = useNavigate()
-    const {currentUser } = useSelector(state => state.auth)
-    const [login, {error, isSuccess}] = useLoginMutation()
-
     const [formData, setFormData] = useState({
-        email:'',
-        password:''
-      })
-    
-    
-    const loginHandler = async(event) => {  
-        event.preventDefault();
-        console.log(formData)
-        dispatch(signInStart())
-        if(formData.email === '' || formData.password === ''){
-          alert('Please enter all fields')
-          return;
-        }
+        email:"",
+        password:""
+    })
 
-        // Fetch Data by RTK Query
-        // const res = await login(formData).unwrap()
-        // console.log(res)
-        // console.log(isSuccess)
+    const handleChange = (e) => {
+        setFormData({...formData, [e.target.name] : e.target.value})
+    }
 
-        const response = await fetch("http://localhost:5000/api/employee/login",{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        })
-        const data = await response.json()
-        console.log(data)
-            dispatch(signInSuccess(data))
-
-        // Dispatch it to the Redux
-        // dispatch(signInSuccess(res))
-        console.log(currentUser)
-        if(currentUser){
-            navigate('/home')
+    axios.defaults.withCredentials = true;
+    const submitHandler = async(e) => {
+        e.preventDefault()
+        try {
+            const res = await axios.post('http://localhost:5000/api/employee/login', formData)  
+            // });
+            const data = await res.data;
+            console.log(data)
+            dispatch(setCredentials(data))
+            console.log(currentUser)
+            navigate('/home');
+        } catch (error) {
+            // dispatch(signInFailure(error));
         }
     }
+
+    useEffect(()=>{
+        // if(currentUser){
+        //     navigate('/home')  // Redirect to home page when user is authenticated. If not authenticated, it will remain on login page.  // If you want to redirect to another page, replace "/home" with the desired path.  // Note: You need to have access to the navigate hook in your component to use it.  // You can install it by running "npm install react-router-dom" in your project directory.  // Also, you need to have the necessary backend setup to handle the login request.  // In the backend, you should have a route that looks something like this:  // app.post('/api/employee/login', async (req, res) => {  //     const { email, password } = req.body;  //     const user = await User.findOne({ email });  //     if (!user ||!(await user.comparePassword(password))) {  //         return res.status(401).json
+        // }
+        console.log(currentUser)
+    }, [])
+
 
     console.log(currentUser)
 
   return (
     <div>
-    <Container>
-        <h3>Login</h3>
-      <Box
-          component="form"
-          sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
-          noValidate
-          onSubmit={loginHandler}
-          autoComplete="off"
-        >
-          <TextField id="email" label="Email" name="email" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})}  variant="outlined" />
-          <TextField
-            id="password"
-            label="Password"
-            type="password"
-            variant="outlined"
-            name="password" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})} 
-          />
-          <Button variant="contained" type="submit" >
-            Login
-          </Button>
-        </Box> 
-    </Container>
-    {
-        error && <div>Error</div>  // Display error message if any
-    }
+                <form className="login-form" onSubmit={submitHandler}>
+                    <div className="input-floating-label">
+                        <input className="input" type="email" value={formData.email}
+                            onChange={handleChange}
+                            name="email" placeholder="username" />
+                        <label for="input"><ion-icon name="mail-outline"></ion-icon> <span>Email</span></label>
+                        <span className="focus-bg"></span>
+                    </div>
+                    <div className="input-floating-label">
+                        <input className="input" type="password" value={formData.password} 
+                            onChange={handleChange}
+                            name="password" placeholder="password" />
+                        <label for="input"><ion-icon name="key-outline"></ion-icon><span>Password</span></label>
+                        <span className="focus-bg"></span>
+                    </div>
+                    <button id="submit" className="btn-submit">
+                        Login
+                    </button>
+                </form>
+
+
     </div>
   )
 }

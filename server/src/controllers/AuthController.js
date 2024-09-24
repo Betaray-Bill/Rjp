@@ -14,8 +14,7 @@ const login = asyncHandler(async(req, res) => {
         let token = generateToken(res, employee._id);
         console.log("login token ", token);
         res.status(200).json({
-            employee,
-            token
+            employee
         });
     } else {
         res.status(401);

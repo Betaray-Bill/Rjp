@@ -6,7 +6,7 @@ import authMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get("/", authMiddleware, authorizeRole("ADMIN"), (req, res) => {
+router.get("/", authMiddleware, authorizeRole(["ADMIN"]), (req, res) => {
     res.status(200).send("HIii")
 })
 
