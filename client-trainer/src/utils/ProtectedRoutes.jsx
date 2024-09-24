@@ -3,7 +3,8 @@ import { Outlet, Navigate } from 'react-router-dom'
 
 export default function PrivateRoute() {
     console.log("Hii")
-    const {currentUser} = useSelector(state => state.auth)
-    console.log("User " + currentUser)
-  return currentUser ? <Outlet/> : <Navigate to='/login'/>
+    // const {user} = useSelector((state)=> state.auth)
+    const user = localStorage.getItem('user')
+    console.log("User " + user)
+  return user ? <Outlet/> : <Navigate to='/login'/>
 }

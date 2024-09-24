@@ -69,21 +69,21 @@ const updateEmployeeRole = asyncHandler(async(req, res) => {
 // Create a Company - new Company for a deal
 const createCompany = asyncHandler(async(req, res) => {
     const {
-        company_name,
+        companyName,
         contact_name,
         contact_email,
         contact_phone_number,
     } = req.body
 
     // check if the company exists
-    const existingCompany = await Company.findOne({ company_name: company_name })
+    const existingCompany = await Company.findOne({ companyName: companyName })
     if (existingCompany) {
         return res.status(400).json({ message: 'Company already exists' });
     }
 
     try {
         const company = new Company({
-            company_name,
+            companyName,
             contact_details: {
                 contact_name,
                 contact_email,
@@ -92,7 +92,7 @@ const createCompany = asyncHandler(async(req, res) => {
         });
 
         await company.save();
-        res.status(201).json({ message: 'Company created successfully', company });
+        res.status(201).json({ message: 'Company created successfully', company, Created_By: req.user_id });
     } catch (err) {
         return res.status(500).json({ message: 'Error creating company', error: err.message });
     }
@@ -101,10 +101,10 @@ const createCompany = asyncHandler(async(req, res) => {
 
 // Get Company Details By Id
 const getCompanyDetails = asyncHandler(async(req, res) => {
-    const { companyId } = req.query;
+    const { companyId } = req.params;
 
-    const company = await Company.findById(companyId).populate('Deals');
-
+    const company = await Company.findById(companyId);
+    // .populate('Deals')
     if (!company) {
         return res.status(404).json({ message: 'Company not found' });
     }
@@ -114,6 +114,7 @@ const getCompanyDetails = asyncHandler(async(req, res) => {
 
 // Get All Company Name and Id
 const getAllCompanyNamesAndIds = asyncHandler(async(req, res) => {
+    // console.log(object)
     try {
         // Find all companies and project only name and _id fields
         const companies = await Company.find({}, { name: 1, _id: 1 });

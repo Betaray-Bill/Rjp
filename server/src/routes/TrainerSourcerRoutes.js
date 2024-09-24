@@ -7,13 +7,13 @@ import { signOut } from '../controllers/AuthController.js';
 const router = express.Router();
 
 
-router.get("/", authMiddleware, authorizeRole("ADMIN", "Trainer Sourcer"), (req, res) => {
+router.get("/", authMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), (req, res) => {
     res.status(200).send("Inside the Trainer Sourcer")
 })
 
 router.post("/register-trainer",
     authMiddleware,
-    authorizeRole("ADMIN", "Trainer Sourcer"),
+    authorizeRole(["ADMIN", "Trainer Sourcer"]),
     registerTrainer
 )
 

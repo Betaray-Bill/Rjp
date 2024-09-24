@@ -1,6 +1,5 @@
 import express from 'express';
 import authMiddleware from '../middleware/authMiddleware.js';
-import authorizeRole from '../middleware/roleMiddleware.js';
 import { signOut } from '../controllers/AuthController.js';
 import { acceptNDA, trainerLogin, updateTrainerProfile } from '../controllers/TrainerController.js';
 

@@ -1,84 +1,92 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLoginMutation } from '../app/services/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { signInFailure, signInStart, signInSuccess } from '../features/authSlice.js';
+import { setCredentials } from '../features/authSlice';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import { Button } from '@mui/material';
+
 
 function Login() {
-    const [login, {data, isSuccess}] = useLoginMutation()
+    const [login, {isLoading}] = useLoginMutation()
     const dispatch = useDispatch();
     const navigate = useNavigate()
-    const {currentUser} = useSelector(state => state.auth)
+    const {user} = useSelector((state)=> state.auth)
     
     const [formData, setFormData] = useState({
       email:'',
       password:''
     })
   
-    // axios.defaults.withCredentials = true;
-    const loginHandler = async(event) => {
+    const loginHandler = async(event) => {  
       event.preventDefault();
       console.log(formData)
       if(formData.email === '' || formData.password === ''){
         alert('Please enter all fields')
         return;
       }
-    //   const userData = await login(formData)
-    //     .unwrap()
-    //     .then((payload) => {
-    //         console.log('fulfilled', payload.trainer[0])
 
-    //     })
-    //     .catch((error) => console.error('rejected', error));
+      try {
+          const data = await login(formData).unwrap();
+          dispatch(setCredentials(data));
+          console.log(user)
+          localStorage.setItem('user', JSON.stringify(data))
+          const userData = localStorage.getItem('user')
+          // console.log(JSON.stringify(userData))
+          if (userData) {
+            navigate('/home');
+          }
+      } catch (error) {
+          console.log(error);
+      }
+    }
 
-    //   console.log(data.trainer)
-    // console.log(isSuccess)
-    //   if(isSuccess){
-    //     navigate('/home', { replace: true });
-    //     dispatch(signInSuccess(userData.trainer[0]));
-    //   }else{
-    //     // setFormData({
-    //     //     email:'',
-    //     //     password:''
-    //     // })
-    //   }
 
-    try {
-        dispatch(signInStart());
-        const res = await fetch('http://localhost:5000/api/trainer/login', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        });
-        const data = await res.json();
-        console.log(data)
-        // console.log(data !== null || data.trainer == [] || data === undefined)
-        if (data === null || data.trainer == [] || data === undefined) {
-            dispatch(signInFailure(data));
-            return;
+    useEffect(() => {
+      const userData = localStorage.getItem('user')
+
+        if (userData) {
+            navigate('/home');
         }
-        console.log(data)
-        dispatch(signInSuccess(data));
-        navigate('/home');
-        console.log(currentUser)
-    } catch (error) {
-        dispatch(signInFailure(error));
-    }
-    }
+    }, [user, navigate])
+  
 
   return (
     <div>
         Login
-        <form onSubmit={loginHandler}>
+        <Box
+          component="form"
+          sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
+          noValidate
+          onSubmit={loginHandler}
+          autoComplete="off"
+        >
+          {/* <form onSubmit={loginHandler}> */}
+          <TextField id="email" label="Email" name="email" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})}  variant="outlined" />
+          <TextField
+            id="password"
+            label="Password"
+            type="password"
+            variant="outlined"
+            name="password" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})} 
+          />
+          <Button variant="contained" type="submit" disabled={isLoading}>
+            {isLoading? 'Loading...':'Submit'}
+          </Button>
+          {/* <button type="submit" disabled={isLoading}>
+            {isLoading? 'Loading...':'Submit'}
+          </button> */}
+          {/* </form> */}
+        </Box>        
+        {/* <form onSubmit={loginHandler}>
           <input type="email" name="email" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})} />
           <input type="password" name="password" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})} />
           <button type="submit">Submit</button>
-        </form>
+        </form> */}
 
         {
-            currentUser && JSON.stringify(currentUser)
+            user ? JSON.stringify(user) :"No data"
         }
     </div>  
   )

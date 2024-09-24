@@ -12,13 +12,13 @@ router.get("/", authMiddleware, authorizeRole("ADMIN"), (req, res) => {
 
 // Auth Based Routes
 router.post("/login", login)
-router.post("/register", authMiddleware, authorizeRole("ADMIN"), addEmployee)
+router.post("/register", authMiddleware, authorizeRole(["ADMIN"]), addEmployee)
 router.get("/signout", authMiddleware, signOut)
 
 // Company and Deal
-router.post("/create-company", authMiddleware, authorizeRole(["ADMIN", "Manager"]), createCompany)
+router.post("/create-company", authMiddleware, authorizeRole(["ADMIN", "MANAGER"]), createCompany)
 router.get("/company/:companyId", authMiddleware, getCompanyDetails)
-router.get("/getAllCompanyDetails", authMiddleware, authorizeRole(["ADMIN", "MANAGER"]), getAllCompanyNamesAndIds)
+router.get("/company/getAllCompany", authMiddleware, authorizeRole(["ADMIN", "MANAGER"]), getAllCompanyNamesAndIds)
 
 
 
