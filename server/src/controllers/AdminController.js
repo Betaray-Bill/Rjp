@@ -54,6 +54,16 @@ const addEmployee = asyncHandler(async(req, res) => {
     }
 })
 
+// Get ALl employes
+const getAllEmployees = asyncHandler(async(req, res) => {
+    try {
+        const employees = await Employee.find().select('-password');
+        res.json(employees);
+    } catch (error) {
+        throw new ApiError(500, error)
+    }
+})
+
 // Update the role
 const updateEmployeeRole = asyncHandler(async(req, res) => {
 
@@ -114,11 +124,11 @@ const getCompanyDetails = asyncHandler(async(req, res) => {
 
 // Get All Company Name and Id
 const getAllCompanyNamesAndIds = asyncHandler(async(req, res) => {
-    // console.log(object)
+    console.log("----------------------------------------------------------------")
     try {
         // Find all companies and project only name and _id fields
         const companies = await Company.find({}, { name: 1, _id: 1 });
-
+        console.log(companies)
         if (!companies || companies.length === 0) {
             return res.status(404).json({ message: "No companies found" });
         }
@@ -143,5 +153,6 @@ export {
     addEmployee,
     createCompany,
     getAllCompanyNamesAndIds,
-    getCompanyDetails
+    getCompanyDetails,
+    getAllEmployees
 }

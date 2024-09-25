@@ -1,5 +1,5 @@
 import express from 'express';
-import { addEmployee, createCompany, getAllCompanyNamesAndIds, getCompanyDetails } from '../controllers/AdminController.js';
+import { addEmployee, createCompany, getAllCompanyNamesAndIds, getAllEmployees, getCompanyDetails } from '../controllers/AdminController.js';
 import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import authMiddleware from '../middleware/authMiddleware.js';
@@ -14,6 +14,7 @@ router.get("/", authMiddleware, authorizeRole(["ADMIN"]), (req, res) => {
 router.post("/login", login)
 router.post("/register", authMiddleware, authorizeRole(["ADMIN"]), addEmployee)
 router.get("/signout", authMiddleware, signOut)
+router.get("/getAll", authMiddleware, authorizeRole(["ADMIN"]), getAllEmployees)
 
 // Company and Deal
 router.post("/create-company", authMiddleware, authorizeRole(["ADMIN", "MANAGER"]), createCompany)

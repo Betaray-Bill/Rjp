@@ -5,11 +5,11 @@ import bcrypt from 'bcryptjs';
 const trainerSchema = mongoose.Schema({
     name: {
         type: String,
-        required: true,
+        // required: true,
     },
     type_of_trainer: {
         type: String,
-        required: true,
+        // required: true,
         enum: ['Internal', 'External']
     },
     trainer_sourcer: {
@@ -21,7 +21,7 @@ const trainerSchema = mongoose.Schema({
         unique: true
     },
     password: {
-        required: true,
+        // required: true,
         type: String,
     },
     is_FirstLogin: {
@@ -36,38 +36,38 @@ const trainerSchema = mongoose.Schema({
     bank_Details: {
         account_Name: {
             type: String,
-            required: true
+            // required: true
         },
         account_Number: {
             type: Number,
-            required: true
+            // required: true
         },
         bank_Branch: {
             type: String,
-            required: true
+            // required: true
         },
         bank_IFSC_code: {
             type: String,
-            required: true
+            // required: true
         },
         pancard_Number: {
             type: String,
-            required: true
+            // required: true
         },
         aadharcard_number: {
             type: String,
-            required: true
+            // required: true
         }
     },
     // Contact Details--------------------------------
     contact_Details: {
         mobile_number: {
             type: String,
-            required: true
+            // required: true
         },
         email_id: {
             type: String,
-            required: true
+            // required: true
         },
         alternate_contact_number: {
             type: String

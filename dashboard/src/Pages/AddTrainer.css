@@ -1,0 +1,36 @@
+.trainer-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+.trainer-form div {
+    display: flex;
+    flex-direction: column;
+}
+
+.trainer-form label {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.trainer-form input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.submit-btn {
+    grid-column: span 2;
+    text-align: center;
+}
+
+.submit-btn button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

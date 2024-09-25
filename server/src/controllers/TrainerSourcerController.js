@@ -7,14 +7,14 @@ import Trainer from "../models/TrainerModel.js";
 // Register Trainer - Create a new Trainer
 // POST - /register
 const registerTrainer = asyncHandler(async(req, res) => {
-    const trainerSourcerId = req.body.trainerSourcer_Id
 
-    // check if the trainer is already registered
-    const trainerSourcer = await Employee.findOne(trainerSourcerId)
+    console.log(req.body)
+        // check if the trainer is already registered
+        // const trainerSourcer = await Employee.findOne(trainerSourcerId)
 
-    if (!trainerSourcer) {
-        return res.status(400).json({ message: 'Trainer does not exist' });
-    }
+    // if (!trainerSourcer) {
+    //     return res.status(400).json({ message: 'Trainer does not exist' });
+    // }
 
     // Create a new Trainer
     const trainer = new Trainer({
@@ -42,26 +42,26 @@ const registerTrainer = asyncHandler(async(req, res) => {
         },
         availableDate: req.body.availableDate,
         resume_details: {
-            professionalSummary: req.body.professionalSummary,
-            technicalSkills: req.body.technicalSkills,
-            careerHistory: req.body.careerHistory,
-            certifications: req.body.certifications,
-            education: req.body.education,
-            trainingsDelivered: req.body.trainingsDelivered,
-            clientele: req.body.clientele,
-            experience: req.body.experience
+            professionalSummary: req.body.resume_details.professionalSummary,
+            technicalSkills: req.body.resume_details.technicalSkills,
+            careerHistory: req.body.resume_details.careerHistory,
+            certifications: req.body.resume_details.certifications,
+            education: req.body.resume_details.education,
+            trainingsDelivered: req.body.resume_details.trainingsDelivered,
+            clientele: req.body.resume_details.clientele,
+            experience: req.body.resume_details.experience
         }
     });
 
     try {
         await trainer.save();
         // Save the trainer's id in the Trainer Sourcer's Docs
-        let trainerSrc = await Employee.findByIdAndUpdate(trainerSourcerId, {
-            $push: { registeredTrainers: trainer._id }
-        }, { new: true })
-        await trainerSourcer.save();
+        // let trainerSrc = await Employee.findByIdAndUpdate(trainerSourcerId, {
+        //     $push: { registeredTrainers: trainer._id }
+        // }, { new: true })
+        // await trainerSourcer.save();
 
-        console.log("Trainer Src ---> ", trainerSrc)
+        // console.log("Trainer Src ---> ", trainerSrc)
         res.status(201).json({
             message: 'Trainer created successfully',
             Trainer: trainer,

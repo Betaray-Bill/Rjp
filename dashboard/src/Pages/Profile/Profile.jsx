@@ -1,25 +1,5 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-// const styles = {
-//     container: {
-//       padding: '20px',
-//       maxWidth: '600px',
-//       margin: 'auto',
-//       backgroundColor: '#f4f4f4',
-//       borderRadius: '8px',
-//       boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-//     },
-//     heading: {
-//       textAlign: 'center',
-//       marginBottom: '20px',
-//     },
-//     detailBox: {
-//       backgroundColor: '#fff',
-//       padding: '20px',
-//       borderRadius: '8px',
-//       boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)',
-//     },
-//   };
 
 function Profile() {
     const {currentUser} = useSelector(state => state.auth)

@@ -35,38 +35,39 @@ function Login() {
     }
 
     useEffect(()=>{
-        // if(currentUser){
-        //     navigate('/home')  // Redirect to home page when user is authenticated. If not authenticated, it will remain on login page.  // If you want to redirect to another page, replace "/home" with the desired path.  // Note: You need to have access to the navigate hook in your component to use it.  // You can install it by running "npm install react-router-dom" in your project directory.  // Also, you need to have the necessary backend setup to handle the login request.  // In the backend, you should have a route that looks something like this:  // app.post('/api/employee/login', async (req, res) => {  //     const { email, password } = req.body;  //     const user = await User.findOne({ email });  //     if (!user ||!(await user.comparePassword(password))) {  //         return res.status(401).json
-        // }
+        if(currentUser){
+            navigate('/home')  // Redirect to home page when user is authenticated. If not authenticated, it will remain on login page.  // If you want to redirect to another page, replace "/home" with the desired path.  // Note: You need to have access to the navigate hook in your component to use it.  // You can install it by running "npm install react-router-dom" in your project directory.  // Also, you need to have the necessary backend setup to handle the login request.  // In the backend, you should have a route that looks something like this:  // app.post('/api/employee/login', async (req, res) => {  //     const { email, password } = req.body;  //     const user = await User.findOne({ email });  //     if (!user ||!(await user.comparePassword(password))) {  //         return res.status(401).json
+        }
         console.log(currentUser)
     }, [])
 
 
-    console.log(currentUser)
+    // console.log(currentUser)
 
   return (
-    <div>
-                <form className="login-form" onSubmit={submitHandler}>
+    <div className="wrapper">
+        <section>
+            <form className="login-form" onSubmit={submitHandler}>
                     <div className="input-floating-label">
                         <input className="input" type="email" value={formData.email}
                             onChange={handleChange}
                             name="email" placeholder="username" />
-                        <label for="input"><ion-icon name="mail-outline"></ion-icon> <span>Email</span></label>
+                        <label><ion-icon name="mail-outline"></ion-icon> <span>Email</span></label>
                         <span className="focus-bg"></span>
                     </div>
                     <div className="input-floating-label">
                         <input className="input" type="password" value={formData.password} 
                             onChange={handleChange}
                             name="password" placeholder="password" />
-                        <label for="input"><ion-icon name="key-outline"></ion-icon><span>Password</span></label>
+                        <label><ion-icon name="key-outline"></ion-icon><span>Password</span></label>
                         <span className="focus-bg"></span>
                     </div>
                     <button id="submit" className="btn-submit">
                         Login
                     </button>
-                </form>
+            </form>
 
-
+        </section>
     </div>
   )
 }

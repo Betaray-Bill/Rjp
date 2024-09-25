@@ -19,10 +19,10 @@ const companySchema = new mongoose.Schema({
             required: true
         }
     },
-    Deals: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Deal'
-    }]
+    // Deals: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Deal'
+    // }]
 }, {
     timestamps: true,
 })

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { signOut } from '../../features/authSlice'
+import { Outlet } from 'react-router-dom';
 
 function Home() {
   const dispatch = useDispatch()
@@ -17,13 +18,7 @@ function Home() {
     }, [])
     axios.defaults.withCredentials = true;
     const signOutNow = async() => {
-      console.log("meow")
-        // localStorage.removeItem('user')
-        // window.location.href = '/login'
         try{
-            // const res = await axios('http://localhost:5000/api/employee/signout')
-            // const data = await res.data
-            // console.log(data)
             dispatch(signOut())
             navigate('/login')
         }catch(err){
@@ -32,23 +27,33 @@ function Home() {
     }
 
   return (
-    <div>
-      Home
-      <button onClick={signOutNow}>
-        sign Out
-      </button>
+    <div className='wrapper'>
+      <nav>
+        <h2>RJP</h2>
+        <ul className={{display: 'flex'}}>
+            <Link to="/home">Home</Link>  
+            {
+              (currentUser.employee.role.name === 'ADMIN' || currentUser.employee.role.name === 'MANAGER' )&& 
+              <Link to="/home/search">Search Trainers</Link>
+            }
+            {
+              (currentUser.employee.role.name === 'ADMIN' || currentUser.employee.role.name === 'MANAGER' )&& 
+              <Link to="/home/add">Add +</Link>
+            }
+            <Link to='/home/add-trainer'>Add Trainers</Link>
+            <Link to="/home/profile">Profile</Link>
+        </ul>
+        <button onClick={signOutNow}> 
+          sign Out
+        </button>
+      </nav>
+
       {currentUser && <p>Welcome, {currentUser.employee.name}</p>}
       <h5>You are {currentUser && currentUser.employee.role.name}</h5>
-      <nav>
-        <ul>
-            <li>Home</li>
-            <li>Search Trainers</li>
-            <li>
-            <Link to="/trainer-register">Trainer Register</Link>
-            </li>
-            <Link to="/profile">Profile</Link>
-        </ul>
-      </nav>
+      
+      <div className="container">
+        <Outlet/>
+      </div>
     </div>
   )
 }
