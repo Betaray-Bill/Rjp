@@ -16,10 +16,7 @@ const trainerLogin = asyncHandler(async(req, res) => {
     if (trainer) {
         let token = generateToken(res, trainer._id);
         console.log("login token ", token);
-        res.status(200).json({
-            trainer,
-            token
-        });
+        res.status(200).json(...trainer);
     } else {
         res.status(401);
         throw new Error('Invalid email or password');

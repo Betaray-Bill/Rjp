@@ -7,14 +7,7 @@ import Trainer from "../models/TrainerModel.js";
 // Register Trainer - Create a new Trainer
 // POST - /register
 const registerTrainer = asyncHandler(async(req, res) => {
-
     console.log(req.body)
-        // check if the trainer is already registered
-        // const trainerSourcer = await Employee.findOne(trainerSourcerId)
-
-    // if (!trainerSourcer) {
-    //     return res.status(400).json({ message: 'Trainer does not exist' });
-    // }
 
     // Create a new Trainer
     const trainer = new Trainer({
@@ -55,13 +48,6 @@ const registerTrainer = asyncHandler(async(req, res) => {
 
     try {
         await trainer.save();
-        // Save the trainer's id in the Trainer Sourcer's Docs
-        // let trainerSrc = await Employee.findByIdAndUpdate(trainerSourcerId, {
-        //     $push: { registeredTrainers: trainer._id }
-        // }, { new: true })
-        // await trainerSourcer.save();
-
-        // console.log("Trainer Src ---> ", trainerSrc)
         res.status(201).json({
             message: 'Trainer created successfully',
             Trainer: trainer,

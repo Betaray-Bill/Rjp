@@ -37,12 +37,15 @@ function AddCompany() {
     }
   };
 
+  const [companies, setCompanies] = useState([])
+  
     axios.defaults.withCredentials = true;
     const getAllCompanies= async() => {
         try{
-            const res = await axios.get('http://localhost:5000/api/employee/company/getAllCompany')
+            const res = await axios.get('http://localhost:5000/api/employee/company')
             const data = await res.data
-            console.log(data)
+            console.log(data.companies)
+            setCompanies(data.companies)
         }catch(err){
             console.log(err)
         }
@@ -99,6 +102,21 @@ function AddCompany() {
         <section>
             <h2>All Companies</h2>
             <button onClick={getAllCompanies}>All Companies</button>
+            {
+              companies.length > 0 && (
+                <div>
+                  <h3>Company List</h3>
+                  {companies.map((company) => (
+                    <div key={company._id}>
+                      <h4>{company.companyName}</h4>
+                      <p>Contact Name:{company.contact_details.contact_name}</p>
+                      <p>Contact Email: {company.contact_details.contact_email}</p>
+                      <p>Contact Phone Number: {company.contact_details.contact_phone_number}</p>
+                    </div>
+                  ))}
+                </div>
+              )
+            }
         </section>
     </div>
   );

@@ -1,35 +1,34 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useLogoutQuery } from '../app/services/auth';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../features/authSlice';
+import { useQueries, useQuery } from 'react-query';
+import axios from 'axios';
 
 
 function Home() {
   const userData = localStorage.getItem('user')
   const [users, setUser] = useState([])
+  const dispatch = useDispatch();
   const navigate = useNavigate()
   const {user} = useSelector((state)=> state.auth)
 
   console.log(user)
-  useEffect(() => {
-    if(users !== null || users !== undefined) {
-
-      setUser(JSON.parse(userData))
-      console.log(JSON.parse(userData))
-    }
-  }, [userData])
 
 
   // Sign out
-  // const {logout} = useLogoutQuery()
-  const signOut = async() => {
-    // localStorage.removeItem('user')
-    setUser(null)
-    // logout()
-
-    navigate("/login")
+  const signOutFunction = () => {
+    return axios.get('http://localhost:5000/api/trainer/signout')
   }
 
+  
+  const signOut = async() => {
+    signOutFunction()
+    dispatch(logout())
+    navigate("/login")
+  }
+  console.log(user)
 
   return (
     <div>
@@ -37,21 +36,11 @@ function Home() {
       Home
       {
         users &&
-        <div>
-          {/* <h1>Welcome, {user}</h1> */}
-          {/* <p>Email: {user?.token}</p> */}
-          token :
+        <p>
           {
-            // JSON.stringify(userData)
-            users.token
+            JSON.stringify(users)
           }
-          trainer :
-          {
-            users?.trainer?.map((e) => {
-              <p>{e}</p>
-            })
-          }
-        </div>
+        </p>
       }
     </div>
   )

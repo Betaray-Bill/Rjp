@@ -23,6 +23,7 @@ function App() {
         <Route path='/login' element={<Login />} />
 
         <Route element={<ProtectedRoute />}>
+          <Route path='/' index element={<Home />} />
           <Route path='/home' element={<Home />}>
             <Route path='profile' element={<Profile />} />
             {

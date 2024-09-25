@@ -6,10 +6,13 @@ import { setCredentials } from '../features/authSlice';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
+import { useMutation } from 'react-query';
+import axios from 'axios';
+
+
 
 
 function Login() {
-    const [login, {isLoading, isSuccess}] = useLoginMutation()
     const dispatch = useDispatch();
     const navigate = useNavigate()
     const {user} = useSelector((state)=> state.auth)
@@ -17,6 +20,10 @@ function Login() {
     const [formData, setFormData] = useState({
       email:'',
       password:''
+    })
+
+    const loginMutation = useMutation((data) => {
+      return axios.post('http://localhost:5000/api/trainer/login', data)
     })
   
     const loginHandler = async(event) => {  
@@ -28,12 +35,23 @@ function Login() {
       }
 
       try {
-          const data = await login(formData).unwrap();
-          dispatch(setCredentials(data));
-          console.log(user)
-          if (user) {
-            navigate('/home');
-          }
+          loginMutation.mutate(formData, {
+            onSuccess: (data) => {
+              console.log("login doen")
+              dispatch(setCredentials(data.data));
+              console.log(data)
+              if (data) {
+                navigate('/home');
+              }
+            },
+            onSettled: () => {
+              console.log("Settled")
+            },
+            onError: (error) => {
+              console.log(error);
+            }
+          })
+
       } catch (error) {
           console.log(error);
       }
@@ -59,8 +77,9 @@ function Login() {
             variant="outlined"
             name="password" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})} 
           />
-          <Button variant="contained" type="submit" disabled={isLoading}>
-            {isLoading? 'Loading...':'Submit'}
+          <Button variant="contained" type="submit">
+            {/* {isLoading? 'Loading...':'Submit'} */}
+            Submit
           </Button>
           {/* <button type="submit" disabled={isLoading}>
             {isLoading? 'Loading...':'Submit'}

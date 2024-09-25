@@ -19,7 +19,7 @@ router.get("/getAll", authMiddleware, authorizeRole(["ADMIN"]), getAllEmployees)
 // Company and Deal
 router.post("/create-company", authMiddleware, authorizeRole(["ADMIN", "MANAGER"]), createCompany)
 router.get("/company/:companyId", authMiddleware, getCompanyDetails)
-router.get("/company/getAllCompany", authMiddleware, authorizeRole(["ADMIN", "MANAGER"]), getAllCompanyNamesAndIds)
+router.get("/company", authMiddleware, getAllCompanyNamesAndIds)
 
 
 
