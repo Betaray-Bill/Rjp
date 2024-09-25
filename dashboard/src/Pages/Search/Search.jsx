@@ -15,9 +15,21 @@ const bull = (
 function Search() {
   const [query, setQuery] = useState("")
   const [result, setResult] = useState([])
+  const [isLoading, setLoading] = useState(false)
+  const [searched, setSearched] = useState(false)
+
   axios.defaults.withCredentials = true;
     const searchHandler = async(event) => {
         event.preventDefault()
+        if(query === "" || query.length < 1){
+          alert("Please enter a search")
+          setResult([])
+          setSearched(true)
+          return
+        }
+        setLoading(true);
+        setSearched(true);
+
         try {
             const res = await axios.get(`http://localhost:5000/api/trainer/search?search=${query}`)  
             // });
@@ -28,6 +40,7 @@ function Search() {
         } catch (error) {
             // dispatch(signInFailure(error));
         }
+        setLoading(false)
     }
   return (
     <div className='container'> 
@@ -42,50 +55,59 @@ function Search() {
           <button type='submit'>Search</button>
         </form>
       </Box>
-
+      {isLoading && <div>
+        <img src="https://www.icegif.com/wp-content/uploads/2023/07/icegif-1263.gif" width={300} alt="" /></div>}
       {
-       
-          result.length > 0  ? 
-          (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 2fr))', justifyContent: 'center', gap: '20px', placeContent:'center' }}>
-            {result.map((trainer) => (
-              <div key={trainer._id} style={cardStyle}>
-                <h3>{trainer.name}</h3>
-                <p><strong>Trainer ID:</strong> {trainer.trainerId}</p>
-                <p><strong>Type:</strong> {trainer.type_of_trainer}</p>
-                <p><strong>Email:</strong> {trainer.contact_Details.email_id}</p>
-                <p><strong>Mobile:</strong> {trainer.contact_Details.mobile_number}</p>
-                <p><strong>NDA Accepted:</strong> {trainer.nda_Accepted ? 'Yes' : 'No'}</p>
-                <p><strong>Available Dates:</strong> {trainer.availableDate.map((date, index) => (
-                  <span key={index}>
-                    {new Date(date.startDate).toLocaleDateString()} - {new Date(date.endDate).toLocaleDateString()}
-                  </span>
+          !isLoading && searched &&
+         (
+          result.length > 0   ? 
+            (
+              isLoading ? "Loading....":
+              (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 2fr))', justifyContent: 'center', gap: '20px', placeContent:'center' }}>
+                {result.map((trainer) => (
+                  <div key={trainer._id} style={cardStyle}>
+                    <h3>{trainer.name}</h3>
+                    <p><strong>Trainer ID:</strong> {trainer.trainerId}</p>
+                    <p><strong>Type:</strong> {trainer.type_of_trainer}</p>
+                    <p><strong>Email:</strong> {trainer.contact_Details.email_id}</p>
+                    <p><strong>Mobile:</strong> {trainer.contact_Details.mobile_number}</p>
+                    <p><strong>NDA Accepted:</strong> {trainer.nda_Accepted ? 'Yes' : 'No'}</p>
+                    <p><strong>Available Dates:</strong> {trainer.availableDate.map((date, index) => (
+                      <span key={index}>
+                        {new Date(date.startDate).toLocaleDateString()} - {new Date(date.endDate).toLocaleDateString()}
+                      </span>
+                    ))}
+                    </p>
+                    <p><strong>Resume:</strong></p>
+                    <ul>
+                      {trainer.resume_details?.professionalSummary.length > 0 && (
+                        <li><strong>Professional Summary:</strong> {trainer.resume_details.professionalSummary.join(', ')}</li>
+                      )}
+                      {trainer.resume_details?.technicalSkills.length > 0 && (
+                        <li><strong>Technical Skills:</strong> {trainer.resume_details.technicalSkills.join(', ')}</li>
+                      )}
+                      {trainer.resume_details?.careerHistory.length > 0 && (
+                        <li><strong>Career History:</strong> {trainer.resume_details.careerHistory.join(', ')}</li>
+                      )}
+                      {trainer.resume_details?.certifications.length > 0 && (
+                        <li><strong>Certifications:</strong> {trainer.resume_details.certifications.join(', ')}</li>
+                      )}
+                      {trainer.resume_details?.education.length > 0 && (
+                        <li><strong>Education:</strong> {trainer.resume_details.education.join(', ')}</li>
+                      )}
+                    </ul>
+                  </div>
                 ))}
-                </p>
-                <p><strong>Resume:</strong></p>
-                <ul>
-                  {trainer.resume_details?.professionalSummary.length > 0 && (
-                    <li><strong>Professional Summary:</strong> {trainer.resume_details.professionalSummary.join(', ')}</li>
-                  )}
-                  {trainer.resume_details?.technicalSkills.length > 0 && (
-                    <li><strong>Technical Skills:</strong> {trainer.resume_details.technicalSkills.join(', ')}</li>
-                  )}
-                  {trainer.resume_details?.careerHistory.length > 0 && (
-                    <li><strong>Career History:</strong> {trainer.resume_details.careerHistory.join(', ')}</li>
-                  )}
-                  {trainer.resume_details?.certifications.length > 0 && (
-                    <li><strong>Certifications:</strong> {trainer.resume_details.certifications.join(', ')}</li>
-                  )}
-                  {trainer.resume_details?.education.length > 0 && (
-                    <li><strong>Education:</strong> {trainer.resume_details.education.join(', ')}</li>
-                  )}
-                </ul>
               </div>
-            ))}
-          </div>
-          ) : <h2>No Result found</h2>
+              ) 
+            )
+          
+          : <div>No Search Found</div>
+         )
         
       }
+
     </div>
   )
 }
