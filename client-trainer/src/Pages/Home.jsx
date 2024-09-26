@@ -9,6 +9,9 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css';
+
 
 const style = {
   position: 'absolute',
@@ -33,12 +36,7 @@ function Home() {
 
   // Modal
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  // const acceptNda = () => axios.post(`http://localhost:5000/api/trainer/accept-nda?trainerId=${data._id}`);
-  // const declineNda = () => axios.post('http://localhost:5000/api/trainer/declineNda', { trainerId: data.trainerId });
-  const handleNdaChange = (event) => {
+ const handleNdaChange = (event) => {
     setNdaStatus(event.target.value);
   };
 
@@ -61,16 +59,11 @@ function Home() {
   }
 
   // Sign out
-  const signOutFunction = () => {
-    return axios.get('http://localhost:5000/api/trainer/signout')
-  }
 
   axios.defaults.withCredentials = true;
   const signOut = async() => {
     console.log("signout")
     const res = await axios.get('http://localhost:5000/api/trainer/signout')
-    const d = res.data
-    console.log(d)
     dispatch(logout())
     navigate("/login")
   }
@@ -105,8 +98,24 @@ function Home() {
         user && <p>NDA Accepted : {data?.nda_Accepted ? "Accepted": "Not Accepted"}</p>
       }
 
+      {
+          data && (
+            data.type_of_trainer === 'Internal' ? 
+            (
+              <div>
+                <h3>Internal Trainer</h3>
+                <p>Welcome {data.name}</p>
+                <p>Trainer ID: {data._id}</p>
+                <p>Type: {data.type_of_trainer}</p>
+              </div>
+            ):null
+          ) 
+      }
+
       <Outlet />
 
+
+      {/* NDA Modal */}
       <Modal
         open={open}
         aria-labelledby="modal-modal-title"
