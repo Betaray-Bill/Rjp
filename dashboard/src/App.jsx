@@ -1,6 +1,4 @@
 import { Fragment, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import { Link, Route, Routes } from 'react-router-dom'
 import Login from './Pages/Login/Login'
@@ -34,7 +32,11 @@ function App() {
               currentUser && ((currentUser.employee.role.name === "ADMIN" || currentUser.employee.role.name === "MANGER") &&
               <Route path='search' element={<Search />} />)
             }
-            <Route path='add-trainer' element={<AddTrainer />} />
+            {
+              currentUser && ((currentUser.employee.role.name === "ADMIN" || currentUser.employee.role.name === "MANGER" || currentUser.employee.role.name === "Trainer Sourcer") &&
+              <Route path='add-trainer' element={<AddTrainer />} />)
+              
+            }
           </Route>
           
           <Route path="*" element={

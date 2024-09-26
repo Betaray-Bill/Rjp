@@ -19,6 +19,8 @@ function Home() {
     axios.defaults.withCredentials = true;
     const signOutNow = async() => {
         try{
+          const res = axios.get('http://localhost:5000/api/employee/signout')
+          console.log(res.data)
             dispatch(signOut())
             navigate('/login')
         }catch(err){

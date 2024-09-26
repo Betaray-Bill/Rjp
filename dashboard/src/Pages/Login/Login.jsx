@@ -23,14 +23,15 @@ function Login() {
         e.preventDefault()
         try {
             const res = await axios.post('http://localhost:5000/api/employee/login', formData)  
-            // });
+
             const data = await res.data;
             console.log(data)
             dispatch(setCredentials(data))
             console.log(currentUser)
             navigate('/home');
         } catch (error) {
-            // dispatch(signInFailure(error));
+            alert("Unable to Login")
+            console.log(error)
         }
     }
 
@@ -47,19 +48,22 @@ function Login() {
   return (
     <div className="wrapper">
         <section>
-            <form className="login-form" onSubmit={submitHandler}>
+            <h2>Login Page</h2>
+            <form className="container" onSubmit={submitHandler}>
                     <div className="input-floating-label">
+                         <label><ion-icon name="mail-outline"></ion-icon> <span>Email</span></label>
                         <input className="input" type="email" value={formData.email}
                             onChange={handleChange}
                             name="email" placeholder="username" />
-                        <label><ion-icon name="mail-outline"></ion-icon> <span>Email</span></label>
                         <span className="focus-bg"></span>
                     </div>
                     <div className="input-floating-label">
+                        <label><ion-icon name="key-outline"></ion-icon><span>Password</span></label>
+
                         <input className="input" type="password" value={formData.password} 
                             onChange={handleChange}
                             name="password" placeholder="password" />
-                        <label><ion-icon name="key-outline"></ion-icon><span>Password</span></label>
+                        {/* <label><ion-icon name="key-outline"></ion-icon><span>Password</span></label> */}
                         <span className="focus-bg"></span>
                     </div>
                     <button id="submit" className="btn-submit">

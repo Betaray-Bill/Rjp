@@ -16,7 +16,7 @@ function Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate()
     const {user} = useSelector((state)=> state.auth)
-    
+    // console.log(user.email)
     const [formData, setFormData] = useState({
       email:'',
       password:''
@@ -59,8 +59,14 @@ function Login() {
   
 
   return (
-    <div>
-        Login
+    <div className='wrapper'>
+        {/* Login */}
+        <header>
+          <h2>RJP Trainer</h2>
+        </header>
+        {/* <hr />
+        <hr /> */}
+        <h4>Login Page</h4>
         <Box
           component="form"
           sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}

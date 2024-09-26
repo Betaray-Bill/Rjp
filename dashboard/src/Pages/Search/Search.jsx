@@ -64,7 +64,7 @@ function Search() {
             (
               isLoading ? "Loading....":
               (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 2fr))', justifyContent: 'center', gap: '20px', placeContent:'center' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 2fr))', justifyContent: 'center', gap: '20px', placeContent:'center', margin:'40px' }}>
                 {result.map((trainer) => (
                   <div key={trainer._id} style={cardStyle}>
                     <h3>{trainer.name}</h3>
@@ -93,6 +93,9 @@ function Search() {
                       {trainer.resume_details?.certifications.length > 0 && (
                         <li><strong>Certifications:</strong> {trainer.resume_details.certifications.join(', ')}</li>
                       )}
+                      {trainer.resume_details?.clientele.length > 0 && (
+                        <li><strong>clientele:</strong> {trainer.resume_details.clientele.join(', ')}</li>
+                      )}
                       {trainer.resume_details?.education.length > 0 && (
                         <li><strong>Education:</strong> {trainer.resume_details.education.join(', ')}</li>
                       )}
@@ -116,7 +119,7 @@ const cardStyle = {
   border: '1px solid #ddd',
   borderRadius: '8px',
   padding: '16px',
-  width: '300px',
+  width: '400px',
   boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
   textAlign: 'left',
   backgroundColor: '#f9f9f9'
