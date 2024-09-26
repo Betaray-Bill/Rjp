@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
-
 const style = {
   position: 'absolute',
   top: '50%',
@@ -30,6 +29,7 @@ function Home() {
   const [data, setData] = useState()
   const [ndaStatus, setNdaStatus] = useState('');
   console.log(user)
+
 
   // Modal
   const [open, setOpen] = React.useState(false);
@@ -60,7 +60,7 @@ function Home() {
   axios.defaults.withCredentials = true;
   const signOut = async() => {
     console.log("signout")
-    const res = await axios.get('http://localhost:5000/api/trainer/signout')
+    await axios.get('http://localhost:5000/api/trainer/signout')
     dispatch(logout())
     navigate("/login")
   }
@@ -78,6 +78,15 @@ function Home() {
       setOpen(false)
     }
   })
+
+
+  // Dates
+  const [date, setDate] = useState({
+    start: new Date(),
+    end: new Date()
+  })
+
+  console.log(date, new Date(date.start))
 
   return (
     <div>
@@ -104,6 +113,18 @@ function Home() {
                 <p>Welcome {data.name}</p>
                 <p>Trainer ID: {data._id}</p>
                 <p>Type: {data.type_of_trainer}</p>
+                <div>
+                  <h2>Training Period</h2>
+                  <div>
+                    <label htmlFor="">Start</label>
+                    <input type="date" name="start" id="" onChange={(e) => setDate({...date, [e.target.name]:e.target.value})}/>
+                  </div>
+                  <div>
+                    <label htmlFor="">End</label>
+                    <input type="date" name="end" id="" onChange={(e) => setDate({...date, [e.target.name]:e.target.value})}/>
+                  </div>
+                </div>
+                {/* DateRanfg */}
               </div>
             ):null
           ) 

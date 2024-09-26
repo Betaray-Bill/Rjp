@@ -144,3 +144,13 @@ button:hover {
     background-color: white !important;
     color: black
 }
+
+.calendar{
+    padding: 20px;
+
+}
+
+.dateRange{
+    position: absolute;
+    top:12px
+}
