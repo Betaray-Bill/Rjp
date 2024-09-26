@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout, setCredentials } from '../features/authSlice';
-import { useQueries, useQuery } from 'react-query';
+import { logout, setCredentials } from '../features/authSlice'
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css';
 
 
 const style = {
