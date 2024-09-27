@@ -79,6 +79,35 @@ const updateTrainerProfile = asyncHandler(async(req, res) => {
 
 })
 
+// add new Training dates
+const addTrainingDates = asyncHandler(async(req, res) => {
+    const { id } = req.params;
+    const trainingDates = req.body;
+    console.log(trainingDates);
+
+    // Append training dates
+    const trainer = await Trainer.findByIdAndUpdate(
+        id, {
+            $push: {
+                availableDate: {
+                    startDate: new Date(trainingDates.start),
+                    endDate: new Date(trainingDates.end),
+                }
+            }
+        }, { new: true }
+    )
+
+
+    if (!trainer) {
+        return res.status(404).json({ message: "Trainer not found" });
+    }
+
+    res.status(200).json({
+        message: "Training dates added successfully",
+        trainer: trainer
+    });
+})
+
 // Accept PO 
 
 
@@ -88,11 +117,26 @@ const updateTrainerProfile = asyncHandler(async(req, res) => {
 //Raise Invoice
 
 
+// Get Trainer by ID
+const getTrainerById = asyncHandler(async(req, res) => {
+    const { id } = req.params;
 
+    try {
+        const trainer = await Trainer.findById(id);
+        if (!trainer) {
+            return res.status(404).json({ message: "Trainer not found" });
+        }
+        res.status(200).json(trainer);
+    } catch (err) {
+        return res.status(404).json({ message: "Trainer not found" });
+    }
+})
 
 
 export {
     trainerLogin,
     acceptNDA,
-    updateTrainerProfile
+    updateTrainerProfile,
+    addTrainingDates,
+    getTrainerById
 }

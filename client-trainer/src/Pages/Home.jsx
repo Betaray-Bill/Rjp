@@ -28,7 +28,21 @@ function Home() {
   const {user} = useSelector((state)=> state.auth)
   const [data, setData] = useState()
   const [ndaStatus, setNdaStatus] = useState('');
-  console.log(user)
+  // console.log(user)
+
+  axios.defaults.withCredentials = true;
+  const getTrainerDetails = async() => {
+    console.log(data._id)
+
+    try{
+      const res = await axios.get(`http://localhost:5000/api/trainer/details/${data._id}`)
+      console.log(res.data)
+      setData(res.data)
+      dispatch(setCredentials(res.data))
+    }catch(err){
+      console.log("Error fetching the data")
+    }
+  }
 
 
   // Modal
@@ -66,14 +80,14 @@ function Home() {
   }
   
   useEffect(() => {
-    if(user){
+    if(user && data === undefined){
       setData(user)
     }
 
     if(!data?.nda_Accepted){
       setOpen(true)
       console.log("object")
-    }else{"yea"
+    }else{
       console.log("yea")
       setOpen(false)
     }
@@ -86,7 +100,22 @@ function Home() {
     end: new Date()
   })
 
-  console.log(date, new Date(date.start))
+  // console.log(date.start, date.end)
+  axios.defaults.withCredentials = true;
+  const handleDate = async(e) => {
+    e.preventDefault()
+    console.log(date)
+    try{
+      const res = await axios.post(`http://localhost:5000/api/trainer/trainingDates/${data._id}`, date)
+      console.log(res.data)
+      if(res){
+        getTrainerDetails()
+
+      }
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   return (
     <div>
@@ -100,6 +129,7 @@ function Home() {
           sign Out
         </button>
       </nav>
+
       {
         user && <p>NDA Accepted : {data?.nda_Accepted ? "Accepted": "Not Accepted"}</p>
       }
@@ -114,15 +144,18 @@ function Home() {
                 <p>Trainer ID: {data._id}</p>
                 <p>Type: {data.type_of_trainer}</p>
                 <div>
-                  <h2>Training Period</h2>
-                  <div>
-                    <label htmlFor="">Start</label>
-                    <input type="date" name="start" id="" onChange={(e) => setDate({...date, [e.target.name]:e.target.value})}/>
-                  </div>
-                  <div>
-                    <label htmlFor="">End</label>
-                    <input type="date" name="end" id="" onChange={(e) => setDate({...date, [e.target.name]:e.target.value})}/>
-                  </div>
+                  <h3>Training Period</h3>
+                  <form onSubmit={handleDate}>
+                    <div>
+                      <label htmlFor="">Start</label>
+                      <input type="date" name="start" id="" onChange={(e) => setDate({...date, [e.target.name]:e.target.value})}/>
+                    </div>
+                    <div>
+                      <label htmlFor="">End</label>
+                      <input type="date" name="end" id="" onChange={(e) => setDate({...date, [e.target.name]:e.target.value})}/>
+                    </div>
+                    <button>Submit</button>
+                  </form>
                 </div>
                 {/* DateRanfg */}
               </div>

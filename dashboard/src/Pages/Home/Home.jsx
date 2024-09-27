@@ -42,7 +42,7 @@ function Home() {
               (currentUser.employee.role.name === 'ADMIN' || currentUser.employee.role.name === 'MANAGER' )&& 
               <Link to="/home/add">Add +</Link>
             }
-            <Link to='/home/add-trainer'>Add Trainers</Link>
+            <Link to='/home/trainer'>Add Trainers</Link>
             <Link to="/home/profile">Profile</Link>
         </ul>
         <button onClick={signOutNow}> 

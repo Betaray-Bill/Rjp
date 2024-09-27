@@ -14,6 +14,28 @@ function Account() {
           </div>
         ));
       };
+
+    function convertDate(dateStr) {
+        // Check if dateStr is a string, and then convert it to a Date object
+        const date = new Date(dateStr);
+      
+        // Verify that 'date' is a valid Date object
+        if (isNaN(date.getTime())) {
+          throw new Error('Invalid Date');
+        }
+      
+        // Extract day, month, and year from the Date object
+        const day = date.getUTCDate(); // For local time, use date.getDate()
+        const month = date.getUTCMonth() + 1; // Months are zero-indexed, so add 1
+        const year = date.getUTCFullYear(); // For local time, use date.getFullYear()
+      
+        // Format the date as DD/MM/YYYY
+        const formattedDate = `${day}/${month}/${year}`;
+      
+        return formattedDate;
+    }
+
+
   return (
     <div>
         <div className="container">
@@ -61,12 +83,12 @@ function Account() {
       <div className="section">
         <h2>Available Dates</h2>
         {user.availableDate.map((date, index) => (
-          <div key={index}>
+          <div key={index} className='section' style={{width:"400px"}}>
             <div className="key-value">
-              <strong>Start Date:</strong> {date.startDate ? date.startDate : 'N/A'}
+              <strong>Start Date:</strong> {date.startDate ? convertDate(date.startDate) : 'N/A'}
             </div>
             <div className="key-value">
-              <strong>End Date:</strong> {date.endDate ? date.endDate : 'N/A'}
+              <strong>End Date:</strong> {date.endDate ? convertDate(date.endDate) : 'N/A'}
             </div>
           </div>
         ))}

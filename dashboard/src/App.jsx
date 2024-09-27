@@ -34,7 +34,10 @@ function App() {
             }
             {
               currentUser && ((currentUser.employee.role.name === "ADMIN" || currentUser.employee.role.name === "MANGER" || currentUser.employee.role.name === "Trainer Sourcer") &&
-              <Route path='add-trainer' element={<AddTrainer />} />)
+              <Route path='trainer' element={<AddTrainer />}>
+                {/* <Route path='trainer/:id' element={<TrainerDetails />} /> */}
+              </Route>
+            )
               
             }
           </Route>
