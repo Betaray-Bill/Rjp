@@ -132,11 +132,25 @@ const getTrainerById = asyncHandler(async(req, res) => {
     }
 })
 
+// get all trainers
+const getAllTrainer = asyncHandler(async(req, res) => {
+    try {
+        const trainers = await Trainer.find().select('-password');
+        if (!trainers || trainers.length === 0) {
+            return res.status(404).json({ message: "No trainers found" });
+        }
+        res.status(200).json(trainers);
+    } catch (error) {
+        console.error("Error getting all trainers:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+})
 
 export {
     trainerLogin,
     acceptNDA,
     updateTrainerProfile,
     addTrainingDates,
-    getTrainerById
+    getTrainerById,
+    getAllTrainer
 }

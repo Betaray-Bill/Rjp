@@ -29,7 +29,7 @@ function App() {
               <Route path='add' element={<AddEntity />} />)
             }
             {
-              currentUser && ((currentUser.employee.role.name === "ADMIN" || currentUser.employee.role.name === "MANGER") &&
+              currentUser && ((currentUser.employee.role.name === "ADMIN" || currentUser.employee.role.name === "MANGER" || currentUser.employee.role.name === "KeyAccounts") &&
               <Route path='search' element={<Search />} />)
             }
             {

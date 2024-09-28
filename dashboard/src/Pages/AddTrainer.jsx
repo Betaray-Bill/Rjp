@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import './AddTrainer.css'; // External CSS file for grid styling
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -121,230 +121,266 @@ const AddTrainer = () => {
     }
   };
 
+  // Get all trainers
+  const [trainers, setTrainers] = useState([])
+  const getAllTrainers = async() => {
+    axios.defaults.withCredentials = true;
+    try {
+        const response = await axios.get('http://localhost:5000/api/trainer/getAll'); // Replace with your API endpoint
+        console.log('Get all trainers successful:', response.data);
+        // setUser(response.data)
+        setTrainers(response.data)
+    } catch (error) {
+        console.error('Get all trainers failed:', error);
+    }
+  }
+
   return (
-    <form onSubmit={handleSubmit}>
-      {/* Name */}
-      <div className="trainer-form">
-        <div>
-            <label>Name</label>
-            <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            />
-        </div>
-        <div>
-            <label>Type of Trainer</label>
-            <select
-            name="type_of_trainer"
-            value={formData.type_of_trainer}
-            onChange={handleChange}
-            >
-            <option value="Internal">Internal</option>
-            <option value="External">External</option>
-            </select>
-        </div>
-        <div>
-            <label>Trainer ID</label>
-            <input
-            type="text"
-            name="trainerId"
-            value={formData.trainerId}
-            onChange={handleChange}
-            required
-            />
-        </div>
+    <Fragment>
+      <section>
+        {/* Edit Trainer details */}
 
-        {/* Password */}
-        <div>
-            <label>Password</label>
-            <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            />
-        </div>
-      </div>
-
-
-      {/* Bank Details */}
-      <h3>Bank Details</h3>
-      <div className="trainer-form">
-        <div>
-            <label>Account Name</label>
-            <input
-            type="text"
-            name="bank_Details.account_Name"
-            value={formData.bank_Details.account_Name}
-            onChange={handleChange}
-            required
-            />
-        </div>
-        <div>
-            <label>Account Number</label>
-            <input
-            type="number"
-            name="bank_Details.account_Number"
-            value={formData.bank_Details.account_Number}
-            onChange={handleChange}
-            required
-            />
-        </div>
-        <div>
-            <label>Bank Branch</label>
-            <input
-            type="text"
-            name="bank_Details.bank_Branch"
-            value={formData.bank_Details.bank_Branch}
-            onChange={handleChange}
-            required
-            />
-        </div>
-        <div>
-            <label>Bank IFSC Code</label>
-            <input
-            type="text"
-            name="bank_Details.bank_IFSC_code"
-            value={formData.bank_Details.bank_IFSC_code}
-            onChange={handleChange}
-            required
-            />
-        </div>
-        <div>
-            <label>Pancard Number</label>
-            <input
-            type="number"
-            name="bank_Details.pancard_Number"
-            value={formData.bank_Details.pancard_Number}
-            onChange={handleChange}
-            required
-            />
-        </div>
-        <div>
-            <label>Aadhar Card</label>
-            <input
-            type="number"
-            name="bank_Details.aadharcard_number"
-            value={formData.bank_Details.aadharcard_number}
-            onChange={handleChange}
-            required
-            />
-        </div>
-      </div>
-
-      {/* Contact Details */}
-      <h3>Contact Details</h3>
-      <div className="trainer-form">
-      <div>
-        <label>Mobile Number</label>
-        <input
-          type="text"
-          name="contact_Details.mobile_number"
-          value={formData.contact_Details.mobile_number}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Email ID</label>
-        <input
-          type="email"
-          name="contact_Details.email_id"
-          value={formData.contact_Details.email_id}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      </div>
-
-      {/* Resume Details */}
-      <h3>Resume Details</h3>
-      <div className="trainer-form">
-        <div>
-            <label>Professional Summary</label>
-            {formData.resume_details.professionalSummary.map((summary, index) => (
-            <input
-                key={index}
+        {/* Add Trainer */}
+        <form onSubmit={handleSubmit}>
+          {/* Name */}
+          <div className="trainer-form">
+            <div>
+                <label>Name</label>
+                <input
                 type="text"
-                value={summary}
-                onChange={(e) => handleArrayChange(e, 'professionalSummary', index)}
-            />
-            ))}
-            <button type="button" onClick={() => addArrayRow('professionalSummary')}>
-            Add Summary
-            </button>
-        </div>
-
-        {/* Technical Skills */}
-        <div>
-            <label>Technical Skills</label>
-            {formData.resume_details.technicalSkills.map((skill, index) => (
-            <input
-                key={index}
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                />
+            </div>
+            <div>
+                <label>Type of Trainer</label>
+                <select
+                name="type_of_trainer"
+                value={formData.type_of_trainer}
+                onChange={handleChange}
+                >
+                <option value="Internal">Internal</option>
+                <option value="External">External</option>
+                </select>
+            </div>
+            <div>
+                <label>Trainer ID</label>
+                <input
                 type="text"
-                value={skill}
-                onChange={(e) => handleArrayChange(e, 'technicalSkills', index)}
-            />
-            ))}
-            <button type="button" onClick={() => addArrayRow('technicalSkills')}>
-            Add Skill
-            </button>
-        </div>
+                name="trainerId"
+                value={formData.trainerId}
+                onChange={handleChange}
+                required
+                />
+            </div>
 
-        <div>
-            <label>Career History</label>
-            {formData.resume_details.careerHistory.map((skill, index) => (
-            <input
-                key={index}
+            {/* Password */}
+            <div>
+                <label>Password</label>
+                <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                />
+            </div>
+          </div>
+
+
+          {/* Bank Details */}
+          <h3>Bank Details</h3>
+          <div className="trainer-form">
+            <div>
+                <label>Account Name</label>
+                <input
                 type="text"
-                value={skill}
-                onChange={(e) => handleArrayChange(e, 'careerHistory', index)}
-            />
-            ))}
-            <button type="button" onClick={() => addArrayRow('careerHistory')}>
-            Add Career
-            </button>
-        </div>
-
-        <div>
-            <label>Certifications</label>
-            {formData.resume_details.certifications.map((skill, index) => (
-            <input
-                key={index}
+                name="bank_Details.account_Name"
+                value={formData.bank_Details.account_Name}
+                onChange={handleChange}
+                required
+                />
+            </div>
+            <div>
+                <label>Account Number</label>
+                <input
+                type="number"
+                name="bank_Details.account_Number"
+                value={formData.bank_Details.account_Number}
+                onChange={handleChange}
+                required
+                />
+            </div>
+            <div>
+                <label>Bank Branch</label>
+                <input
                 type="text"
-                value={skill}
-                onChange={(e) => handleArrayChange(e, 'certifications', index)}
-            />
-            ))}
-            <button type="button" onClick={() => addArrayRow('certifications')}>
-            Add certifications
-            </button>
-        </div>
-
-        <div>
-            <label>Clientele</label>
-            {formData.resume_details.clientele.map((skill, index) => (
-            <input
-                key={index}
+                name="bank_Details.bank_Branch"
+                value={formData.bank_Details.bank_Branch}
+                onChange={handleChange}
+                required
+                />
+            </div>
+            <div>
+                <label>Bank IFSC Code</label>
+                <input
                 type="text"
-                value={skill}
-                onChange={(e) => handleArrayChange(e, 'clientele', index)}
-            />
-            ))}
-            <button type="button" onClick={() => addArrayRow('clientele')}>
-            Add clientele
-            </button>
-        </div>
-      </div>
+                name="bank_Details.bank_IFSC_code"
+                value={formData.bank_Details.bank_IFSC_code}
+                onChange={handleChange}
+                required
+                />
+            </div>
+            <div>
+                <label>Pancard Number</label>
+                <input
+                type="number"
+                name="bank_Details.pancard_Number"
+                value={formData.bank_Details.pancard_Number}
+                onChange={handleChange}
+                required
+                />
+            </div>
+            <div>
+                <label>Aadhar Card</label>
+                <input
+                type="number"
+                name="bank_Details.aadharcard_number"
+                value={formData.bank_Details.aadharcard_number}
+                onChange={handleChange}
+                required
+                />
+            </div>
+          </div>
 
-      {/* Submit Button */}
-      <button type="submit">Submit</button>
-    </form>
+          {/* Contact Details */}
+          <h3>Contact Details</h3>
+          <div className="trainer-form">
+          <div>
+            <label>Mobile Number</label>
+            <input
+              type="text"
+              name="contact_Details.mobile_number"
+              value={formData.contact_Details.mobile_number}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label>Email ID</label>
+            <input
+              type="email"
+              name="contact_Details.email_id"
+              value={formData.contact_Details.email_id}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          </div>
+
+          {/* Resume Details */}
+          <h3>Resume Details</h3>
+          <div className="trainer-form">
+            <div>
+                <label>Professional Summary</label>
+                {formData.resume_details.professionalSummary.map((summary, index) => (
+                <input
+                    key={index}
+                    type="text"
+                    value={summary}
+                    onChange={(e) => handleArrayChange(e, 'professionalSummary', index)}
+                />
+                ))}
+                <button type="button" onClick={() => addArrayRow('professionalSummary')}>
+                Add Summary
+                </button>
+            </div>
+
+            {/* Technical Skills */}
+            <div>
+                <label>Technical Skills</label>
+                {formData.resume_details.technicalSkills.map((skill, index) => (
+                <input
+                    key={index}
+                    type="text"
+                    value={skill}
+                    onChange={(e) => handleArrayChange(e, 'technicalSkills', index)}
+                />
+                ))}
+                <button type="button" onClick={() => addArrayRow('technicalSkills')}>
+                Add Skill
+                </button>
+            </div>
+
+            <div>
+                <label>Career History</label>
+                {formData.resume_details.careerHistory.map((skill, index) => (
+                <input
+                    key={index}
+                    type="text"
+                    value={skill}
+                    onChange={(e) => handleArrayChange(e, 'careerHistory', index)}
+                />
+                ))}
+                <button type="button" onClick={() => addArrayRow('careerHistory')}>
+                Add Career
+                </button>
+            </div>
+
+            <div>
+                <label>Certifications</label>
+                {formData.resume_details.certifications.map((skill, index) => (
+                <input
+                    key={index}
+                    type="text"
+                    value={skill}
+                    onChange={(e) => handleArrayChange(e, 'certifications', index)}
+                />
+                ))}
+                <button type="button" onClick={() => addArrayRow('certifications')}>
+                Add certifications
+                </button>
+            </div>
+
+            <div>
+                <label>Clientele</label>
+                {formData.resume_details.clientele.map((skill, index) => (
+                <input
+                    key={index}
+                    type="text"
+                    value={skill}
+                    onChange={(e) => handleArrayChange(e, 'clientele', index)}
+                />
+                ))}
+                <button type="button" onClick={() => addArrayRow('clientele')}>
+                Add clientele
+                </button>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <button type="submit">Submit</button>
+        </form>
+
+      </section>
+      {/* Get all the Trainers */}
+      <section>
+        <h2>Get All Trainers</h2>
+        <button onClick={getAllTrainers}>Get Trainers</button>
+        {
+          trainers.length > 0 ? (
+            <ul>
+              {trainers.map((trainer) => (
+                <p key={trainer._id}>{trainer.name} : {trainer.contact_Details.email_id}</p>
+              ))}
+            </ul>
+          ) : null
+        }
+      </section>
+    </Fragment>
   );
 };
 

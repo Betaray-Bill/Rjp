@@ -3,15 +3,6 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 
-const bull = (
-    <Box
-      component="span"
-      sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-    >
-      
-    </Box>
-  );
-
 function Search() {
   const [query, setQuery] = useState("")
   const [result, setResult] = useState([])
@@ -52,6 +43,7 @@ function Search() {
       >
         <form onSubmit={searchHandler}>
           <TextField id="outlined-basic" label="Search" variant="outlined" onChange={(e) => setQuery(e.target.value)}></TextField>
+
           <button type='submit'>Search</button>
         </form>
       </Box>

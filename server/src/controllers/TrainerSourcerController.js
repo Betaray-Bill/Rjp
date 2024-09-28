@@ -18,7 +18,7 @@ const registerTrainer = asyncHandler(async(req, res) => {
         password: req.body.password,
         trainerId: await generateTrainerId(),
         is_FirstLogin: req.body.is_FirstLogin || true,
-        nda_Accepted: req.body.type_of_trainer ? true:false,
+        nda_Accepted: req.body.type_of_trainer === "Internal" ? true : false,
         bank_Details: {
             account_Name: req.body.bank_Details.account_Name,
             account_Number: req.body.bank_Details.account_Number,
