@@ -126,3 +126,14 @@ button:hover {
     background-color: white !important;
     color: black
 }
+
+.search_input{
+    display: flex;
+    justify-content: center;
+    /* background-color:pink */
+}
+
+.search_input input{
+    height: max-content;
+    width: max-content !important;
+}
