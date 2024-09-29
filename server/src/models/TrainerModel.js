@@ -32,6 +32,23 @@ const trainerSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    rating: {
+        type: Number,
+        default: 0
+    },
+    price: {
+        amount: {
+            type: Number,
+            default: 0
+        },
+        type: {
+            type: String
+        }
+    },
+    training_mode: {
+        type: String,
+        enum: ['Full Time', 'Part Time', 'Online', 'Offline']
+    },
     // Bank Details--------------------------------
     bank_Details: {
         account_Name: {

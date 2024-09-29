@@ -35,14 +35,18 @@ function Home() {
         <ul className={{display: 'flex'}}>
             <Link to="/home">Home</Link>  
             {
-              (currentUser.employee.role.name === 'ADMIN' || currentUser.employee.role.name === 'MANAGER' )&& 
+              (currentUser.employee.role.name === 'ADMIN' || currentUser.employee.role.name === 'MANAGER' || currentUser.employee.role.name === "KeyAccounts")&& 
               <Link to="/home/search">Search Trainers</Link>
             }
             {
               (currentUser.employee.role.name === 'ADMIN' || currentUser.employee.role.name === 'MANAGER' )&& 
               <Link to="/home/add">Add +</Link>
             }
-            <Link to='/home/trainer'>Add Trainers</Link>
+            {
+              (currentUser.employee.role.name === 'ADMIN' || currentUser.employee.role.name === 'MANAGER' )&& 
+              <Link to='/home/trainer'>Add Trainers</Link>
+            }
+            
             <Link to="/home/profile">Profile</Link>
         </ul>
         <button onClick={signOutNow}> 

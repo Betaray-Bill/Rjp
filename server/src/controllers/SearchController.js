@@ -9,48 +9,92 @@ const searchTrainer = asyncHandler(async(req, res) => {
 
     const { startPrice, endPrice, startDate, endDate, rating } = req.query;
 
-     // Add the search stage
+    // Add the search stage
     console.log(req.query)
-    try{
-        pipeline.push({
-            $search: {
-                index: "search",
-                text: {
-                    query: query,
-                    path: {
-                        wildcard: "*"  // Search across all fields
+    try {
+        // pipeline.push({
+        //     $search: {
+        //         index: "search",
+        //         text: {
+        //             query: query,
+        //             path: {
+        //                 wildcard: "*" // Search across all fields
+        //             }
+        //         }
+        //     }
+        // });
+        // if (startDate && endDate) {
+        //     pipeline.push({
+        //         $match: {
+        //             $expr: {
+        //                 $not: {
+        //                     $elemMatch: {
+        //                         availableDate: {
+        //                             $elemMatch: {
+        //                                 $or: [
+        //                                     // Check if there's an overlap with any available date ranges
+        //                                     {
+        //                                         $and: [
+        //                                             { $lte: [new Date(startDate), "$availableDate.endDate"] },
+        //                                             { $gte: [new Date(endDate), "$availableDate.startDate"] }
+        //                                         ]
+        //                                     }
+        //                                 ]
+        //                             }
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     });
+        // }
+
+        // Add the sorting stage for rating
+
+
+        if (startPrice && endPrice) {
+            console.log(startPrice, endPrice)
+            pipeline.push({
+                $match: {
+                    "price.amount": { $gte: Number(startPrice), $lte: Number(endPrice) }
+                }
+            });
+        }
+
+        if (rating) {
+            pipeline.push({
+                $sort: {
+                    rating: rating === 'asc' ? 1 : -1 // Sort by rating from highest to lowest
+                }
+            });
+        }
+        console.log("Pipelining : ", pipeline)
+
+        const ans = await Trainer.aggregate([{
+                $search: {
+                    index: "search",
+                    text: {
+                        query: query,
+                        path: {
+                            wildcard: "*" // Search across all fields
+                        }
+                    }
+                }
+            },
+            {
+                $match: {
+                    "price.amount": {
+                        $gte: startPrice,
+                        $lte: endPrice
                     }
                 }
             }
-        });
-        if (startDate !== undefined && endDate !== undefined) {
-            pipeline.push({
-                $match: {
-                    availabilityDate: { $gte: new Date(startDate), $lte: new Date(endDate) }
-                }
-            });
-        }
-
-        // Add the sorting stage for rating
-        pipeline.push({
-            $sort: {
-                rating: rating === 'asc' ? 1 : -1  // Sort by rating from highest to lowest
-            }
-        });
-
-        if (startPrice !== undefined && endPrice !== undefined) {
-            pipeline.push({
-                $match: {
-                    price: { $gte: startPrice, $lte: endPrice }
-                }
-            });
-        }
-
-        const ans = await Trainer.aggregate(pipeline)
+        ])
         console.log("SNSSSSSSSSSSS", ans.length)
         res.status(200).json(ans)
-    }catch(err){
-        res.status(500).json({ message: 'Trainer not available' });
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: 'Trainer not available', err });
     }
 
 

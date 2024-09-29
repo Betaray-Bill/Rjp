@@ -50,6 +50,7 @@
 }
 
 .container {
+    /* width: max-content/; */
     display: grid;
     place-self: center;
     place-items: center;
@@ -79,7 +80,7 @@ nav ul a:hover {
 section {
     border: 1px solid black;
     border-radius: 8px;
-    width: 60vw;
+    width: 70vw;
     padding: 20px 15px;
     margin: 50px 0px;
 }
@@ -127,13 +128,13 @@ button:hover {
     color: black
 }
 
-.search_input{
+.search_input {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     /* background-color:pink */
 }
 
-.search_input input{
+.search_input input {
     height: max-content;
-    width: max-content !important;
+    width: 150px !important;
 }

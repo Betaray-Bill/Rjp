@@ -16,6 +16,12 @@ const registerTrainer = asyncHandler(async(req, res) => {
         trainer_sourcer: req.body.trainer_sourcer,
         dob: req.body.dob,
         password: req.body.password,
+        rating: req.body.rating,
+        price: {
+            amount: req.body.price,
+            type: req.body.price_type
+        },
+        training_mode: req.body.mode,
         trainerId: await generateTrainerId(),
         is_FirstLogin: req.body.is_FirstLogin || true,
         nda_Accepted: req.body.type_of_trainer === "Internal" ? true : false,

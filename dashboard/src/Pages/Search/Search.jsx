@@ -57,8 +57,8 @@ function Search() {
           noValidate
           autoComplete="off"
         >
-          <form onSubmit={searchHandler}>
-            <TextField id="outlined-basic" label="Search" variant="outlined" onChange={(e) => setQuery(e.target.value)}></TextField>
+          <form onSubmit={searchHandler} style={{width:"70vw"}}>
+            <TextField id="outlined-basic" label="Search Trainers by domain" variant="outlined" onChange={(e) => setQuery(e.target.value)} style={{width:"60vw", borderRadius:"40px"}}></TextField>
             
               <div className='search_input'>
                 <div>
@@ -92,8 +92,8 @@ function Search() {
                 <input
                     type="text"
                     value={rating}
-                    onChange={(e) => setRating(e.target.value)}
-                    placeholder="Rating (asc/desc)"
+                    max="10"
+                    onChange={(e) => setRating(Number(e.target.value))}
                 />
               </div>
               {/* <button onClick={handleSearch}>Search</button> */}
@@ -112,7 +112,7 @@ function Search() {
             (
               isLoading ? "Loading....":
               (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 2fr))', justifyContent: 'center', gap: '20px', placeContent:'center', margin:'40px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 2fr))', justifyContent: 'center', gap: '20px', placeContent:'center', margin:'40px' }}>
                 {result.map((trainer) => (
                   <div key={trainer._id} style={cardStyle}>
                     <h3>{trainer.name}</h3>
@@ -158,6 +158,9 @@ function Search() {
          )
         
       }
+      {/* {
+        quer
+      } */}
       </section>
 
     </div>

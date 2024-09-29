@@ -14,7 +14,10 @@ const AddTrainer = () => {
     is_FirstLogin: true,
     nda_Accepted: false,
     trainer_sourcer: currentUser && currentUser.employee._id,
-
+    price:Number(0),
+    price_type:'hourly',
+    mode:'Offline',
+    rating:0,
     // Bank Details
     bank_Details: {
       account_Name: '',
@@ -68,7 +71,7 @@ const AddTrainer = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     const path = name.split('.'); // To handle nested fields like 'bank_Details.account_Name'
-
+    // console.log(formData)
     if (path.length === 1) {
       setFormData({ ...formData, [name]: value });
     } else {
@@ -151,15 +154,15 @@ const AddTrainer = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                required
+                // required
                 />
             </div>
             <div>
                 <label>Type of Trainer</label>
                 <select
-                name="type_of_trainer"
-                value={formData.type_of_trainer}
-                onChange={handleChange}
+                  name="type_of_trainer"
+                  value={formData.type_of_trainer}
+                  onChange={handleChange}
                 >
                 <option value="Internal">Internal</option>
                 <option value="External">External</option>
@@ -168,11 +171,11 @@ const AddTrainer = () => {
             <div>
                 <label>Trainer ID</label>
                 <input
-                type="text"
-                name="trainerId"
-                value={formData.trainerId}
-                onChange={handleChange}
-                required
+                  type="text"
+                  name="trainerId"
+                  value={formData.trainerId}
+                  onChange={handleChange}
+                  // required
                 />
             </div>
 
@@ -184,9 +187,64 @@ const AddTrainer = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                required
+                // required
                 />
             </div>
+            <div>
+                <label>Price </label>
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  // required
+                />
+                
+            </div> 
+            <div>
+              <label htmlFor="">Price type</label>
+              <select
+                    style={{height: 'max-content'}}
+                    name="price_type"
+                    value={formData.price_type}
+                    onChange={handleChange}
+                  >
+                  <option value="hourly">hourly</option>
+                  <option value="per day">per day</option>
+                </select>
+            </div>
+            <div>
+              <label htmlFor="">Mode of Training</label>
+              <select name="mode" onChange={handleChange} value={formData.mode}>
+              {/* 'Full Time', 'Part Time', 'Online', 'Offline' */}
+                <option value="Full Time">Full Time</option>
+                <option value="Part Time">Part Time</option>
+                <option value="Online">Online</option>
+                <option value="Offline">Offline</option>
+              </select>
+            </div>
+            <div>
+                <label>Rating </label>
+                <input
+                  type="number"
+                  name="rating"
+                  max={10}
+                  value={formData.rating}
+                  onChange={handleChange}
+                  // required
+                />
+                
+            </div> 
+            {/* <div>
+                <label>Password</label>
+                <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                // required
+                />
+            </div> */}
           </div>
 
 
@@ -200,7 +258,7 @@ const AddTrainer = () => {
                 name="bank_Details.account_Name"
                 value={formData.bank_Details.account_Name}
                 onChange={handleChange}
-                required
+                // required
                 />
             </div>
             <div>
@@ -210,7 +268,7 @@ const AddTrainer = () => {
                 name="bank_Details.account_Number"
                 value={formData.bank_Details.account_Number}
                 onChange={handleChange}
-                required
+                // required
                 />
             </div>
             <div>
@@ -220,7 +278,7 @@ const AddTrainer = () => {
                 name="bank_Details.bank_Branch"
                 value={formData.bank_Details.bank_Branch}
                 onChange={handleChange}
-                required
+                // required
                 />
             </div>
             <div>
@@ -230,7 +288,7 @@ const AddTrainer = () => {
                 name="bank_Details.bank_IFSC_code"
                 value={formData.bank_Details.bank_IFSC_code}
                 onChange={handleChange}
-                required
+                // required
                 />
             </div>
             <div>
@@ -240,7 +298,7 @@ const AddTrainer = () => {
                 name="bank_Details.pancard_Number"
                 value={formData.bank_Details.pancard_Number}
                 onChange={handleChange}
-                required
+                // required
                 />
             </div>
             <div>
@@ -250,7 +308,7 @@ const AddTrainer = () => {
                 name="bank_Details.aadharcard_number"
                 value={formData.bank_Details.aadharcard_number}
                 onChange={handleChange}
-                required
+                // required
                 />
             </div>
           </div>
@@ -265,7 +323,7 @@ const AddTrainer = () => {
               name="contact_Details.mobile_number"
               value={formData.contact_Details.mobile_number}
               onChange={handleChange}
-              required
+              // required
             />
           </div>
           <div>
@@ -275,7 +333,7 @@ const AddTrainer = () => {
               name="contact_Details.email_id"
               value={formData.contact_Details.email_id}
               onChange={handleChange}
-              required
+              // required
             />
           </div>
 
