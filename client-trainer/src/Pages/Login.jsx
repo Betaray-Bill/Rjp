@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { useLoginMutation } from '../app/services/auth';
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setCredentials } from '../features/authSlice';
@@ -35,23 +34,29 @@ function Login() {
       }
 
       try {
-          loginMutation.mutate(formData, {
-            onSuccess: (data) => {
-              console.log("login doen")
-              dispatch(setCredentials(data.data));
-              console.log(data)
-              if (data) {
-                navigate('/home');
-              }
-            },
-            onSettled: () => {
-              console.log("Settled")
-            },
-            onError: (error) => {
-              console.log(error);
-            }
-          })
-
+          // loginMutation.mutate(formData, {
+          //   onSuccess: (data) => {
+          //     console.log("login doen")
+          //     dispatch(setCredentials(data.data));
+          //     console.log(data)
+          //     if (data) {
+          //       navigate('/home');
+          //     }
+          //   },
+          //   onSettled: () => {
+          //     console.log("Settled")
+          //   },
+          //   onError: (error) => {
+          //     console.log(error);
+          //   }
+          // })
+          const res =await axios.post('http://localhost:5000/api/trainer/login', formData)
+            const data = await res.data;
+            console.log(data)
+            dispatch(setCredentials(data.trainer[0]))
+            console.log(user)
+            navigate('/home');
+  
       } catch (error) {
           console.log(error);
       }

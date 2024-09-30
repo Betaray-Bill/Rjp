@@ -14,9 +14,10 @@ const trainerLogin = asyncHandler(async(req, res) => {
     const trainer = await Trainer.find({ "contact_Details.email_id": email }).select("-password")
     console.log(trainer)
     if (trainer) {
+        console.log(trainer)
         let token = generateToken(res, trainer._id);
         console.log("login token ", token);
-        res.status(200).json(...trainer);
+        res.status(200).json({trainer});
     } else {
         res.status(401);
         throw new Error('Invalid email or password');
@@ -29,8 +30,8 @@ const trainerLogin = asyncHandler(async(req, res) => {
 const acceptNDA = asyncHandler(async(req, res) => {
     // Get the Id of the Trainer
     const trainerId = req.query.trainerId
-
-    // Check if the Trainer Exist
+    console.log(req.query.trainerId)
+    // Check if the Trainer Exist   
     const trainer = await Trainer.findByIdAndUpdate(
         trainerId, {
             nda_Accepted: true,

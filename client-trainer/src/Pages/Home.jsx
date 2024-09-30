@@ -28,7 +28,7 @@ function Home() {
   const {user} = useSelector((state)=> state.auth)
   const [data, setData] = useState()
   const [ndaStatus, setNdaStatus] = useState('');
-  // console.log(user)
+  console.log(user)
 
   axios.defaults.withCredentials = true;
   const getTrainerDetails = async() => {
@@ -55,7 +55,7 @@ function Home() {
   const handleNdaSubmit= async() => {
     try{
       if (ndaStatus === 'accept'){
-        const res = await axios.post(`http://localhost:5000/api/trainer/accept-nda?trainerId=${data && data._id}`)
+        const res = await axios.post(`http://localhost:5000/api/trainer/accept-nda?trainerId=${data._id}`)
         const resData = res.data
   
         console.log(resData.trainer) 
@@ -80,7 +80,8 @@ function Home() {
   }
   
   useEffect(() => {
-    if(user && data === undefined){
+    if(user){
+      console.log(user)
       setData(user)
     }
 
@@ -116,6 +117,8 @@ function Home() {
       console.log(err)
     }
   }
+
+  console.log(user)
 
   return (
     <div>
@@ -177,7 +180,7 @@ function Home() {
             Non Disclosure Agreement
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {data?.name} - {data?._id}, accept your NDA to proceed further with process 
+            {data && data?.name}, accept your NDA to proceed further with process 
           </Typography>
           <FormControl component="fieldset">
             <RadioGroup

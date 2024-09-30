@@ -10,7 +10,7 @@ const searchTrainer = asyncHandler(async(req, res) => {
     const { startPrice, endPrice, startDate, endDate, rating } = req.query;
 
     // Add the search stage
-    console.log(req.query)
+    console.log(req.query.search)
     try {
         // pipeline.push({
         //     $search: {
@@ -52,23 +52,23 @@ const searchTrainer = asyncHandler(async(req, res) => {
         // Add the sorting stage for rating
 
 
-        if (startPrice && endPrice) {
-            console.log(startPrice, endPrice)
-            pipeline.push({
-                $match: {
-                    "price.amount": { $gte: Number(startPrice), $lte: Number(endPrice) }
-                }
-            });
-        }
+        // if (startPrice && endPrice) {
+        //     console.log(startPrice, endPrice)
+        //     pipeline.push({
+        //         $match: {
+        //             "price.amount": { $gte: Number(startPrice), $lte: Number(endPrice) }
+        //         }
+        //     });
+        // }
 
-        if (rating) {
-            pipeline.push({
-                $sort: {
-                    rating: rating === 'asc' ? 1 : -1 // Sort by rating from highest to lowest
-                }
-            });
-        }
-        console.log("Pipelining : ", pipeline)
+        // if (rating) {
+        //     pipeline.push({
+        //         $sort: {
+        //             rating: rating === 'asc' ? 1 : -1 // Sort by rating from highest to lowest
+        //         }
+        //     });
+        // }
+        // console.log("Pipelining : ", pipeline)
 
         const ans = await Trainer.aggregate([{
                 $search: {
@@ -81,14 +81,14 @@ const searchTrainer = asyncHandler(async(req, res) => {
                     }
                 }
             },
-            {
-                $match: {
-                    "price.amount": {
-                        $gte: startPrice,
-                        $lte: endPrice
-                    }
-                }
-            }
+            // {
+            //     $match: {
+            //         "price.amount": {
+            //             $gte: startPrice,
+            //             $lte: endPrice
+            //         }
+            //     }
+            // }
         ])
         console.log("SNSSSSSSSSSSS", ans.length)
         res.status(200).json(ans)
