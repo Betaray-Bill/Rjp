@@ -12,7 +12,7 @@ function Search() {
   const [endPrice, setEndPrice] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [rating, setRating] = useState('');
+  const [rating, setRating] = useState('asc');
 
   axios.defaults.withCredentials = true;
     const searchHandler = async(event) => {
@@ -89,12 +89,20 @@ function Search() {
                       placeholder="End Date"
                   />
                 </div>
-                <input
+                <div>
+                  {/* <label htmlFor="">Rating</label> */}
+                  {/* <input
                     type="text"
                     value={rating}
                     max="10"
                     onChange={(e) => setRating(Number(e.target.value))}
-                />
+                /> */}
+                  <select name="rating" id="" onChange={(e) => setRating(Number(e.target.value))}>
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+
+                  </select>
+                </div>
               </div>
               {/* <button onClick={handleSearch}>Search</button> */}
             <button type='submit'>Search</button> 
@@ -121,6 +129,9 @@ function Search() {
                     <p><strong>Email:</strong> {trainer.contact_Details.email_id}</p>
                     <p><strong>Mobile:</strong> {trainer.contact_Details.mobile_number}</p>
                     <p><strong>NDA Accepted:</strong> {trainer.nda_Accepted ? 'Yes' : 'No'}</p>
+                    <p><strong>Price:</strong> {trainer.price.amount}/{trainer.price.type}</p>
+                    <p><strong>Rating:</strong> {trainer.rating}/5</p>
+
                     <p><strong>Available Dates:</strong> {trainer.availableDate.map((date, index) => (
                       <span key={index}>
                         {new Date(date.startDate).toLocaleDateString()} - {new Date(date.endDate).toLocaleDateString()}

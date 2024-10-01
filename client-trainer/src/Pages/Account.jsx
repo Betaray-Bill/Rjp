@@ -1,7 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import { height } from '@mui/system';
+import axios from 'axios';
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '  70vw',
+  height:'70vh',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  overflowY: 'scroll',
+  boxShadow: 24,
+  p: 4,
+};
+ 
 function Account() {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
     const {user}  = useSelector(state => state.auth)
     const renderArray = (arr) => {
         return arr.map((item, index) => item && <li key={index}>{item}</li>);
@@ -36,10 +60,60 @@ function Account() {
     }
 
 
+    // Edit Handle
+    // const [formData, setFormData] = useState(trainerData);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const [formData, setFormData] = useState(user);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleArrayChange = (e, section) => {
+    const { value, name } = e.target;
+    const updatedArray = [...formData[section]];
+    console.log(e, section)
+    updatedArray[name] = value;
+    setFormData((prevData) => ({
+      ...prevData,
+      [section]: updatedArray,
+    }));
+  };
+
+    axios.defaults.withCredentials = true;
+    const handleSubmit = async(e) => {
+      e.preventDefault();
+      // console.log('Form Data Submitted:', formData);
+      // // Perform API call to save form data
+      // try {
+      //     const response = await axios.post('http://localhost:5000/api/trainersourcer/register-trainer', formData); // Replace with your API endpoint
+      //     console.log('Registration successful:', response.data);
+      //     // setUser(response.data)
+      // }catch (error) {
+      //     console.error('Registration failed:', error);
+      // }
+    };
+    
+
+
   return (
     <div>
         <div className="container">
-      <h1>Trainer Profile</h1>
+        <div style={{display:"flex", justifyContent:"space-between"}}>
+          <h1>Trainer Profile</h1>
+          {/* <span> */}
+            <button onClick={handleOpen}>Edit</button>
+          {/* </span> */}
+        </div>
 
       <div className="section">
         <h2>Personal Details</h2>
@@ -103,7 +177,149 @@ function Account() {
           <strong>Updated At:</strong> {new Date(user.updatedAt).toLocaleString()}
         </div>
       </div>
-    </div>
+        </div>
+
+
+
+
+
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+            Edit Profile
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            <form onSubmit={handleSubmit} className="trainer-form">
+                <h1>Edit Trainer Details</h1>
+
+                <div className="form-group">
+                  <label>Name:</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    // readOnly
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Type of Trainer:</label>
+                  <input
+                    type="text"
+                    name="type_of_trainer"
+                    value={formData.type_of_trainer}
+                    onChange={handleInputChange}
+                    // readOnly
+                  />
+                </div>
+
+                {/* Professional Summary */}
+                <div className="form-group">
+                  <label>Professional Summary:</label>
+                  {formData.resume_details.professionalSummary.map((summary, idx) => (
+                    <input
+                      key={idx}
+                      type="text"
+                      name={idx}
+                      value={summary}
+                      onChange={(e) => handleArrayChange(e, 'resume_details.professionalSummary')}
+                    />
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        resume_details: {
+                          ...prevData.resume_details,
+                          professionalSummary: [...prevData.resume_details.professionalSummary, ''],
+                        },
+                      }))
+                    }
+                  >
+                    Add Summary
+                  </button>
+                </div>
+
+                {/* Education */}
+                <div className="form-group">
+                  <label>Education:</label>
+                  {formData.resume_details.education.map((edu, idx) => (
+                    <input
+                      key={idx}
+                      type="text"
+                      name={idx}
+                      value={edu}
+                      onChange={(e) => handleArrayChange(e, 'resume_details.education')}
+                    />
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        resume_details: {
+                          ...prevData.resume_details,
+                          education: [...prevData.resume_details.education, ''],
+                        },
+                      }))
+                    }
+                  >
+                    Add Education
+                  </button>
+                </div>
+
+                {/* Clientele */}
+                <div className="form-group">
+                  <label>Clientele:</label>
+                  {formData.resume_details.clientele.map((client, idx) => (
+                    <input
+                      key={idx}
+                      type="text"
+                      name={idx}
+                      value={formData.resume_details.clientele[idx]}
+                      onChange={(e) => handleArrayChange(e, 'resume_details.clientele')}
+                    />
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        resume_details: {
+                          ...prevData.resume_details,
+                          clientele: [...prevData.resume_details.clientele, ''],
+                        },
+                      }))
+                    }
+                  >
+                    Add Client
+                  </button>
+                </div>
+
+                {/* Other sections such as contact details, certifications, etc. */}
+                <div className="form-group">
+                  <label>Contact Details:</label>
+                  <input
+                    type="text"
+                    name="contact_Details.mobile_number"
+                    value={formData.contact_Details.mobile_number}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <button type="submit">Update</button>
+            </form>
+
+            </Typography>
+          </Box>
+        </Modal>
     </div>
   )
 }

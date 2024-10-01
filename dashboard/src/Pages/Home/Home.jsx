@@ -43,7 +43,7 @@ function Home() {
               <Link to="/home/add">Add +</Link>
             }
             {
-              (currentUser.employee.role.name === 'ADMIN' || currentUser.employee.role.name === 'MANAGER' )&& 
+              (currentUser.employee.role.name === 'ADMIN' || currentUser.employee.role.name === 'MANAGER' || currentUser.employee.role.name === "Trainer Sourcer")&& 
               <Link to='/home/trainer'>Add Trainers</Link>
             }
             

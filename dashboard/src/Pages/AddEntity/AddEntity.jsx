@@ -131,6 +131,18 @@ function AddEntity() {
                 />
                 <label htmlFor="sendPO">Send PO</label>
             </div>
+            <div>
+                <input
+                type="checkbox"
+                id="Create Deal"
+                name="authorizations"
+                value="Create Deal"
+                checked={formData.authorizations.includes('Create Deal')}
+                onChange={handleChange}
+                />
+                <label htmlFor="Create Deal">Create Deal</label>
+            </div>
+           
 
             <button type="submit">Register</button>
         </form>
