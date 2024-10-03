@@ -32,16 +32,23 @@ const addEmployee = asyncHandler(async(req, res) => {
         if (existingEmp) {
             return res.status(500).json({ message: 'Employee already exist' });
         }
-        console.log(req.body)
-        const employee = new Employee({
+        console.log(req.body.role)
+        let roles = []
+        req.body.role.forEach(element => {
+            roles.push({
+                name: element
+            })
+        });
+        console.log(roles)
+        let employee;
+
+        employee = new Employee({
             name,
             email,
             password,
-            role: {
-                name: role
-            },
-            authorizations,
+            role: roles
         })
+
 
         try {
             await employee.save();

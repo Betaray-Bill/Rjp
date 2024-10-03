@@ -12,7 +12,7 @@ router.get("/", authMiddleware, authorizeRole(["ADMIN"]), (req, res) => {
 
 // Auth Based Routes
 router.post("/login", login)
-router.post("/register", authMiddleware, authorizeRole(["ADMIN"]), addEmployee)
+router.post("/register", authMiddleware, addEmployee)
 router.get("/signout", authMiddleware, signOut)
 router.get("/getAll", authMiddleware, authorizeRole(["ADMIN"]), getAllEmployees)
 

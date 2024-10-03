@@ -14,20 +14,15 @@ const employeeSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    role: {
+    role: [{
         name: {
             type: String,
             enum: ['ADMIN', 'Manager', 'Trainer Sourcer', 'KeyAccounts'],
             required: true
-        },
-        permissions: [{ type: String }]
-    },
-    authorizations: [{
-        type: String
-    }]
+        }
+    }],
 }, {
-    timestamps: true,
-    discriminatorKey: 'roleType'
+    timestamps: true
 })
 
 // Match user entered password to hashed password in database

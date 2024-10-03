@@ -1,7 +1,7 @@
 import express from 'express';
 import authMiddleware from '../middleware/authMiddleware.js';
 import { signOut } from '../controllers/AuthController.js';
-import { acceptNDA, addTrainingDates, getAllTrainer, getTrainerById, trainerLogin, updateTrainerProfile } from '../controllers/TrainerController.js';
+import { acceptNDA, addTrainingDates, getAllTrainer, getTrainerById, resumeCopy, trainerLogin, updateTrainerProfile } from '../controllers/TrainerController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { searchTrainer } from '../controllers/SearchController.js';
 
@@ -16,7 +16,7 @@ router.get("/search", authMiddleware, authorizeRole(['ADMIN', 'KeyAccounts', 'MA
 router.post('/trainingDates/:id', authMiddleware, addTrainingDates)
 router.get("/details/:id", authMiddleware, getTrainerById)
 router.get("/getAll", authMiddleware, authorizeRole(['ADMIN', 'KeyAccounts', 'MANAGER']), getAllTrainer)
-
+router.post("/:id/copy-resume", authMiddleware, resumeCopy)
 router.get("/signout", authMiddleware, signOut)
 
 

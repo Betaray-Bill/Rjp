@@ -11,6 +11,12 @@ const login = asyncHandler(async(req, res) => {
     const employee = await Employee.findOne({ email }).select("-password");
     console.log(req.body)
     if (employee) {
+        console.log(employee.role.name)
+        if (employee.role.name === "ADMIN") {
+            console.log("EMp ROle specs : ", employee.manageEmployees)
+        }
+
+        // if(employee.role.name === "ADM)
         let token = generateToken(res, employee._id);
         console.log("login token ", token);
         res.status(200).json({

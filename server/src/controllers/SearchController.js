@@ -1,5 +1,5 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import Trainer from "../models/TrainerModel.js";
+import { Trainer } from "../models/TrainerModel.js";
 
 // Search Function
 const searchTrainer = asyncHandler(async(req, res) => {

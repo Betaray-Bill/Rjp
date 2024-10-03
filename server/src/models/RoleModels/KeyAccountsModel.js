@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import Employee from "../EmployeeModel.js";
 
 const KeyAccountsSchema = new mongoose.Schema({
-    registeredTrainers: [{
+    Deals: [{
         trainerId: mongoose.Schema.Types.ObjectId,
         ref: 'Trainer'
     }]

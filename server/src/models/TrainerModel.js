@@ -9,8 +9,6 @@ const trainerSchema = mongoose.Schema({
     },
     type_of_trainer: {
         type: String,
-        // required: true,
-        enum: ['Internal', 'External']
     },
     trainer_sourcer: {
         type: mongoose.Schema.Types.ObjectId,
@@ -70,10 +68,6 @@ const trainerSchema = mongoose.Schema({
         pancard_Number: {
             type: String,
             // required: true
-        },
-        aadharcard_number: {
-            type: String,
-            // required: true
         }
     },
     // Contact Details--------------------------------
@@ -86,10 +80,7 @@ const trainerSchema = mongoose.Schema({
             type: String,
             // required: true
         },
-        alternate_contact_number: {
-            type: String
-        },
-        alternate_email_id: {
+        whatsapp_number: {
             type: String
         }
     },
@@ -101,13 +92,14 @@ const trainerSchema = mongoose.Schema({
             },
             endDate: {
                 type: Date
-            }
+            },
+            trainingName: String
         }]
     },
     // Resume Details--------------------------------
-    resume_details: {
+    mainResume: {
         professionalSummary: {
-            type: [String], // Array of sentences describing the professional summary
+            type: [String]
         },
         technicalSkills: {
             type: [String],
@@ -130,13 +122,80 @@ const trainerSchema = mongoose.Schema({
         experience: {
             type: [String],
         },
-        file_url: {
-            type: String,
-            // required: true
+        createdAt: {
+            type: Date,
+            default: Date.now,
         }
+    },
+    resumeVersions: [{
+        professionalSummary: {
+            type: [String]
+        },
+        technicalSkills: {
+            type: [String],
+        },
+        careerHistory: {
+            type: [String],
+        },
+        certifications: {
+            type: [String],
+        },
+        education: {
+            type: [String],
+        },
+        trainingsDelivered: {
+            type: [String],
+        },
+        clientele: {
+            type: [String],
+        },
+        experience: {
+            type: [String],
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+        },
+        trainingName: {
+            type: String,
+        }, // Training name for version
+    }]
+
+}, {
+    timestamps: true,
+});
+
+
+// Resume Schema
+const resumeSchema = new mongoose.Schema({
+    professionalSummary: {
+        type: [String]
+    },
+    technicalSkills: {
+        type: [String],
+    },
+    careerHistory: {
+        type: [String],
+    },
+    certifications: {
+        type: [String],
+    },
+    education: {
+        type: [String],
+    },
+    trainingsDelivered: {
+        type: [String],
+    },
+    clientele: {
+        type: [String],
+    },
+    experience: {
+        type: [String],
+    },
+    file_url: {
+        type: String,
+        // required: true
     }
-
-
 }, {
     timestamps: true,
 });
@@ -155,6 +214,7 @@ trainerSchema.pre('save', async function(next) {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
+// const Resume = mongoose.model('Resume', resumeSchema);
 const Trainer = mongoose.model('Trainer', trainerSchema);
 
-export default Trainer;
+export { Trainer }

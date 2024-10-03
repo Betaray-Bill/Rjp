@@ -1,5 +1,5 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import Trainer from "../models/TrainerModel.js";
+import { Trainer } from "../models/TrainerModel.js";
 import generateToken from "../utils/generateToken.js";
 
 
@@ -17,7 +17,7 @@ const trainerLogin = asyncHandler(async(req, res) => {
         console.log(trainer)
         let token = generateToken(res, trainer._id);
         console.log("login token ", token);
-        res.status(200).json({trainer});
+        res.status(200).json({ trainer });
     } else {
         res.status(401);
         throw new Error('Invalid email or password');
@@ -31,7 +31,7 @@ const acceptNDA = asyncHandler(async(req, res) => {
     // Get the Id of the Trainer
     const trainerId = req.query.trainerId
     console.log(req.query.trainerId)
-    // Check if the Trainer Exist   
+        // Check if the Trainer Exist   
     const trainer = await Trainer.findByIdAndUpdate(
         trainerId, {
             nda_Accepted: true,
@@ -109,6 +109,43 @@ const addTrainingDates = asyncHandler(async(req, res) => {
     });
 })
 
+// Make a copy of the resume
+const resumeCopy = asyncHandler(async(req, res) => {
+    const { id } = req.params;
+    console.log("Trainer Id", id)
+    console.log(req.body)
+        // Check if the trainer exits
+    const trainer = await Trainer.findById(id);
+    if (!trainer) {
+        return res.status(404).json({ message: "Trainer not found" });
+    }
+
+    try {
+
+        // save the resume's Id in the trainer's docs
+        trainer.resumeVersions.push({
+            professionalSummary: req.body.professionalSummary,
+            technicalSkills: req.body.technicalSkills,
+            careerHistory: req.body.careerHistory,
+            certifications: req.body.certifications,
+            education: req.body.education,
+            trainingsDelivered: req.body.trainingsDelivered,
+            clientele: req.body.clientele,
+            experience: req.body.experience
+        });
+        await trainer.save();
+
+        res.status(200).json({
+            message: "Resume copy created successfully",
+            trainer: trainer
+        });
+
+    } catch (err) {
+        console.error("Error creating resume copy:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+})
+
 // Accept PO 
 
 
@@ -153,5 +190,6 @@ export {
     updateTrainerProfile,
     addTrainingDates,
     getTrainerById,
-    getAllTrainer
+    getAllTrainer,
+    resumeCopy
 }

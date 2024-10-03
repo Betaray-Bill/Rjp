@@ -76,7 +76,7 @@ function Home() {
     console.log("signout")
     await axios.get('http://localhost:5000/api/trainer/signout')
     dispatch(logout())
-    navigate("/login")
+    navigate("/login") 
   }
   
   useEffect(() => {

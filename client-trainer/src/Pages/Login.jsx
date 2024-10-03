@@ -104,7 +104,7 @@ function Login() {
         </form> */}
 
         {
-            user ? JSON.stringify(user) :"No data"
+            // user ? JSON.stringify(user) :"No data"
         }
     </div>  
   )
