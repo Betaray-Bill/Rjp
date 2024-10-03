@@ -66,11 +66,15 @@ const searchTrainer = asyncHandler(async(req, res) => {
 
         if (rating) {
             pipeline.push({
-                $sort: {
-                    rating: rating === 'asc' ? 1 : -1 // Sort by rating from highest to lowest
+                $match: {
+                    rating: {
+                        $gte: rating
+                    }
                 }
             });
         }
+
+
         console.log("Pipelining : ", pipeline)
 
         const ans = await Trainer.aggregate(pipeline);

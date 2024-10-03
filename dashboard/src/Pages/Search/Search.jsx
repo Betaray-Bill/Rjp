@@ -2,6 +2,8 @@ import { useState } from 'react'
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
+import Slider from '@mui/material/Slider';
+
 
 function Search() {
   const [query, setQuery] = useState("")
@@ -13,7 +15,7 @@ function Search() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [rating, setRating] = useState('asc');
-
+  console.log(rating)
   axios.defaults.withCredentials = true;
     const searchHandler = async(event) => {
         event.preventDefault()
@@ -90,6 +92,19 @@ function Search() {
                   />
                 </div>
                 <div>
+                <Box sx={{ width: 150 }}>
+                  <label htmlFor="">Rating</label>
+                  <Slider
+                    size="small"
+                    defaultValue={8}
+                    aria-label="Small" name="rating"
+                    min={0}
+                    max={10}
+                    onChange={(e) => setRating(Number(e.target.value))}
+                    valueLabelDisplay="auto"
+                  />
+                  </Box>
+                  {/* <input type="range" name="rating" id="" min={0} max={10} onChange={(e) => setRating(Number(e.target.value))} /> */}
                   {/* <label htmlFor="">Rating</label> */}
                   {/* <input
                     type="text"
@@ -97,11 +112,11 @@ function Search() {
                     max="10"
                     onChange={(e) => setRating(Number(e.target.value))}
                 /> */}
-                  <select name="rating" id="" onChange={(e) => setRating(Number(e.target.value))}>
+                  {/* <select name="rating" id="" onChange={(e) => setRating(Number(e.target.value))}>
                     <option value="asc">Ascending</option>
                     <option value="desc">Descending</option>
 
-                  </select>
+                  </select> */}
                 </div>
               </div>
               {/* <button onClick={handleSearch}>Search</button> */}

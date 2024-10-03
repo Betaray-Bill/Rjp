@@ -16,7 +16,8 @@ const AddTrainer = () => {
     trainer_sourcer: currentUser && currentUser.employee._id,
     price:Number(0),
     price_type:'hourly',
-    mode:'Offline',
+    training_mode:'',
+    training_type:'',
     rating:0,
     // Bank Details
     bank_Details: {
@@ -25,15 +26,16 @@ const AddTrainer = () => {
       bank_Branch: '',
       bank_IFSC_code: '',
       pancard_Number: '',
-      aadharcard_number: ''
+      aadharcard_number: '',
+      gst_number:'',
+      vendorName:''
     },
 
     // Contact Details
     contact_Details: {
       mobile_number: '',
       email_id: '',
-      alternate_contact_number: '',
-      alternate_email_id: ''
+      whatsapp_number:''
     },
 
     availableDate: [{ startDate: '', endDate: '' }],
@@ -84,7 +86,7 @@ const AddTrainer = () => {
       });
     }
   };
-
+  console.log(formData)
   
   const handleArrayChange = (e, field, index) => {
     const updatedArray = [...formData.resume_details[field]];
@@ -164,8 +166,11 @@ const AddTrainer = () => {
                     value={formData.type_of_trainer}
                     onChange={handleChange}
                   >
-                  <option value="Internal">Internal</option>
-                  <option value="External">External</option>
+                    <option value="Internal">Internal</option>
+                    <option value="External - Full Time">External - Full Time</option>
+                    <option value="External - Freelancer">External - Freelancer</option>
+                    <option value="External - Vendor">External - Vendor</option>
+
                   </select>
               </div>
               <div>
@@ -191,6 +196,29 @@ const AddTrainer = () => {
                   />
               </div>
               <div>
+                <label htmlFor="">Mode of Training</label>
+                <select name="training_mode" onChange={handleChange} value={formData.training_mode}>
+                  <option value="Select">Select</option>
+                  {/* 'Full Time', 'Part Time', 'Online', 'Offline' */}
+                  <option value="Full Time">Full Time</option>
+                  <option value="Part Time">Part Time</option>
+                </select>
+                {
+                  formData.training_mode && (
+                    <div>
+                      <select name="training_type" onChange={handleChange} value={formData.training_type} id="">
+                        <option value="Select">Select</option>
+                        <option value="Online">Online</option>
+                        <option value="Offline">Offline</option>
+                      </select>
+                    </div>
+                  )
+                }
+                {
+                  formData.training_mode && <span>{formData.training_mode} / {formData.training_type} </span>
+                }
+              </div>
+              <div>
                   <label>Price </label>
                   <input
                     type="number"
@@ -213,16 +241,7 @@ const AddTrainer = () => {
                     <option value="per day">per day</option>
                   </select>
               </div>
-              <div>
-                <label htmlFor="">Mode of Training</label>
-                <select name="mode" onChange={handleChange} value={formData.mode}>
-                {/* 'Full Time', 'Part Time', 'Online', 'Offline' */}
-                  <option value="Full Time">Full Time</option>
-                  <option value="Part Time">Part Time</option>
-                  <option value="Online">Online</option>
-                  <option value="Offline">Offline</option>
-                </select>
-              </div>
+
               <div>
                   <label>Rating </label>
                   <input
@@ -301,16 +320,35 @@ const AddTrainer = () => {
                   // required
                   />
               </div>
-              <div>
-                  <label>Aadhar Card</label>
-                  <input
-                  type="number"
-                  name="bank_Details.aadharcard_number"
-                  value={formData.bank_Details.aadharcard_number}
-                  onChange={handleChange}
-                  // required
-                  />
-              </div>
+              {
+                formData && formData.type_of_trainer === 'External - Vendor' ?
+                (
+                  <Fragment>
+                    <div>
+                      <label>Vendor Name</label>
+                      <input
+                        type="text"
+                        name="bank_Details.vendorName"
+                        value={formData.bank_Details.vendorName}
+                        onChange={handleChange}
+                      // required
+                      />
+                    </div>
+                    <div>
+                      <label>Gst Number</label>
+                      <input
+                        type="number"
+                        name="bank_Details.gst_number"
+                        value={formData.bank_Details.gst_number}
+                        onChange={handleChange}
+                      // required
+                      />
+                    </div>
+                  </Fragment>
+                )  : null
+              }
+
+
             </div>
 
             {/* Contact Details */}
@@ -325,6 +363,15 @@ const AddTrainer = () => {
                 onChange={handleChange}
                 // required
               />
+              <span style={{color:'blue', fontSize:'16px'}} onClick={() => {
+                setFormData({
+                 ...formData,
+                  contact_Details: {
+                   ...formData.contact_Details,
+                    whatsapp_number: formData.contact_Details.mobile_number
+                  }
+                });
+              }}>same for whatsapp</span>
             </div>
             <div>
               <label>Email ID</label>
@@ -335,6 +382,14 @@ const AddTrainer = () => {
                 onChange={handleChange}
                 // required
               />
+            </div>
+            <div>
+              <label>Whatsapp Number</label>
+
+              <input type="number" name="contact_Details.whatsapp_number" 
+                value={formData.contact_Details.whatsapp_number}
+                onChange={handleChange}
+                id="" />
             </div>
 
             </div>
