@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import AddCompany from '../../Components/AddCompany';
 
 
@@ -8,38 +8,40 @@ function AddEntity() {
         name: '',
         email: '',
         password: '',
-        role: '',
-        authorizations: [],
+        role: [],
       });
 
       const handleChange = (event) => {
         const { name, value } = event.target;
-    
-        // Handle checkboxes for authorizations
-        if (name === 'authorizations') {
-          const isChecked = event.target.checked;
-          const updatedAuthorizations = formData.authorizations.slice();
-    
-          if (isChecked) {
-            updatedAuthorizations.push(value);
-          } else {
-            const index = updatedAuthorizations.indexOf(value);
-            updatedAuthorizations.splice(index, 1);
-          }
-    
-          setFormData({ ...formData, authorizations: updatedAuthorizations });
-          return;
+
+        if(name == 'role'){
+          const selectedRole = event.target.value;
+          console.log(selectedRole)
+          setFormData((prevData) => {
+            // Check if the role is already in the array
+            if (!prevData.role.includes(selectedRole)) {
+              // Add the new role to the array
+              return {
+                ...prevData,
+                role: [...prevData.role, selectedRole],
+              };
+            }
+            // If already selected, return previous state without change
+            return prevData;
+          })
+          return
         }
+
     
         setFormData({ ...formData, [name]: value });
       };
-
+      console.log(formData)
       axios.defaults.withCredentials = true;
       const handleSubmit = async (event) => {
         event.preventDefault();
     
         try {
-          const response = await axios.post('http://localhost:5000/api/employee/register',   formData); // Replace with your API endpoint
+          const response = await axios.post('http://localhost:5000/api/employee/register', formData); // Replace with your API endpoint
           console.log('Registration successful:', response.data);
         } catch (error) {
           console.error('Registration failed:', error);
@@ -87,28 +89,34 @@ function AddEntity() {
                 required
             />
 
-            <label htmlFor="password">Password:</label>   
+            <label htmlFor="password">Password:</label>  
 
             <input
                 type="password"
                 id="password"
                 name="password"
                 value={formData.password}
-                onChange={handleChange}   
+                onChange={handleChange}  
 
                 required
             />
 
             <label htmlFor="role">Role:</label>
-            <select id="role" name="role" value={formData.role} onChange={handleChange}>
+            <select id="role" name="role" onChange={handleChange}>
+                 <option></option>
                 {roles.map((role) => (
                 <option key={role} value={role}>
                     {role}
                 </option>
                 ))}
             </select>
+            {
+              formData && formData.role.map((e, _i) => (
+                <span key={_i}>{e},</span>
+              ))
+            }
 
-            <label>Authorizations:</label>
+            {/* <label>Authorizations:</label>
             <div>
                 <input
                 type="checkbox"
@@ -141,7 +149,7 @@ function AddEntity() {
                 onChange={handleChange}
                 />
                 <label htmlFor="Create Deal">Create Deal</label>
-            </div>
+            </div> */}
            
 
             <button type="submit">Register</button>
