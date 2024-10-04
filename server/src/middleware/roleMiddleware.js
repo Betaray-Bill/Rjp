@@ -13,8 +13,6 @@ const authorizeRole = (...allowedRoles) => {
                     roles.push(role[item])
                 }
             }
-            console.log(roles)
-                // for(let )
             roles.forEach(role => {
                 // console.log(role + " " + req.user.role.name)
                 for (let i = 0; i < req.user.role.length; i++) {

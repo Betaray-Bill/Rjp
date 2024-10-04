@@ -5,20 +5,22 @@ const companySchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    contact_details: {
-        contact_name: {
-            type: String,
-            required: true
-        },
-        contact_email: {
-            type: String,
-            required: true
-        },
-        contact_phone_number: {
-            type: Number,
-            required: true
+    contact_details: [
+        {
+            contact_name: {
+                type: String,
+                required: true
+            },
+            contact_email: {
+                type: String,
+                required: true
+            },
+            contact_phone_number: {
+                type: Number,
+                required: true
+            }
         }
-    },
+    ]
     // Deals: [{
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: 'Deal'

@@ -116,42 +116,6 @@ function AddEntity() {
               ))
             }
 
-            {/* <label>Authorizations:</label>
-            <div>
-                <input
-                type="checkbox"
-                id="trainerRegister"
-                name="authorizations"
-                value="Trainer Register"
-                checked={formData.authorizations.includes('Trainer Register')}
-                onChange={handleChange}
-                />
-                <label htmlFor="trainerRegister">Trainer Register</label>
-            </div>
-            <div>
-                <input
-                type="checkbox"
-                id="sendPO"
-                name="authorizations"
-                value="Send PO"
-                checked={formData.authorizations.includes('Send PO')}
-                onChange={handleChange}
-                />
-                <label htmlFor="sendPO">Send PO</label>
-            </div>
-            <div>
-                <input
-                type="checkbox"
-                id="Create Deal"
-                name="authorizations"
-                value="Create Deal"
-                checked={formData.authorizations.includes('Create Deal')}
-                onChange={handleChange}
-                />
-                <label htmlFor="Create Deal">Create Deal</label>
-            </div> */}
-           
-
             <button type="submit">Register</button>
         </form>
       </section>
@@ -165,12 +129,12 @@ function AddEntity() {
                 <h2>{user.name}</h2>
                 <p><strong>Email:</strong> {user.email}</p>
                 <p><strong>Role:</strong> {user.role.name}</p>
-                <p><strong>Authorizations:</strong></p>
-                <ul>
+                {/* <p><strong>Authorizations:</strong></p> */}
+                {/* <ul>
                     {user.authorizations.map((auth, index) => (
                     <li key={index}>{auth}</li>
                     ))}
-                </ul>
+                </ul> */}
                 <p><strong>Created At:</strong> {new Date(user.createdAt).toLocaleString()}</p>
                 <p><strong>Updated At:</strong> {new Date(user.updatedAt).toLocaleString()}</p>
                 </div>
