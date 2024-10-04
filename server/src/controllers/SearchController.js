@@ -12,6 +12,7 @@ const searchTrainer = asyncHandler(async(req, res) => {
     // Add the search stage
     console.log(req.query)
     try {
+        // Search query
         pipeline.push({
             $search: {
                 index: "search",
@@ -23,6 +24,7 @@ const searchTrainer = asyncHandler(async(req, res) => {
                 }
             }
         });
+
         // if (startDate && endDate) {
         //     pipeline.push({
         //         $match: {
@@ -49,9 +51,7 @@ const searchTrainer = asyncHandler(async(req, res) => {
         //     });
         // }
 
-        // Add the sorting stage for rating
-
-
+        // Add the Price based staging to the pipeline
         if (startPrice && endPrice) {
             console.log(startPrice, endPrice)
             pipeline.push({
@@ -64,21 +64,29 @@ const searchTrainer = asyncHandler(async(req, res) => {
             });
         }
 
+        // Rating
         if (rating) {
             pipeline.push({
                 $match: {
                     rating: {
-                        $gte: rating
+                        $gte: Number(rating)
                     }
                 }
             });
         }
 
+        // Remove password projection
+        pipeline.push({
+            $project:{
+                'password':0
+            }
+        })
+
 
         console.log("Pipelining : ", pipeline)
 
         const ans = await Trainer.aggregate(pipeline);
-        console.log("SNSSSSSSSSSSS", ans.length)
+        console.log("ANSWER : ", ans.length)
         res.status(200).json(ans)
     } catch (err) {
         console.log(err)
