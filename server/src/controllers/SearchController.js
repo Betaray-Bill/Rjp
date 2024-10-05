@@ -75,6 +75,13 @@ const searchTrainer = asyncHandler(async(req, res) => {
             });
         }
 
+        // Remove Trainers Who has not accpeted NDA
+        pipeline.push({
+            $match: {
+                nda_Accepted: true
+            }
+        });
+
         // Remove password projection
         pipeline.push({
             $project:{

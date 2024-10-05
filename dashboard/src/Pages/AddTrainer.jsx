@@ -480,9 +480,9 @@ const AddTrainer = () => {
 
       </section>
       {/* Get all the Trainers */}
-     {/* {
-       currentUser?.role?.name === "ADMIN" ? ( */}
-        {/* <section>
+                  {
+       currentUser?.role?.name === "ADMIN" ? ( 
+        <section>
           <h2>Get All Trainers</h2>
           <button onClick={getAllTrainers}>Get Trainers</button>
           {
@@ -494,9 +494,9 @@ const AddTrainer = () => {
               </ul>
             ) : null
           }
-        </section> */}
-      {/* ) : "No"
-     } */}
+        </section> 
+       ) : "No"
+     }
     </Fragment>
   );
 };

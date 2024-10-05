@@ -12,7 +12,7 @@ const authMiddleware = asyncHandler(async(req, res, next) => {
     }
     console.log(2)
     try {
-        const decoded = jwt.verify(token, "123");
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         req.user = await Employee.findById(decoded.userId).select('-password');
 
