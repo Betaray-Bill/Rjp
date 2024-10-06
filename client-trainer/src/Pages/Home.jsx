@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import Calendar from '../Components/Calendar.jsx'
 
 const style = {
   position: 'absolute',
@@ -21,6 +22,11 @@ const style = {
   p: 4,
 };
 
+const dateRanges = [
+  { start: "2024-10-01", end: "2024-10-05", Deal: 1 },
+  { start: "2024-10-10", end: "2024-10-15", Deal: 2 },
+  { start: "2024-11-05", end: "2024-11-09", Deal: 3 },
+];
 function Home() {
 
   const dispatch = useDispatch();
@@ -28,7 +34,7 @@ function Home() {
   const {user} = useSelector((state)=> state.auth)
   const [data, setData] = useState()
   const [ndaStatus, setNdaStatus] = useState('');
-  console.log(user)
+  // console.log(user)
 
   axios.defaults.withCredentials = true;
   const getTrainerDetails = async() => {
@@ -92,7 +98,7 @@ function Home() {
       console.log("yea")
       setOpen(false)
     }
-  })
+  }, [])
 
 
   // Dates
@@ -118,7 +124,6 @@ function Home() {
     }
   }
 
-  console.log(user)
 
   return (
     <div>
@@ -168,6 +173,8 @@ function Home() {
 
       <Outlet />
 
+      {/* Calendar Only for the Internal Trainers */}
+      { data && data.type_of_trainer === 'Internal' ? <Calendar dateRanges={dateRanges} /> : null}
 
       {/* NDA Modal */}
       <Modal

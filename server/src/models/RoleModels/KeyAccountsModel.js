@@ -9,4 +9,4 @@ const KeyAccountsSchema = new mongoose.Schema({
 });
 
 const KeyAccounts = Employee.discriminator('KeyAccounts', KeyAccountsSchema);
-export default KeyAccounts
+export default KeyAccounts  

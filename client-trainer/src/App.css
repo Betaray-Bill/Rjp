@@ -154,3 +154,74 @@ button:hover {
     position: absolute;
     top:12px
 }
+
+
+
+
+
+
+
+
+
+
+/* Calendar */
+.calendar-container {
+  width: 350px;
+  margin: 0 auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.header button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.days-of-week {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f0f0f0;
+  padding: 5px;
+}
+
+.day-of-week {
+  width: 14%;
+  text-align: center;
+}
+
+.days {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.day {
+  width: 14%;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.empty {
+  width: 14%;
+  height: 50px;
+  background-color: transparent;
+}
+
+.highlight {
+  background-color: #4caf50;
+  color: white;
+  /* border-radius: 50%; */
+}
+
+.highlight:nth-child(1) {
+  border-radius: 50%;
+}
