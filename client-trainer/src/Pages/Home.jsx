@@ -101,30 +101,6 @@ function Home() {
   })
 
 
-  // Dates
-  const [date, setDate] = useState({
-    start: new Date(),
-    end: new Date()
-  })
-
-  // console.log(date.start, date.end)
-  axios.defaults.withCredentials = true;
-  const handleDate = async(e) => {
-    e.preventDefault()
-    console.log(date)
-    try{
-      const res = await axios.post(`http://localhost:5000/api/trainer/trainingDates/${data._id}`, date)
-      console.log(res.data)
-      if(res){
-        getTrainerDetails()
-
-      }
-    }catch(err){
-      console.log(err)
-    }
-  }
-
-
   return (
     <div>
       <nav>
