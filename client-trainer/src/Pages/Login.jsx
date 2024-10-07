@@ -55,7 +55,7 @@ function Login() {
             console.log(data)
             dispatch(setCredentials(data.trainer[0]))
             console.log(user)
-            navigate('/home');
+            navigate('/home/dashboard');
   
       } catch (error) {
           console.log(error);

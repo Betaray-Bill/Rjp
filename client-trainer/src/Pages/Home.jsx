@@ -87,6 +87,7 @@ function Home() {
   
   useEffect(() => {
     if(user){
+      // getTrainerDetails()
       console.log(user)
       setData(user)
     }

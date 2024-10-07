@@ -11,6 +11,20 @@ const dateRanges = [
 function Dashboard() {
   const [data, setData] = useState()
   const {user} = useSelector((state)=> state.auth)
+  const formatDate = (isoDate) => {
+    if (!isoDate) return null; // Handle null or undefined dates
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+    };
+
+  const formattedDateRanges = user.availableDate.map(range => ({
+        ...range,
+        startDate: formatDate(range.startDate),
+        endDate: formatDate(range.endDate)
+    }));
 
   useEffect(() => {
     if(user){
@@ -18,11 +32,11 @@ function Dashboard() {
         setData(user)
       }
   })
- // Dates
- const [date, setDate] = useState({
-    start: new Date(),
-    end: new Date()
-  })
+    // Dates
+    const [date, setDate] = useState({
+        start: new Date(),
+        end: new Date()
+    })
 
 
     // console.log(date.start, date.end)
@@ -40,6 +54,26 @@ function Dashboard() {
       }catch(err){
         console.log(err)
       }
+    }
+
+    function convertDate(dateStr) {
+        // Check if dateStr is a string, and then convert it to a Date object
+        const date = new Date(dateStr);
+      
+        // Verify that 'date' is a valid Date object
+        if (isNaN(date.getTime())) {
+          throw new Error('Invalid Date');
+        }
+      
+        // Extract day, month, and year from the Date object
+        const day = date.getUTCDate(); // For local time, use date.getDate()
+        const month = date.getUTCMonth() + 1; // Months are zero-indexed, so add 1
+        const year = date.getUTCFullYear(); // For local time, use date.getFullYear()
+      
+        // Format the date as DD/MM/YYYY
+        const formattedDate = `${day}/${month}/${year}`;
+      
+        return formattedDate;
     }
   
 
@@ -75,8 +109,24 @@ function Dashboard() {
           ) 
       }
 
-            {/* Calendar Only for the Internal Trainers */}
-            { data && data.type_of_trainer === 'Internal' ? <Calendar dateRanges={dateRanges} /> : null}
+    <div className="section">
+        <h2>Available Dates</h2>
+        {user.availableDate.map((date, index) => (
+          <div key={index} className='section' style={{width:"400px"}}>
+            <div className="key-value">
+              <strong>Start Date:</strong> {date.startDate ? convertDate(date.startDate) : 'N/A'}
+            </div>
+            <div className="key-value">
+              <strong>End Date:</strong> {date.endDate ? convertDate(date.endDate) : 'N/A'}
+            </div>
+          </div>
+        ))}
+    </div>
+
+    {/* Calendar Only for the Internal Trainers */}
+    { 
+        data && 
+        data.type_of_trainer === 'Internal' ? <Calendar dateRanges={formattedDateRanges} /> : null}
 
     </div>
   )

@@ -30,7 +30,9 @@ function App() {
       {/* Routing */}
       <Routes>
         <Route path="/login" element={<Login />} />
+
         <Route element={<ProtectedRoute/> }>
+        {/* <Route path='/home/dashboard' index element={<Home />} /> */}
           <Route path='/home' element={<Home />}>
           <Route path='dashboard' element={<Dashboard /> }/>
             <Route path="account" element={<Account />}/>

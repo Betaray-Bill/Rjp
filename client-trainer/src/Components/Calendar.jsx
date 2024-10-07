@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import '../App.css'
 function Calendar({ dateRanges }) {
-
+    console.log(dateRanges)
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   
@@ -36,37 +36,39 @@ function Calendar({ dateRanges }) {
     // Check if the current date (day, month, year) is between any date range
     const getDateRangeColors = (day, month, year) => {
       const currentDate = new Date(year, month, day);
-  
+      currentDate.setHours(0, 0, 0, 0)
       for (let range of dateRanges) {
-        const startDate = new Date(range.start);
-        const endDate = new Date(range.end);
-  
+        const startDate = new Date(range.startDate);
+        const endDate = new Date(range.endDate); 
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
         if (currentDate >= startDate && currentDate <= endDate) {
+          
+        console.log("Dates ", startDate, endDate)
           return "highlight"; // Return the highlight CSS class if the date is in the range
         }
       }
       return "";
     };
+
+
     const [deal, setDeal] = useState("");
-  
     const hoverDeal = (e, month, year) => {
       // console.log(e, month, year);
       const currentDate = new Date(year, month, e);
+      currentDate.setHours(0, 0, 0, 0)
   
       for (let range of dateRanges) {
-        const startDate = new Date(range.start);
-        const endDate = new Date(range.end);
-  
+        const startDate = new Date(range.startDate);
+        const endDate = new Date(range.endDate);
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
         if (currentDate >= startDate && currentDate <= endDate) {
-          // return "highlight"; // Return the highlight CSS class if the date is in the range
-          console.log("yeas ", range.Deal);
-          setDeal(range.Deal);
+          console.log("yeas ", range.startDate);
+          setDeal(range.startDate);
           return;
         }
       }
-      // setDeal("");
-  
-      // return "";
     };
   
     const renderDays = () => {
