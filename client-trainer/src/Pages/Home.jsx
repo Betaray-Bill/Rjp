@@ -98,7 +98,7 @@ function Home() {
       console.log("yea")
       setOpen(false)
     }
-  }, [])
+  })
 
 
   // Dates
@@ -130,7 +130,7 @@ function Home() {
       <nav>
         <h2>RJP Trainers</h2>
         <ul className={{display: 'flex'}}>
-            <Link to="/home">Home</Link>  
+            <Link to="/home/dashboard">Home</Link>  
             <Link to="/home/account">Account</Link>
         </ul>
         <button onClick={signOut}> 
@@ -142,39 +142,7 @@ function Home() {
         user && <p>NDA Accepted : {data?.nda_Accepted ? "Accepted": "Not Accepted"}</p>
       }
 
-      {
-          data && (
-            data.type_of_trainer === 'Internal' ? 
-            (
-              <div>
-                <h3>Internal Trainer</h3>
-                <p>Welcome {data.name}</p>
-                <p>Trainer ID: {data._id}</p>
-                <p>Type: {data.type_of_trainer}</p>
-                <div>
-                  <h3>Training Period</h3>
-                  <form onSubmit={handleDate}>
-                    <div>
-                      <label htmlFor="">Start</label>
-                      <input type="date" name="start" id="" onChange={(e) => setDate({...date, [e.target.name]:e.target.value})}/>
-                    </div>
-                    <div>
-                      <label htmlFor="">End</label>
-                      <input type="date" name="end" id="" onChange={(e) => setDate({...date, [e.target.name]:e.target.value})}/>
-                    </div>
-                    <button>Submit</button>
-                  </form>
-                </div>
-                {/* DateRanfg */}
-              </div>
-            ):null
-          ) 
-      }
-
       <Outlet />
-
-      {/* Calendar Only for the Internal Trainers */}
-      { data && data.type_of_trainer === 'Internal' ? <Calendar dateRanges={dateRanges} /> : null}
 
       {/* NDA Modal */}
       <Modal

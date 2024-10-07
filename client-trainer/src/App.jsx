@@ -9,6 +9,7 @@ import Account from './Pages/Account.jsx'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { logout } from './features/authSlice.js'
+import Dashboard from './Pages/dashboard.jsx'
 
 
 function App() {
@@ -30,8 +31,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route element={<ProtectedRoute/> }>
-          <Route path='/' index element={<Home />} />
           <Route path='/home' element={<Home />}>
+          <Route path='dashboard' element={<Dashboard /> }/>
             <Route path="account" element={<Account />}/>
           </Route>
         </Route>
