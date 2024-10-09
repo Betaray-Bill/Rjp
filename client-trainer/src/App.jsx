@@ -9,7 +9,7 @@ import Account from './Pages/Account.jsx'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { logout } from './features/authSlice.js'
-import Dashboard from './Pages/dashboard.jsx'
+import Dashboard from './Pages/Dashboard.jsx'
 
 
 function App() {
@@ -32,9 +32,9 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route element={<ProtectedRoute/> }>
-        {/* <Route path='/home/dashboard' index element={<Home />} /> */}
+        {/* <Route path='/home' index element={<Home />} /> */}
           <Route path='/home' element={<Home />}>
-          <Route path='dashboard' element={<Dashboard /> }/>
+          <Route path='dashboard' index element={<Dashboard /> }/>
             <Route path="account" element={<Account />}/>
           </Route>
         </Route>

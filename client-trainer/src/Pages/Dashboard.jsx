@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 
 import { useSelector } from 'react-redux';
-import Calendar from '../Components/Calendar';
+import CalendarComp from '../Components/Calendar.jsx';
 import axios from 'axios';
 const dateRanges = [
     { start: "2024-10-01", end: "2024-10-05", Deal: 1 },
@@ -109,24 +109,27 @@ function Dashboard() {
           ) 
       }
 
-    <div className="section">
-        <h2>Available Dates</h2>
-        {user.availableDate.map((date, index) => (
-          <div key={index} className='section' style={{width:"400px"}}>
-            <div className="key-value">
-              <strong>Start Date:</strong> {date.startDate ? convertDate(date.startDate) : 'N/A'}
-            </div>
-            <div className="key-value">
-              <strong>End Date:</strong> {date.endDate ? convertDate(date.endDate) : 'N/A'}
-            </div>
-          </div>
-        ))}
-    </div>
-
     {/* Calendar Only for the Internal Trainers */}
     { 
         data && 
-        data.type_of_trainer === 'Internal' ? <Calendar dateRanges={formattedDateRanges} /> : null}
+        data.type_of_trainer === 'Internal' ? 
+        <Fragment>
+          <div className="section">
+              <h2>Available Dates</h2>
+              {user.availableDate.map((date, index) => (
+                <div key={index} className='section' style={{width:"400px"}}>
+                  <div className="key-value">
+                    <strong>Start Date:</strong> {date.startDate ? convertDate(date.startDate) : 'N/A'}
+                  </div>
+                  <div className="key-value">
+                    <strong>End Date:</strong> {date.endDate ? convertDate(date.endDate) : 'N/A'}
+                  </div>
+                </div>
+              ))}
+          </div>
+          <CalendarComp  /> 
+        </Fragment>: null
+        }
 
     </div>
   )
