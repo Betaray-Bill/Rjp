@@ -30,9 +30,10 @@ function App() {
       {/* Routing */}
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path='/' index element={<Home />}></Route>
 
+        {/* Protected Routes */}
         <Route element={<ProtectedRoute/> }>
-        {/* <Route path='/home' index element={<Home />} /> */}
           <Route path='/home' element={<Home />}>
           <Route path='dashboard' index element={<Dashboard /> }/>
             <Route path="account" element={<Account />}/>

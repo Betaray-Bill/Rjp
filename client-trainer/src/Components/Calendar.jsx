@@ -3,18 +3,38 @@ import '../App.css'
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 // Localizer for react-big-calendar using moment.js
 const localizer = momentLocalizer(moment);
 
-const CalendarComp = () => {
-  const [events, setEvents] = useState([]);
+const CalendarComp = ({eventsDate}) => {
+  const [data, setData] = useState()
+  const {user} = useSelector((state)=> state.auth)
+  const dispatch = useDispatch();
+
+  axios.defaults.withCredentials = true;
+  const getTrainerDetails = async() => {
+    console.log(data._id)
+
+    try{
+      const res = await axios.get(`http://localhost:5000/api/trainer/details/${data._id}`)
+      console.log(res.data)
+      setData(res.data)
+      dispatch(setCredentials(res.data))
+    }catch(err){
+      console.log("Error fetching the data")
+    }
+  }
+
+  // const [events, setEvents] = useState([]);
   const [newEvent, setNewEvent] = useState({
     title: "",
     start: "",
     end: "",
   });
-
+  // console.log(events, eventsDate)
   const convertToTime = (time) => {
     let val = time.getTime();
     const res = new Date(val);
@@ -22,22 +42,11 @@ const CalendarComp = () => {
     return res.toUTCString().split(" ")[4];
   };
 
-  const convertDate = (date) => {
-    const formattedDate =
-      date.getFullYear() +
-      "-" +
-      ("0" + (date.getMonth() + 1)).slice(-2) +
-      "-" +
-      ("0" + date.getDate()).slice(-2);
-
-    return formattedDate;
-  };
-
   // Function to check if the new event overlaps with existing events
   const isOverlapping = (start, end) => {
     console.log(start, end);
     console.log("---------------------------");
-    return events.some((event) => {
+    return eventsDate.some((event) => {
       const eventStart = new Date(event.start);
       const eventEnd = new Date(event.end);
       const newStart = new Date(start);
@@ -50,12 +59,6 @@ const CalendarComp = () => {
       // Old Event time
       let OldStartTime = convertToTime(eventStart);
       let OldEndTime = convertToTime(eventEnd);
-
-      // Dayes
-      // let startDay = convertDate(start)
-      // let endDay = convertDate(end)
-      // let OldstartDay = convertDate(event.start)
-      // let OldendDay = convertDate(event.end)
 
       // Check if the new event overlaps with the existing event
       return (
@@ -71,7 +74,8 @@ const CalendarComp = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  axios.defaults.withCredentials = true;
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
     const { title, start, end } = newEvent;
@@ -93,13 +97,19 @@ const CalendarComp = () => {
         "This event overlaps with an existing event. Please choose a different time."
       );
       return;
+    }else{
+      // post it in the API 
+      try{
+        const res = await axios.post(`http://localhost:5000/api/trainer/trainingDates/${data._id}`, newEvent)
+        console.log(res.data)
+        if(res){
+          getTrainerDetails()
+        }
+      }catch(err){
+        console.log(err)
+      }
+      // render the state to update it
     }
-
-    // Add the new event if all checks pass
-    setEvents([
-      ...events,
-      { ...newEvent, start: new Date(start), end: new Date(end) },
-    ]);
     setNewEvent({ title: "", start: "", end: "" });
   };
 
@@ -108,11 +118,17 @@ const CalendarComp = () => {
     alert(
       `Event Title: ${event.title}\nStart: ${event.start}\nEnd: ${event.end}`
     );
-  };
+  }
+
+  // Update the State
+  useEffect(() => {
+    getTrainerDetails()
+    setData(user)
+  }, [])
 
   return (
     <div className="App">
-      <h1>React Big Calendar with Event Form</h1>
+      <h1 className="text-slate-700">Training Dates</h1>
 
       {/* Event Form */}
       <form onSubmit={handleSubmit}>
@@ -140,7 +156,7 @@ const CalendarComp = () => {
       {/* Calendar */}
       <Calendar
         localizer={localizer}
-        events={events}
+        events={eventsDate}
         startAccessor="start"
         onSelectEvent={handleSelectEvent}
         endAccessor="end"

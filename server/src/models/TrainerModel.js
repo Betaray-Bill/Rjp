@@ -87,13 +87,15 @@ const trainerSchema = mongoose.Schema({
 
     availableDate: {
         type: [{
-            startDate: {
+            start: {
                 type: Date
             },
-            endDate: {
+            end: {
                 type: Date
             },
-            trainingName: String
+            title: {
+                type: String
+            }
         }]
     },
     // Resume Details--------------------------------

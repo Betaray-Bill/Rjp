@@ -32,102 +32,16 @@ function Dashboard() {
         setData(user)
       }
   })
-    // Dates
-    const [date, setDate] = useState({
-        start: new Date(),
-        end: new Date()
-    })
-
-
-    // console.log(date.start, date.end)
-    axios.defaults.withCredentials = true;
-    const handleDate = async(e) => {
-      e.preventDefault()
-      console.log(date)
-      try{
-        const res = await axios.post(`http://localhost:5000/api/trainer/trainingDates/${data._id}`, date)
-        console.log(res.data)
-        if(res){
-        //   getTrainerDetails()
-  
-        }
-      }catch(err){
-        console.log(err)
-      }
-    }
-
-    function convertDate(dateStr) {
-        // Check if dateStr is a string, and then convert it to a Date object
-        const date = new Date(dateStr);
-      
-        // Verify that 'date' is a valid Date object
-        if (isNaN(date.getTime())) {
-          throw new Error('Invalid Date');
-        }
-      
-        // Extract day, month, and year from the Date object
-        const day = date.getUTCDate(); // For local time, use date.getDate()
-        const month = date.getUTCMonth() + 1; // Months are zero-indexed, so add 1
-        const year = date.getUTCFullYear(); // For local time, use date.getFullYear()
-      
-        // Format the date as DD/MM/YYYY
-        const formattedDate = `${day}/${month}/${year}`;
-      
-        return formattedDate;
-    }
   
 
   return (
     <div>
-        
-      {
-          data && (
-            data.type_of_trainer === 'Internal' ? 
-            (
-              <div>
-                <h3>Internal Trainer</h3>
-                <p>Welcome {data.name}</p>
-                <p>Trainer ID: {data._id}</p>
-                <p>Type: {data.type_of_trainer}</p>
-                <div>
-                  <h3>Training Period</h3>
-                  <form onSubmit={handleDate}>
-                    <div>
-                      <label htmlFor="">Start</label>
-                      <input type="date" name="start" id="" onChange={(e) => setDate({...date, [e.target.name]:e.target.value})}/>
-                    </div>
-                    <div>
-                      <label htmlFor="">End</label>
-                      <input type="date" name="end" id="" onChange={(e) => setDate({...date, [e.target.name]:e.target.value})}/>
-                    </div>
-                    <button>Submit</button>
-                  </form>
-                </div>
-                {/* DateRanfg */}
-              </div>
-            ):null
-          ) 
-      }
-
     {/* Calendar Only for the Internal Trainers */}
     { 
         data && 
         data.type_of_trainer === 'Internal' ? 
         <Fragment>
-          <div className="section">
-              <h2>Available Dates</h2>
-              {user.availableDate.map((date, index) => (
-                <div key={index} className='section' style={{width:"400px"}}>
-                  <div className="key-value">
-                    <strong>Start Date:</strong> {date.startDate ? convertDate(date.startDate) : 'N/A'}
-                  </div>
-                  <div className="key-value">
-                    <strong>End Date:</strong> {date.endDate ? convertDate(date.endDate) : 'N/A'}
-                  </div>
-                </div>
-              ))}
-          </div>
-          <CalendarComp  /> 
+          <CalendarComp  eventsDate={data?.availableDate} /> 
         </Fragment>: null
         }
 
@@ -136,3 +50,18 @@ function Dashboard() {
 }
 
 export default Dashboard
+
+
+          {/* <div className="section">
+              <h2>Available Dates</h2>
+              {user.availableDate.map((date, index) => (
+                <div key={index} className='section' style={{width:"400px"}}>
+                  <div className="key-value">
+                    <strong>Start Date:</strong> {date.start ? convertDate(date.start) : 'N/A'}
+                  </div>
+                  <div className="key-value">
+                    <strong>End Date:</strong> {date.end ? convertDate(date.end) : 'N/A'}
+                  </div>
+                </div>
+              ))}
+          </div> */}

@@ -158,11 +158,12 @@ function Account() {
         <h2>Available Dates</h2>
         {user.availableDate.map((date, index) => (
           <div key={index} className='section' style={{width:"400px"}}>
+            <p>{date.title}</p>
             <div className="key-value">
-              <strong>Start Date:</strong> {date.startDate ? convertDate(date.startDate) : 'N/A'}
+              <strong>Start Date:</strong> {date.start ? convertDate(date.start) : 'N/A'}
             </div>
             <div className="key-value">
-              <strong>End Date:</strong> {date.endDate ? convertDate(date.endDate) : 'N/A'}
+              <strong>End Date:</strong> {date.end ? convertDate(date.end) : 'N/A'}
             </div>
           </div>
         ))}

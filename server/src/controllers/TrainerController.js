@@ -91,8 +91,9 @@ const addTrainingDates = asyncHandler(async(req, res) => {
         id, {
             $push: {
                 availableDate: {
-                    startDate: new Date(trainingDates.start),
-                    endDate: new Date(trainingDates.end),
+                    start: new Date(trainingDates.start),
+                    end: new Date(trainingDates.end),
+                    title: trainingDates.title
                 }
             }
         }, { new: true }

@@ -9,8 +9,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { BrowserRouter, createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from "react-query";
 
-
-
 const queryClient = new QueryClient();
 
 

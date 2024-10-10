@@ -90,6 +90,8 @@ function Home() {
       // getTrainerDetails()
       console.log(user)
       setData(user)
+    }else{
+      navigate("/login")
     }
 
     if(!data?.nda_Accepted){
@@ -100,6 +102,10 @@ function Home() {
       setOpen(false)
     }
   })
+
+  useEffect(() => {
+    // getTrainerDetails()
+  }, [])
 
 
   return (
