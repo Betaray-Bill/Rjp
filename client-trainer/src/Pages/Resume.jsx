@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import {
     Command,
     CommandEmpty,
@@ -18,19 +18,19 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
-
-  
-   
+import { Textarea } from "@/components/ui/textarea"
 import { Button } from '@/components/ui/button'
 import { useSelector } from 'react-redux'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 function Resume() {
+    const navigate = useNavigate()
+    const location = useLocation()
+
     const [position, setPosition] = useState("Main Resume")
     const {user}  = useSelector(state => state.auth)
     const [resumeName, setResumeName] = useState([])
     const [open, setOpen] = useState(false)
-    
     const [currentResume, setCurrentResume] = useState({
         professionalSummary: [''],
         technicalSkills: [''],
@@ -46,7 +46,6 @@ function Resume() {
 
     useEffect(() => {
         if(user !== null || user !== undefined){
-            console.log("meow")
             setResumeName([])
             setResumeName(prev => [...prev, "Main Resume"])
             user.resumeVersions.forEach(element => {
@@ -55,16 +54,85 @@ function Resume() {
         }
     }, [])
 
+    // Check for the changes in the version of the Resume
     useEffect(() => {
         console.log(position)
 
         if(user !== null || user !== undefined){
-
+            if(position === 'Main Resume'){
+                setCurrentResume(user.mainResume)
+                if(location.pathname !== '/home/resume'){
+                    navigate('/home/resume')
+                }   
+            }else{
+                let resumeVersionId = user.resumeVersions.find(element => element.trainingName === position)
+                setCurrentResume(user.resumeVersions.find(element => element.trainingName === position))
+                navigate(`/home/resume/copy/${resumeVersionId._id}`)
+            }
         }
 
     }, [position])
 
+    const handleChange = (e, field, index) => {
+        const value = e.target.value;
+        
+        setCurrentResume((prevState) => {
+          // Update array fields based on the index
+          if (Array.isArray(prevState[field])) {
+            const updatedArray = [...prevState[field]];
+            updatedArray[index] = value;
+    
+            return {
+              ...prevState,
+              [field]: updatedArray,
+            };
+          }
+    
+          // For non-array fields
+          return {
+            ...prevState,
+            [field]: value,
+          };
+        });
+      };
 
+
+    // Handler to add a new empty textarea for a specific field
+    const handleAdd = (field) => {
+        setCurrentResume((prevState) => {
+        return {
+            ...prevState,
+            [field]: [...prevState[field], ''], // Add empty string to the field array
+        };
+        });
+    };
+
+    // Handler to delete an item from a specific field
+    const handleDelete = (field, index) => {
+        setCurrentResume((prevState) => {
+        const updatedArray = prevState[field].filter((_, i) => i !== index);
+        return {
+            ...prevState,
+            [field]: updatedArray,
+        };
+        });
+    };
+
+    
+      // Function to render textareas for array fields
+      const renderTextareas = (fieldArray, fieldName) => {
+        return fieldArray.map((value, index) => (
+          <div key={index} className='py-2 flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
+            <Textarea 
+                value={value}
+                onChange={(e) => handleChange(e, fieldName, index)}
+                placeholder={`Type your ${fieldName}`}
+                className="w-[30vw] text-gray-800 text-sm outline-none border-collapse border-none"
+            />
+            <ion-icon name="trash-outline" style={{color:"rgba(246, 43, 43, 0.644)", fontSize:"18px", cursor:"pointer"}}  onClick={() => handleDelete(fieldName, index)}></ion-icon>
+          </div>
+        ));
+      };
   return (
     <div className='w-full h-screen p-4'>
         {/* Resume Nav */}
@@ -97,6 +165,7 @@ function Resume() {
                                 <CommandItem
                                     key={_i}
                                     value={resume}
+                                    disabled={resume === position ? true : false}
                                     onSelect={(currentValue) => {
                                         setPosition(currentValue === position ? "" : currentValue)
                                         setOpen(false)
@@ -125,21 +194,88 @@ function Resume() {
                         </Tooltip>
                     </TooltipProvider>
                 </div>
-                <div className='px-2'>
-                    <Button variant="outline">Make a Copy</Button>
-                </div>
-                <div className='px-2'>
-                    <Button variant="outline" className="flex items-center bg-black text-white">
-                        <ion-icon name="cloud-upload-outline" style={{fontSize:"18px"}}></ion-icon>
-                        <span className='pl-2'>Upload</span>
-                    </Button>   
-                </div>
+                {
+                    location.pathname.split('/')[location.pathname.split('/').length - 1 ] === 'resume' ? 
+                    (
+                        <Fragment>
+                            <div className='px-2'>
+                                <Button variant="outline" onClick={() => {
+                                    navigate("/home/resume/new-resume")
+                                }}>Make a Copy</Button>
+                            </div>
+                            <div className='px-2'>
+                                <Button variant="outline" className="flex items-center bg-black text-white">
+                                    <ion-icon name="cloud-upload-outline" style={{fontSize:"18px"}}></ion-icon>
+                                    <span className='pl-2'>Upload</span>
+                                </Button>   
+                            </div>
+                        </Fragment>
+                    ) : null
+                }
             </div>
         </div>
+        
         {
-            user && JSON.stringify(user.resumeVersions[0])
+            position === 'Main Resume' ? 
+            <div className='mt-10 m-2 p-4 bg-white rounded-md'>
+                <form className='grid grid-cols-2 items-start'>
+                    <div className='mt-4 border border-gray-100 rounded-sm p-2'>
+                        <h3 className='font-semibold flex justify-between items-center'>
+                            <span>Professional Summary:</span> 
+                            <ion-icon name="add-outline" style={{fontSize:"18px"}}  onClick={() => handleAdd('professionalSummary')}></ion-icon>
+                        </h3>
+                        {renderTextareas(currentResume.professionalSummary, 'professionalSummary')}
+                    </div>
+
+                    {/* Technical Skills */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold'>Technical Skills:</h3>
+                        {renderTextareas(currentResume.technicalSkills, 'technicalSkills')}
+                    </div>
+
+                    {/* Career History */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold'>Career History:</h3>
+                        {renderTextareas(currentResume.careerHistory, 'careerHistory')}
+                    </div>
+
+                    {/* Certifications */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold'>Certifications:</h3>
+                        {renderTextareas(currentResume.certifications, 'certifications')}
+                    </div>
+
+                    {/* Education */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold'>Education:</h3>
+                        {renderTextareas(currentResume.education, 'education')}
+                    </div>
+
+                    {/* Trainings Delivered */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold'>Trainings Delivered:</h3>
+                        {renderTextareas(currentResume.trainingsDelivered, 'trainingsDelivered')}
+                    </div>
+
+                    {/* Clientele */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold'>Clientele:</h3>
+                        {renderTextareas(currentResume.clientele, 'clientele')}
+                    </div>
+
+                    {/* Experience */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold'>Experience:</h3>
+                        {renderTextareas(currentResume.experience, 'experience')}
+                    </div>
+
+                </form>
+            </div> 
+            : 
+            <div>
+                <Outlet />
+            </div>
         }
-        <Outlet />
 
     </div>
   )

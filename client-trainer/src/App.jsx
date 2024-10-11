@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux'
 import { logout } from './features/authSlice.js'
 import Dashboard from './Pages/Dashboard.jsx'
 import Resume from './Pages/Resume.jsx'
+import ResumeForm from './Layout/Resume/ResumeForm'
 
 
 function App() {
@@ -38,7 +39,8 @@ function App() {
           <Route path='/home' element={<Home />}>
           <Route path='dashboard' index element={<Dashboard /> }/>
             <Route path="resume" element={<Resume />}>
-              <Route path='copy/:id' element={<div>Resume da</div>} />
+              <Route path='new-resume' element={<ResumeForm type="new"/>} />
+              <Route path='copy/:id' element={<ResumeForm type="copy"/>} />
             </Route>
             <Route path="account" element={<Account />}/>
 
