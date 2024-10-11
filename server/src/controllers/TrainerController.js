@@ -132,7 +132,8 @@ const resumeCopy = asyncHandler(async(req, res) => {
             education: req.body.education,
             trainingsDelivered: req.body.trainingsDelivered,
             clientele: req.body.clientele,
-            experience: req.body.experience
+            experience: req.body.experience,
+            trainingName: req.body.trainingName
         });
         await trainer.save();
 

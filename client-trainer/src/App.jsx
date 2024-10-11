@@ -37,7 +37,9 @@ function App() {
         <Route element={<ProtectedRoute/> }>
           <Route path='/home' element={<Home />}>
           <Route path='dashboard' index element={<Dashboard /> }/>
-            <Route path="resume" element={<Resume />}/>
+            <Route path="resume" element={<Resume />}>
+              <Route path='copy/:id' element={<div>Resume da</div>} />
+            </Route>
             <Route path="account" element={<Account />}/>
 
           </Route>

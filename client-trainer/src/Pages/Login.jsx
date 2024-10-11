@@ -72,6 +72,17 @@ function Login() {
         {/* <hr />
         <hr /> */}
         <h4>Login Page</h4>
+        <form onSubmit={loginHandler}>
+          <input id="email" label="Email" type='email' name="email" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})}  variant="outlined"  />
+          <input id="password"
+              label="Password"
+              type="password"
+              variant="outlined"
+              name="password" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})} />
+
+            <button type='submit'>Submit</button>
+          </form>
+
         {/* <Box
           component="form"
           sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
