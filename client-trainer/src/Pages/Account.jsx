@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import { height } from '@mui/system';
+// import Box from '@mui/material/Box';
+// import Button from '@mui/material/Button';
+// import Typography from '@mui/material/Typography';
+// import Modal from '@mui/material/Modal';
+// import { height } from '@mui/system';
 import axios from 'axios';
 
 const style = {
@@ -107,221 +107,224 @@ function Account() {
 
   return (
     <div>
-        <div className="container">
-        <div style={{display:"flex", justifyContent:"space-between"}}>
-          <h1>Trainer Profile</h1>
-          {/* <span> */}
-            <button onClick={handleOpen}>Edit</button>
-          {/* </span> */}
-        </div>
 
-      <div className="section">
-        <h2>Personal Details</h2>
-        <div className="key-value">
-          <strong>Name:</strong> {user.name}
-        </div>
-        <div className="key-value">
-          <strong>Type of Trainer:</strong> {user.type_of_trainer}
-        </div>
-        <div className="key-value">
-          <strong>Trainer ID:</strong> {user.trainerId}
-        </div>
-        <div className="key-value">
-          <strong>Is First Login:</strong> {user.is_FirstLogin ? 'Yes' : 'No'}
-        </div>
-        <div className="key-value">
-          <strong>NDA Accepted:</strong> {user.nda_Accepted ? 'Yes' : 'No'}
-        </div>
-      </div>
-
-      <div className="section">
-        <h2>Bank Details</h2>
-        {renderObject(user.bank_Details)}
-      </div>
-
-      <div className="section">
-        <h2>Contact Details</h2>
-        {renderObject(user.contact_Details)}
-      </div>
-
-      <div className="section">
-        <h2>Resume Details</h2>
-        {Object.keys(user.resume_details).map((key) => (
-          <div key={key}>
-            <h3>{key.replace(/_/g, ' ')}</h3>
-            <ul>{renderArray(user.resume_details[key])}</ul>
-          </div>
-        ))}
-      </div>
-
-      <div className="section">
-        <h2>Available Dates</h2>
-        {user.availableDate.map((date, index) => (
-          <div key={index} className='section' style={{width:"400px"}}>
-            <p>{date.title}</p>
-            <div className="key-value">
-              <strong>Start Date:</strong> {date.start ? convertDate(date.start) : 'N/A'}
-            </div>
-            <div className="key-value">
-              <strong>End Date:</strong> {date.end ? convertDate(date.end) : 'N/A'}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="section">
-        <h2>Other Information</h2>
-        <div className="key-value">
-          <strong>Created At:</strong> {new Date(user.createdAt).toLocaleString()}
-        </div>
-        <div className="key-value">
-          <strong>Updated At:</strong> {new Date(user.updatedAt).toLocaleString()}
-        </div>
-      </div>
-        </div>
-
-
-
-
-
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-            Edit Profile
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            <form onSubmit={handleSubmit} className="trainer-form">
-                <h1>Edit Trainer Details</h1>
-
-                <div className="form-group">
-                  <label>Name:</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    // readOnly
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Type of Trainer:</label>
-                  <input
-                    type="text"
-                    name="type_of_trainer"
-                    value={formData.type_of_trainer}
-                    onChange={handleInputChange}
-                    // readOnly
-                  />
-                </div>
-
-                {/* Professional Summary */}
-                <div className="form-group">
-                  <label>Professional Summary:</label>
-                  {formData.resume_details.professionalSummary.map((summary, idx) => (
-                    <input
-                      key={idx}
-                      type="text"
-                      name={idx}
-                      value={summary}
-                      onChange={(e) => handleArrayChange(e, 'resume_details.professionalSummary')}
-                    />
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFormData((prevData) => ({
-                        ...prevData,
-                        resume_details: {
-                          ...prevData.resume_details,
-                          professionalSummary: [...prevData.resume_details.professionalSummary, ''],
-                        },
-                      }))
-                    }
-                  >
-                    Add Summary
-                  </button>
-                </div>
-
-                {/* Education */}
-                <div className="form-group">
-                  <label>Education:</label>
-                  {formData.resume_details.education.map((edu, idx) => (
-                    <input
-                      key={idx}
-                      type="text"
-                      name={idx}
-                      value={edu}
-                      onChange={(e) => handleArrayChange(e, 'resume_details.education')}
-                    />
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFormData((prevData) => ({
-                        ...prevData,
-                        resume_details: {
-                          ...prevData.resume_details,
-                          education: [...prevData.resume_details.education, ''],
-                        },
-                      }))
-                    }
-                  >
-                    Add Education
-                  </button>
-                </div>
-
-                {/* Clientele */}
-                <div className="form-group">
-                  <label>Clientele:</label>
-                  {formData.resume_details.clientele.map((client, idx) => (
-                    <input
-                      key={idx}
-                      type="text"
-                      name={idx}
-                      value={formData.resume_details.clientele[idx]}
-                      onChange={(e) => handleArrayChange(e, 'resume_details.clientele')}
-                    />
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFormData((prevData) => ({
-                        ...prevData,
-                        resume_details: {
-                          ...prevData.resume_details,
-                          clientele: [...prevData.resume_details.clientele, ''],
-                        },
-                      }))
-                    }
-                  >
-                    Add Client
-                  </button>
-                </div>
-
-                {/* Other sections such as contact details, certifications, etc. */}
-                <div className="form-group">
-                  <label>Contact Details:</label>
-                  <input
-                    type="text"
-                    name="contact_Details.mobile_number"
-                    value={formData.contact_Details.mobile_number}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <button type="submit">Update</button>
-            </form>
-
-            </Typography>
-          </Box>
-        </Modal>
     </div>
+    // <div>
+    //     <div className="container">
+    //     <div style={{display:"flex", justifyContent:"space-between"}}>
+    //       <h1>Trainer Profile</h1>
+    //       {/* <span> */}
+    //         <button onClick={handleOpen}>Edit</button>
+    //       {/* </span> */}
+    //     </div>
+
+    //   <div className="section">
+    //     <h2>Personal Details</h2>
+    //     <div className="key-value">
+    //       <strong>Name:</strong> {user.name}
+    //     </div>
+    //     <div className="key-value">
+    //       <strong>Type of Trainer:</strong> {user.type_of_trainer}
+    //     </div>
+    //     <div className="key-value">
+    //       <strong>Trainer ID:</strong> {user.trainerId}
+    //     </div>
+    //     <div className="key-value">
+    //       <strong>Is First Login:</strong> {user.is_FirstLogin ? 'Yes' : 'No'}
+    //     </div>
+    //     <div className="key-value">
+    //       <strong>NDA Accepted:</strong> {user.nda_Accepted ? 'Yes' : 'No'}
+    //     </div>
+    //   </div>
+
+    //   <div className="section">
+    //     <h2>Bank Details</h2>
+    //     {renderObject(user.bank_Details)}
+    //   </div>
+
+    //   <div className="section">
+    //     <h2>Contact Details</h2>
+    //     {renderObject(user.contact_Details)}
+    //   </div>
+
+    //   <div className="section">
+    //     <h2>Resume Details</h2>
+    //     {Object.keys(user.resume_details).map((key) => (
+    //       <div key={key}>
+    //         <h3>{key.replace(/_/g, ' ')}</h3>
+    //         <ul>{renderArray(user.resume_details[key])}</ul>
+    //       </div>
+    //     ))}
+    //   </div>
+
+    //   <div className="section">
+    //     <h2>Available Dates</h2>
+    //     {user.availableDate.map((date, index) => (
+    //       <div key={index} className='section' style={{width:"400px"}}>
+    //         <p>{date.title}</p>
+    //         <div className="key-value">
+    //           <strong>Start Date:</strong> {date.start ? convertDate(date.start) : 'N/A'}
+    //         </div>
+    //         <div className="key-value">
+    //           <strong>End Date:</strong> {date.end ? convertDate(date.end) : 'N/A'}
+    //         </div>
+    //       </div>
+    //     ))}
+    //   </div>
+
+    //   <div className="section">
+    //     <h2>Other Information</h2>
+    //     <div className="key-value">
+    //       <strong>Created At:</strong> {new Date(user.createdAt).toLocaleString()}
+    //     </div>
+    //     <div className="key-value">
+    //       <strong>Updated At:</strong> {new Date(user.updatedAt).toLocaleString()}
+    //     </div>
+    //   </div>
+    //     </div>
+
+
+
+
+
+    //     <Modal
+    //       open={open}
+    //       onClose={handleClose}
+    //       aria-labelledby="modal-modal-title"
+    //       aria-describedby="modal-modal-description"
+    //     >
+    //       <Box sx={style}>
+    //         <Typography id="modal-modal-title" variant="h6" component="h2">
+    //         Edit Profile
+    //         </Typography>
+    //         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+    //         <form onSubmit={handleSubmit} className="trainer-form">
+    //             <h1>Edit Trainer Details</h1>
+
+    //             <div className="form-group">
+    //               <label>Name:</label>
+    //               <input
+    //                 type="text"
+    //                 name="name"
+    //                 value={formData.name}
+    //                 onChange={handleInputChange}
+    //                 // readOnly
+    //               />
+    //             </div>
+
+    //             <div className="form-group">
+    //               <label>Type of Trainer:</label>
+    //               <input
+    //                 type="text"
+    //                 name="type_of_trainer"
+    //                 value={formData.type_of_trainer}
+    //                 onChange={handleInputChange}
+    //                 // readOnly
+    //               />
+    //             </div>
+
+    //             {/* Professional Summary */}
+    //             <div className="form-group">
+    //               <label>Professional Summary:</label>
+    //               {formData.resume_details.professionalSummary.map((summary, idx) => (
+    //                 <input
+    //                   key={idx}
+    //                   type="text"
+    //                   name={idx}
+    //                   value={summary}
+    //                   onChange={(e) => handleArrayChange(e, 'resume_details.professionalSummary')}
+    //                 />
+    //               ))}
+    //               <button
+    //                 type="button"
+    //                 onClick={() =>
+    //                   setFormData((prevData) => ({
+    //                     ...prevData,
+    //                     resume_details: {
+    //                       ...prevData.resume_details,
+    //                       professionalSummary: [...prevData.resume_details.professionalSummary, ''],
+    //                     },
+    //                   }))
+    //                 }
+    //               >
+    //                 Add Summary
+    //               </button>
+    //             </div>
+
+    //             {/* Education */}
+    //             <div className="form-group">
+    //               <label>Education:</label>
+    //               {formData.resume_details.education.map((edu, idx) => (
+    //                 <input
+    //                   key={idx}
+    //                   type="text"
+    //                   name={idx}
+    //                   value={edu}
+    //                   onChange={(e) => handleArrayChange(e, 'resume_details.education')}
+    //                 />
+    //               ))}
+    //               <button
+    //                 type="button"
+    //                 onClick={() =>
+    //                   setFormData((prevData) => ({
+    //                     ...prevData,
+    //                     resume_details: {
+    //                       ...prevData.resume_details,
+    //                       education: [...prevData.resume_details.education, ''],
+    //                     },
+    //                   }))
+    //                 }
+    //               >
+    //                 Add Education
+    //               </button>
+    //             </div>
+
+    //             {/* Clientele */}
+    //             <div className="form-group">
+    //               <label>Clientele:</label>
+    //               {formData.resume_details.clientele.map((client, idx) => (
+    //                 <input
+    //                   key={idx}
+    //                   type="text"
+    //                   name={idx}
+    //                   value={formData.resume_details.clientele[idx]}
+    //                   onChange={(e) => handleArrayChange(e, 'resume_details.clientele')}
+    //                 />
+    //               ))}
+    //               <button
+    //                 type="button"
+    //                 onClick={() =>
+    //                   setFormData((prevData) => ({
+    //                     ...prevData,
+    //                     resume_details: {
+    //                       ...prevData.resume_details,
+    //                       clientele: [...prevData.resume_details.clientele, ''],
+    //                     },
+    //                   }))
+    //                 }
+    //               >
+    //                 Add Client
+    //               </button>
+    //             </div>
+
+    //             {/* Other sections such as contact details, certifications, etc. */}
+    //             <div className="form-group">
+    //               <label>Contact Details:</label>
+    //               <input
+    //                 type="text"
+    //                 name="contact_Details.mobile_number"
+    //                 value={formData.contact_Details.mobile_number}
+    //                 onChange={handleInputChange}
+    //               />
+    //             </div>
+
+    //             <button type="submit">Update</button>
+    //         </form>
+
+    //         </Typography>
+    //       </Box>
+    //     </Modal>
+    // </div>
   )
 }
 

@@ -1,13 +1,10 @@
 import React, { Fragment, useEffect, useState } from 'react'
-
 import { useSelector } from 'react-redux';
-import CalendarComp from '../Components/Calendar.jsx';
+// import Calendar from '../Layout/Home/Calendar.jsx'
 import axios from 'axios';
-const dateRanges = [
-    { start: "2024-10-01", end: "2024-10-05", Deal: 1 },
-    { start: "2024-10-10", end: "2024-10-15", Deal: 2 },
-    { start: "2024-11-05", end: "2024-11-09", Deal: 3 },
-  ];
+
+
+
 function Dashboard() {
   const [data, setData] = useState()
   const {user} = useSelector((state)=> state.auth)
@@ -41,7 +38,7 @@ function Dashboard() {
         data && 
         data.type_of_trainer === 'Internal' ? 
         <Fragment>
-          <CalendarComp  eventsDate={data?.availableDate} /> 
+          {/* <Calendar  eventsDate={data?.availableDate} />  */}
         </Fragment>: null
         }
 

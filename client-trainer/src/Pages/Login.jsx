@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setCredentials } from '../features/authSlice';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import { Button } from '@mui/material';
+// import Box from '@mui/material/Box';
+// import TextField from '@mui/material/TextField';
+// import { Button } from '@mui/material';
 import { useMutation } from 'react-query';
 import axios from 'axios';
 
@@ -72,14 +72,13 @@ function Login() {
         {/* <hr />
         <hr /> */}
         <h4>Login Page</h4>
-        <Box
+        {/* <Box
           component="form"
           sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
           noValidate
           onSubmit={loginHandler}
           autoComplete="off"
         >
-          {/* <form onSubmit={loginHandler}> */}
           <TextField id="email" label="Email" name="email" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})}  variant="outlined" />
           <TextField
             id="password"
@@ -89,23 +88,11 @@ function Login() {
             name="password" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})} 
           />
           <Button variant="contained" type="submit">
-            {/* {isLoading? 'Loading...':'Submit'} */}
             Submit
           </Button>
-          {/* <button type="submit" disabled={isLoading}>
-            {isLoading? 'Loading...':'Submit'}
-          </button> */}
-          {/* </form> */}
-        </Box>        
-        {/* <form onSubmit={loginHandler}>
-          <input type="email" name="email" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})} />
-          <input type="password" name="password" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})} />
-          <button type="submit">Submit</button>
-        </form> */}
 
-        {
-            // user ? JSON.stringify(user) :"No data"
-        }
+        </Box>         */}
+
     </div>  
   )
 }

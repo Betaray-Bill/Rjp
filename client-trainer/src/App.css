@@ -125,6 +125,8 @@ select {
     border: 1px solid black;
 }
 
+
+/* 
 button {
     border: none;
     background: transparent;
@@ -143,7 +145,7 @@ button:hover {
     transition: all 200ms ease-in-out;
     background-color: white !important;
     color: black
-}
+} */
 
 .calendar {
     padding: 20px;
@@ -216,4 +218,80 @@ button:hover {
 
 .highlight:nth-child(1) {
     border-radius: 50%;
+}
+
+
+/* custom-calendar.css */
+
+
+/* Customize the calendar header */
+
+.rbc-toolbar {
+    /* background-color: #4A90E2; */
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+/* Customize the navigation buttons */
+
+.rbc-btn-group button {
+    background-color: white;
+    border: 1px solid #4A90E2;
+    color: #4A90E2;
+    font-weight: bold;
+}
+
+.rbc-btn-group button:hover {
+    background-color: #4A90E2;
+    color: white;
+}
+
+
+/* Customize the days' background color */
+
+.rbc-day-bg {
+    background-color: #F3F4F6;
+}
+
+
+/* Customize today's background */
+
+.rbc-today {
+    background-color: #FEE2E2 !important;
+}
+
+
+/* Customize the event color */
+
+.rbc-event {
+    background-color: #2ECC71;
+    color: white;
+    padding: 2px;
+    border-radius: 4px;
+}
+
+
+/* Customize event title font size */
+
+.rbc-event-content {
+    font-size: 14px;
+}
+
+
+/* Customize the calendar grid border */
+
+.rbc-month-view,
+.rbc-time-view {
+    border: 1px solid #D1D5DB;
+}
+
+
+/* Customize the time slot labels */
+
+.rbc-time-header {
+    background-color: #E5E7EB;
+    font-weight: bold;
 }

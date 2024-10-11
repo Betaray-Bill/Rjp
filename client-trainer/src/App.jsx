@@ -10,6 +10,7 @@ import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { logout } from './features/authSlice.js'
 import Dashboard from './Pages/Dashboard.jsx'
+import Resume from './Pages/Resume.jsx'
 
 
 function App() {
@@ -36,7 +37,9 @@ function App() {
         <Route element={<ProtectedRoute/> }>
           <Route path='/home' element={<Home />}>
           <Route path='dashboard' index element={<Dashboard /> }/>
+            <Route path="resume" element={<Resume />}/>
             <Route path="account" element={<Account />}/>
+
           </Route>
         </Route>
       </Routes>
