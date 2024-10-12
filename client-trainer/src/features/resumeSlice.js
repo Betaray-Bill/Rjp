@@ -40,13 +40,17 @@ const resumeSlice = createSlice({
         },
         setCurrentResumeName: (state, action) => {
             state.currentResumeName = action.payload
+        },
+        setCopyResumeDetails: (state, action) => {
+            state.copyResumeDetails = action.payload
         }
     }
 });
 
 export const {
     setCurrentResumeDetails,
-    setCurrentResumeName
+    setCurrentResumeName,
+    setCopyResumeDetails
 } = resumeSlice.actions;
 
 export default resumeSlice.reducer;

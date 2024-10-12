@@ -118,7 +118,7 @@ function Home() {
 
   useEffect(() => {
     // getTrainerDetails()
-  }, [])
+  })
 
 
   const [currentTime, setCurrentTime] = useState(new Date());
