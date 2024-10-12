@@ -27,7 +27,7 @@ function App() {
   
 
   return (
-    <div className='wrapper'>
+    <div className='m-0 p-0 overflow-hidden'>
      
       {/* Routing */}
       <Routes>
@@ -37,13 +37,12 @@ function App() {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute/> }>
           <Route path='/home' element={<Home />}>
-          <Route path='dashboard' index element={<Dashboard /> }/>
+            <Route path='dashboard' index element={<Dashboard /> }/>
             <Route path="resume" element={<Resume />}>
-              <Route path='new-resume' element={<ResumeForm type="new"/>} />
+              <Route path='new' element={<ResumeForm type="new"/>} />
               <Route path='copy/:id' element={<ResumeForm type="copy"/>} />
             </Route>
             <Route path="account" element={<Account />}/>
-
           </Route>
         </Route>
       </Routes>

@@ -1,296 +1,83 @@
 import React, { Fragment, useEffect, useState } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
+import ResumeForm from '@/Layout/Resume/ResumeForm'
+import ResumeNav from '@/Layout/Resume/ResumeNav'
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-  } from "@/components/ui/command"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from '@/components/ui/button'
-import { useSelector } from 'react-redux'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { useDispatch, useSelector } from 'react-redux'
 
 function Resume() {
-    const navigate = useNavigate()
-    const location = useLocation()
-
-    const [position, setPosition] = useState("Main Resume")
-    const {user}  = useSelector(state => state.auth)
-    const [resumeName, setResumeName] = useState([])
-    const [open, setOpen] = useState(false)
-    const [currentResume, setCurrentResume] = useState({
-        professionalSummary: [''],
-        technicalSkills: [''],
-        careerHistory: [''],
-        certifications: [''],
-        education: [''],
-        trainingsDelivered: [''],
-        clientele: [''],
-        experience: [''],
-        file_url: '',
-        trainingName:''
-    })
+    const location  = useLocation()
+    const dispatch = useDispatch()
+    const {currentResumeName} = useSelector(state => state.resume)
+    const [path , setPath] = useState('')
 
     useEffect(() => {
-        if(user !== null || user !== undefined){
-            setResumeName([])
-            setResumeName(prev => [...prev, "Main Resume"])
-            user.resumeVersions.forEach(element => {
-                setResumeName(prevState => [...prevState, element.trainingName])
-            });
-        }
-    }, [])
+        const path = location.pathname.split('/')[location.pathname.split('/').length - 1]
+        console.log(path)
+        setPath(path)
+        console.log(currentResumeName)
+    }, [location.pathname])
 
-    // Check for the changes in the version of the Resume
-    useEffect(() => {
-        console.log(position)
-
-        if(user !== null || user !== undefined){
-            if(position === 'Main Resume'){
-                setCurrentResume(user.mainResume)
-                if(location.pathname !== '/home/resume'){
-                    navigate('/home/resume')
-                }   
-            }else{
-                let resumeVersionId = user.resumeVersions.find(element => element.trainingName === position)
-                setCurrentResume(user.resumeVersions.find(element => element.trainingName === position))
-                navigate(`/home/resume/copy/${resumeVersionId._id}`)
-            }
-        }
-
-    }, [position])
-
-    const handleChange = (e, field, index) => {
-        const value = e.target.value;
-        
-        setCurrentResume((prevState) => {
-          // Update array fields based on the index
-          if (Array.isArray(prevState[field])) {
-            const updatedArray = [...prevState[field]];
-            updatedArray[index] = value;
-    
-            return {
-              ...prevState,
-              [field]: updatedArray,
-            };
-          }
-    
-          // For non-array fields
-          return {
-            ...prevState,
-            [field]: value,
-          };
-        });
-      };
-
-
-    // Handler to add a new empty textarea for a specific field
-    const handleAdd = (field) => {
-        setCurrentResume((prevState) => {
-        return {
-            ...prevState,
-            [field]: [...prevState[field], ''], // Add empty string to the field array
-        };
-        });
-    };
-
-    // Handler to delete an item from a specific field
-    const handleDelete = (field, index) => {
-        setCurrentResume((prevState) => {
-        const updatedArray = prevState[field].filter((_, i) => i !== index);
-        return {
-            ...prevState,
-            [field]: updatedArray,
-        };
-        });
-    };
-
-    
-      // Function to render textareas for array fields
-      const renderTextareas = (fieldArray, fieldName) => {
-        return fieldArray.map((value, index) => (
-          <div key={index} className='py-2 flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
-            <Textarea 
-                value={value}
-                onChange={(e) => handleChange(e, fieldName, index)}
-                placeholder={`Type your ${fieldName}`}
-                className="w-[35vw] text-gray-800 text-sm outline-none border-collapse border-none"
-            />
-            <ion-icon name="trash-outline" style={{color:"rgba(246, 43, 43, 0.644)", fontSize:"18px", cursor:"pointer"}}  onClick={() => handleDelete(fieldName, index)}></ion-icon>
-          </div>
-        ));
-      };
   return (
     <div className='w-full h-screen p-4'>
-        {/* Resume Nav */}
-        <div className='flex items-center justify-between'>
-            {/* Dropdown for Resume's, Download, copy, Upload */}
-            <div>
-                <p className="text-sm text-muted-foreground pb-1">Resume Version</p>
-                <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={open}
-                            className="w-[200px] justify-between"
-                        >
-                        {resumeName !== undefined
-                            ? resumeName.find((resume) => resume === position)
-                            : "Select Resume..."}
-                            <ion-icon name="swap-vertical-outline" style={{fontSize:"20px"}} className="ml-2 h-4 w-4 shrink-0 opacity-50"></ion-icon>
-                        {/* <CaretSortIcon   /> */}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-max p-0">
-                        <Command>
-                        <CommandInput placeholder="Search Resume..." className="h-9" />
-                        <CommandList>
-                            <CommandEmpty>No resume found.</CommandEmpty>
-                            <CommandGroup>
-                            {resumeName.map((resume, _i) => (
-                                <CommandItem
-                                    key={_i}
-                                    value={resume}
-                                    disabled={resume === position ? true : false}
-                                    onSelect={(currentValue) => {
-                                        setPosition(currentValue === position ? "" : currentValue)
-                                        setOpen(false)
-                                    }}
-                                >
-                                {resume}
-                                </CommandItem>
-                            ))}
-                            </CommandGroup>
-                        </CommandList>
-                        </Command>
-                    </PopoverContent>
-                </Popover>
-
-            </div>
-
-            {/*Download, Copy, Upload  */}
-            <div className='flex items-center justify-between w-max px-2'>
-                <div className='px-2'>
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger><ion-icon style={{fontSize:"20px"}} name="download-outline"></ion-icon></TooltipTrigger>
-                            <TooltipContent>
-                            <p>Download</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </div>
-                {
-                    location.pathname.split('/')[location.pathname.split('/').length - 1 ] === 'resume' ? 
-                    (
+        {
+            // resumeState && 
+        }
+        <div className='mb-3 text-sm'>
+            <Breadcrumb>
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/home/Dashboard">Home</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/home/resume">Resume</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    {
+                       path !== '' ? 
+                       (
                         <Fragment>
-                            <div className='px-2'>
-                                <Button variant="outline" onClick={() => {
-                                    navigate("/home/resume/new-resume")
-                                }}>Make a Copy</Button>
-                            </div>
-                            <div className='px-2'>
-                                <Button variant="outline" className="flex items-center bg-black text-white">
-                                    <ion-icon name="cloud-upload-outline" style={{fontSize:"18px"}}></ion-icon>
-                                    <span className='pl-2'>Upload</span>
-                                </Button>   
-                            </div>
+                            {
+                                path === 'new' ?
+                                <Fragment>
+                                    <BreadcrumbSeparator />
+                                    <BreadcrumbItem>
+                                        <BreadcrumbPage>New</BreadcrumbPage>
+                                    </BreadcrumbItem>
+                                </Fragment> : 
+                                (
+                                    location.pathname.split('/')[location.pathname.split('/').length - 2] === 'copy' ? 
+                                    (
+                                        <Fragment>
+                                            <BreadcrumbSeparator />
+                                            <BreadcrumbItem>
+                                                <BreadcrumbPage><span className='text-gray-500 text-sm'>Copy of</span> {currentResumeName && currentResumeName}</BreadcrumbPage>
+                                            </BreadcrumbItem>
+                                        </Fragment>
+                                    ) : null
+                                )
+                            }
                         </Fragment>
-                    ) : null
-                }
-            </div>
+                       ) : null
+                    }
+                </BreadcrumbList>
+            </Breadcrumb>
         </div>
+
+        {/* Resume Nav */}
+        <ResumeNav />
         
         {
-            position === 'Main Resume' ? 
+            'Main Resume' ? 
             <div className='mt-10 m-1 p-2 bg-white rounded-md'>
-                <form className='grid grid-cols-2 items-start'>
-                    <div className='mt-4 border border-gray-100 rounded-sm p-2'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Professional Summary:</span> 
-                            <ion-icon name="add-outline" style={{fontSize:"18px"}}  onClick={() => handleAdd('professionalSummary')}></ion-icon>
-                        </h3>
-                        {renderTextareas(currentResume.professionalSummary, 'professionalSummary')}
-                    </div>
-
-                    {/* Technical Skills */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Technical Skills:</span> 
-                            <ion-icon name="add-outline" style={{fontSize:"18px"}}  onClick={() => handleAdd('technicalSkills')}></ion-icon>
-                        </h3>
-                        {renderTextareas(currentResume.technicalSkills, 'technicalSkills')}
-                    </div>
-
-                    {/* Career History */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Career History:</span> 
-                            <ion-icon name="add-outline" style={{fontSize:"18px"}}  onClick={() => handleAdd('careerHistory')}></ion-icon>
-                        </h3>
-                        {renderTextareas(currentResume.careerHistory, 'careerHistory')}
-                    </div>
-
-                    {/* Certifications */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Certifications:</span> 
-                            <ion-icon name="add-outline" style={{fontSize:"18px"}}  onClick={() => handleAdd('certifications')}></ion-icon>
-                        </h3>
-                        {renderTextareas(currentResume.certifications, 'certifications')}
-                    </div>
-
-                    {/* Education */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Education:</span> 
-                            <ion-icon name="add-outline" style={{fontSize:"18px"}}  onClick={() => handleAdd('education')}></ion-icon>
-                        </h3>
-                        {renderTextareas(currentResume.education, 'education')}
-                    </div>
-
-                    {/* Trainings Delivered */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Training Delivered:</span> 
-                            <ion-icon name="add-outline" style={{fontSize:"18px"}}  onClick={() => handleAdd('trainingsDelivered')}></ion-icon>
-                        </h3>
-                        {renderTextareas(currentResume.trainingsDelivered, 'trainingsDelivered')}
-                    </div>
-
-                    {/* Clientele */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Clientele:</span> 
-                            <ion-icon name="add-outline" style={{fontSize:"18px"}}  onClick={() => handleAdd('clientele')}></ion-icon>
-                        </h3>
-                        {renderTextareas(currentResume.clientele, 'clientele')}
-                    </div>
-
-                    {/* Experience */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Experience:</span> 
-                            <ion-icon name="add-outline" style={{fontSize:"18px"}}  onClick={() => handleAdd('experience')}></ion-icon>
-                        </h3>
-                        {renderTextareas(currentResume.experience, 'experience')}
-                    </div>
-
-                </form>
+                <ResumeForm type="main"/>
             </div> 
             : 
             <div>
