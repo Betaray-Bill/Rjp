@@ -98,7 +98,7 @@ function ResumeForm({type}) {
     };
 
     return (
-      <Fragment>
+      <div className="my-6 mb-6 bg-white rounded-md border border-gray-500">
         {
             currentResumeName !== 'Main Resume' ? 
               <div className='mx-auto ml-16 mt-4'>
@@ -219,7 +219,7 @@ function ResumeForm({type}) {
             </div>
 
         </form>
-      </Fragment>
+      </div>
     )
 }
 

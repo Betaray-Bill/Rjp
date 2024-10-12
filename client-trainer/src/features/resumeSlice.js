@@ -13,6 +13,18 @@ const initialState = {
         file_url: '',
         trainingName: ''
     },
+    copyResumeDetails: {
+        professionalSummary: [],
+        technicalSkills: [],
+        careerHistory: [],
+        certifications: [],
+        education: [],
+        trainingsDelivered: [],
+        clientele: [],
+        experience: [],
+        file_url: '',
+        trainingName: ''
+    },
     currentResumeName: "Main Resume",
     isAuthenticated: false,
 };

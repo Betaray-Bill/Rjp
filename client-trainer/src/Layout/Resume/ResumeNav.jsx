@@ -28,7 +28,7 @@ function ResumeNav() {
     const navigate = useNavigate()
     const location = useLocation()
     const dispatch = useDispatch()
-    const {currentResumeDetails} = useSelector(state => state.resume)
+    const {currentResumeDetails, currentResumeName} = useSelector(state => state.resume)
 
     
     const [position, setPosition] = useState("Main Resume")
@@ -73,28 +73,31 @@ function ResumeNav() {
 
     
   return (
-    <div className='flex items-center justify-between'>
+    <div className='flex items-center justify-between  bg-white p-2 rounded-md border'>
         {/* Dropdown for Resume's, Download, copy, Upload */}
         <div>
             <p className="text-sm text-muted-foreground pb-1">Resume Version</p>
-            <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                    <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open}
-                        className="w-max justify-between"
-                    >
-                        <span className='mr-2'>
-                            {resumeName !== undefined
-                            ? resumeName.find((resume) => resume === position)
-                            : "Select Resume..."}
-                        </span>
-                        <ion-icon name="swap-vertical-outline" style={{fontSize:"20px"}} className="ml-2 h-4 w-4 shrink-0 opacity-50"></ion-icon>
-                    {/* <CaretSortIcon   /> */}
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-max p-0">
+            {
+                location.pathname.split('/')[location.pathname.split('/').length - 1] !== 'new' ?
+                (
+                    <Popover open={open} onOpenChange={setOpen}>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={open}
+                                className="w-max justify-between"
+                            >
+                                <span className='mr-2'>
+                                    {resumeName !== undefined
+                                    ? resumeName.find((resume) => resume === position)
+                                    : "Select Resume..."}
+                                </span>
+                                <ion-icon name="swap-vertical-outline" style={{fontSize:"20px"}} className="ml-2 h-4 w-4 shrink-0 opacity-50"></ion-icon>
+                            {/* <CaretSortIcon   /> */}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-max p-0">
                     <Command>
                     <CommandInput placeholder="Search Resume..." className="h-9" />
                     <CommandList>
@@ -116,8 +119,10 @@ function ResumeNav() {
                         </CommandGroup>
                     </CommandList>
                     </Command>
-                </PopoverContent>
-            </Popover>
+                        </PopoverContent>
+                    </Popover>
+                )  : null
+            }
 
         </div>
 
@@ -139,6 +144,7 @@ function ResumeNav() {
                     <Fragment>
                         <div className='px-2'>
                             <Button variant="outline" onClick={() => {
+                                dispatch(setCurrentResumeName("new"))
                                 navigate("/home/resume/new")
                             }}>Make a Copy</Button>
                         </div>

@@ -49,7 +49,7 @@ function Resume() {
                                 <Fragment>
                                     <BreadcrumbSeparator />
                                     <BreadcrumbItem>
-                                        <BreadcrumbPage>New</BreadcrumbPage>
+                                        <BreadcrumbPage>{currentResumeName === "" ? "new" : currentResumeName}</BreadcrumbPage>
                                     </BreadcrumbItem>
                                 </Fragment> : 
                                 (
@@ -75,7 +75,7 @@ function Resume() {
         <ResumeNav />
         
         {
-            'Main Resume' ? 
+            currentResumeName === 'Main Resume' ? 
             <div className='mt-10 m-1 p-2 bg-white rounded-md'>
                 <ResumeForm type="main"/>
             </div> 
@@ -84,7 +84,7 @@ function Resume() {
                 <Outlet />
             </div>
         }
-
+    
     </div>
   )
 }

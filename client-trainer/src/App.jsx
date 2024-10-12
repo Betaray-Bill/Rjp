@@ -12,6 +12,7 @@ import { logout } from './features/authSlice.js'
 import Dashboard from './Pages/Dashboard.jsx'
 import Resume from './Pages/Resume.jsx'
 import ResumeForm from './Layout/Resume/ResumeForm'
+import ResumeNew from './Layout/Resume/ResumeNew'
 
 
 function App() {
@@ -39,7 +40,7 @@ function App() {
           <Route path='/home' element={<Home />}>
             <Route path='dashboard' index element={<Dashboard /> }/>
             <Route path="resume" element={<Resume />}>
-              <Route path='new' element={<ResumeForm type="new"/>} />
+              <Route path='new' element={<ResumeNew />} />
               <Route path='copy/:id' element={<ResumeForm type="copy"/>} />
             </Route>
             <Route path="account" element={<Account />}/>
