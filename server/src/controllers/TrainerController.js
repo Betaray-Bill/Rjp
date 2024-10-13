@@ -186,6 +186,9 @@ const getAllTrainer = asyncHandler(async(req, res) => {
     }
 })
 
+
+// Update
+
 export {
     trainerLogin,
     acceptNDA,
