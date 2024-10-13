@@ -44,14 +44,14 @@ const registerTrainer = asyncHandler(async(req, res) => {
             },
             availableDate: req.body.availableDate,
             mainResume: {
-                professionalSummary: req.body.resume_details.professionalSummary,
-                technicalSkills: req.body.resume_details.technicalSkills,
-                careerHistory: req.body.resume_details.careerHistory,
-                certifications: req.body.resume_details.certifications,
-                education: req.body.resume_details.education,
-                trainingsDelivered: req.body.resume_details.trainingsDelivered,
-                clientele: req.body.resume_details.clientele,
-                experience: req.body.resume_details.experience,
+                professionalSummary: req.body.mainResume.professionalSummary,
+                technicalSkills: req.body.mainResume.technicalSkills,
+                careerHistory: req.body.mainResume.careerHistory,
+                certifications: req.body.mainResume.certifications,
+                education: req.body.mainResume.education,
+                trainingsDelivered: req.body.mainResume.trainingsDelivered,
+                clientele: req.body.mainResume.clientele,
+                experience: req.body.mainResume.experience,
                 file_url: "" //get from the Azure storage
             }
 
@@ -89,7 +89,81 @@ const generateTrainerId = async() => {
 };
 
 
+// update an existing Resume
+const updateResume = asyncHandler(async(req, res) => {
+    const { id } = req.params;
+    console.log("Trainer Id", id)
+    console.log(req.body)
+    
+    // Check if the trainer exits
+    const trainer = await Trainer.findById(id);
+    if (!trainer) {
+        return res.status(404).json({ message: "Trainer not found" });
+    }
+
+    try {
+        // Check if it the main or copy resume
+        let isMainResume = req.body.isMainResume
+        // if main then updateBytrainerID
+        if(isMainResume){
+            await trainer.findByIdAndUpdate(
+                id, 
+                { $set: { mainResume: {...req.body} } },
+                { new: true, runValidators: true }
+            )
+
+            if (!updatedTrainer) {
+                return res.status(404).json({ message: 'Trainer not found' });
+            }
+        }else{
+            // if copy then check if the same resume exists, then update the docs in the collection
+
+            console.log(req.body.trainingName)
+            console.log("Length ", trainer.resumeVersions.length)
+            // const existingResume = await trainer.resumeVersions.forEach((e))
+
+            for(let i=0; i<trainer.resumeVersions.length; i++){
+                console.log(trainer.resumeVersions[i].trainingName)
+                if(trainer.resumeVersions[i].trainingName === req.body.trainingName){
+                    console.log("-----------------------------")
+                    console.log(trainer.resumeVersions[i])
+                    // Update the specific index using splice
+                    // trainer.resumeVersions.splice(i, 1, {
+                    //     ...trainer.resumeVersions[i], // Keep the existing data
+                    //     ...req.body.resumeVersion,    // Update with the new data from the request
+                    // });
+                    await trainer.resumeVersions?.splice(i, 1, {
+                        professionalSummary: req.body.professionalSummary,
+                        technicalSkills: req.body.technicalSkills,
+                        careerHistory:req.body.careerHistory,
+                        certifications: req.body.certifications,
+                        education: req.body.education,
+                        trainingsDelivered:req.body.trainingsDelivered,
+                        clientele: req.body.clientele,
+                        experience: req.body.experience,
+                        trainingName: req.body.trainingName
+                    })
+                    break;
+                }
+            }
+    
+        }
+        await trainer.save();
+
+        res.status(200).json({
+            message: "Resume saved succesfully",
+            trainer: trainer
+        });
+
+    } catch (err) {
+        console.error("Error creating resume copy:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+})
+
+
 
 export {
-    registerTrainer
+    registerTrainer,
+    updateResume
 }

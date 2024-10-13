@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import {Input} from "@/components/ui/input"
 import {Textarea} from "@/components/ui/textarea"
 import {useDispatch, useSelector} from 'react-redux'
@@ -6,11 +6,12 @@ import {setCopyResumeDetails, setCurrentResumeName} from '@/features/resumeSlice
 import {Button} from '@/components/ui/button'
 import axios from 'axios'
 import { setCredentials } from '@/features/authSlice'
+import { useNavigate } from 'react-router-dom'
 
 function ResumeNew() {
-    const {currentResumeDetails, currentResumeName, copyResumeDetails} = useSelector(state => state.resume)
+    const {currentResumeDetails, currentResumeName} = useSelector(state => state.resume)
     const {user} = useSelector(state => state.auth)
-
+    const navigate = useNavigate()
     const dispatch = useDispatch()
 
     const [currentResume,
@@ -41,9 +42,6 @@ function ResumeNew() {
             setCurrentResume({
                 ...currentResumeDetails
             })
-        }else{
-            // dispatch(setCopyResumeDetails(currentResume))
-            // setCurrentResume({...copyResumeDetails})
         }
 
         console.log(currentResumeDetails)
@@ -108,6 +106,27 @@ function ResumeNew() {
 
     // Function to render textareas for array fields
     const renderTextareas = (fieldArray, fieldName) => {
+        if (fieldArray.length === 0) {
+            return (
+                <div
+                    key={0}
+                    className='py-2 flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
+                    <Textarea
+                        value=""
+                        onChange={(e) => handleChange(e, fieldName, 0)}
+                        placeholder={`Type your ${fieldName}`}
+                        className="w-[30vw] text-gray-800 text-sm outline-none border-collapse border-none"/>
+                    <ion-icon
+                        name="trash-outline"
+                        style={{
+                        color: "rgba(246, 43, 43, 0.644)",
+                        fontSize: "18px",
+                        cursor: "pointer"
+                    }}
+                        onClick={() => handleDelete(fieldName, 0)}></ion-icon>
+                </div>
+            )
+        } 
         return fieldArray.map((value, index) => (
             <div
                 key={index}
@@ -126,20 +145,37 @@ function ResumeNew() {
                 }}
                     onClick={() => handleDelete(fieldName, index)}></ion-icon>
             </div>
-        ));
+        ))
     };
+
 
     // Handle Submitting the Copy resume
     const [isSubmit, setIsSubmit] = useState(false)
     axios.defaults.withCredentials = true;
     const handleSubmit = async(e) => {
       e.preventDefault();
+      setIsSubmit(prev => !prev)
+
       console.log('Form Data Submitted:', currentResume);
       // Perform API call to save form data
       try {
           const response = await axios.post(`http://localhost:5000/api/trainer/${user._id}/copy-resume`, currentResume); // Replace with your API endpoint
           console.log('Registration successful:', response.data);
-          getTrainerDetails()
+          getTrainerDetails() 
+          setIsSubmit(prev => !prev)
+          setCurrentResume({
+              professionalSummary: [''],
+              technicalSkills: [''],
+              careerHistory: [''],
+              certifications: [''],
+              education: [''],
+              trainingsDelivered: [''],
+              clientele: [''],
+              experience: [''],
+              file_url: '',
+              trainingName: ''
+          })
+          navigate("/home/resume")
           // setUser(response.data)
       }catch (error) {
           console.error('Registration failed:', error);

@@ -35,10 +35,6 @@ function Home() {
   const location = useLocation(); // Get the current URL
   // Helper function to check if the current path matches the given path
   const isActive = (path) =>{
-    // if(location.pathname.split("/").includes("resume")){
-    //   console.log(location.pathname.split("/").includes("resume"))
-    //   return true
-    // }
     return location.pathname.split('/')[location.pathname.split('/').length -1] === path
   };
   
@@ -117,7 +113,7 @@ function Home() {
   }, [])
 
   useEffect(() => {
-    // getTrainerDetails()
+    //  getTrainerDetails()
   })
 
 

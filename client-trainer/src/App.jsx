@@ -41,7 +41,7 @@ function App() {
             <Route path='dashboard' index element={<Dashboard /> }/>
             <Route path="resume" element={<Resume />}>
               <Route path='new' element={<ResumeNew />} />
-              <Route path='copy/:id' element={<ResumeForm type="copy"/>} />
+              <Route path='copy/:id' element={<ResumeForm/>} />
             </Route>
             <Route path="account" element={<Account />}/>
           </Route>

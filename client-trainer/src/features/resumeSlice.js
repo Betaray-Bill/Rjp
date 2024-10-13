@@ -25,6 +25,18 @@ const initialState = {
         file_url: '',
         trainingName: ''
     },
+    saveResumeDetails: {
+        professionalSummary: [],
+        technicalSkills: [],
+        careerHistory: [],
+        certifications: [],
+        education: [],
+        trainingsDelivered: [],
+        clientele: [],
+        experience: [],
+        file_url: '',
+        trainingName: ''
+    },
     currentResumeName: "Main Resume",
     isAuthenticated: false,
 };
@@ -43,6 +55,10 @@ const resumeSlice = createSlice({
         },
         setCopyResumeDetails: (state, action) => {
             state.copyResumeDetails = action.payload
+        },
+        setSaveResumeDetails: (state, action) => {
+            state.saveResumeDetails = action.payload
+
         }
     }
 });
@@ -50,7 +66,8 @@ const resumeSlice = createSlice({
 export const {
     setCurrentResumeDetails,
     setCurrentResumeName,
-    setCopyResumeDetails
+    setCopyResumeDetails,
+    setSaveResumeDetails
 } = resumeSlice.actions;
 
 export default resumeSlice.reducer;

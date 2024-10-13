@@ -17,11 +17,11 @@ function Dashboard() {
     return `${year}-${month}-${day}`;
     };
 
-  const formattedDateRanges = user.availableDate.map(range => ({
-        ...range,
-        startDate: formatDate(range.startDate),
-        endDate: formatDate(range.endDate)
-    }));
+  // const formattedDateRanges = user.availableDate.map(range => ({
+  //       ...range,
+  //       startDate: formatDate(range.startDate),
+  //       endDate: formatDate(range.endDate)
+  //   }));
 
   useEffect(() => {
     if(user){

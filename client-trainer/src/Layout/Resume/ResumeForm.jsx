@@ -1,17 +1,19 @@
-import React, {Fragment, useEffect, useState} from 'react'
+import { Fragment, useEffect, useState} from 'react'
 import {Textarea} from "@/components/ui/textarea"
 import {useDispatch, useSelector} from 'react-redux';
-import {setCurrentResumeDetails} from '@/features/resumeSlice';
 import {Input} from "@/components/ui/input"
 import axios from 'axios';
 import { setCredentials } from '@/features/authSlice';
 import { Button } from '@/components/ui/button';
+import { setSaveResumeDetails } from '@/features/resumeSlice';
 
-function ResumeForm({type}) {
+function ResumeForm() {
 
-    const {currentResumeDetails, currentResumeName} = useSelector(state => state.resume)
+    const {currentResumeDetails, currentResumeName, saveResumeDetails} = useSelector(state => state.resume)
+    const {user} = useSelector(state => state.auth)
+
     const dispatch = useDispatch()
-
+    const [isEdit, setIsEdit] = useState(true)
     const [currentResume,
         setCurrentResume] = useState({
         professionalSummary: [''],
@@ -25,11 +27,33 @@ function ResumeForm({type}) {
         file_url: '',
         trainingName: ''
     })
+
+    function isObjectEmpty(obj) {
+        return Object.values(obj).every(value => {
+            if (Array.isArray(value)) {
+                return value.length === 0 || (value.length === 1 && value[0] === '');
+            }
+            return value === '';
+        });
+    }
+
     console.log(currentResume)
     useEffect(() => {
-        setCurrentResume({
-            ...currentResumeDetails
-        })
+        if(!isObjectEmpty(saveResumeDetails)){
+            console.log("object")
+            if(currentResumeName === saveResumeDetails.trainingName){
+                setCurrentResume({...saveResumeDetails})
+            }else{
+                setCurrentResume({
+                    ...currentResumeDetails
+                })
+            }
+        }else{
+            setCurrentResume({
+                ...currentResumeDetails
+            })
+        }
+
         console.log(currentResumeDetails)
     }, [currentResumeName])
 
@@ -71,6 +95,7 @@ function ResumeForm({type}) {
 
     // Handler to delete an item from a specific field
     const handleDelete = (field, index) => {
+       if(!isEdit){
         setCurrentResume((prevState) => {
             const updatedArray = prevState[field].filter((_, i) => i !== index);
             return {
@@ -78,6 +103,9 @@ function ResumeForm({type}) {
                 [field]: updatedArray
             };
         });
+       }else{
+        alert("Click edit")
+       }
     };
 
     // Function to render textareas for array fields
@@ -89,6 +117,7 @@ function ResumeForm({type}) {
                     className='py-2 flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
                     <Textarea
                         value=""
+                        readOnly={isEdit}
                         onChange={(e) => handleChange(e, fieldName, 0)}
                         placeholder={`Type your ${fieldName}`}
                         className="w-[30vw] text-gray-800 text-sm outline-none border-collapse border-none"/>
@@ -109,9 +138,10 @@ function ResumeForm({type}) {
                 className='py-2 flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
                 <Textarea
                     value={value}
+                    readOnly={isEdit}
                     onChange={(e) => handleChange(e, fieldName, index)}
                     placeholder={`Type your ${fieldName}`}
-                    className="w-[30vw] text-gray-800 text-sm outline-none border-collapse border-none"/>
+                    className="w-[30vw] text-gray-800 text-sm outline-none border-collapse border-none h-max"/>
                 <ion-icon
                     name="trash-outline"
                     style={{
@@ -128,18 +158,46 @@ function ResumeForm({type}) {
     // Handle Submitting the Copy resume
     const [isSubmit, setIsSubmit] = useState(false)
     axios.defaults.withCredentials = true;
-    const handleSubmit = async(e) => {
+    const handleSubmit = async(e) => {  
+        setIsSubmit(prev => !prev)
       e.preventDefault();
       console.log('Form Data Submitted:', currentResume);
-      // Perform API call to save form data
+      // Perform API call to Update the Data for this Resume
       try {
-          const response = await axios.post(`http://localhost:5000/api/trainer/${user._id}/copy-resume`, currentResume); // Replace with your API endpoint
+          const response = await axios.put(`http://localhost:5000/api/trainer/updateresume/${user._id}`, {...currentResume, isMainResume: currentResumeName === "Main Resume" ? true : false}); // Replace with your API endpoint
           console.log('Registration successful:', response.data);
-          getTrainerDetails()
+          await getTrainerDetails()
+          setIsSubmit(prev => !prev)
+            // setCurrentResume({
+            //     professionalSummary: [''],
+            //     technicalSkills: [''],
+            //     careerHistory: [''],
+            //     certifications: [''],
+            //     education: [''],
+            //     trainingsDelivered: [''],
+            //     clientele: [''],
+            //     experience: [''],
+            //     file_url: '',
+            //     trainingName: ''
+            // })
+            dispatch(setSaveResumeDetails({
+                professionalSummary: [],
+                technicalSkills: [],
+                careerHistory: [],
+                certifications: [],
+                education: [],
+                trainingsDelivered: [],
+                clientele: [],
+                experience: [],
+                file_url: '',
+                trainingName: ''
+            }))
+            setIsEdit(false)
           // setUser(response.data)
       }catch (error) {
           console.error('Registration failed:', error);
       }
+
     };
 
     axios.defaults.withCredentials = true;
@@ -150,23 +208,58 @@ function ResumeForm({type}) {
         console.log(res.data)
         // setData(res.data)
         dispatch(setCredentials(res.data))
+
       }catch(err){
         console.log("Error fetching the data")
       }
     }
 
+    // handle Save in browser
+    const handleSaveResume = async() => {
+        setIsEdit(prev => !prev)
+        console.log(isEdit)
+        if(isEdit){
+            console.log("Edit clickde")
+           
+        }else{
+            console.log("Save")
+            dispatch(setSaveResumeDetails({...currentResume}))
+        }
+    }
+
     return (
-        <div className="my-6 mb-6 bg-white rounded-md border border-gray-500">
-            {currentResumeName !== 'Main Resume'
-                ? <div className='mx-auto ml-16 mt-4'>
-                        <label htmlFor="">Training Name</label>
-                        <Input
-                            placeholder="Training Name"
-                            value={currentResumeDetails.trainingName}
-                            readOnly/>
-                    </div>
-                : <div className='mx-auto ml-16 mt-4 font-semibold text-gray-800'>Main Resume</div>
-}
+        <div className="my-6 mb-6 bg-white rounded-md border border-gray-500" >
+            <div className='flex justify-between m-8 border-b-1 border-gray-500 items-center'>
+                {
+                            currentResumeName !== 'Main Resume'
+                            ? <div className=''>
+                                    <label htmlFor="">Training Name</label>
+                                    <Input
+                                        placeholder="Training Name"
+                                        value={currentResumeDetails.trainingName}
+                                        readOnly/>
+                                </div>
+                            : <div className=''>Main Resume</div>
+                }
+
+                <Button className='px-[20px] py-[10px] rounded-md cursor-pointer text-white 
+                        bg-black flex align-middle items-center'
+                        onClick={handleSaveResume}
+                >
+                        {
+                            isEdit ? (
+                                <Fragment>
+                                    <ion-icon name="pencil-outline" style={{fontSize:"16px"}}></ion-icon>
+                                    <span className='ml-2'>Edit</span>
+                                </Fragment>
+                            ):
+                            <Fragment>
+                                <ion-icon name="bookmark-outline" style={{fontSize:"16px"}}></ion-icon>
+                                <span className='ml-2'>Save</span>
+                            </Fragment>
+                        }
+                </Button>
+            </div>
             <form className='grid grid-cols-2 items-start'>
                 <div className='mt-4 rounded-sm p-2'>
                     <h3 className='font-semibold flex justify-between items-center'>
@@ -280,7 +373,7 @@ function ResumeForm({type}) {
                 </div>
 
             </form>
-            <div className='grid place-content-center w-full my-8' >
+            <div className='grid place-content-center w-full my-8'>
                 <Button onClick={handleSubmit} disabled={isSubmit}>{isSubmit ? "Saving ":"Submit"}</Button>
             </div>
         </div>
