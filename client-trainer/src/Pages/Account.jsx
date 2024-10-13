@@ -106,8 +106,8 @@ function Account() {
 
 
   return (
-    <div>
-
+    <div className='main-container'>
+      Hi
     </div>
     // <div>
     //     <div className="container">

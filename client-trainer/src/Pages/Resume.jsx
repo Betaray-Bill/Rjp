@@ -26,7 +26,7 @@ function Resume() {
     }, [location.pathname])
 
   return (
-    <div className='w-full h-screen p-4'>
+    <div className='main-container'>
         {
             // resumeState && 
         }

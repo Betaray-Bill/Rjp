@@ -6,8 +6,10 @@ import axios from 'axios';
 import { setCredentials } from '@/features/authSlice';
 import { Button } from '@/components/ui/button';
 import { setSaveResumeDetails } from '@/features/resumeSlice';
+import { useToast } from "@/hooks/use-toast"
 
 function ResumeForm() {
+    const { toast } = useToast()
 
     const {currentResumeDetails, currentResumeName, saveResumeDetails} = useSelector(state => state.resume)
     const {user} = useSelector(state => state.auth)
@@ -82,15 +84,24 @@ function ResumeForm() {
 
     // Handler to add a new empty textarea for a specific field
     const handleAdd = (field) => {
-        setCurrentResume((prevState) => {
-            return {
-                ...prevState,
-                [field]: [
-                    ...prevState[field],
-                    ''
-                ], // Add empty string to the field array
-            };
-        });
+        if(!isEdit){
+            setCurrentResume((prevState) => {
+                return {
+                    ...prevState,
+                    [field]: [
+                        ...prevState[field],
+                        ''
+                    ], // Add empty string to the field array
+                };
+            });
+        }else{
+            toast({
+                duration:3000,
+                variant: "destructive",
+                title: "Adding field disabled",
+                description: "Click edit to take action",
+            })
+        }
     };
 
     // Handler to delete an item from a specific field
@@ -104,7 +115,12 @@ function ResumeForm() {
             };
         });
        }else{
-        alert("Click edit")
+        toast({
+            variant: "destructive",
+            duration:3000,
+            title: "Deleting field disabled",
+            description: "Click edit to take action",
+        })
        }
     };
 
@@ -180,7 +196,7 @@ function ResumeForm() {
             //     file_url: '',
             //     trainingName: ''
             // })
-            dispatch(setSaveResumeDetails({
+          dispatch(setSaveResumeDetails({
                 professionalSummary: [],
                 technicalSkills: [],
                 careerHistory: [],
@@ -194,6 +210,12 @@ function ResumeForm() {
             }))
             setIsEdit(false)
           // setUser(response.data)
+          toast({
+            duration:3000,
+            variant:"success",
+            title: "Submitted successfully",
+            // description: "Click edit to take action",
+        })
       }catch (error) {
           console.error('Registration failed:', error);
       }
@@ -224,6 +246,12 @@ function ResumeForm() {
         }else{
             console.log("Save")
             dispatch(setSaveResumeDetails({...currentResume}))
+            toast({
+                duration:3000,
+                variant:"success",
+                title: "Saved successfully",
+                // description: "Click edit to take action",
+            })
         }
     }
 

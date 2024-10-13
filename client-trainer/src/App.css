@@ -228,10 +228,10 @@ button:hover {
 
 .rbc-toolbar {
     /* background-color: #4A90E2; */
-    color: white;
+    color: black;
     padding: 10px;
     font-size: 18px;
-    font-weight: bold;
+    /* font-weight: bold; */
 }
 
 
@@ -253,14 +253,14 @@ button:hover {
 /* Customize the days' background color */
 
 .rbc-day-bg {
-    background-color: #F3F4F6;
+    /* background-color: #F3F4F6; */
 }
 
 
 /* Customize today's background */
 
 .rbc-today {
-    background-color: #FEE2E2 !important;
+    /* background-color: #FEE2E2 !important; */
 }
 
 

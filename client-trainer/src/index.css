@@ -1,6 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components{  
+    .main-container{
+        @apply  w-full h-screen p-4 
+    }
+}
+
 body {
     margin: 0;
     padding: 0px;

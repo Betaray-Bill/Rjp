@@ -4,6 +4,7 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { setCredentials } from "@/features/authSlice";
 
 // Localizer for react-big-calendar using moment.js
 const localizer = momentLocalizer(moment);
@@ -15,7 +16,7 @@ const CalendarComp = ({eventsDate}) => {
 
   axios.defaults.withCredentials = true;
   const getTrainerDetails = async() => {
-    console.log(data._id)
+    //console.log(data?._id)
 
     try{
       const res = await axios.get(`http://localhost:5000/api/trainer/details/${data._id}`)

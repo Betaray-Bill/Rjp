@@ -37,7 +37,16 @@ function Home() {
   const isActive = (path) =>{
     return location.pathname.split('/')[location.pathname.split('/').length -1] === path
   };
-  
+  const [isResume, setIsResume] = useState(false)
+  useEffect(() => {
+    if(location.pathname.includes("resume")){
+      console.log("Resume irku da")
+      setIsResume(true)
+    }else{
+      setIsResume(false)
+    }
+  }, [location.pathname])
+
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const {user} = useSelector((state)=> state.auth)
@@ -140,7 +149,7 @@ function Home() {
               </Link>
               <Link to="/home/resume"
                 className={`pt-2 pb-2 mt-2 pl-2 rounded-sm  flex items-center ${
-                  isActive('resume') ? 'bg-customGray' : 'bg-white'
+                  isResume ? 'bg-customGray' : 'bg-white'
                 }`}
               >
                 <ion-icon name="newspaper-outline"></ion-icon><span className='ml-3'>Resume</span>   
