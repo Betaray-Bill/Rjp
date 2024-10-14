@@ -175,7 +175,7 @@ function ResumeNew() {
               file_url: '',
               trainingName: ''
           })
-          navigate("/home/resume")
+        //   navigate("/home/resume")
           // setUser(response.data)
       }catch (error) {
           console.error('Registration failed:', error);
@@ -196,7 +196,7 @@ function ResumeNew() {
     }
   
     return (
-        <div className='my-6 mb-6 bg-white rounded-md border border-gray-500 '>
+        <div className='my-6 mb-6  bg-white rounded-md  '>
             <form className='grid grid-cols-2 items-start mt-4'>
                 <div className='py-2 ml-[-25px] my-2 rounded-md'>
                     <label htmlFor="" className='mb-2'>Training Name</label>

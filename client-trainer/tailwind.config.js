@@ -9,7 +9,10 @@ export default {
     	extend: {
     		colors: {
     			customGray: '#E4E6E9',
-    			customBg: '#f4f4f4',
+    			customBg: '#f4f5ff',
+				buttonPrimary:"#3e4093",
+				primaryBgActive:"#494baf24",
+				generalBorderColor:"#dadce0",
     			background: 'hsl(var(--background))',
     			foreground: 'hsl(var(--foreground))',
     			card: {

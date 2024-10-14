@@ -134,29 +134,29 @@ function Home() {
       <div className='w-[250px] h-screen bg-white p-4'>
         {/* Sidebar Logo */}
         <div className='flex pb-4 justify-between items-start'>
-          <img src={logo} alt="Rjp Logo" className='w-30 h-11'/>
+          <img src={logo} alt="Rjp Logo" className='w-30 h-11 mx-4'/>
         </div>
 
         <div className='flex flex-col mt-10 justify-between'>
           <div className='flex flex-col justify-between'>
             <ul className='flex flex-col justify-between'>
               <Link to="/home/dashboard"
-              className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-gray-800 ${
-                  isActive('dashboard') ? 'bg-customGray' : 'bg-white'
+              className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-lg text-gray-800 ${
+                  isActive('dashboard') ? 'bg-primaryBgActive font-medium text-lg ' : 'bg-white'
                 }`}
               >
                <ion-icon name="home-outline"></ion-icon> <span className='ml-3'>Home</span>
               </Link>
               <Link to="/home/resume"
-                className={`pt-2 pb-2 mt-2 pl-2 rounded-sm  flex items-center ${
-                  isResume ? 'bg-customGray' : 'bg-white'
+                className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-lg ${
+                  isResume ? 'bg-primaryBgActive font-medium text-lg' : 'bg-white'
                 }`}
               >
                 <ion-icon name="newspaper-outline"></ion-icon><span className='ml-3'>Resume</span>   
               </Link>
               <Link to="/home/account"
-                className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center ${
-                  isActive('account') ? 'bg-customGray' : 'bg-white'
+                className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-lg ${
+                  isActive('account') ? 'bg-primaryBgActive font-medium text-lg' : 'bg-white'
                 }`}
               >
                 <ion-icon name="person-outline"></ion-icon><span className='ml-3'>Profile</span>
@@ -169,14 +169,14 @@ function Home() {
         <div className='mb-2 absolute bottom-4'>
           <div className='text-left flex flex-col'>
            {/* <span className='text-sm'>{currentTime.toLocaleTimeString()}</span> */}
-           <span className='text-sm mt-2'>{currentTime.toLocaleDateString()}</span>
+           <span className='font-medium text-lg mt-2'>{currentTime.toLocaleDateString()}</span>
           </div>
         </div>
 
       </div>
 
       {/* Main Section */}
-      <div className='overflow-y-scroll bg-customBg w-screen rounded-md mt-2 mb-2 mr-2 border border-gray-400'>
+      <div className='overflow-y-scroll bg-customBg w-screen rounded-md mt-2 mb-2 mr-2 border border-generalBorderColor'>
         {/* Main Section Nav */}
         <div className='w-full h-14 border-b border-gray-400 p-4 '>
           <div className='flex items-center justify-end'>
@@ -202,53 +202,7 @@ function Home() {
         <Outlet />
       </div>
 
-      {/* <nav>
-        <h2>RJP Trainers</h2>
-        <ul className={{display: 'flex'}}>
-            <Link to="/home/dashboard">Home</Link>  
-            <Link to="/home/account">Account</Link>
-        </ul>
-        <button onClick={signOut}> 
-          sign Out
-        </button>
-      </nav>
-
-      {
-        user && <p>NDA Accepted : {data?.nda_Accepted ? "Accepted": "Not Accepted"}</p>
-      } */}
-
-      {/* <Outlet /> */}
-
-      {/* NDA Modal */}
-      {/* <Modal
-        open={open}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Non Disclosure Agreement
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {data && data?.name}, accept your NDA to proceed further with process 
-          </Typography>
-          <FormControl component="fieldset">
-            <RadioGroup
-              aria-label="nda"
-              name="nda"
-              value={ndaStatus}
-              onChange={handleNdaChange}
-            >
-              <FormControlLabel value="accept" control={<Radio />} label="Accept" />
-              <FormControlLabel value="decline" control={<Radio />} label="Decline" />
-            </RadioGroup>
-            <Button onClick={handleNdaSubmit} variant='contained' color="primary">
-              Submit
-            </Button>
-          </FormControl>
-          
-        </Box>
-      </Modal> */}
+      
     </div>
   )
 }

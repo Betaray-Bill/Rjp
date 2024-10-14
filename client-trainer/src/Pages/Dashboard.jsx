@@ -1,33 +1,56 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
-import CalendarComp from '../Layout/Home/Calendar.jsx'
+  import React, { Fragment, useEffect, useState } from 'react'
+  import { useSelector } from 'react-redux';
+  import CalendarComp from '../Layout/Home/Calendar.jsx'
+  import DealsDisplay from '@/Layout/Home/Deals/DealsDisplay.jsx';
 
 
-function Dashboard() {
-  const [data, setData] = useState()
-  const {user} = useSelector((state)=> state.auth)
+  function Dashboard() {
+    const [data, setData] = useState()
+    const {user} = useSelector((state)=> state.auth)
 
-  useEffect(() => {
-    if(user){
-        console.log(user)
-        setData(user)
-      }
-  })
-  
-
-  return (
-    <div>
-    {/* Calendar Only for the Internal Trainers */}
-    { 
-        data && 
-        data.type_of_trainer === 'Internal' ? 
-        <Fragment>
-          <CalendarComp  eventsDate={data?.availableDate} /> 
-        </Fragment>: null
+    useEffect(() => {
+      if(user){
+          console.log(user)
+          setData(user)
         }
+    })
+    
 
-    </div>
-  )
-}
+    return (
+      <div className='  mx-auto grid place-content-center'>
+        Dashboard
+      {/* Calendar Only for the Internal Trainers */}
+        { 
+            data &&  data.type_of_trainer === 'Internal' ? 
+              <Fragment>
+                <div className='w-[80vw] bg-white rounded-md border mt-8 border-generalBorderColor'>
+                  <div className="border-b mt-4 pb-4">
+                    <span className="text-slate-800 font-semibold flex items-center ml-10">
+                      <ion-icon name="calendar-outline" style={{fontSize:"34px", color:"#3e4093"}}></ion-icon>
+                      <span className='ml-4 text-xl'>Training dates</span>
+                    </span>
+                  </div>
+                  <CalendarComp  eventsDate={data?.availableDate} /> 
+                </div>
+              </Fragment>
+              : null
+            
+        }
+        
+        <div className='mt-10'>
+          <div className='w-[80vw] bg-white rounded-md border border-generalBorderColor'>
+            <div className="border-b mt-4 pb-4">
+              <span className="text-slate-800 font-semibold flex items-center ml-10">
+                <ion-icon name="layers-outline" style={{fontSize:"34px", color:"#3e4093"}}></ion-icon>
+                <span className='ml-4 text-xl'  >Deals</span>
+              </span>
+            </div>
+            <DealsDisplay />
+          </div>
+        </div>
 
-export default Dashboard
+      </div>
+    )
+  }
+
+  export default Dashboard

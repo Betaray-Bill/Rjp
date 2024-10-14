@@ -5,6 +5,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "@/features/authSlice";
+import CalendarDate from "./CalendarDate";
+
 
 // Localizer for react-big-calendar using moment.js
 const localizer = momentLocalizer(moment);
@@ -127,11 +129,12 @@ const CalendarComp = ({eventsDate}) => {
   }, [])
 
   return (
-    <div className="App">
-      <h1 className="text-slate-700">Training Dates</h1>
+    <div>
+
+      {/* <h1 className="text-slate-700">Training Dates</h1> */}
 
       {/* Event Form */}
-      <form onSubmit={handleSubmit}>
+      {/* <form onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Event Title"
@@ -151,7 +154,8 @@ const CalendarComp = ({eventsDate}) => {
           onChange={(e) => setNewEvent({ ...newEvent, end: e.target.value })}
         />
         <button type="submit">Add Event</button>
-      </form>
+      </form> */} 
+      {/* <CalendarDate  eventsDate={eventsDate}/> */}
 
       {/* Calendar */}
       <Calendar

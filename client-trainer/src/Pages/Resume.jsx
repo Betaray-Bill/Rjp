@@ -26,11 +26,11 @@ function Resume() {
     }, [location.pathname])
 
   return (
-    <div className='main-container'>
+    <div className='grid place-content-center my-10'>
         {
             // resumeState && 
         }
-        <div className='mb-3 text-sm'>
+        <div className='mb-3 text-sm w-[80vw]'>
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
@@ -76,13 +76,13 @@ function Resume() {
         
         {
             currentResumeName === 'Main Resume' ? 
-            <div className='mt-10 m-1 p-2 bg-white rounded-md'>
+            <div className='mt-10 m-1 p-2 bg-white grid place-content-center rounded-md border border-generalBorderColor'>
                 <ResumeForm type="main"/>
             </div> 
             : 
-            <div>
+            <div className='mt-10 m-1 p-2 bg-white grid place-content-center rounded-md border border-generalBorderColor'>
                 <Outlet />
-            </div>
+            </div> 
         }
     
     </div>

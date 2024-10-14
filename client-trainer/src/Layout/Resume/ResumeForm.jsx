@@ -256,7 +256,7 @@ function ResumeForm() {
     }
 
     return (
-        <div className="my-6 mb-6 bg-white rounded-md border border-gray-500" >
+        <div className="my-6 mb-6 w-[70vw] rounded-md " >
             <div className='flex justify-between m-8 border-b-1 border-gray-500 items-center'>
                 {
                             currentResumeName !== 'Main Resume'
@@ -267,11 +267,11 @@ function ResumeForm() {
                                         value={currentResumeDetails.trainingName}
                                         readOnly/>
                                 </div>
-                            : <div className=''>Main Resume</div>
+                            : <div className='text-gray-700 font-medium px-3 py-1 bg-slate-200 rounded-full'>Main Resume</div>
                 }
 
                 <Button className='px-[20px] py-[10px] rounded-md cursor-pointer text-white 
-                        bg-black flex align-middle items-center'
+                        bg-buttonPrimary flex align-middle items-center'
                         onClick={handleSaveResume}
                 >
                         {

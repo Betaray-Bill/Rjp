@@ -73,10 +73,10 @@ function ResumeNav() {
 
     
   return (
-    <div className='flex items-center justify-between  bg-white p-2 rounded-md border'>
+    <div className='flex items-center justify-between  bg-white py-6 px-4 rounded-md border'>
         {/* Dropdown for Resume's, Download, copy, Upload */}
         <div>
-            <p className="text-sm text-muted-foreground pb-1">Resume Version</p>
+            <p className="text-sm text-muted-foreground pb-2">Resume Version</p>
             {
                 location.pathname.split('/')[location.pathname.split('/').length - 1] !== 'new' ?
                 (
@@ -131,7 +131,7 @@ function ResumeNav() {
             <div className='px-2'>
                 <TooltipProvider>
                     <Tooltip>
-                        <TooltipTrigger><ion-icon style={{fontSize:"20px"}} name="download-outline"></ion-icon></TooltipTrigger>
+                        <TooltipTrigger><ion-icon style={{fontSize:"25px"}} name="download-outline"></ion-icon></TooltipTrigger>
                         <TooltipContent>
                         <p>Download</p>
                         </TooltipContent>
@@ -144,12 +144,14 @@ function ResumeNav() {
                     <Fragment>
                         <div className='px-2'>
                             <Button variant="outline" onClick={() => {
-                                dispatch(setCurrentResumeName("new"))
-                                navigate("/home/resume/new")
-                            }}>Make a Copy</Button>
+                                    dispatch(setCurrentResumeName("new"))
+                                    navigate("/home/resume/new")
+                                }}
+                                className="border border-buttonPrimary text-buttonPrimary"
+                            >Make a Copy</Button>
                         </div>
                         <div className='px-2'>
-                            <Button variant="outline" className="flex items-center bg-black text-white">
+                            <Button variant="outline" className="flex items-center bg-buttonPrimary text-white">
                                 <ion-icon name="cloud-upload-outline" style={{fontSize:"18px"}}></ion-icon>
                                 <span className='pl-2'>Upload</span>
                             </Button>   
