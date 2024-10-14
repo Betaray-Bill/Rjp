@@ -18,12 +18,12 @@
 
     return (
       <div className='  mx-auto grid place-content-center'>
-        Dashboard
+        <p className='text-md text-gray-700 mt-4 pb-[-2] font-semibold'>Dashboard</p>
       {/* Calendar Only for the Internal Trainers */}
         { 
             data &&  data.type_of_trainer === 'Internal' ? 
               <Fragment>
-                <div className='w-[80vw] bg-white rounded-md border mt-8 border-generalBorderColor'>
+                <div className='w-[80vw] bg-white rounded-md border mt-6 border-generalBorderColor'>
                   <div className="border-b mt-4 pb-4">
                     <span className="text-slate-800 font-semibold flex items-center ml-10">
                       <ion-icon name="calendar-outline" style={{fontSize:"34px", color:"#3e4093"}}></ion-icon>

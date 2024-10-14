@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { setCopyResumeDetails } from '@/features/resumeSlice';
 
 const style = {
   position: 'absolute',
@@ -108,6 +109,22 @@ function Home() {
       // getTrainerDetails()  
       console.log(user)
       setData(user)
+      dispatch(setCopyResumeDetails(
+        {
+          professionalSummary: [''],
+              technicalSkills: [''],
+              careerHistory: [''],
+              certifications: [''],
+              education: [''],
+              trainingsDelivered: [''],
+              clientele: [''],
+              experience: [''],
+              file_url: '',
+              trainingName: ''
+        }
+      ))
+
+      // dispatch()
     }else{
       navigate("/login")
     }

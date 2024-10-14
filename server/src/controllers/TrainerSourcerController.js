@@ -94,7 +94,7 @@ const updateResume = asyncHandler(async(req, res) => {
     const { id } = req.params;
     console.log("Trainer Id", id)
     console.log(req.body)
-    
+
     // Check if the trainer exits
     const trainer = await Trainer.findById(id);
     if (!trainer) {
@@ -104,41 +104,40 @@ const updateResume = asyncHandler(async(req, res) => {
     try {
         // Check if it the main or copy resume
         let isMainResume = req.body.isMainResume
-        // if main then updateBytrainerID
-        if(isMainResume){
-            await trainer.findByIdAndUpdate(
-                id, 
-                { $set: { mainResume: {...req.body} } },
-                { new: true, runValidators: true }
+            // if main then updateBytrainerID
+        if (isMainResume) {
+            let updatedTrainer = await Trainer.findByIdAndUpdate(
+                id, { $set: { mainResume: {...req.body } } }, { new: true, runValidators: true }
             )
 
             if (!updatedTrainer) {
                 return res.status(404).json({ message: 'Trainer not found' });
             }
-        }else{
+            await updatedTrainer.save()
+        } else {
             // if copy then check if the same resume exists, then update the docs in the collection
 
             console.log(req.body.trainingName)
             console.log("Length ", trainer.resumeVersions.length)
-            // const existingResume = await trainer.resumeVersions.forEach((e))
+                // const existingResume = await trainer.resumeVersions.forEach((e))
 
-            for(let i=0; i<trainer.resumeVersions.length; i++){
+            for (let i = 0; i < trainer.resumeVersions.length; i++) {
                 console.log(trainer.resumeVersions[i].trainingName)
-                if(trainer.resumeVersions[i].trainingName === req.body.trainingName){
+                if (trainer.resumeVersions[i].trainingName === req.body.trainingName) {
                     console.log("-----------------------------")
                     console.log(trainer.resumeVersions[i])
-                    // Update the specific index using splice
-                    // trainer.resumeVersions.splice(i, 1, {
-                    //     ...trainer.resumeVersions[i], // Keep the existing data
-                    //     ...req.body.resumeVersion,    // Update with the new data from the request
-                    // });
-                    await trainer.resumeVersions?.splice(i, 1, {
+                        // Update the specific index using splice
+                        // trainer.resumeVersions.splice(i, 1, {
+                        //     ...trainer.resumeVersions[i], // Keep the existing data
+                        //     ...req.body.resumeVersion,    // Update with the new data from the request
+                        // });
+                    await trainer.resumeVersions.splice(i, 1, {
                         professionalSummary: req.body.professionalSummary,
                         technicalSkills: req.body.technicalSkills,
-                        careerHistory:req.body.careerHistory,
+                        careerHistory: req.body.careerHistory,
                         certifications: req.body.certifications,
                         education: req.body.education,
-                        trainingsDelivered:req.body.trainingsDelivered,
+                        trainingsDelivered: req.body.trainingsDelivered,
                         clientele: req.body.clientele,
                         experience: req.body.experience,
                         trainingName: req.body.trainingName
@@ -146,9 +145,9 @@ const updateResume = asyncHandler(async(req, res) => {
                     break;
                 }
             }
-    
+            await trainer.save();
         }
-        await trainer.save();
+
 
         res.status(200).json({
             message: "Resume saved succesfully",
