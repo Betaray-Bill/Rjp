@@ -41,6 +41,14 @@ function DealsDisplay() {
     endDate: new Date("2024-10-22"),
     status: "In Progress",
     priority: "High"
+  },
+  {
+    name: "Deal 6",
+    description: "Description for Deal 5",
+    startDate: new Date("2024-10-12"),
+    endDate: new Date("2024-10-22"),
+    status: "In Progress",
+    priority: "High"
   }])
 
   const icons = {
@@ -51,17 +59,17 @@ function DealsDisplay() {
   // ['<ion-icon name="checkmark-done-outline"></ion-icon>', '']
 
   return (
-    <div className=' p-4 ml-2'>
-      {["Completed", "In Progress", "Upcoming"].map((status) => (
+    <div className='p-4 ml-2'>
+      {["In Progress", "Upcoming", "Completed"].map((status) => (
         <div key={status} className='py-2'>
-          <h3 className='text-lg font-medium ml-2 mt-5 flex items-center'><span className='text-buttonPrimary pr-3' style={{fontSize:"20px"}}>
+          <h3 className='text-lg font-medium ml-2 mt-5 flex items-center border-b pb-3 mb-3'><span className='text-buttonPrimary pr-3' style={{fontSize:"20px"}}>
             {icons[status]}</span> <span>{status} Deals</span>
           </h3>
           <div className='grid grid-cols-3'>
           {deals
             .filter((deal) => deal.status === status)
             .map((deal, index) => (
-              <div key={index} className='border rounded-md p-4 m-2'>
+              <div key={index} className='border rounded-md p-4 m-2  hover:shadow-md transition-shadow transition-ease-in-out cursor-pointer'>
                 <h4 className='font-semibold'>{deal.name}</h4>
                 <p>{deal.description}</p>
                 <p>Start Date: {deal.startDate.toDateString()}</p>
@@ -71,7 +79,6 @@ function DealsDisplay() {
               </div>
             ))}
           </div>
-          {/* <hr className='mt-4 border-gray-600' /> */}
         </div>
       ))}
       {/* Show Current Deals */}

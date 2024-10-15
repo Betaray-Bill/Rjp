@@ -7,13 +7,17 @@ import {setCredentials} from '@/features/authSlice';
 import {Button} from '@/components/ui/button';
 import {setSaveResumeDetails} from '@/features/resumeSlice';
 import {useToast} from "@/hooks/use-toast"
+import { useMutation, useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 
 function ResumeForm() {
     const {toast} = useToast()
+    const queryClient = useQueryClient()
+
 
     const {currentResumeDetails, currentResumeName, saveResumeDetails} = useSelector(state => state.resume)
     const {user} = useSelector(state => state.auth)
-
+    const navigate = useNavigate()
     const dispatch = useDispatch()
     const [isEdit,
         setIsEdit] = useState(true)
@@ -31,27 +35,23 @@ function ResumeForm() {
         trainingName: ''
     })
 
-    function isObjectEmpty(obj) {
-        // return Object.values(obj).every(value => {     if (Array.isArray(value)) {
-        //      return value.length === 0 || (value.length === 1 && value[0] === '');
-        //  }     return value === ''; });
-    }
+
 
     console.log(currentResume)
     useEffect(() => {
-        if (currentResumeName === saveResumeDetails
-            ?.trainingName) {
-            setCurrentResume({
-                ...saveResumeDetails
-            })
-        } else {
+        // if (currentResumeName === saveResumeDetails
+        //     ?.trainingName) {
+        //     setCurrentResume({
+        //         ...saveResumeDetails
+        //     })
+        // } else {
             setCurrentResume({
                 ...currentResumeDetails
             })
-        }
+        // }
 
         console.log(currentResumeDetails)
-    }, [currentResumeName])
+    }, [])
 
     const handleChange = (e, field, index) => {
         const value = e.target.value;
@@ -110,7 +110,7 @@ function ResumeForm() {
 
     // Function to render textareas for array fields
     const renderTextareas = (fieldArray, fieldName) => {
-        if (fieldArray.length === 0) {
+        if (fieldArray?.length === 0) {
             return (
                 <div
                     key={0}
@@ -132,7 +132,7 @@ function ResumeForm() {
                 </div>
             )
         }
-        return fieldArray.map((value, index) => (
+        return fieldArray?.map((value, index) => (
             <div
                 key={index}
                 className='py-2 flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
@@ -153,49 +153,60 @@ function ResumeForm() {
             </div>
         ))
     };
-
+    console.log(currentResumeName)
     // Handle Submitting the Copy resume
     const [isSubmit,
         setIsSubmit] = useState(false)
     axios.defaults.withCredentials = true;
+    //    Update Mutation Query
+    const submitResume = useMutation(
+        (data) => axios.put(`http://localhost:5000/api/trainer/updateresume/${user._id}`, {
+                ...data,
+                isMainResume: currentResumeName === "Main Resume"
+                    ? true
+                    : false
+            }) // Replace with your API endpoint
+        ,
+        {
+            onSuccess: (data) => {
+                console.log('Registration successful:', data.data);
+                queryClient.invalidateQueries({ queryKey:  ["user", user._id]    })
+                setIsSubmit(prev => !prev)
+                dispatch(setSaveResumeDetails({
+                    professionalSummary: [],
+                    technicalSkills: [],
+                    careerHistory: [],
+                    certifications: [],
+                    education: [],
+                    trainingsDelivered: [],
+                    clientele: [],
+                    experience: [],
+                    file_url: '',
+                    trainingName: ''
+                }))
+            
+                setIsEdit(false)
+                toast({
+                    duration: 3000, variant: "success", title: "Submitted successfully",
+                    // description: "Click edit to take action",
+                })
+            }
+        }
+    )
+
+
     const handleSubmit = async(e) => {
         setIsSubmit(prev => !prev)
         e.preventDefault();
         console.log('Form Data Submitted:', currentResumeName ,user._id);
         // Perform API call to Update the Data for this Resume
         try {
-            const response = await axios.put(`http://localhost:5000/api/trainer/updateresume/${user._id}`, {
-                ...currentResume,
-                isMainResume: currentResumeName === "Main Resume"
-                    ? true
-                    : false
-            }); // Replace with your API endpoint
-            console.log('Registration successful:', response.data);
-            await getTrainerDetails()
-            setIsSubmit(prev => !prev)
-            // setCurrentResume({     professionalSummary: [''],     technicalSkills: [''],
-            //    careerHistory: [''],     certifications: [''],     education: [''],
-            // trainingsDelivered: [''],     clientele: [''],     experience: [''],
-            // file_url: '',     trainingName: '' })
-            dispatch(setSaveResumeDetails({
-                professionalSummary: [],
-                technicalSkills: [],
-                careerHistory: [],
-                certifications: [],
-                education: [],
-                trainingsDelivered: [],
-                clientele: [],
-                experience: [],
-                file_url: '',
-                trainingName: ''
-            }))
-            setIsEdit(false)
-            // setUser(response.data)
-            toast({
-                duration: 3000, variant: "success", title: "Submitted successfully",
-                // description: "Click edit to take action",
-            })
+
+            submitResume.mutate(currentResume)
+
         } catch (error) {
+            setIsSubmit(prev => !prev)
+
             console.error('Registration failed:', error);
         }
 

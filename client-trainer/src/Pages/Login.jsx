@@ -21,9 +21,27 @@ function Login() {
       password:''
     })
 
+    // LOGIN QUERY
     const loginMutation = useMutation((data) => {
-      return axios.post('http://localhost:5000/api/trainer/login', data)
-    })
+        return axios.post('http://localhost:5000/api/trainer/login', data)
+      },
+      {
+        onSuccess: (data) => {
+          console.log("login DOnes")
+          dispatch(setCredentials(data.data.trainer[0]));
+          console.log(data)
+          if (data) {
+            navigate('/home/dashboard');
+          }
+        },
+        onSettled: () => {
+          console.log("Settled")
+        },
+        onError: (error) => {
+          console.log(error);
+        }
+      }
+    )
   
     const loginHandler = async(event) => {  
       event.preventDefault();
@@ -34,29 +52,7 @@ function Login() {
       }
 
       try {
-          // loginMutation.mutate(formData, {
-          //   onSuccess: (data) => {
-          //     console.log("login doen")
-          //     dispatch(setCredentials(data.data));
-          //     console.log(data)
-          //     if (data) {
-          //       navigate('/home');
-          //     }
-          //   },
-          //   onSettled: () => {
-          //     console.log("Settled")
-          //   },
-          //   onError: (error) => {
-          //     console.log(error);
-          //   }
-          // })
-          const res =await axios.post('http://localhost:5000/api/trainer/login', formData)
-            const data = await res.data;
-            console.log(data)
-            dispatch(setCredentials(data.trainer[0]))
-            console.log(user)
-            navigate('/home/dashboard');
-  
+          loginMutation.mutate(formData)
       } catch (error) {
           console.log(error);
       }
@@ -73,16 +69,20 @@ function Login() {
         <hr /> */}
         <h4>Login Page</h4>
         <form onSubmit={loginHandler}>
-          <input id="email" label="Email" type='email' name="email" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})}  variant="outlined"  />
+          <input id="email" label="Email" className='border' type='email' name="email" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})}  variant="outlined"  />
           <input id="password"
               label="Password"
-              type="password"
+              type="password" 
+              className='border'
               variant="outlined"
               name="password" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})} />
 
             <button type='submit'>Submit</button>
           </form>
 
+{
+  user && JSON.stringify(user)
+}
         {/* <Box
           component="form"
           sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}

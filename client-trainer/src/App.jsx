@@ -1,7 +1,7 @@
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { Link, Route, Routes, useNavigate } from 'react-router-dom'
+import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import Login from './Pages/Login'
 import ProtectedRoute from './utils/ProtectedRoutes.jsx'
 import Home from './Pages/Home'
@@ -33,7 +33,7 @@ function App() {
       {/* Routing */}
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path='/' index element={<Home />}></Route>
+        <Route path='/' index element={<Navigate to="/home/dashboard" replace />}></Route>
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute/> }>

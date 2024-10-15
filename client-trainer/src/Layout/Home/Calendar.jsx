@@ -11,28 +11,29 @@ import CalendarDate from "./CalendarDate";
 const localizer = momentLocalizer(moment);
 
 const CalendarComp = ({eventsDate}) => {
-  console.log(eventsDate)
+    console.log(eventsDate)
     const [dates,
         setDates] = useState([])
 
     const formatDateTOCalendar = (date) => {
-       eventsDate.forEach(date => {
-                setDates(prev =>[...prev, 
-                  {
+        eventsDate.forEach(date => {
+            setDates(prev => [
+                ...prev, {
                     start: new Date(date.start),
                     end: new Date(date.end),
                     title: date.title
-                  }
+                }
             ]);
-          })
+        })
     }
 
     useEffect(() => {
-      setDates([])
+        setDates([])
         if (eventsDate) {
-          formatDateTOCalendar(eventsDate)
+            formatDateTOCalendar(eventsDate)
         }
-    }, [eventsDate.length])
+    }, [eventsDate
+            ?.length])
 
     const [data,
         setData] = useState()
