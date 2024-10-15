@@ -47,19 +47,19 @@ function ResumeForm() {
 
     // console.log(currentResume)
     useEffect(() => {
-        // if (currentResumeName === saveResumeDetails
-        //     ?.trainingName) {
-        //     setCurrentResume({
-        //         ...saveResumeDetails
-        //     })
-        // } else {
+        if (currentResumeName === saveResumeDetails
+            ?.trainingName) {
+            setCurrentResume({
+                ...saveResumeDetails
+            })
+        } else {
             setCurrentResume({
                 ...currentResumeDetails
             })
-        // }
+        }
 
         // console.log(currentResumeDetails)
-    }, [])
+    }, [currentResumeName])
 
     const handleChange = (e, field, index) => {
         const value = e.target.value;

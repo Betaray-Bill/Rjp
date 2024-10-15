@@ -62,7 +62,7 @@ function DealsDisplay() {
     <div className='p-4 ml-2'>
       {["In Progress", "Upcoming", "Completed"].map((status) => (
         <div key={status} className='py-2'>
-          <h3 className='text-lg font-medium ml-2 mt-5 flex items-center border-b pb-3 mb-3'><span className='text-buttonPrimary pr-3' style={{fontSize:"20px"}}>
+          <h3 className='text-lg font-medium ml-2 mt-5 flex items-start border-b pb-3 mb-3'><span className='text-buttonPrimary pr-3' style={{fontSize:"20px"}}>
             {icons[status]}</span> <span>{status} Deals</span>
           </h3>
           <div className='grid grid-cols-3'>

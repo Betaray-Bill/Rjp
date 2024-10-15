@@ -4,7 +4,7 @@ import jsPDF from 'jspdf';
 import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
-function Suma() {
+function ResumeDownload() {
 
   const {currentResumeDetails, currentResumeName,downloadResume, downloadResumeName} = useSelector(state => state.resume)
   const resumeRef = useRef();
@@ -25,26 +25,14 @@ function Suma() {
 
 const handleDownload = () => {
     const element = resumeRef.current;
-
+console.log("object")
     html2canvas(element, { scale: 2 })
       .then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
-        const imgWidth = 210; // Width of A4 page in mm
-        const pageHeight = '100vh '; // Height of A4 page in mm
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
-        let position = 0;
-
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-
-        while (heightLeft > 0) {
-          position = heightLeft - imgHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-        }
+        const width = pdf.internal.pageSize.getWidth(); // Width of A4 page in mm
+        const height= (canvas.height*width)/canvas.width; // Height of A4 page;
+        pdf.addImage(imgData, 'PNG', 0, 0, width, height);
 
         dispatch(setIsDownload({
           bool:false, name:""
@@ -56,10 +44,7 @@ const handleDownload = () => {
       });
 };
   return (
-    <div ref={resumeRef} className=''>
-       <div className="resume-header">Anandhi K</div>
-        
-        <div className="section-title">Profile Summary</div>
+    <div ref={resumeRef} className='p-2 grid grid-cols-2'>
         <div className="resume-content">
           <h2 className='font-semibold'>Professional Summary</h2>
           {
@@ -135,4 +120,4 @@ const handleDownload = () => {
   )
 }
 
-export default Suma
+export default ResumeDownload
