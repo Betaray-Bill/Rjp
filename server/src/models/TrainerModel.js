@@ -70,6 +70,9 @@ const trainerSchema = mongoose.Schema({
             // required: true
         }
     },
+    TrainingDomain: [{
+        type: String
+    }],
     // Contact Details--------------------------------
     contact_Details: {
         mobile_number: {
@@ -167,6 +170,10 @@ const trainerSchema = mongoose.Schema({
     timestamps: true,
 });
 
+trainerSchema.index({
+    TrainingDomain: 1,
+    trainerId: 1,
+})
 
 // Resume Schema
 const resumeSchema = new mongoose.Schema({

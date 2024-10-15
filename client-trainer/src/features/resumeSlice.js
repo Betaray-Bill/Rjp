@@ -38,7 +38,8 @@ const initialState = {
         trainingName: ''
     },
     currentResumeName: "Main Resume",
-    isAuthenticated: false,
+    downloadResume: false,
+    downloadResumeName: ""
 };
 
 const resumeSlice = createSlice({
@@ -58,7 +59,10 @@ const resumeSlice = createSlice({
         },
         setSaveResumeDetails: (state, action) => {
             state.saveResumeDetails = action.payload
-
+        },
+        setIsDownload: (state, action) => {
+            state.downloadResume = action.payload.bool,
+                state.downloadResumeName = action.payload.name
         }
     }
 });
@@ -67,7 +71,8 @@ export const {
     setCurrentResumeDetails,
     setCurrentResumeName,
     setCopyResumeDetails,
-    setSaveResumeDetails
+    setSaveResumeDetails,
+    setIsDownload
 } = resumeSlice.actions;
 
 export default resumeSlice.reducer;

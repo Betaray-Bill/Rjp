@@ -10,6 +10,7 @@ import { BrowserRouter, createBrowserRouter, RouterProvider } from 'react-router
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Toaster } from "@/components/ui/toaster"
 import { ReactQueryDevtools } from 'react-query/devtools'
+import Suma from './Layout/Suma.jsx'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,6 +29,7 @@ createRoot(document.getElementById('root')).render(
           <PersistGate persistor={persistor} loading={null}>
             <App />
             <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
+            {/* <Suma /> */}
             <Toaster />
           </PersistGate>
         </Provider>

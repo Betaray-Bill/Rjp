@@ -106,8 +106,22 @@ function Account() {
 
 
   return (
-    <div className='main-container'>
-      Hi
+    
+    <div className='grid w-full place-content-center my-4'>
+        <p className='text-md text-gray-700 mt-4 pb-[-2 ] font-semibold'>Accounts</p> ***[This page is not Editable]***
+
+      <div className='w-[80vw] bg-white mt-8 rounded-md border border-generalBorderColor p-2'>
+        Trainer Image and Upload
+      </div>
+      <div className='w-[80vw] bg-white mt-8 rounded-md border border-generalBorderColor p-2'>
+        Personal Info
+      </div>
+      <div className='w-[80vw] bg-white mt-8 rounded-md border border-generalBorderColor p-2'>
+        Bank Details
+      </div>
+      <div className='w-[80vw] bg-white mt-8 rounded-md border border-generalBorderColor p-2'>
+        COntact details
+      </div>
     </div>
     // <div>
     //     <div className="container">

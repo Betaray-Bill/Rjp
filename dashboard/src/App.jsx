@@ -25,15 +25,15 @@ function App() {
           <Route path='/home' element={<Home />}>
             <Route path='profile' element={<Profile />} />
             {
-              currentUser && ((currentUser.employee.role[0].name === "ADMIN" || currentUser.employee.role[0].name === "MANGER") &&
+              currentUser && ((currentUser.employee.role[0]?.name === "ADMIN" || currentUser.employee.role[0]?.name === "MANGER") &&
               <Route path='add' element={<AddEntity />} />)
             }
             {
-              currentUser && ((currentUser.employee.role[0].name === "ADMIN" || currentUser.employee.role[0].name === "MANGER" || currentUser.employee.role[0].name === "KeyAccounts") &&
+              currentUser && ((currentUser.employee.role[0]?.name === "ADMIN" || currentUser.employee.role[0]?.name === "MANGER" || currentUser.employee.role[0]?.name === "KeyAccounts") &&
               <Route path='search' element={<Search />} />)
             }
             {
-              currentUser && ((currentUser.employee.role[0].name === "ADMIN" || currentUser.employee.role[0].name === "MANGER" || currentUser.employee.role[0].name === "Trainer Sourcer") &&
+              currentUser && ((currentUser.employee.role[0]?.name === "ADMIN" || currentUser.employee.role[0]?.name === "MANGER" || currentUser.employee.role[0]?.name === "Trainer Sourcer") &&
               <Route path='trainer' element={<AddTrainer />}>
                 {/* <Route path='trainer/:id' element={<TrainerDetails />} /> */}
               </Route>

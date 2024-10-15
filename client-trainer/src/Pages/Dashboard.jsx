@@ -17,10 +17,10 @@
     
 
     return (
-      <div className='  mx-auto grid place-content-center'>
+      <div className='mx-auto grid place-content-center'>
         <p className='text-md text-gray-700 mt-4 pb-[-2] font-semibold'>Dashboard</p>
       {/* Calendar Only for the Internal Trainers */}
-        { 
+        {   
             user?.type_of_trainer === 'Internal' ? 
               <Fragment>
                 <div className='w-[80vw] bg-white rounded-md border mt-6 border-generalBorderColor'>
@@ -34,7 +34,6 @@
                 </div>
               </Fragment>
               : null
-            
         }
         
         <div className='mt-10'>

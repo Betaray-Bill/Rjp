@@ -13,7 +13,7 @@ function Home() {
     useEffect(() => {
         console.log(currentUser)
         if(currentUser){
-            setRole(currentUser.employee.role[0].name)
+            setRole(currentUser.employee.role[0]?.name)
         }
     }, [])
     axios.defaults.withCredentials = true;
@@ -33,7 +33,7 @@ function Home() {
       console.log(currentUser?.role)
       console.log(role)
       for(let i=0; i<currentUser?.role?.length; i++) {
-        if(currentUser.role[i].name === role) {
+        if(currentUser.role[i]?.name === role) {
           return true
         }
       }
@@ -46,15 +46,15 @@ function Home() {
         <ul className={{display: 'flex'}}>
             <Link to="/home">Home</Link>  
             {
-              (currentUser.employee.role[0].name === 'ADMIN' || currentUser.employee.role[0].name === 'MANAGER' || currentUser.employee.role[0].name === "KeyAccounts")&& 
+              (currentUser.employee.role[0]?.name === 'ADMIN' || currentUser.employee.role[0]?.name === 'MANAGER' || currentUser.employee.role[0]?.name === "KeyAccounts")&& 
               <Link to="/home/search">Search Trainers</Link>
             }
             {
-              (currentUser.employee.role[0].name === 'ADMIN' || currentUser.employee.role[0].name === 'MANAGER' )&& 
+              (currentUser.employee.role[0]?.name === 'ADMIN' || currentUser.employee.role[0]?.name === 'MANAGER' )&& 
               <Link to="/home/add">Add +</Link>
             }
             {
-              (currentUser.employee.role[0].name === 'ADMIN' || currentUser.employee.role[0].name === 'MANAGER' || currentUser.employee.role[0].name === "Trainer Sourcer")&& 
+              (currentUser.employee.role[0]?.name === 'ADMIN' || currentUser.employee.role[0]?.name === 'MANAGER' || currentUser.employee.role[0]?.name === "Trainer Sourcer")&& 
               <Link to='/home/trainer'>Add Trainers</Link>
             }
             
@@ -65,8 +65,8 @@ function Home() {
         </button>
       </nav>
 
-      {currentUser && <p>Welcome, {currentUser.employee.name}</p>}
-      <h5>You are {currentUser && currentUser.employee.role[0].name}</h5>
+      {currentUser && <p>Welcome, {currentUser.employee?.name}</p>}
+      <h5>You are {currentUser && currentUser.employee.role[0]?.name}</h5>
       
       <div className="container">
         <Outlet/>

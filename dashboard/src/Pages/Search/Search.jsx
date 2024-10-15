@@ -36,7 +36,7 @@ function Search() {
             if (endPrice) req_query  += `&endPrice=${endPrice}`;
             if (startDate) req_query   += `&startDate=${startDate}`;
             if (endDate) req_query   += `&endDate=${endDate}`;
-            if (rating) req_query  += `&rating=${rating}`;
+            // if (rating) req_query  += `&rating=${rating}`;
             console.log(req_query )
             // Send the GET request with the query parameters
             const res = await axios.get(req_query);

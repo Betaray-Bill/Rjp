@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import {
     Command,
     CommandEmpty,
@@ -21,14 +21,17 @@ import {
 import { Button } from '@/components/ui/button'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { setCurrentResumeDetails, setCurrentResumeName } from '@/features/resumeSlice'
+import { setCurrentResumeDetails, setCurrentResumeName, setIsDownload } from '@/features/resumeSlice'
+import html2canvas from 'html2canvas'
+import jsPDF from 'jspdf'
   
 
 function ResumeNav() {
     const navigate = useNavigate()
     const location = useLocation()
     const dispatch = useDispatch()
-    const {currentResumeDetails, currentResumeName} = useSelector(state => state.resume)
+    const {currentResumeDetails, currentResumeName,downloadResume, downloadResumeName} = useSelector(state => state.resume)
+    const resumeRef = useRef();
 
     
     const [position, setPosition] = useState("Main Resume")
@@ -70,10 +73,13 @@ function ResumeNav() {
 
     }, [position])
 
+        // HandleDownload 
+    // check if download is clicked, if yes then check if this component and the clicked are same
+
 
     
   return (
-    <div className='flex items-center justify-between  bg-white py-6 px-4 rounded-md border'>
+    <div className='flex items-center justify-between  bg-white py-6 px-4 rounded-md border' ref={resumeRef} >
         {/* Dropdown for Resume's, Download, copy, Upload */}
         <div>
             <p className="text-sm text-muted-foreground pb-2">Resume Version</p>
@@ -128,7 +134,12 @@ function ResumeNav() {
 
         {/*Download, Copy, Upload  */}
         <div className='flex items-center justify-between w-max px-2'>
-            <div className='px-2'>
+            <div className='px-2' onClick={() => {
+                console.log('Downloading ', currentResumeName)
+                dispatch(setIsDownload({
+                    bool:true, name:currentResumeName
+                }))
+            }}>
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger><ion-icon style={{fontSize:"25px"}} name="download-outline"></ion-icon></TooltipTrigger>
@@ -160,6 +171,7 @@ function ResumeNav() {
                 ) : null
             }
         </div>
+        
     </div>
   )
 }

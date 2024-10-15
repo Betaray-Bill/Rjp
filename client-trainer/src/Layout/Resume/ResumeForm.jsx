@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useState} from 'react'
+import {Fragment, useEffect, useState,useRef} from 'react'
 import {Textarea} from "@/components/ui/textarea"
 import {useDispatch, useSelector} from 'react-redux';
 import {Input} from "@/components/ui/input"
@@ -10,12 +10,19 @@ import {useToast} from "@/hooks/use-toast"
 import { useMutation, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
+
 function ResumeForm() {
+    const resumeRef = useRef();
+    // const 
+    // dispatch(setIsDownload({
+    //     bool:true, name:currentResumeName
+    // }))
+
     const {toast} = useToast()
     const queryClient = useQueryClient()
 
 
-    const {currentResumeDetails, currentResumeName, saveResumeDetails} = useSelector(state => state.resume)
+    const {currentResumeDetails, currentResumeName, saveResumeDetails, downloadResume} = useSelector(state => state.resume)
     const {user} = useSelector(state => state.auth)
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -37,7 +44,8 @@ function ResumeForm() {
 
 
 
-    console.log(currentResume)
+
+    // console.log(currentResume)
     useEffect(() => {
         // if (currentResumeName === saveResumeDetails
         //     ?.trainingName) {
@@ -50,7 +58,7 @@ function ResumeForm() {
             })
         // }
 
-        console.log(currentResumeDetails)
+        // console.log(currentResumeDetails)
     }, [])
 
     const handleChange = (e, field, index) => {
@@ -153,7 +161,7 @@ function ResumeForm() {
             </div>
         ))
     };
-    console.log(currentResumeName)
+    // console.log(currentResumeName)
     // Handle Submitting the Copy resume
     const [isSubmit,
         setIsSubmit] = useState(false)
@@ -169,7 +177,7 @@ function ResumeForm() {
         ,
         {
             onSuccess: (data) => {
-                console.log('Registration successful:', data.data);
+                // console.log('Registration successful:', data.data);
                 queryClient.invalidateQueries({ queryKey:  ["user", user._id]    })
                 setIsSubmit(prev => !prev)
                 dispatch(setSaveResumeDetails({
@@ -198,7 +206,7 @@ function ResumeForm() {
     const handleSubmit = async(e) => {
         setIsSubmit(prev => !prev)
         e.preventDefault();
-        console.log('Form Data Submitted:', currentResumeName ,user._id);
+        // console.log('Form Data Submitted:', currentResumeName ,user._id);
         // Perform API call to Update the Data for this Resume
         try {
 
@@ -207,7 +215,7 @@ function ResumeForm() {
         } catch (error) {
             setIsSubmit(prev => !prev)
 
-            console.error('Registration failed:', error);
+            // console.error('Registration failed:', error);
         }
 
     };
@@ -217,24 +225,24 @@ function ResumeForm() {
 
         try {
             const res = await axios.get(`http://localhost:5000/api/trainer/details/${user._id}`)
-            console.log(res.data)
+            // console.log(res.data)
             // setData(res.data)
             dispatch(setCredentials(res.data))
 
         } catch (err) {
-            console.log("Error fetching the data")
+            // console.log("Error fetching the data")
         }
     }
 
     // handle Save in browser
     const handleSaveResume = async() => {
         setIsEdit(prev => !prev)
-        console.log(isEdit)
+        // console.log(isEdit)
         if (isEdit) {
-            console.log("Edit clickde")
+            // console.log("Edit clickde")
 
         } else {
-            console.log("Save")
+            // console.log("Save")
             dispatch(setSaveResumeDetails({
                 ...currentResume
             }))
