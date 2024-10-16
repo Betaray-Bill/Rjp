@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
-import Employee from "../EmployeeModel";
+
 
 const trainerSourcerSchema = new mongoose.Schema({
     registeredTrainers: [{
-        trainerId: mongoose.Schema.Types.ObjectId,
-        ref: 'Trainer'
+        type: String
     }]
 });
 
-const TrainerSourcer = Employee.discriminator('TrainerSourcer', trainerSourcerSchema);
+const TrainerSourcer = mongoose.model('TrainerSourcer', trainerSourcerSchema);
 export default TrainerSourcer

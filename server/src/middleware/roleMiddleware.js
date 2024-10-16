@@ -6,15 +6,19 @@ const authorizeRole = (...allowedRoles) => {
         try {
             const employee = await Employee.findById(req.user._id)
             console.log("Emo=p : " + employee)
-            console.log(allowedRoles)
+            if (!employee) {
+                return res.status(404).json({ message: "Employee not found" })
+            }
+            // Get Allowed Roles List
             let roles = []
             for (let role of allowedRoles) {
                 for (let item in role) {
                     roles.push(role[item])
                 }
             }
+
+            // Check if User has the required role
             roles.forEach(role => {
-                // console.log(role + " " + req.user.role.name)
                 for (let i = 0; i < req.user.role.length; i++) {
                     if (req.user.role[i].name === role) {
                         console.log("Same ", req.user.role[i].name, " as ", role)

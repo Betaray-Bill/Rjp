@@ -5,12 +5,12 @@ import Employee from '../models/EmployeeModel.js';
 // Middleware to authenticate and authorize users
 const authMiddleware = asyncHandler(async(req, res, next) => {
     let token = req.cookies.jwt; // Get JWT from cookies
-    console.log("1")
-    console.log(token)
+    // console.log("1")
+    // console.log(token)
     if (!token) {
         return res.status(401).json({ message: 'Access denied. No token provided.' });
     }
-    console.log(2)
+    // console.log(2)
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 

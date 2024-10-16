@@ -1,5 +1,5 @@
 import express from 'express';
-import { addEmployee, createCompany, getAllCompanyNamesAndIds, getAllEmployees, getCompanyDetails } from '../controllers/AdminController.js';
+import { addEmployee, createCompany, getAllCompanyNamesAndIds, getAllEmployees, getCompanyDetails, updateEmployeeRole } from '../controllers/AdminController.js';
 import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import authMiddleware from '../middleware/authMiddleware.js';
@@ -16,16 +16,14 @@ router.post("/register", authMiddleware, addEmployee)
 router.get("/signout", authMiddleware, signOut)
 router.get("/getAll", authMiddleware, authorizeRole(["ADMIN"]), getAllEmployees)
 
+// Role Updating Routes
+router.put("/update-role/:empId", authMiddleware, authorizeRole(["ADMIN"]), updateEmployeeRole)
+
 // Company and Deal
 router.post("/create-company", authMiddleware, authorizeRole(["ADMIN", "MANAGER"]), createCompany)
 router.get("/company/:companyId", authMiddleware, getCompanyDetails)
 router.get("/company", authMiddleware, getAllCompanyNamesAndIds)
 
 
-
-// Check if a user has the permission to access any deal/
-
-// FInal changes
-// For User with many permissions - create new Middleware
 
 export default router

@@ -15,6 +15,10 @@ const employeeSchema = new mongoose.Schema({
         required: true,
     },
     role: [{
+        roleId: {
+            type: mongoose.Schema.Types.Mixed,
+            required: true, // Reference the respective role schema based on role name
+        },
         name: {
             type: String,
             enum: ['ADMIN', 'Manager', 'Trainer Sourcer', 'KeyAccounts'],
