@@ -1,7 +1,5 @@
-#root {
-    /* max-width: 1280px; */
+/* #root {
     margin: 0 auto;
-    /* padding: 2rem; */
     text-align: center;
 }
 
@@ -50,11 +48,9 @@
 }
 
 .container {
-    /* width: max-content/; */
     display: grid;
     place-self: center;
     place-items: center;
-    /* width: 100vw; */
 }
 
 nav {
@@ -62,7 +58,6 @@ nav {
     justify-content: space-between;
     align-items: center;
     width: 80vw;
-    /* background-color: pink; */
 }
 
 nav ul a {
@@ -89,7 +84,6 @@ form {
     display: grid;
     place-self: center;
     place-items: center;
-    /* grid-template-columns: repeat(3, minmax(0, 2fr)); */
 }
 
 label {
@@ -130,11 +124,9 @@ button:hover {
 
 .search_input {
     display: flex;
-    /* justify-content: center; */
-    /* background-color:pink */
 }
 
 .search_input input {
     height: max-content;
     width: 150px !important;
-}
+} */

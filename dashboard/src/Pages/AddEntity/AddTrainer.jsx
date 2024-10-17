@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import './AddTrainer.css'; // External CSS file for grid styling
+// import './AddTrainer.css'; // External CSS file for grid styling
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 

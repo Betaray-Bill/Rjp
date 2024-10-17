@@ -8,8 +8,11 @@ const authMiddleware = asyncHandler(async(req, res, next) => {
     // console.log("1")
     // console.log(token)
     if (!token) {
+        // Write a sign out function over here
         return res.status(401).json({ message: 'Access denied. No token provided.' });
     }
+
+
     // console.log(2)
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);

@@ -1,9 +1,12 @@
-import { useSelector } from "react-redux"
+export const userAccess = (roles, userRoles) => {
 
-const { currentUser } = useSelector(state => state.auth)
-
-export const userAccess = (roles) => {
-    // check if the roles are applicable
-    console.log(currentUser.roles)
-
+    // Check if the roles is accessible
+    for (let i = 0; i < roles.length; i++) {
+        for (let j = 0; j < userRoles?.length; j++) {
+            if (userRoles[j].name === roles[i]) {
+                return true
+            }
+        }
+    }
+    return false
 }

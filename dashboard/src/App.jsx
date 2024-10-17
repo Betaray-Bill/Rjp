@@ -8,7 +8,9 @@ import Profile from './Pages/Profile/Profile.jsx'
 import AddEntity from './Pages/AddEntity/AddEntity.jsx'
 import Search from './Pages/Search/Search.jsx'
 import { useSelector } from 'react-redux'
-import AddTrainer from './Pages/AddTrainer.jsx'
+import AddTrainer from './Pages/AddEntity/AddTrainer'
+import { userAccess } from './utils/CheckUserAccess'
+import RolesEnum from './utils/constants'
 
 
 function App() {
@@ -19,34 +21,33 @@ function App() {
     <Fragment>
       <Routes>
         <Route path='/login' element={<Login />} />
+        {/* <Route path='/' index element={<Navigate to="/home/dashboard" replace />}></Route> */}
 
         <Route element={<ProtectedRoute />}>
-          <Route path='/' index element={<Home />} />
+          {/* <Route path='/' index element={<Home />}> */}
           <Route path='/home' element={<Home />}>
+            {
+              userAccess([RolesEnum.ADMIN, RolesEnum.MANAGER, RolesEnum.KEY_ACCOUNT], currentUser.employee.role) && 
+              <Route path='search' element={<Search />} />
+            }
+            {
+               userAccess([RolesEnum.ADMIN], currentUser.employee.role) &&
+              <Route path='add' element={<AddEntity />} />
+            }
+            {
+              userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER, RolesEnum.MANAGER], currentUser.employee.role) &&
+               <Route path='trainer' element={<AddTrainer />} />
+            }
+    
             <Route path='profile' element={<Profile />} />
-            {
-              currentUser && ((currentUser.employee.role[0]?.name === "ADMIN" || currentUser.employee.role[0]?.name === "MANGER") &&
-              <Route path='add' element={<AddEntity />} />)
-            }
-            {
-              currentUser && ((currentUser.employee.role[0]?.name === "ADMIN" || currentUser.employee.role[0]?.name === "MANGER" || currentUser.employee.role[0]?.name === "KeyAccounts") &&
-              <Route path='search' element={<Search />} />)
-            }
-            {
-              currentUser && ((currentUser.employee.role[0]?.name === "ADMIN" || currentUser.employee.role[0]?.name === "MANGER" || currentUser.employee.role[0]?.name === "Trainer Sourcer") &&
-              <Route path='trainer' element={<AddTrainer />}>
-                {/* <Route path='trainer/:id' element={<TrainerDetails />} /> */}
-              </Route>
-            )
-              
-            }
           </Route>
+        </Route>
           
           <Route path="*" element={
             <div>Page not found <Link to="/home">Home</Link></div>
           }></Route>
 
-        </Route>
+        {/* </Route> */}
 
 
       </Routes>

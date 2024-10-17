@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react'
-import AddCompany from '../../Components/AddCompany';
+import AddCompany from '../../Layout/AddCompany';
 
 
 function AddEntity() {

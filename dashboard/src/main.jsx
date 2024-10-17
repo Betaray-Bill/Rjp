@@ -8,8 +8,15 @@ import { persistor, store } from './app/store.js'
 import { PersistGate } from 'redux-persist/es/integration/react'
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { ReactQueryDevtools } from 'react-query/devtools'
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // default: true
+    },
+  },
+});
 
-const queryClient = new QueryClient()
 createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={queryClient}>  
     <BrowserRouter>
@@ -17,6 +24,7 @@ createRoot(document.getElementById('root')).render(
         <PersistGate persistor={persistor}>
         <StrictMode>
           <App />
+          <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
         </StrictMode>
         </PersistGate>
       </Provider>
