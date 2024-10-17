@@ -59,7 +59,7 @@ function ResumeNav() {
                 dispatch(setCurrentResumeName("Main Resume"))
                 dispatch(setCurrentResumeDetails(user.mainResume))
                 if(location.pathname !== '/home/resume'){
-                    navigate('/home/resume')
+                    navigate('/home/resume/main')
                 }   
             }else{
                 let resumeVersionId = user.resumeVersions.find(element => element.trainingName === position)
@@ -67,7 +67,7 @@ function ResumeNav() {
                 console.log(resumeVersionId.trainingName)
                 dispatch(setCurrentResumeDetails(resumeVersionId))
                 // console.log(currentResumeDetails)
-                navigate(`/home/resume/copy/${resumeVersionId._id}`)
+                navigate(`/home/resume/copy/${resumeVersionId.trainingName}`)
             }
         }
 
@@ -139,6 +139,8 @@ function ResumeNav() {
                 dispatch(setIsDownload({
                     bool:true, name:currentResumeName
                 }))
+
+                navigate(`/home/resume/download/preview/${currentResumeName}`)
             }}>
                 <TooltipProvider>
                     <Tooltip>
@@ -150,7 +152,7 @@ function ResumeNav() {
                 </TooltipProvider>
             </div>
             {
-                location.pathname.split('/')[location.pathname.split('/').length - 1 ] === 'resume' ? 
+                location.pathname.split('/')[location.pathname.split('/').length - 1 ] === 'main' ? 
                 (
                     <Fragment>
                         <div className='px-2'>

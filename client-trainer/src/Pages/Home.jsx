@@ -44,7 +44,7 @@ function Home() {
 
   const fetchUser = async (id) => {
     const res = await axios.get(`http://localhost:5000/api/trainer/details/${user._id}`)
-      console.log(res.data)
+      // console.log(res.data)
       dispatch(setCredentials(res.data))
     return res.data;
   };
@@ -52,8 +52,6 @@ function Home() {
     ["user", user._id], 
     fetchUser
   );
-  
-  console.log("Query Data is ", data)
 
   axios.defaults.withCredentials = true;
   const handleNdaSubmit= async() => {

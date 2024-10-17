@@ -1,7 +1,8 @@
+import { Button } from '@/components/ui/button';
 import { setIsDownload } from '@/features/resumeSlice';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import React, { useEffect, useRef } from 'react'
+import React, { Fragment, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 function ResumeDownload() {
@@ -15,7 +16,7 @@ function ResumeDownload() {
   useEffect(() => {
     console.log("Dowload obj")
     if (downloadResume && downloadResumeName === currentResumeName) {
-        handleDownload()
+        // handleDownload()
         console.log("yes")
         dispatch(setIsDownload({
             bool: false, name: ''
@@ -44,7 +45,11 @@ console.log("object")
       });
 };
   return (
-    <div ref={resumeRef} className='p-2 grid grid-cols-2'>
+    <Fragment>
+      <div>
+        <Button onClick={handleDownload}>DOwnload</Button>
+      </div>
+      <div ref={resumeRef} className='p-2 grid grid-cols-2 w-[80vw]'>
         <div className="resume-content">
           <h2 className='font-semibold'>Professional Summary</h2>
           {
@@ -116,6 +121,7 @@ console.log("object")
         </div>    
          
          </div>
+    </Fragment>
     // </div>
   )
 }

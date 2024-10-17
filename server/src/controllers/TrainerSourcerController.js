@@ -126,11 +126,7 @@ const updateResume = asyncHandler(async(req, res) => {
                 if (trainer.resumeVersions[i].trainingName === req.body.trainingName) {
                     console.log("-----------------------------")
                     console.log(trainer.resumeVersions[i])
-                        // Update the specific index using splice
-                        // trainer.resumeVersions.splice(i, 1, {
-                        //     ...trainer.resumeVersions[i], // Keep the existing data
-                        //     ...req.body.resumeVersion,    // Update with the new data from the request
-                        // });
+
                     await trainer.resumeVersions.splice(i, 1, {
                         professionalSummary: req.body.professionalSummary,
                         technicalSkills: req.body.technicalSkills,

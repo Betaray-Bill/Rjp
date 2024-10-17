@@ -13,6 +13,7 @@ import Dashboard from './Pages/Dashboard.jsx'
 import Resume from './Pages/Resume.jsx'
 import ResumeForm from './Layout/Resume/ResumeForm'
 import ResumeNew from './Layout/Resume/ResumeNew'
+import ResumeDownload from './Layout/Resume/ResumeDownload'
 
 
 function App() {
@@ -34,6 +35,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path='/' index element={<Navigate to="/home/dashboard" replace />}></Route>
+        <Route path='/home/resume' index element={<Navigate to="/home/resume/main" replace />}></Route>
+
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute/> }>
@@ -41,7 +44,10 @@ function App() {
             <Route path='dashboard' index element={<Dashboard /> }/>
             <Route path="resume" element={<Resume />}>
               <Route path='new' element={<ResumeNew />} />
+              <Route path='download/preview/:resumeName' element={<ResumeDownload />} />   {/* Preview Resume Routes */}
+              {/* Main Resume and Copies URL */}
               <Route path='copy/:id' element={<ResumeForm/>} />
+              <Route path='main' element={<ResumeForm/>} />
             </Route>
             <Route path="account" element={<Account />}/>
           </Route>

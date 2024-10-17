@@ -38,7 +38,7 @@ function Resume() {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="/home/resume">Resume</BreadcrumbLink>
+                        <BreadcrumbLink href="/home/resume/main">Resume</BreadcrumbLink>
                     </BreadcrumbItem>
                     {
                        path !== '' ? 
@@ -61,7 +61,14 @@ function Resume() {
                                                 <BreadcrumbPage><span className='text-gray-500 text-sm'>Copy of</span> {currentResumeName && currentResumeName}</BreadcrumbPage>
                                             </BreadcrumbItem>
                                         </Fragment>
-                                    ) : null
+                                    ) : 
+                                     location.pathname.split('/').includes("preview") ? 
+                                     <Fragment>
+                                        <BreadcrumbSeparator />
+                                        <BreadcrumbItem>
+                                            <BreadcrumbPage className="flex items-center"><span className='text-gray-500 text-sm flex items-center justify-between' >Preview  <BreadcrumbSeparator /> </span> {currentResumeName && currentResumeName}</BreadcrumbPage>
+                                        </BreadcrumbItem>
+                                    </Fragment> : null
                                 )
                             }
                         </Fragment>
@@ -75,11 +82,11 @@ function Resume() {
         <ResumeNav />
         
         {
-            currentResumeName === 'Main Resume' ? 
-            <div className='mt-10 m-1 p-2 bg-white grid place-content-center rounded-md border border-generalBorderColor'>
-                <ResumeForm type="main"/>
-            </div> 
-            : 
+            // currentResumeName === 'Main Resume' ? 
+            // <div className='mt-10 m-1 p-2 bg-white grid place-content-center rounded-md border border-generalBorderColor'>
+            //     <ResumeForm type="main"/>
+            // </div> 
+            // : 
             <div className='mt-10 m-1 p-2 bg-white grid place-content-center rounded-md border border-generalBorderColor'>
                 <Outlet />
             </div> 
