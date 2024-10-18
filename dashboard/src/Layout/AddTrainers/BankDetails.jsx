@@ -6,7 +6,7 @@ function BankDetails() {
     return (
         <div>
             <h2 className='text-slate-700  text-lg py-4 font-semibold'>Bank Details</h2>
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-3 mt-3 place-items-center'>
+            <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-3 mt-3 place-items-center'>
                 {/* Account name, number, bank name, branch, IFSC code, Pancard number, Aadhar  */}
 
                 {/* If external vendor - GST , vendor name */}

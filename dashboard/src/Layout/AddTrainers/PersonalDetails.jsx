@@ -1,63 +1,62 @@
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {Input} from '@/components/ui/input';
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList
 } from "@/components/ui/command"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Button } from '@/components/ui/button';
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
+import {Button} from '@/components/ui/button';
 import {trainingModesEnum} from '../../utils/constants.js';
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 
 function PersonalDetails() {
-    const [open, setOpen] = useState(false)
-    const [value, setValue] = useState("")
-  
-    const [openMode, setOpenModel] = useState(false)
-    const [modeVal, setModeVal] = useState("")
-  
-  return (
-    <div className=''>
+    const [open,
+        setOpen] = useState(false)
+    const [value,
+        setValue] = useState("")
+
+    const [openMode,
+        setOpenModel] = useState(false)
+    const [modeVal,
+        setModeVal] = useState("")
+
+    return (
+        <div className=''>
             <h2 className='text-slate-700  text-lg py-4 font-semibold'>General Details</h2>
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[25px] mb-3 mt-3 place-items-center'>
-              <div>
-                <Label htmlFor="Name">Name</Label>
-                <Input type="text" id="name" name="name"/>
-              </div>
+            <div
+                className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[25px] mb-3 mt-3 place-items-center'>
+                <div>
+                    <Label htmlFor="Name">Name</Label>
+                    <Input type="text" id="name" name="name"/>
+                </div>
 
-              <div>
-                <Label htmlFor="Email">Email</Label>
-                <Input type="email" id="Email"  name="email"/>
-              </div>
+                <div>
+                    <Label htmlFor="Email">Email</Label>
+                    <Input type="email" id="Email" name="email"/>
+                </div>
 
-              <div>
-                <Label htmlFor="Phone Number">Phone Number</Label>
-                <Input type="number" id="Phone Number" name="phoneNumber"/>
-              </div>
+                <div>
+                    <Label htmlFor="Phone Number">Phone Number</Label>
+                    <Input type="number" id="Phone Number" name="phoneNumber"/>
+                </div>
 
-              <div>
-                <Label htmlFor="Whatsapp Number">
-                  <span>Whatsapp Number</span>
-                </Label> 
-                <Input type="number" id="Whatsapp Number" name="WhatsappNumber"/>
-              </div>
+                <div>
+                    <Label htmlFor="Whatsapp Number">
+                        <span>Whatsapp Number</span>
+                    </Label>
+                    <Input type="number" id="Whatsapp Number" name="WhatsappNumber"/>
+                </div>
 
-              <div>
-                <Label htmlFor="Alternate Number">Alternate Number</Label>
-                <Input type="number" id="Alternate Number" name="AlternateNumber"/>
-              </div>
+                <div>
+                    <Label htmlFor="Alternate Number">Alternate Number</Label>
+                    <Input type="number" id="Alternate Number" name="AlternateNumber"/>
+                </div>
 
-
-
-              {/* 
+                {/*
               <div className='flex flex-col'>
                 <Label htmlFor="email">Type Of trainer</Label>
                 <Popover open={open} onOpenChange={setOpen}>
@@ -87,7 +86,7 @@ function PersonalDetails() {
                             >
                               Internal
                             </CommandItem>
-                            <CommandItem 
+                            <CommandItem
                             className="mt-1 bg-white"
                               key="External"
                               value={value}
@@ -98,7 +97,7 @@ function PersonalDetails() {
                             >
                               External
                             </CommandItem>
-                            
+
                         </CommandGroup>
                       </CommandList>
                     </Command>
@@ -141,7 +140,7 @@ function PersonalDetails() {
                                   </CommandItem>
                                 ))
                               }
-                                
+
                             </CommandGroup>
                           </CommandList>
                         </Command>
@@ -151,11 +150,9 @@ function PersonalDetails() {
                 ): null
               } */}
 
+                {/* Mobile number, email, whatsapp, alternate number */}
 
-               {/* Mobile number, email, whatsapp, alternate number */}
-
-
-              {/* <div>
+                {/* <div>
                 <Label htmlFor="email">Name</Label>
                 <Input type="text" id="name" placeholder="Name" name="name"/>
               </div>
@@ -164,8 +161,8 @@ function PersonalDetails() {
                 <Input type="text" id="name" placeholder="Name" name="name"/>
               </div> */}
             </div>
-    </div>
-  )
+        </div>
+    )
 }
 
 export default PersonalDetails

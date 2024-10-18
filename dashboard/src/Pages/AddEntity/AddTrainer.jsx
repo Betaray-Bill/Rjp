@@ -4,13 +4,15 @@ import { useSelector } from 'react-redux';
 import PersonalDetails from '@/Layout/AddTrainers/PersonalDetails.jsx';
 import ResumeDetails from '@/Layout/AddTrainers/Resume/ResumeDetails';
 import BankDetails from '@/Layout/AddTrainers/BankDetails';
+import { Button } from '@/components/ui/button';
+import TrainingDetails from '@/Layout/AddTrainers/TrainingDetails';
  
  let add = 0
 
 const AddTrainer = () => {
   console.log("meow", add++)
  
-    const {currentUser} = useSelector(state => state.auth)
+  const {currentUser} = useSelector(state => state.auth)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -164,13 +166,18 @@ const AddTrainer = () => {
 
           {/* Training Details */}
           <div className='mt-10 border  p-3 rounded-sm '>
-            {/* <TrainingDetails /> */}
+              <TrainingDetails />
           </div>
 
           {/* Resume Details */}
           <div className='mt-10 border  p-3 rounded-sm '>
             <ResumeDetails />
           </div>
+
+          <div className='mt-10 p-3 rounded-sm grid place-items-center'>
+            <Button>Submit</Button>
+          </div>
+          
         </form>
 
 
@@ -200,20 +207,20 @@ export default AddTrainer;
     //               // required
     //               />
     //           </div>
-    //           <div>
-    //               <label>Type of Trainer</label>
-    //               <select
-    //                 name="type_of_trainer"
-    //                 value={formData.type_of_trainer}
-    //                 onChange={handleChange}
-    //               >
-    //                 <option value="Internal">Internal</option>
-    //                 <option value="External - Full Time">External - Full Time</option>
-    //                 <option value="External - Freelancer">External - Freelancer</option>
-    //                 <option value="External - Vendor">External - Vendor</option>
+              // <div>
+              //     <label>Type of Trainer</label>
+              //     <select
+              //       name="type_of_trainer"
+              //       value={formData.type_of_trainer}
+              //       onChange={handleChange}
+              //     >
+              //       <option value="Internal">Internal</option>
+              //       <option value="External - Full Time">External - Full Time</option>
+              //       <option value="External - Freelancer">External - Freelancer</option>
+              //       <option value="External - Vendor">External - Vendor</option>
 
-    //               </select>
-    //           </div>
+              //     </select>
+              // </div>
     //           <div>
     //               <label>Trainer ID</label>
     //               <input

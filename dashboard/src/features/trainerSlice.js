@@ -1,26 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    currentUser: null,
+    trainerDetails: {
+
+    },
 };
 
 const trainerSlice = createSlice({
     name: 'trainer',
     initialState,
     reducers: {
+        setResumeDetails: (state, action) => {
+            state.trainerDetails = {...state.trainerDetails, ...action.payload }
+        },
 
-        setCredentials: (state, action) => {
-            state.currentUser = action.payload
-        },
-        signOut: (state) => {
-            state.currentUser = null;
-        },
     },
 });
 
 export const {
-    setCredentials,
-    signOut
+    setResumeDetails
 } = trainerSlice.actions;
 
 export default trainerSlice.reducer;

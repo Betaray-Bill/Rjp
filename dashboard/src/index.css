@@ -117,3 +117,10 @@ body {
     display: none;
     background-color: #555;
 }
+
+select {
+    padding: 9px 14px;
+    border-radius: 4px;
+    outline: none;
+    border: 1px solid gray !important;
+}
