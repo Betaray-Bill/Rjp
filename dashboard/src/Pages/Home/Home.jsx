@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { signOut } from '../../features/authSlice'
 import { Outlet } from 'react-router-dom';
+import logo from "../../assets/logo.png"
+import { Button } from '@/Components/ui/button'
 
 function Home() {
   const dispatch = useDispatch()
@@ -34,23 +36,7 @@ function Home() {
     // <div className=''>
     //   <nav>
     //     <h2 className='text-pink'>RJP</h2>
-    //     <ul className={{display: 'flex'}}>
-    //         <Link to="/home">Home</Link>  
-    //         {
-    //           (currentUser.employee.role[0]?.name === 'ADMIN' || currentUser.employee.role[0]?.name === 'MANAGER' || currentUser.employee.role[0]?.name === "KeyAccounts")&& 
-    //           <Link to="/home/search">Search Trainers</Link>
-    //         }
-    //         {
-    //           (currentUser.employee.role[0]?.name === 'ADMIN' || currentUser.employee.role[0]?.name === 'MANAGER' )&& 
-    //           <Link to="/home/add">Add +</Link>
-    //         }
-    //         {
-    //           (currentUser.employee.role[0]?.name === 'ADMIN' || currentUser.employee.role[0]?.name === 'MANAGER' || currentUser.employee.role[0]?.name === "Trainer Sourcer")&& 
-    //           <Link to='/home/trainer'>Add Trainers</Link>
-    //         }
-            
-    //         <Link to="/home/profile">Profile</Link>
-    //     </ul>
+  
     //     <button onClick={signOutNow}> 
     //       sign Out
     //     </button>
@@ -65,24 +51,49 @@ function Home() {
     //   </div>
     // </div>
 
-    <div className='p-0 m-0 h-screen w-screen'>
+    <div className='p-0 m-0 h-screen '>
       {/* Main Bar */}
-      <div className='w-screen'>
+      <div className='w-screen flex items-center p-3'>
         <div className=''>
-          <img src="../../assets/logo.png" alt="RJP logo" className='w-20'/>
+          <img src={logo} alt="RJP logo" className='w-20 h-10'/>
         </div>
         <div>
-
+        {/* IDK */}
+        <ul className="flex items-center justify-evenly w-[80vw]">
+            <Link to="/home">Home</Link>  
+            {
+              (currentUser.employee.role[0]?.name === 'ADMIN' || currentUser.employee.role[0]?.name === 'MANAGER' || currentUser.employee.role[0]?.name === "KeyAccounts")&& 
+              <Link to="/home/search">Search Trainers</Link>
+            }
+            {
+              (currentUser.employee.role[0]?.name === 'ADMIN' || currentUser.employee.role[0]?.name === 'MANAGER' )&& 
+              <Link to="/home/add">Add +</Link>
+            }
+            {
+              (currentUser.employee.role[0]?.name === 'ADMIN' || currentUser.employee.role[0]?.name === 'MANAGER' || currentUser.employee.role[0]?.name === "Trainer Sourcer")&& 
+              <Link to='/home/trainer'>Add Trainers</Link>
+            }
+            
+    
+        </ul>
         </div>
         <div>
           {/* Notification */}
-
-          {/* Accounts */}
-          
+            <Button>
+              <Link to="/home/profile" className='text-white'>Profile</Link>
+            </Button>
         </div>
       </div>
 
       {/* Sidebar */}
+
+
+      {/* Main Section */}
+      <div className="w-screen grid place-content-center h-screen">
+        <div className='w-[80vw]'>
+          <Outlet/>
+        </div>
+       </div>
     </div>
   )
 }
