@@ -3,6 +3,7 @@ import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import PersonalDetails from '@/Layout/AddTrainers/PersonalDetails.jsx';
 import ResumeDetails from '@/Layout/AddTrainers/Resume/ResumeDetails';
+import BankDetails from '@/Layout/AddTrainers/BankDetails';
  
  let add = 0
 
@@ -154,6 +155,16 @@ const AddTrainer = () => {
           {/* General Details */}
           <div className='mt-10 border p-3 rounded-sm'>
             <PersonalDetails />
+          </div>
+
+          {/* Bank Details */}
+          <div className='mt-10 border  p-3 rounded-sm '>
+            <BankDetails />
+          </div>
+
+          {/* Training Details */}
+          <div className='mt-10 border  p-3 rounded-sm '>
+            {/* <TrainingDetails /> */}
           </div>
 
           {/* Resume Details */}

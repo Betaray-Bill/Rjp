@@ -26,13 +26,38 @@ function PersonalDetails() {
   
   return (
     <div className=''>
-            <h2 className='text-slate-700  text-md py-4 font-medium'>General Details</h2>
-            <div className='grid grid-cols-3 gap-5'>
+            <h2 className='text-slate-700  text-lg py-4 font-semibold'>General Details</h2>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[25px] mb-3 mt-3 place-items-center'>
               <div>
                 <Label htmlFor="Name">Name</Label>
-                <Input type="text" id="name" placeholder="Name" name="name"/>
+                <Input type="text" id="name" name="name"/>
               </div>
 
+              <div>
+                <Label htmlFor="Email">Email</Label>
+                <Input type="email" id="Email"  name="email"/>
+              </div>
+
+              <div>
+                <Label htmlFor="Phone Number">Phone Number</Label>
+                <Input type="number" id="Phone Number" name="phoneNumber"/>
+              </div>
+
+              <div>
+                <Label htmlFor="Whatsapp Number">
+                  <span>Whatsapp Number</span>
+                </Label> 
+                <Input type="number" id="Whatsapp Number" name="WhatsappNumber"/>
+              </div>
+
+              <div>
+                <Label htmlFor="Alternate Number">Alternate Number</Label>
+                <Input type="number" id="Alternate Number" name="AlternateNumber"/>
+              </div>
+
+
+
+              {/* 
               <div className='flex flex-col'>
                 <Label htmlFor="email">Type Of trainer</Label>
                 <Popover open={open} onOpenChange={setOpen}>
@@ -45,12 +70,10 @@ function PersonalDetails() {
                     >
                       {value ? value :"Internal"}
                       <ion-icon name="chevron-down-outline"></ion-icon>
-                      {/* <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" /> */}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
-                      {/* <CommandInput placeholder="Search Trainer Type..." /> */}
                       <CommandList>
                         <CommandEmpty>No Trainer Type found.</CommandEmpty>
                         <CommandGroup>
@@ -81,9 +104,6 @@ function PersonalDetails() {
                     </Command>
                   </PopoverContent>
                 </Popover>
-
-                {/* External Modes */}
-
               </div>
 
               {
@@ -100,12 +120,10 @@ function PersonalDetails() {
                         >
                           {modeVal ? modeVal : "PartTime - Offline"}
                           <ion-icon name="chevron-down-outline"></ion-icon>
-                          {/* <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" /> */}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-[200px] p-0">
                         <Command>
-                        {/* <ion-icon name="chevron-down-outline"></ion-icon> */}
                           <CommandList>
                             <CommandEmpty>No Trainer Type found.</CommandEmpty>
                             <CommandGroup>
@@ -131,7 +149,10 @@ function PersonalDetails() {
                     </Popover>
                 </div>
                 ): null
-              }
+              } */}
+
+
+               {/* Mobile number, email, whatsapp, alternate number */}
 
 
               {/* <div>

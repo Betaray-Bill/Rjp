@@ -15,7 +15,7 @@ function ResumeDetails() {
   const [error, setError] = useState(null);
 
   const [resume, setResume] = useState({
-    professionalsummary: [],
+    professionalSummary: [],
     technicalSkills: [],
     careerHistory: [],
     certifications: [],
@@ -114,6 +114,7 @@ function ResumeDetails() {
   // Handler to add a new empty textarea for a specific field
   const handleAdd = (field) => {
           setResume((prevState) => {
+            console.log(prevState)
               return {
                   ...prevState,
                   [field]: [
@@ -141,21 +142,13 @@ function ResumeDetails() {
           return (
               <div
                   key={0}
-                  className='py-2 flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
+                  className='py-2 flex justify-between align-top items-start border border-gray-200 px-2 my-2 rounded-md'>
                   <Textarea
                       value=""
                       // readOnly={isEdit}
                       onChange={(e) => handleChange(e, fieldName, 0)}
                       placeholder={`Type your ${fieldName}`}
-                      className="w-[30vw] text-gray-800 text-sm outline-none border-collapse border-none"/>
-                  <ion-icon
-                      name="trash-outline"
-                      style={{
-                      color: "rgba(246, 43, 43, 0.644)",
-                      fontSize: "18px",
-                      cursor: "pointer"
-                  }}
-                      onClick={() => handleDelete(fieldName, 0)}></ion-icon>
+                      className=" text-gray-800 text-sm outline-none border-collapse border-none"/>
               </div>
           )
       }
@@ -163,7 +156,7 @@ function ResumeDetails() {
       fieldArray?.map((value, index) => (
         <div
             key={index}
-            className='py-2 flex align-top items-start border w-max border-gray-200 p-2 my-2 rounded-md'>
+            className='py-2 flex justify-between align-top items-start border    border-gray-200 p-2 my-2 rounded-md'>
             <Textarea
                 value={value}
                 // readOnly={isEdit}
@@ -180,7 +173,7 @@ function ResumeDetails() {
                 onClick={() => handleDelete(fieldName, index)}></ion-icon>
         </div>
       )) : <div
-          className='py-2 flex align-top items-start border w-max border-gray-200 p-2 my-2 rounded-md'>
+          className='py-2 flex justify-between align-top items-start border    border-gray-200 px-2 my-2 rounded-md'>
           <Textarea
               value={fieldArray}
               // readOnly={isEdit}
@@ -202,7 +195,7 @@ function ResumeDetails() {
   return ( 
       <div>
         <div className='flex items-center justify-between'>
-          <h2 className='text-slate-700 text-md py-4 font-medium'>Resume Details</h2>
+          <h2 className='text-slate-700 text-lg py-4 font-semibold'>Resume Details</h2>
 
           <div className="w-full max-w-sm items-center gap-1.5 hidden">
             <Input  ref={fileInputRef} id="resume" type="file" onChange={handleFileChange} accept=".pdf,.docx" />
@@ -227,7 +220,7 @@ function ResumeDetails() {
             <p className='text-slate-700'>Processing your resume...</p>
           </div>
           :
-          <div className='grid grid-cols-2 items-start'>
+          <div className='grid grid-cols-1 md:grid-cols-2 items-start '>
                 <div className='mt-4 rounded-sm p-2'>
                     <h3 className='font-semibold flex justify-between items-center'>
                         <span>Professional Summary:</span>
@@ -236,7 +229,7 @@ function ResumeDetails() {
                             style={{
                             fontSize: "18px"
                         }}
-                            onClick={() => handleAdd('professionalsummary')}></ion-icon>
+                            onClick={() => handleAdd('professionalSummary')}></ion-icon>
                     </h3>
                     {renderTextareas(resume.professionalSummary, 'professionalSummary')}
                 </div>
