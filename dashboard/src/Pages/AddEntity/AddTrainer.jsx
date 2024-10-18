@@ -6,6 +6,7 @@ import ResumeDetails from '@/Layout/AddTrainers/Resume/ResumeDetails';
 import BankDetails from '@/Layout/AddTrainers/BankDetails';
 import { Button } from '@/components/ui/button';
 import TrainingDetails from '@/Layout/AddTrainers/TrainingDetails';
+import TrainingDomain from '@/Layout/AddTrainers/TrainingDomain';
  
  let add = 0
 
@@ -167,6 +168,11 @@ const AddTrainer = () => {
           {/* Training Details */}
           <div className='mt-10 border  p-3 rounded-sm '>
               <TrainingDetails />
+          </div>
+
+          {/* Training DOmain */}
+          <div className='mt-10 border  p-3 rounded-sm '>
+              <TrainingDomain />
           </div>
 
           {/* Resume Details */}
