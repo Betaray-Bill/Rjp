@@ -79,8 +79,8 @@ function Home() {
         </div>
         <div>
           {/* Notification */}
-            <Button>
-              <Link to="/home/profile" className='text-white'>Profile</Link>
+            <Button onClick={signOutNow}>
+              <span className='text-white'>Sign out</span>
             </Button>
         </div>
       </div>

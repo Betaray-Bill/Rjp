@@ -120,14 +120,30 @@ function TrainingDomain() {
                         </PopoverContent>
                     </Popover>
                 </div>
-                                        
-                  {
-                    list && list.map((item, index) => (
-                      <div key={index} className="mb-2">
-                          <Label>{index + 1}. {item}</Label>
-                      </div>
-                    ))
-                }
+
+
+                {/* Training Domain based cards with price - hourly or daily  */}
+
+                <div className='mt-10 grid grid-cols-1 md:grid-cols-2  p-3 gap-9'>
+                    {/* Get all the Listed Domains selected by the user */}
+                    {
+                        list && list.map((item, index) => (
+                        <div key={index} className="mb-2">
+                            <Label className="text-md font-semibold">{index + 1}. {item}</Label>
+                            <div className='mt-3 flex flex-col justify-between' >
+                                <Input type="number" placeholder="Enter Price(Rupees)" className="w-[200px]"/>
+                                <select name="domainTrainingMode" id="" className='w-max mt-3'>
+                                    <option value="Select Mode">Select Mode</option>
+                                    <option value="Hourly">Hourly</option>
+                                    <option value="Per Day">Per Day</option>
+                                </select>
+                            </div>
+                        </div>
+                        ))
+                    }
+                    {/* ask for its price per session day/hour */}
+                </div>
+                
             </div>
         </div>
     )
