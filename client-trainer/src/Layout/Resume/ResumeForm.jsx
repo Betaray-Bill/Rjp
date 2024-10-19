@@ -50,7 +50,7 @@ function ResumeForm() {
             })
         } else {
             setCurrentResume({
-                ...currentResumeDetails
+                ...user.mainResume
             })
         }
 
@@ -118,7 +118,7 @@ function ResumeForm() {
             return (
                 <div
                     key={0}
-                    className='py-2 h-max flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
+                    className='py-2 h- flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
                     <Textarea
                         value=""
                         readOnly={isEdit}
@@ -139,7 +139,7 @@ function ResumeForm() {
         return fieldArray?.map((value, index) => (
             <div
                 key={index}
-                className='py-2 h-max flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
+                className='py-2 h- flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
                 <Textarea
                     value={value}
                     readOnly={isEdit}
