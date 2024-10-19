@@ -32,7 +32,7 @@ function BankDetails() {
         }))
     }
 
-    console.log(trainerDetails.trainingDetails)
+    // console.log(trainerDetails.trainingDetails)
     return (
         <div>
             <h2 className='text-slate-700  text-lg py-4 font-semibold'>Bank Details</h2>

@@ -3,17 +3,7 @@ import {Input} from '@/components/ui/input';
 import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux';
 import {setResumeDetails} from '@/features/trainerSlice.js';
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
- 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+
 
 function PersonalDetails() {
     const dispatch = useDispatch();
@@ -32,7 +22,7 @@ function PersonalDetails() {
         dispatch(setResumeDetails({name: "generalDetails", data: updatedGeneralDetails}))
     }
 
-    console.log(trainerDetails)
+    // console.log(trainerDetails)
 
     return (
         <div className=''> 
@@ -50,7 +40,10 @@ function PersonalDetails() {
                 </div>
 
                 <div>
-                    <Label htmlFor="Phone Number">Phone Number</Label>
+                    <Label htmlFor="Phone Number" className="flex items-center">
+                        <span className='mr-4'>Phone Number </span>
+                        <ion-icon name="repeat-outline" style={{fontSize:"24px"}} onClick={() => setGeneralDetails({...generalDetails, whatsappNumber: generalDetails.phoneNumber})}></ion-icon>
+                    </Label>
                     <Input
                         type="number"
                         id="Phone Number"

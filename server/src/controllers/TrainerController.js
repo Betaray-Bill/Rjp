@@ -11,7 +11,7 @@ const trainerLogin = asyncHandler(async(req, res) => {
         return res.status(400).json({ message: "Please provide both email and password." })
     }
 
-    const trainer = await Trainer.find({ "contact_Details.email_id": email }).select("-password")
+    const trainer = await Trainer.find({ "generalDetails.email": email }).select("-password")
     console.log(trainer)
     if (trainer) {
         console.log(trainer)

@@ -13,11 +13,8 @@ import { useNavigate } from 'react-router-dom';
 
 function ResumeForm() {
     const resumeRef = useRef();
-    // const 
-    // dispatch(setIsDownload({
-    //     bool:true, name:currentResumeName
-    // }))
-
+    const [isSubmit,
+        setIsSubmit] = useState(false)
     const {toast} = useToast()
     const queryClient = useQueryClient()
 
@@ -47,8 +44,7 @@ function ResumeForm() {
 
     // console.log(currentResume)
     useEffect(() => {
-        if (currentResumeName === saveResumeDetails
-            ?.trainingName) {
+        if (currentResumeName === saveResumeDetails.trainingName) {
             setCurrentResume({
                 ...saveResumeDetails
             })
@@ -59,7 +55,7 @@ function ResumeForm() {
         }
 
         // console.log(currentResumeDetails)
-    }, [currentResumeName])
+    }, [currentResumeName, isSubmit])
 
     const handleChange = (e, field, index) => {
         const value = e.target.value;
@@ -163,8 +159,7 @@ function ResumeForm() {
     };
     // console.log(currentResumeName)
     // Handle Submitting the Copy resume
-    const [isSubmit,
-        setIsSubmit] = useState(false)
+
     axios.defaults.withCredentials = true;
     //    Update Mutation Query
     const submitResume = useMutation(

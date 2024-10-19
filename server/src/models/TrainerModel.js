@@ -57,9 +57,9 @@ const trainerSchema = mongoose.Schema({
     trainingDetails: {
         trainerType: {
             type: String,
-            enum: [
-                'Internal', 'External'
-            ],
+            // enum: [
+            //     'Internal', 'External'
+            // ],
             required: true
         },
         modeOfTraining: {

@@ -53,7 +53,7 @@ function TrainingDomain() {
         }
 
     }
-    console.log(trainingDomain)
+    // console.log(trainingDomain)
     const handleDelete = (index) => {       
         if (index > -1) {
             setTrainingDomain([...trainingDomain.slice(0, index),...trainingDomain.slice(index + 1)])

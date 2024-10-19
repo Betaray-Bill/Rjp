@@ -96,7 +96,25 @@ function ResumeDetails() {
   
   const handleChange = (e, field, index) => {
     const value = e.target.value;
-    setResume((prevState) => {
+    let updateResume = () => {
+      if(Array.isArray(resume[field])) {
+        const updatedArray = [...resume[field]];
+        updatedArray[index] = value;
+
+        return {
+            ...resume,
+            [field]: updatedArray
+        };
+      }else{
+        return {
+           ...resume,
+            [field]: value
+        };
+    }
+  }
+
+  console.log("Resume Details ", updateResume())
+  setResume((prevState) => {
         // Update array fields based on the index
         if (Array.isArray(prevState[field])) {
             const updatedArray = [...prevState[field]];
@@ -115,8 +133,8 @@ function ResumeDetails() {
         };
     });
 
-
-    dispatch(setResumeDetails({name: "mainResume", data: resume}))
+    console.log("Resume is ", resume)
+    dispatch(setResumeDetails({name: "mainResume", data: updateResume()}))
 
   };
 

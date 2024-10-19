@@ -50,7 +50,11 @@ const trainerSlice = createSlice({
     reducers: {
         setResumeDetails: (state, action) => {
             console.log(action)
-            state.trainerDetails = {...state.trainerDetails, [action.payload.name]: {...action.payload.data } }
+            if (action.payload.name === 'trainingDomain') {
+                state.trainerDetails[action.payload.name] = action.payload.data
+            } else {
+                state.trainerDetails = {...state.trainerDetails, [action.payload.name]: {...action.payload.data } }
+            }
         },
         removeResumeDetails: (state) => {
             state.trainerDetails = {
