@@ -6,6 +6,8 @@ import { signOut } from '../../features/authSlice'
 import { Outlet } from 'react-router-dom';
 import logo from "../../assets/logo.png"
 import { Button } from '@/Components/ui/button'
+import { userAccess } from '../../utils/CheckUserAccess.js'
+import { RolesEnum } from '../../utils/constants.js'
 
 function Home() {
   const dispatch = useDispatch()
@@ -62,15 +64,15 @@ function Home() {
         <ul className="flex items-center justify-evenly w-[80vw]">
             <Link to="/home">Home</Link>  
             {
-              (currentUser.employee.role[0]?.name === 'ADMIN' || currentUser.employee.role[0]?.name === 'MANAGER' || currentUser.employee.role[0]?.name === "KeyAccounts")&& 
+              userAccess([RolesEnum.ADMIN, RolesEnum.MANAGER, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && 
               <Link to="/home/search">Search Trainers</Link>
             }
             {
-              (currentUser.employee.role[0]?.name === 'ADMIN' || currentUser.employee.role[0]?.name === 'MANAGER' )&& 
+              userAccess([RolesEnum.ADMIN, RolesEnum.MANAGER], currentUser?.employee.role) && 
               <Link to="/home/add">Add +</Link>
             }
             {
-              (currentUser.employee.role[0]?.name === 'ADMIN' || currentUser.employee.role[0]?.name === 'MANAGER' || currentUser.employee.role[0]?.name === "Trainer Sourcer")&& 
+              userAccess([RolesEnum.ADMIN,RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) && 
               <Link to='/home/trainer'>Add Trainers</Link>
             }
             

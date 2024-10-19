@@ -175,7 +175,7 @@ function ResumeNew() {
               file_url: '',
               trainingName: ''
           })
-        //   navigate("/home/resume")
+          navigate("/home/resume/main")
           // setUser(response.data)
       }catch (error) {
           console.error('Registration failed:', error);

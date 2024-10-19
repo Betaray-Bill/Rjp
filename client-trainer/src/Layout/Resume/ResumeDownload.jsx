@@ -38,7 +38,7 @@ console.log("object")
         dispatch(setIsDownload({
           bool:false, name:""
         }))
-        pdf.save(`${user.name}-${currentResumeName}`);
+        pdf.save(`${user.generalDetails.name}-${currentResumeName}`);
       })
       .catch((error) => {
         console.error('Error generating PDF: ', error);
