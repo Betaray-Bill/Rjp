@@ -11,7 +11,7 @@ import TrainingDomain from '@/Layout/AddTrainers/TrainingDomain';
  let add = 0
 
 const AddTrainer = () => {
-  console.log("meow", add++)
+  // console.log("meow", add++)
  
   const {currentUser} = useSelector(state => state.auth)
 
@@ -152,7 +152,7 @@ const AddTrainer = () => {
   return (
     
     <div className='w-[80vw] h-screen py-4 px-3'>
-      <div className='border border-slate-300 p-3 rounded-md'>
+      <div className='p-3'>
         {/* FORM */}
         <form>
           {/* General Details */}
@@ -160,14 +160,14 @@ const AddTrainer = () => {
             <PersonalDetails />
           </div>
 
-          {/* Bank Details */}
-          <div className='mt-10 border  p-3 rounded-sm '>
-            <BankDetails />
-          </div>
-
           {/* Training Details */}
           <div className='mt-10 border  p-3 rounded-sm '>
               <TrainingDetails />
+          </div>
+          
+          {/* Bank Details */}
+          <div className='mt-10 border  p-3 rounded-sm '>
+            <BankDetails />
           </div>
 
           {/* Training DOmain */}

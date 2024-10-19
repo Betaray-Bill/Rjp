@@ -12,8 +12,10 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
 import {Label} from '@/components/ui/label'
 import {Button} from '@/components/ui//button'
 import { domains } from '@/utils/constants'
+import { useDispatch } from 'react-redux'
 
 function TrainingDomain() {
+    const dispatch = useDispatch();
 
     // Domain Search States
     const [open,
@@ -21,21 +23,21 @@ function TrainingDomain() {
     const [value,
         setValue] = useState("")
 
-    const [list,
-        setList] = useState([])
+    const [trainingDomain,
+        setTrainingDomain] = useState([])
 
     const handleSearchTerm = (e) => {
         console.log(e)
         if (e) {
-            if (list.includes(e)) {
+            if (trainingDomain.includes(e)) {
                 alert("Already Added")
             } else {
                 console.log("1")
-                if (list.length == 0) {
-                    setList([e])
+                if (trainingDomain.length == 0) {
+                    setTrainingDomain([e])
                 } else {
-                    setList([
-                        ...list,
+                    setTrainingDomain([
+                        ...trainingDomain,
                         e
                     ])
                 }
@@ -44,6 +46,28 @@ function TrainingDomain() {
             }
         }
 
+    }
+
+    const handleDelete = (index) => {       
+        if (index > -1) {
+            setTrainingDomain([...trainingDomain.slice(0, index),...trainingDomain.slice(index + 1)])
+        }
+    }
+
+    const [trainingDetails,
+        setTrainingDetails] = useState({
+            domain: "",
+            price: Number(),
+            paymentSession: ""
+        })
+
+    const handleChange = (event) => {
+        const updatedTrainingDetails = {
+            ...trainingDetails,
+            [event.target.name]: event.target.value
+        }
+        setTrainingDetails(updatedTrainingDetails)
+        dispatch(setResumeDetails({name: "trainingDomain", data: updatedTrainingDetails}))
     }
     return (
         <div className='mb-6 grid place-content-center items-center'>
@@ -124,19 +148,31 @@ function TrainingDomain() {
 
                 {/* Training Domain based cards with price - hourly or daily  */}
 
-                <div className='mt-10 grid grid-cols-1 md:grid-cols-2  p-3 gap-9'>
+                <div className='mt-8 p-3 gap-9'>
                     {/* Get all the Listed Domains selected by the user */}
                     {
-                        list && list.map((item, index) => (
-                        <div key={index} className="mb-2">
-                            <Label className="text-md font-semibold">{index + 1}. {item}</Label>
-                            <div className='mt-3 flex flex-col justify-between' >
-                                <Input type="number" placeholder="Enter Price(Rupees)" className="w-[200px]"/>
-                                <select name="domainTrainingMode" id="" className='w-max mt-3'>
-                                    <option value="Select Mode">Select Mode</option>
-                                    <option value="Hourly">Hourly</option>
-                                    <option value="Per Day">Per Day</option>
-                                </select>
+                        trainingDomain.length > 0 ? <h4>Domain List</h4> : null
+                    }
+                    {
+                        trainingDomain && trainingDomain.map((item, index) => (
+                        <div key={index} className="mb-2 mt-4 flex items-start w-[70vw] p-4 rounded-md justify-between border border-slate-100 shadow-md">
+                            <div className='flex flex-col'>
+                                <Label className="text-lg font-semibold">{index + 1}. {item}</Label>
+                                <span className='mt-2 py-2' onClick={() => handleDelete(index)}><ion-icon name="trash-outline" style={{color:"red", cursor:"pointer"}}></ion-icon></span>
+                            </div>
+                            <div className='flex items-start justify-between ml-10'>
+                                <div>
+                                    <Label className="text-md font-medium text-slate-700">Enter Price (₹)</Label>
+                                    <Input type="number" placeholder="Enter Price(Rupees)" className="w-[200px]" onChange={(e) =>  handleChange(index, e)}/>
+                                </div>
+                                <div className='flex flex-col items-start justify-between ml-10'>
+                                    <Label className="text-md font-medium text-slate-700">Enter Mode</Label>
+                                    <select name="domainTrainingMode" id="" className='w-max'>
+                                        <option value="Select Mode">Select Mode</option>
+                                        <option value="Hourly">Hourly</option>
+                                        <option value="Per Day">Per Day</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         ))
