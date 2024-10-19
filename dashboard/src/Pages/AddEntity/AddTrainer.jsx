@@ -1,19 +1,21 @@
 import React, { useState, useEffect, Fragment } from 'react';
 // import './AddTrainer.css'; // External CSS file for grid styling
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PersonalDetails from '@/Layout/AddTrainers/PersonalDetails.jsx';
 import ResumeDetails from '@/Layout/AddTrainers/Resume/ResumeDetails';
 import BankDetails from '@/Layout/AddTrainers/BankDetails';
 import { Button } from '@/components/ui/button';
 import TrainingDetails from '@/Layout/AddTrainers/TrainingDetails';
 import TrainingDomain from '@/Layout/AddTrainers/TrainingDomain';
+import { removeResumeDetails } from '@/features/trainerSlice';
  
  let add = 0
 
 const AddTrainer = () => {
   // console.log("meow", add++)
- 
+  const dispatch = useDispatch()
   const {currentUser} = useSelector(state => state.auth)
+  const {trainerDetails} = useSelector(state => state.trainer)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -63,6 +65,12 @@ const AddTrainer = () => {
     }
   });
 
+
+  const handleReset = () => {
+    dispatch(removeResumeDetails())
+  }
+
+  console.log(trainerDetails)
   
   // useEffect(() => {
   //   const savedFormData = localStorage.getItem('trainerFormData');
@@ -153,6 +161,7 @@ const AddTrainer = () => {
     
     <div className='w-[80vw] h-screen py-4 px-3'>
       <div className='p-3'>
+        {/* <Button onClick={handleReset}>Reset</Button> */}
         {/* FORM */}
         <form>
           {/* General Details */}

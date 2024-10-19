@@ -1,15 +1,148 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-
 const trainerSchema = mongoose.Schema({
-    name: {
-        type: String,
-        // required: true,
+    generalDetails: {
+        name: {
+            type: String,
+            required: true
+        },
+        email: {
+            type: String,
+            required: true
+        },
+        phoneNumber: {
+            type: String,
+            required: true
+        },
+        whatsappNumber: {
+            type: String
+        },
+        alternateNumber: {
+            type: String
+        }
     },
-    type_of_trainer: {
-        type: String,
+    bankDetails: {
+        accountName: {
+            type: String,
+            required: true
+        },
+        accountNumber: {
+            type: String,
+            required: true
+        },
+        bankName: {
+            type: String,
+            required: true
+        },
+        bankBranch: {
+            type: String
+        },
+        bankIFSCCode: {
+            type: String
+        },
+        pancardNumber: {
+            type: String
+        },
+        aadharCardNumber: {
+            type: String
+        },
+        gstNumber: {
+            type: String
+        },
+        vendorName: {
+            type: String
+        }
     },
+    trainingDetails: {
+        trainerType: {
+            type: String,
+            enum: [
+                'Internal', 'External'
+            ],
+            required: true
+        },
+        modeOfTraining: {
+            type: String
+        }
+    },
+    trainingDomain: [{
+        domain: {
+            type: String,
+            required: true
+        },
+        price: {
+            type: String,
+            required: true
+        },
+        paymentSession: {
+            type: String,
+            enum: [
+                'Hourly', 'Per Day'
+            ],
+            required: true
+        }
+    }],
+    mainResume: {
+        professionalSummary: [{
+            type: String
+        }],
+        technicalSkills: [{
+            type: String
+        }],
+        careerHistory: [{
+            type: String
+        }],
+        certifications: [{
+            type: String
+        }],
+        education: [{
+            type: String
+        }],
+        trainingsDelivered: [{
+            type: String
+        }],
+        clientele: [{
+            type: String
+        }],
+        experience: [{
+            type: String
+        }]
+    },
+    resumeVersions: [{
+        professionalSummary: {
+            type: [String]
+        },
+        technicalSkills: {
+            type: [String]
+        },
+        careerHistory: {
+            type: [String]
+        },
+        certifications: {
+            type: [String]
+        },
+        education: {
+            type: [String]
+        },
+        trainingsDelivered: {
+            type: [String]
+        },
+        clientele: {
+            type: [String]
+        },
+        experience: {
+            type: [String]
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        trainingName: {
+            type: String
+        }, // Training name for version
+    }],
+    // Other information like NDA, Trainer Who added him
     trainer_sourcer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TrainerSourcer'
@@ -20,7 +153,7 @@ const trainerSchema = mongoose.Schema({
     },
     password: {
         // required: true,
-        type: String,
+        type: String
     },
     is_FirstLogin: {
         type: Boolean,
@@ -30,151 +163,9 @@ const trainerSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    rating: {
-        type: Number,
-        default: 0
-    },
-    price: {
-        amount: {
-            type: Number,
-            default: 0
-        },
-        type: {
-            type: String
-        }
-    },
-    training_mode: {
-        type: String,
-        enum: ['Full Time', 'Part Time', 'Online', 'Offline']
-    },
-    // Bank Details--------------------------------
-    bank_Details: {
-        account_Name: {
-            type: String,
-            // required: true
-        },
-        account_Number: {
-            type: Number,
-            // required: true
-        },
-        bank_Branch: {
-            type: String,
-            // required: true
-        },
-        bank_IFSC_code: {
-            type: String,
-            // required: true
-        },
-        pancard_Number: {
-            type: String,
-            // required: true
-        }
-    },
-    TrainingDomain: [{
-        type: String
-    }],
-    // Contact Details--------------------------------
-    contact_Details: {
-        mobile_number: {
-            type: String,
-            // required: true
-        },
-        email_id: {
-            type: String,
-            // required: true
-        },
-        whatsapp_number: {
-            type: String
-        }
-    },
+}, { timestamps: true });
 
-    availableDate: {
-        type: [{
-            start: {
-                type: Date
-            },
-            end: {
-                type: Date
-            },
-            title: {
-                type: String
-            }
-        }]
-    },
-    // Resume Details--------------------------------
-    mainResume: {
-        professionalSummary: {
-            type: [String]
-        },
-        technicalSkills: {
-            type: [String],
-        },
-        careerHistory: {
-            type: [String],
-        },
-        certifications: {
-            type: [String],
-        },
-        education: {
-            type: [String],
-        },
-        trainingsDelivered: {
-            type: [String],
-        },
-        clientele: {
-            type: [String],
-        },
-        experience: {
-            type: [String],
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-        }
-    },
-    resumeVersions: [{
-        professionalSummary: {
-            type: [String]
-        },
-        technicalSkills: {
-            type: [String],
-        },
-        careerHistory: {
-            type: [String],
-        },
-        certifications: {
-            type: [String],
-        },
-        education: {
-            type: [String],
-        },
-        trainingsDelivered: {
-            type: [String],
-        },
-        clientele: {
-            type: [String],
-        },
-        experience: {
-            type: [String],
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-        },
-        trainingName: {
-            type: String,
-        }, // Training name for version
-    }]
-
-}, {
-    timestamps: true,
-});
-
-trainerSchema.index({
-    TrainingDomain: 1,
-    trainerId: 1,
-})
-
+trainerSchema.index({ TrainingDomain: 1, trainerId: 1 })
 
 // Match user entered password to hashed password in database
 trainerSchema.methods.matchPassword = async function(enteredPassword) {
@@ -195,37 +186,11 @@ const Trainer = mongoose.model('Trainer', trainerSchema);
 
 export { Trainer }
 
-
-// Resume Schema
-// const resumeSchema = new mongoose.Schema({
-//     professionalSummary: {
-//         type: [String]
-//     },
-//     technicalSkills: {
-//         type: [String],
-//     },
-//     careerHistory: {
-//         type: [String],
-//     },
-//     certifications: {
-//         type: [String],
-//     },
-//     education: {
-//         type: [String],
-//     },
-//     trainingsDelivered: {
-//         type: [String],
-//     },
-//     clientele: {
-//         type: [String],
-//     },
-//     experience: {
-//         type: [String],
-//     },
-//     file_url: {
-//         type: String,
-//         // required: true
-//     }
-// }, {
-//     timestamps: true,
-// });
+// Resume Schema const resumeSchema = new mongoose.Schema({
+// professionalSummary: {         type: [String]     },     technicalSkills: {
+//       type: [String],     },     careerHistory: {         type: [String],
+// },     certifications: {         type: [String],     },     education: {
+//    type: [String],     },     trainingsDelivered: {         type: [String],
+//   },     clientele: {         type: [String],     },     experience: {
+//  type: [String],     },     file_url: {         type: String,         //
+// required: true     } }, {     timestamps: true, });

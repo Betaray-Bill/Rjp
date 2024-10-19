@@ -13,6 +13,7 @@ import {Label} from '@/components/ui/label'
 import {Button} from '@/components/ui//button'
 import { domains } from '@/utils/constants'
 import { useDispatch } from 'react-redux'
+import { setResumeDetails } from '@/features/trainerSlice'
 
 function TrainingDomain() {
     const dispatch = useDispatch();
@@ -29,25 +30,30 @@ function TrainingDomain() {
     const handleSearchTerm = (e) => {
         console.log(e)
         if (e) {
-            if (trainingDomain.includes(e)) {
-                alert("Already Added")
-            } else {
-                console.log("1")
+
                 if (trainingDomain.length == 0) {
-                    setTrainingDomain([e])
+                    setTrainingDomain([
+                        {
+                            domain: e,
+                            price: Number(),
+                            paymentSession: ""
+                        }
+                    ])
                 } else {
                     setTrainingDomain([
                         ...trainingDomain,
-                        e
+                        {
+                            domain: e,
+                            price: Number(),
+                            paymentSession: ""
+                        }
                     ])
                 }
                 console.log("2")
-
-            }
         }
 
     }
-
+    console.log(trainingDomain)
     const handleDelete = (index) => {       
         if (index > -1) {
             setTrainingDomain([...trainingDomain.slice(0, index),...trainingDomain.slice(index + 1)])
@@ -61,14 +67,18 @@ function TrainingDomain() {
             paymentSession: ""
         })
 
-    const handleChange = (event) => {
-        const updatedTrainingDetails = {
-            ...trainingDetails,
-            [event.target.name]: event.target.value
-        }
-        setTrainingDetails(updatedTrainingDetails)
-        dispatch(setResumeDetails({name: "trainingDomain", data: updatedTrainingDetails}))
+    const handleChange = (event, index) => {
+        const { name, value } = event.target;
+        console.log(name, value)
+        const updatedDomains = trainingDomain.map((domain, i) => 
+            i === index ? { ...domain, [name]: value } : domain
+        );
+
+        setTrainingDomain(updatedDomains)
+        dispatch(setResumeDetails({ name: "trainingDomain", data: updatedDomains }));
     }
+
+
     return (
         <div className='mb-6 grid place-content-center items-center'>
             <h2
@@ -157,17 +167,17 @@ function TrainingDomain() {
                         trainingDomain && trainingDomain.map((item, index) => (
                         <div key={index} className="mb-2 mt-4 flex items-start w-[70vw] p-4 rounded-md justify-between border border-slate-100 shadow-md">
                             <div className='flex flex-col'>
-                                <Label className="text-lg font-semibold">{index + 1}. {item}</Label>
+                                <Label className="text-lg font-semibold">{index + 1}. {item.domain}</Label>
                                 <span className='mt-2 py-2' onClick={() => handleDelete(index)}><ion-icon name="trash-outline" style={{color:"red", cursor:"pointer"}}></ion-icon></span>
                             </div>
                             <div className='flex items-start justify-between ml-10'>
                                 <div>
                                     <Label className="text-md font-medium text-slate-700">Enter Price (₹)</Label>
-                                    <Input type="number" placeholder="Enter Price(Rupees)" className="w-[200px]" onChange={(e) =>  handleChange(index, e)}/>
+                                    <Input type="number" placeholder="Enter Price(Rupees)" name="price" className="w-[200px]" onChange={(e) =>  handleChange(e, index)}/>
                                 </div>
                                 <div className='flex flex-col items-start justify-between ml-10'>
                                     <Label className="text-md font-medium text-slate-700">Enter Mode</Label>
-                                    <select name="domainTrainingMode" id="" className='w-max'>
+                                    <select name="paymentSession" id="" className='w-max'  onChange={(e) =>  handleChange(e, index)}>
                                         <option value="Select Mode">Select Mode</option>
                                         <option value="Hourly">Hourly</option>
                                         <option value="Per Day">Per Day</option>

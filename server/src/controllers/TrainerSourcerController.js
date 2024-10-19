@@ -6,43 +6,104 @@ import { Trainer } from "../models/TrainerModel.js";
 
 // Register Trainer - Create a new Trainer
 // POST - /register
+// const registerTrainer = asyncHandler(async(req, res) => {
+//     console.log(req.body)
+
+//     try {
+
+//         // Save the Trainer Details
+//         // Create a new Trainer
+//         const trainer = new Trainer({
+//             name: req.body.name,
+//             type_of_trainer: req.body.type_of_trainer,
+//             trainer_sourcer: req.body.trainer_sourcer,
+//             dob: req.body.dob,
+//             password: req.body.password,
+//             rating: req.body.rating,
+//             price: {
+//                 amount: req.body.price,
+//                 type: req.body.price_type
+//             },
+//             training_mode: req.body.mode,
+//             trainerId: await generateTrainerId(),
+//             is_FirstLogin: req.body.is_FirstLogin || true,
+//             nda_Accepted: req.body.type_of_trainer === "Internal" ? true : false,
+//             bank_Details: {
+//                 account_Name: req.body.bank_Details.account_Name,
+//                 account_Number: req.body.bank_Details.account_Number,
+//                 bank_Branch: req.body.bank_Details.bank_Branch,
+//                 bank_IFSC_code: req.body.bank_Details.bank_IFSC_code,
+//                 pancard_Number: req.body.bank_Details.pancard_Number,
+//                 aadharcard_number: req.body.bank_Details.aadharcard_number
+//             },
+//             contact_Details: {
+//                 mobile_number: req.body.contact_Details.mobile_number,
+//                 email_id: req.body.contact_Details.email_id,
+//                 alternate_contact_number: req.body.contact_Details.alternate_contact_number,
+//                 alternate_email_id: req.body.contact_Details.alternate_email_id
+//             },
+//             availableDate: req.body.availableDate,
+//             mainResume: {
+//                 professionalSummary: req.body.mainResume.professionalSummary,
+//                 technicalSkills: req.body.mainResume.technicalSkills,
+//                 careerHistory: req.body.mainResume.careerHistory,
+//                 certifications: req.body.mainResume.certifications,
+//                 education: req.body.mainResume.education,
+//                 trainingsDelivered: req.body.mainResume.trainingsDelivered,
+//                 clientele: req.body.mainResume.clientele,
+//                 experience: req.body.mainResume.experience,
+//                 file_url: "" //get from the Azure storage
+//             }
+
+//         });
+//         await trainer.save();
+
+//         res.status(201).json({
+//             message: 'Trainer created successfully',
+//             Trainer: trainer,
+//             success: true
+//         });
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ message: 'Trainer Not Added to the Server', err: err });
+//     }
+
+// })
+
 const registerTrainer = asyncHandler(async(req, res) => {
-    console.log(req.body)
+    console.log(req.body);
 
     try {
-
-        // Save the Trainer Details
-        // Create a new Trainer
+        // Create a new Trainer using the updated schema
         const trainer = new Trainer({
-            name: req.body.name,
-            type_of_trainer: req.body.type_of_trainer,
-            trainer_sourcer: req.body.trainer_sourcer,
-            dob: req.body.dob,
-            password: req.body.password,
-            rating: req.body.rating,
-            price: {
-                amount: req.body.price,
-                type: req.body.price_type
+            generalDetails: {
+                name: req.body.generalDetails.name,
+                email: req.body.generalDetails.email,
+                phoneNumber: req.body.generalDetails.phoneNumber,
+                whatsappNumber: req.body.generalDetails.whatsappNumber,
+                alternateNumber: req.body.generalDetails.alternateNumber,
+                dateOfBirth: req.body.generalDetails.dateOfBirth
             },
-            training_mode: req.body.mode,
-            trainerId: await generateTrainerId(),
-            is_FirstLogin: req.body.is_FirstLogin || true,
-            nda_Accepted: req.body.type_of_trainer === "Internal" ? true : false,
-            bank_Details: {
-                account_Name: req.body.bank_Details.account_Name,
-                account_Number: req.body.bank_Details.account_Number,
-                bank_Branch: req.body.bank_Details.bank_Branch,
-                bank_IFSC_code: req.body.bank_Details.bank_IFSC_code,
-                pancard_Number: req.body.bank_Details.pancard_Number,
-                aadharcard_number: req.body.bank_Details.aadharcard_number
+            bankDetails: {
+                accountName: req.body.bankDetails.accountName,
+                accountNumber: req.body.bankDetails.accountNumber,
+                bankName: req.body.bankDetails.bankName,
+                bankBranch: req.body.bankDetails.bankBranch,
+                bankIFSCCode: req.body.bankDetails.bankIFSCCode,
+                pancardNumber: req.body.bankDetails.pancardNumber,
+                aadharCardNumber: req.body.bankDetails.aadharCardNumber,
+                gstNumber: req.body.bankDetails.gstNumber,
+                vendorName: req.body.bankDetails.vendorName
             },
-            contact_Details: {
-                mobile_number: req.body.contact_Details.mobile_number,
-                email_id: req.body.contact_Details.email_id,
-                alternate_contact_number: req.body.contact_Details.alternate_contact_number,
-                alternate_email_id: req.body.contact_Details.alternate_email_id
+            trainingDetails: {
+                trainerType: req.body.trainingDetails.trainerType,
+                modeOfTraining: req.body.trainingDetails.modeOfTraining
             },
-            availableDate: req.body.availableDate,
+            trainingDomain: req.body.trainingDomain.map(domain => ({
+                domain: domain.domain,
+                price: domain.price,
+                paymentSession: domain.paymentSession
+            })),
             mainResume: {
                 professionalSummary: req.body.mainResume.professionalSummary,
                 technicalSkills: req.body.mainResume.technicalSkills,
@@ -51,11 +112,15 @@ const registerTrainer = asyncHandler(async(req, res) => {
                 education: req.body.mainResume.education,
                 trainingsDelivered: req.body.mainResume.trainingsDelivered,
                 clientele: req.body.mainResume.clientele,
-                experience: req.body.mainResume.experience,
-                file_url: "" //get from the Azure storage
-            }
-
+                experience: req.body.mainResume.experience
+            },
+            isFirstLogin: true,
+            ndaAccepted: req.body.trainingDetails.trainerType === "Internal" ? true : false,
+            password: req.body.generalDetails.dateOfBirth,
+            trainerId: await generateTrainerId(),
         });
+
+        // Save the trainer to the database
         await trainer.save();
 
         res.status(201).json({
@@ -67,8 +132,7 @@ const registerTrainer = asyncHandler(async(req, res) => {
         console.error(err);
         res.status(500).json({ message: 'Trainer Not Added to the Server', err: err });
     }
-
-})
+});
 
 //Send PO to the Trainer for the respective deal
 

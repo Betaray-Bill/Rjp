@@ -9,6 +9,7 @@ const initialState = {
             phoneNumber: Number(),
             whatsappNumber: Number(),
             alternateNumber: Number(),
+            dateOfBirth: Date()
         },
         // Bank Details
         bankDetails: {
@@ -28,11 +29,7 @@ const initialState = {
             modeOfTraining: "",
         },
         //  Training Domain
-        trainingDomain: [{
-            domain: "",
-            price: Number(),
-            paymentSession: ""
-        }],
+        trainingDomain: [],
         // Resume Details - Main Resume
         mainResume: {
             professionalSummary: [],
@@ -55,12 +52,50 @@ const trainerSlice = createSlice({
             console.log(action)
             state.trainerDetails = {...state.trainerDetails, [action.payload.name]: {...action.payload.data } }
         },
+        removeResumeDetails: (state) => {
+            state.trainerDetails = {
+                generalDetails: {
+                    name: "",
+                    email: "",
+                    phoneNumber: Number(),
+                    whatsappNumber: Number(),
+                    alternateNumber: Number(),
+                },
+                bankDetails: {
+                    accountName: "",
+                    accountNumber: Number(),
+                    bankName: "",
+                    bankBranch: "",
+                    bankIFSCCode: "",
+                    pancardNumber: "",
+                    aadharCardNumber: "",
+                    gstNumber: "",
+                    vendorName: "",
+                },
+                trainingDetails: {
+                    trainerType: "",
+                    modeOfTraining: "",
+                },
+                trainingDomain: [],
+                mainResume: {
+                    professionalSummary: [],
+                    technicalSkills: [],
+                    careerHistory: [],
+                    certifications: [],
+                    education: [],
+                    trainingsDelivered: [],
+                    clientele: [],
+                    experience: [],
+                }
+            }
+        }
 
     },
 });
 
 export const {
-    setResumeDetails
+    setResumeDetails,
+    removeResumeDetails
 } = trainerSlice.actions;
 
 export default trainerSlice.reducer;

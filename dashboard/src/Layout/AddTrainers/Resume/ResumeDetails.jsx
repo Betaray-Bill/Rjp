@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { setResumeDetails } from '@/features/trainerSlice'
 
 
 function ResumeDetails() {
@@ -24,6 +26,8 @@ function ResumeDetails() {
     clientele: [],
     experience: [],
   })
+
+  const dispatch = useDispatch()
 
   // UPloading the Resume and Extracting the Resume
   const fileInputRef = useRef(null);
@@ -77,6 +81,7 @@ function ResumeDetails() {
         clientele: Array.isArray(response.data.fields.clientele) ?  response.data.fields.clientele : [],
         experience: Array.isArray(response.data.fields.experience) ?  response.data.fields.experience : [],
       };
+      dispatch(setResumeDetails({name: "mainResume", data: newResume}))
       setResume(newResume)
     } catch (error) {
       console.error("Error extracting resume data:", error.response ? error.response.data : error.message);
@@ -109,6 +114,10 @@ function ResumeDetails() {
             [field]: value
         };
     });
+
+
+    dispatch(setResumeDetails({name: "mainResume", data: resume}))
+
   };
 
   // Handler to add a new empty textarea for a specific field
