@@ -117,8 +117,8 @@ function Account() {
     <div className='grid w-full place-content-center my-4'>
       <p className='text-md text-gray-700 mt-4 pb-[-2] font-semibold'>Accounts</p>
 
-      <div className='mt-8 p-2'>
-        <Card className="w-full max-w-sm ">
+      <div className='mt-8'>
+        <Card className="w-[80vw]">
           <CardContent className="flex flex-col p-4">
             <div className="flex items-center w-full mb-4">
               <Avatar className="h-12 w-12 mr-4 ">
@@ -127,24 +127,24 @@ function Account() {
               </Avatar>
               <div className="flex-1">
                 <p className="text-sm font-medium">{user.generalDetails.name}</p>
+                <Button variant="outline" size="sm" className="mt-2">
+                  <PencilLine className="h-4 w-4 mr-2"/>
+                  Update Picture
+                </Button>
               </div>
               <Button variant="outline" size="sm">
                 <PencilLine className="h-4 w-4 mr-2"/>
                 change Password 
               </Button>
             </div>
-            <Button variant="outline" size="sm" className="w-full">
-              <Upload className="h-4 w-4 mr-2" />
-              Change Profile Picture
-            </Button>
           </CardContent>
         </Card>
       </div>
       
-      <div className='w-[80vw] mt-8 p-2'>
+      <div className='w-[80vw] mt-8 p-6 bg-white rounded-md'>
         Personal Info
 
-        <Card className="w-full max-w-4xl mx-auto ">
+        <Card className="mx-auto mt-4">
           <CardContent className="grid grid-cols-3 gap-6 p-6">
             <div className="space-y-2">
               <Label className="text-slate-700" htmlFor="name">Name</Label>
@@ -178,10 +178,10 @@ function Account() {
         </Card>
       </div>
 
-      <div className='w-[80vw] mt-8  p-2'>
+      <div className='w-[80vw] mt-8 p-6 bg-white rounded-md'>
         Bank Details
 
-        <Card className="w-full max-w-4xl mx-auto">
+        <Card className="mx-auto mt-4">
           <CardContent className="grid grid-cols-3 gap-6 p-6">
             <div className="space-y-2">
               <Label className="text-slate-700" htmlFor="AccountName">Account Name</Label>
@@ -222,7 +222,7 @@ function Account() {
           </CardContent>
         </Card>
       </div>
-      <p>To update your details please contact the company @ 9876543210</p>
+      <p className='text-end text-red-500 mt-10'>To update your details please contact the company</p>
     </div>
   )
 }
