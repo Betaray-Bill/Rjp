@@ -6,6 +6,14 @@ import { useSelector } from 'react-redux'
 // import Modal from '@mui/material/Modal';
 // import { height } from '@mui/system';
 import axios from 'axios';
+import PersonalDetails from '@/Layout/Accounts/PersonalDetails';
+import BankDetails from '@/Layout/Accounts/BankDetails';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from "@/components/ui/card";
+import { PencilLine, Upload } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 const style = {
   position: 'absolute',
@@ -103,242 +111,119 @@ function Account() {
       // }
     };
     
-
+    console.log(user)
 
   return (
-    
     <div className='grid w-full place-content-center my-4'>
-        <p className='text-md text-gray-700 mt-4 pb-[-2 ] font-semibold'>Accounts</p> ***[This page is not Editable]***
+      <p className='text-md text-gray-700 mt-4 pb-[-2] font-semibold'>Accounts</p>
 
-      <div className='w-[80vw] bg-white mt-8 rounded-md border border-generalBorderColor p-2'>
-        Trainer Image and Upload
+      <div className='mt-8 p-2'>
+        <Card className="w-full max-w-sm ">
+          <CardContent className="flex flex-col p-4">
+            <div className="flex items-center w-full mb-4">
+              <Avatar className="h-12 w-12 mr-4 ">
+                <AvatarImage src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt={user.generalDetails.name} />
+                <AvatarFallback>{user.generalDetails.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                <p className="text-sm font-medium">{user.generalDetails.name}</p>
+              </div>
+              <Button variant="outline" size="sm">
+                <PencilLine className="h-4 w-4 mr-2"/>
+                change Password 
+              </Button>
+            </div>
+            <Button variant="outline" size="sm" className="w-full">
+              <Upload className="h-4 w-4 mr-2" />
+              Change Profile Picture
+            </Button>
+          </CardContent>
+        </Card>
       </div>
-      <div className='w-[80vw] bg-white mt-8 rounded-md border border-generalBorderColor p-2'>
+      
+      <div className='w-[80vw] mt-8 p-2'>
         Personal Info
+
+        <Card className="w-full max-w-4xl mx-auto ">
+          <CardContent className="grid grid-cols-3 gap-6 p-6">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" value={user.generalDetails.name} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="trainerId">Trainer ID</Label>
+              <Input id="trainerId" value={user.trainerId} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="dob">Date of Birth</Label>
+              <Input id="dob" type="date" disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="mobileNumber">Mobile Number</Label>
+              <Input id="mobileNumber" value={user.generalDetails.phoneNumber} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="alternateNumber">Alternate Number</Label>
+              <Input id="alternateNumber" value={user.generalDetails.alternateNumber} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
+              <Input id="whatsappNumber" value={user.generalDetails.whatsappNumber} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="emailId">Email ID</Label>
+              <Input id="emailId" type="email" value={user.generalDetails.email} disabled/>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      <div className='w-[80vw] bg-white mt-8 rounded-md border border-generalBorderColor p-2'>
+
+      <div className='w-[80vw] mt-8  p-2'>
         Bank Details
+
+        <Card className="w-full max-w-4xl mx-auto">
+          <CardContent className="grid grid-cols-3 gap-6 p-6">
+            <div className="space-y-2">
+              <Label htmlFor="AccountName">Account Name</Label>
+              <Input id="AccountName" value={user.bankDetails.accountName} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="AccountNumber">Account Number</Label>
+              <Input id="AccountNumber" value={user.bankDetails.accountNumber} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="BankName">Bank Name</Label>
+              <Input id="BankName" value={user.bankDetails.bankName} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="Branch">Branch</Label>
+              <Input id="Branch" value={user.bankDetails.bankBranch} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="IFSCCode">IFSC Code</Label>
+              <Input id="IFSCCode" value={user.bankDetails.bankIFSCCode} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="PancardNumber">Pancard Number</Label>
+              <Input id="PancardNumber" value={user.bankDetails.pancardNumber} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="GSTNumber">GST Number</Label>
+              <Input id="GSTNumber" value={user.bankDetails.gstNumber} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="Aadhar">Aadhar</Label>
+              <Input id="Aadhar" value={user.bankDetails.aadharCardNumber} disabled/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="VendorName">Vendor Name</Label>
+              <Input id="VendorName" value={user.bankDetails.vendorName} disabled/>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      <div className='w-[80vw] bg-white mt-8 rounded-md border border-generalBorderColor p-2'>
-        COntact details
-      </div>
+      <p>To update your details please contact the company @ 9876543210</p>
     </div>
-    // <div>
-    //     <div className="container">
-    //     <div style={{display:"flex", justifyContent:"space-between"}}>
-    //       <h1>Trainer Profile</h1>
-    //       {/* <span> */}
-    //         <button onClick={handleOpen}>Edit</button>
-    //       {/* </span> */}
-    //     </div>
-
-    //   <div className="section">
-    //     <h2>Personal Details</h2>
-    //     <div className="key-value">
-    //       <strong>Name:</strong> {user.name}
-    //     </div>
-    //     <div className="key-value">
-    //       <strong>Type of Trainer:</strong> {user.type_of_trainer}
-    //     </div>
-    //     <div className="key-value">
-    //       <strong>Trainer ID:</strong> {user.trainerId}
-    //     </div>
-    //     <div className="key-value">
-    //       <strong>Is First Login:</strong> {user.is_FirstLogin ? 'Yes' : 'No'}
-    //     </div>
-    //     <div className="key-value">
-    //       <strong>NDA Accepted:</strong> {user.nda_Accepted ? 'Yes' : 'No'}
-    //     </div>
-    //   </div>
-
-    //   <div className="section">
-    //     <h2>Bank Details</h2>
-    //     {renderObject(user.bank_Details)}
-    //   </div>
-
-    //   <div className="section">
-    //     <h2>Contact Details</h2>
-    //     {renderObject(user.contact_Details)}
-    //   </div>
-
-    //   <div className="section">
-    //     <h2>Resume Details</h2>
-    //     {Object.keys(user.resume_details).map((key) => (
-    //       <div key={key}>
-    //         <h3>{key.replace(/_/g, ' ')}</h3>
-    //         <ul>{renderArray(user.resume_details[key])}</ul>
-    //       </div>
-    //     ))}
-    //   </div>
-
-    //   <div className="section">
-    //     <h2>Available Dates</h2>
-    //     {user.availableDate.map((date, index) => (
-    //       <div key={index} className='section' style={{width:"400px"}}>
-    //         <p>{date.title}</p>
-    //         <div className="key-value">
-    //           <strong>Start Date:</strong> {date.start ? convertDate(date.start) : 'N/A'}
-    //         </div>
-    //         <div className="key-value">
-    //           <strong>End Date:</strong> {date.end ? convertDate(date.end) : 'N/A'}
-    //         </div>
-    //       </div>
-    //     ))}
-    //   </div>
-
-    //   <div className="section">
-    //     <h2>Other Information</h2>
-    //     <div className="key-value">
-    //       <strong>Created At:</strong> {new Date(user.createdAt).toLocaleString()}
-    //     </div>
-    //     <div className="key-value">
-    //       <strong>Updated At:</strong> {new Date(user.updatedAt).toLocaleString()}
-    //     </div>
-    //   </div>
-    //     </div>
-
-
-
-
-
-    //     <Modal
-    //       open={open}
-    //       onClose={handleClose}
-    //       aria-labelledby="modal-modal-title"
-    //       aria-describedby="modal-modal-description"
-    //     >
-    //       <Box sx={style}>
-    //         <Typography id="modal-modal-title" variant="h6" component="h2">
-    //         Edit Profile
-    //         </Typography>
-    //         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-    //         <form onSubmit={handleSubmit} className="trainer-form">
-    //             <h1>Edit Trainer Details</h1>
-
-    //             <div className="form-group">
-    //               <label>Name:</label>
-    //               <input
-    //                 type="text"
-    //                 name="name"
-    //                 value={formData.name}
-    //                 onChange={handleInputChange}
-    //                 // readOnly
-    //               />
-    //             </div>
-
-    //             <div className="form-group">
-    //               <label>Type of Trainer:</label>
-    //               <input
-    //                 type="text"
-    //                 name="type_of_trainer"
-    //                 value={formData.type_of_trainer}
-    //                 onChange={handleInputChange}
-    //                 // readOnly
-    //               />
-    //             </div>
-
-    //             {/* Professional Summary */}
-    //             <div className="form-group">
-    //               <label>Professional Summary:</label>
-    //               {formData.resume_details.professionalSummary.map((summary, idx) => (
-    //                 <input
-    //                   key={idx}
-    //                   type="text"
-    //                   name={idx}
-    //                   value={summary}
-    //                   onChange={(e) => handleArrayChange(e, 'resume_details.professionalSummary')}
-    //                 />
-    //               ))}
-    //               <button
-    //                 type="button"
-    //                 onClick={() =>
-    //                   setFormData((prevData) => ({
-    //                     ...prevData,
-    //                     resume_details: {
-    //                       ...prevData.resume_details,
-    //                       professionalSummary: [...prevData.resume_details.professionalSummary, ''],
-    //                     },
-    //                   }))
-    //                 }
-    //               >
-    //                 Add Summary
-    //               </button>
-    //             </div>
-
-    //             {/* Education */}
-    //             <div className="form-group">
-    //               <label>Education:</label>
-    //               {formData.resume_details.education.map((edu, idx) => (
-    //                 <input
-    //                   key={idx}
-    //                   type="text"
-    //                   name={idx}
-    //                   value={edu}
-    //                   onChange={(e) => handleArrayChange(e, 'resume_details.education')}
-    //                 />
-    //               ))}
-    //               <button
-    //                 type="button"
-    //                 onClick={() =>
-    //                   setFormData((prevData) => ({
-    //                     ...prevData,
-    //                     resume_details: {
-    //                       ...prevData.resume_details,
-    //                       education: [...prevData.resume_details.education, ''],
-    //                     },
-    //                   }))
-    //                 }
-    //               >
-    //                 Add Education
-    //               </button>
-    //             </div>
-
-    //             {/* Clientele */}
-    //             <div className="form-group">
-    //               <label>Clientele:</label>
-    //               {formData.resume_details.clientele.map((client, idx) => (
-    //                 <input
-    //                   key={idx}
-    //                   type="text"
-    //                   name={idx}
-    //                   value={formData.resume_details.clientele[idx]}
-    //                   onChange={(e) => handleArrayChange(e, 'resume_details.clientele')}
-    //                 />
-    //               ))}
-    //               <button
-    //                 type="button"
-    //                 onClick={() =>
-    //                   setFormData((prevData) => ({
-    //                     ...prevData,
-    //                     resume_details: {
-    //                       ...prevData.resume_details,
-    //                       clientele: [...prevData.resume_details.clientele, ''],
-    //                     },
-    //                   }))
-    //                 }
-    //               >
-    //                 Add Client
-    //               </button>
-    //             </div>
-
-    //             {/* Other sections such as contact details, certifications, etc. */}
-    //             <div className="form-group">
-    //               <label>Contact Details:</label>
-    //               <input
-    //                 type="text"
-    //                 name="contact_Details.mobile_number"
-    //                 value={formData.contact_Details.mobile_number}
-    //                 onChange={handleInputChange}
-    //               />
-    //             </div>
-
-    //             <button type="submit">Update</button>
-    //         </form>
-
-    //         </Typography>
-    //       </Box>
-    //     </Modal>
-    // </div>
   )
 }
 
