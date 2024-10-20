@@ -185,12 +185,3 @@ trainerSchema.pre('save', async function(next) {
 const Trainer = mongoose.model('Trainer', trainerSchema);
 
 export { Trainer }
-
-// Resume Schema const resumeSchema = new mongoose.Schema({
-// professionalSummary: {         type: [String]     },     technicalSkills: {
-//       type: [String],     },     careerHistory: {         type: [String],
-// },     certifications: {         type: [String],     },     education: {
-//    type: [String],     },     trainingsDelivered: {         type: [String],
-//   },     clientele: {         type: [String],     },     experience: {
-//  type: [String],     },     file_url: {         type: String,         //
-// required: true     } }, {     timestamps: true, });

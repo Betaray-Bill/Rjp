@@ -10,11 +10,11 @@ import TrainingDomain from '@/Layout/AddTrainers/TrainingDomain';
 import { removeResumeDetails } from '@/features/trainerSlice';
 import { useMutation } from 'react-query';
 import axios from 'axios';
- 
- let add = 0
+import { useToast } from "@/hooks/use-toast"
 
 const AddTrainer = () => {
   // console.log("meow", add++)
+  const { toast } = useToast()
   const dispatch = useDispatch()
   const {currentUser} = useSelector(state => state.auth)
   const {trainerDetails} = useSelector(state => state.trainer)
@@ -51,11 +51,18 @@ const AddTrainer = () => {
         console.log("4")
 
         setIsSubmission(prev => !prev)
+        toast({
+          title: "Trainer Added",
+          // description: "Friday, February 10, 2023 at 5:57 PM",
+        })
       },
       onError: (error) => {
         console.log(error);
         setIsSubmission(prev => !prev)
-
+        toast({
+          title: "Trainer adding error",
+          // description: "Friday, February 10, 2023 at 5:57 PM",
+        })
       }
     }
   )

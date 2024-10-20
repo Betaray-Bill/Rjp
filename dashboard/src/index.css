@@ -1,6 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer components {
+    .main-container {
+        @apply w-full p-4 grid items-center
+    }
+}
+
 a {
     font-weight: 500;
     color: #646cff;

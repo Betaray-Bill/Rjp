@@ -1,6 +1,8 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import authReducer from '../features/authSlice.js'
 import trainerReducer from '../features/trainerSlice.js'
+import searchTrainerReducer from '../features/searchTrainerSlice.js'
+
 
 import {
     persistReducer,
@@ -13,9 +15,9 @@ import {
     REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-// import { getDefaultMiddleware } from '@reduxjs/toolkit';
 
-const rootReducer = combineReducers({ auth: authReducer, trainer: trainerReducer });
+
+const rootReducer = combineReducers({ auth: authReducer, trainer: trainerReducer, searchTrainer: searchTrainerReducer });
 
 const persistConfig = {
     key: 'root',

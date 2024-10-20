@@ -123,31 +123,6 @@ function Login() {
           />
         </div>
       </div>
-        
-
-{
-  user && JSON.stringify(user)
-}
-        {/* <Box
-          component="form"
-          sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
-          noValidate
-          onSubmit={loginHandler}
-          autoComplete="off"
-        >
-          <TextField id="email" label="Email" name="email" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})}  variant="outlined" />
-          <TextField
-            id="password"
-            label="Password"
-            type="password"
-            variant="outlined"
-            name="password" onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})} 
-          />
-          <Button variant="contained" type="submit">
-            Submit
-          </Button>
-
-        </Box>         */}
 
     </div>  
   )

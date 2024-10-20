@@ -53,7 +53,7 @@ const handleDownload = () => {
       <div className="flex justify-end m-4">
         <Button onClick={handleDownload}>Download</Button>
       </div>
-      <div ref={resumeRef}>
+      <div ref={resumeRef} >
         {/* New template */}
         <div className="bg-white w-[80vw] relative">
           {/* Blue strip on the left */}

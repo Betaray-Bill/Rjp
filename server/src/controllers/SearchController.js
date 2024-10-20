@@ -6,10 +6,14 @@ const searchTrainer = asyncHandler(async(req, res) => {
     const { domain, price } = req.query;
     console.log("QUERY ", req.query)
     try {
-
-        const minPrice = price.gte ? parseFloat(price.gte) : undefined;
-        const maxPrice = price.lte ? parseFloat(price.lte) : undefined;
-
+        let minPrice
+        let maxPrice
+        if (minPrice !== undefined) {
+            minPrice = price.gte ? parseFloat(price.gte) : undefined;
+        }
+        if (maxPrice !== undefined) {
+            maxPrice = price.lte ? parseFloat(price.lte) : undefined;
+        }
         // Define the aggregation pipeline
         const pipeline = [
             // Match documents where trainingDomain contains the specified domain
@@ -36,7 +40,8 @@ const searchTrainer = asyncHandler(async(req, res) => {
                         }
                     },
                     generalDetails: 1,
-                    bankDetails: 1
+                    bankDetails: 1,
+                    trainerId: 1
                 }
             },
             // Ensure only documents with a non-empty trainingDomain array are returned
