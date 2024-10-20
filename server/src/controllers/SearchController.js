@@ -28,7 +28,7 @@ const searchTrainer = asyncHandler(async(req, res) => {
                             as: 'td',
                             cond: {
                                 $and: [
-                                    { $eq: ['$$td.domain', domain] },
+                                    { $regexMatch: { input: '$$td.domain', regex: new RegExp(domain, 'i') } },
                                     minPrice !== undefined ? { $gte: [{ $toDouble: '$$td.price' }, minPrice] } : {},
                                     maxPrice !== undefined ? { $lte: [{ $toDouble: '$$td.price' }, maxPrice] } : {}
                                 ]
