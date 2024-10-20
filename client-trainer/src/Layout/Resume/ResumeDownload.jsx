@@ -4,14 +4,18 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import React, { Fragment, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
+import ResumeLogo from '../../assets/ResumeLogo.png'
 
 function ResumeDownload() {
-
+  console.log()
   const {currentResumeDetails, currentResumeName,downloadResume, downloadResumeName} = useSelector(state => state.resume)
   const resumeRef = useRef();
   const {user}  = useSelector(state => state.auth)
   const dispatch = useDispatch()
-
+  
+  console.log(currentResumeDetails)
+  console.log(currentResumeName)
+  
 
   useEffect(() => {
     console.log("Dowload obj")
@@ -26,7 +30,7 @@ function ResumeDownload() {
 
 const handleDownload = () => {
     const element = resumeRef.current;
-console.log("object")
+    console.log("object")
     html2canvas(element, { scale: 2 })
       .then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
@@ -46,81 +50,97 @@ console.log("object")
 };
   return (
     <Fragment>
-      <div>
-        <Button onClick={handleDownload}>DOwnload</Button>
+      <div className="flex justify-end m-4">
+        <Button onClick={handleDownload}>Download</Button>
       </div>
-      <div ref={resumeRef} className='p-2 grid grid-cols-2 w-[80vw]'>
-        <div className="resume-content">
-          <h2 className='font-semibold'>Professional Summary</h2>
-          {
-            currentResumeDetails['professionalSummary']?.map((e, _i) => (
-              <li className='text-[18px]' key={_i}>{e}</li>
-            ))
-          }
-        </div>
-        <div className="resume-content">
-        <h2 className='font-semibold'>Technical Skills</h2>
+      <div ref={resumeRef}>
+        {/* New template */}
+        <div className="bg-white w-[80vw] relative">
+          {/* Blue strip on the left */}
+          <div className="absolute top-0 left-0 w-8 h-full bg-blue-600"></div>
+          
+          {/* Main content */}
+          <div className="pl-12 pr-6 py-6">
 
-          {
-            currentResumeDetails['technicalSkills']?.map((e, _i) => (
-              <li className='text-[18px]' key={_i}>{e}</li>
-            ))
-          }
-        </div>
-        <div className="resume-content">
-        <h2 className='font-semibold'>Career History</h2>
-          {
-            currentResumeDetails['careerHistory']?.map((e, _i) => (
-              <li className='text-[18px]' key={_i}>{e}</li>
-            ))
-          }
-        </div>
-        <div className="resume-content">
-          <h2 className='font-semibold'>Certification</h2>
-          {
-            currentResumeDetails['certifications']?.map((e, _i) => (
-              <li className='text-[18px]' key={_i}>{e}</li>
-            ))
-          }
-        </div>
-        <div className="resume-content">
-        <h2 className='font-semibold'>Education</h2>
+            {/* Header with logo space */}
+            <div className="flex flex-col items-center mb-6 relative">
+              <div className="flex justify-center w-full">
+                <img
+                  src={ResumeLogo}
+                  alt="Logo"
+                  className="mb-10"
+                />
+              </div>
+            </div>
+            <div className="">
+                <h1 className="text-4xl font-bold text-blue-600 mb-10">{user.generalDetails.name}</h1>
+            </div>
+            {/* Resume content */}
+            <div className="grid grid-cols-2 gap-4 mt-4">
 
-          {
-            currentResumeDetails['education']?.map((e, _i) => (
-              <li className='text-[18px]' key={_i}>{e}</li>
-            ))
-          }
+              <div>
+                <h2 className="text-blue-600 text-2xl font-semibold mb-2 inline-block border-y-2 border-blue-600 py-1 px-4">PROFESSIONAL SUMMARY</h2>
+                <ul className="list-disc pl-5">
+                  {currentResumeDetails['professionalSummary']?.map((e, _i) => (
+                    <li className='text-[18px]' key={_i}>{e}</li>
+                  ))}
+                </ul>
+
+                <h2 className="text-blue-600 text-2xl font-semibold mt-4 mb-2 inline-block border-y-2 border-blue-600 py-1 px-4">TECHNICAL SKILLS</h2>
+                <ul className="list-disc pl-5">
+                  {currentResumeDetails['technicalSkills']?.map((e, _i) => (
+                    <li className='text-[18px]' key={_i}>{e}</li>
+                  ))}
+                </ul>
+
+                <h2 className="text-blue-600 text-2xl font-semibold mt-4 mb-2 inline-block border-y-2 border-blue-600 py-1 px-4">CAREER HISTORY</h2>
+                <ul className="list-disc pl-5">
+                  {currentResumeDetails['careerHistory']?.map((e, _i) => (
+                    <li className='text-[18px]' key={_i}>{e}</li>
+                  ))}
+                </ul>
+
+                <h2 className="text-blue-600 text-2xl font-semibold mt-4 mb-2 inline-block border-y-2 border-blue-600 py-1 px-4">CLIENTELE</h2>
+                <ul className="list-disc pl-5 grid grid-cols-3">
+                  {currentResumeDetails['clientele']?.map((e, _i) => (
+                    <li className='text-[18px]' key={_i}>{e}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h2 className="text-blue-600 text-2xl font-semibold mb-2 inline-block border-y-2 border-blue-600 py-1 px-4">TRAININGS DELIVERED</h2>
+                <ul className="list-disc pl-5">
+                  {currentResumeDetails['trainingsDelivered']?.map((e, _i) => (
+                    <li className='text-[18px]' key={_i}>{e}</li>
+                  ))}
+                </ul>
+
+                <h2 className="text-blue-600 text-2xl font-semibold mt-4 mb-2 inline-block border-y-2 border-blue-600 py-1 px-4">CERTIFICATIONS</h2>
+                <ul className="list-disc pl-5">
+                  {currentResumeDetails['certifications']?.map((e, _i) => (
+                    <li className='text-[18px]' key={_i}>{e}</li>
+                  ))}
+                </ul>
+
+                <h2 className="text-blue-600 text-2xl font-semibold mt-4 mb-2 inline-block border-y-2 border-blue-600 py-1 px-4">EXPERIENCE</h2>
+                <ul className="list-disc pl-5">
+                  {currentResumeDetails['experience']?.map((e, _i) => (
+                    <li className='text-[18px]' key={_i}>{e}</li>
+                  ))}
+                </ul>
+
+                <h2 className="text-blue-600 text-2xl font-semibold mt-4 mb-2 inline-block border-y-2 border-blue-600 py-1 px-4">EDUCATION</h2>
+                <ul className="list-disc pl-5">
+                  {currentResumeDetails['education']?.map((e, _i) => (
+                    <li className='text-[18px]' key={_i}>{e}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="resume-content">
-        <h2 className='font-semibold'>Training Delivered</h2>
-
-          {
-            currentResumeDetails['trainingsDelivered']?.map((e, _i) => (
-              <li className='text-[18px]' key={_i}>{e}</li>
-            ))
-          }
-        </div>
-        <div className="resume-content">
-        <h2 className='font-semibold'>Clientele</h2>
-
-          {
-            currentResumeDetails['clientele']?.map((e, _i) => (
-              <li className='text-[18px]' key={_i}>{e}</li>
-            ))
-          }
-        </div>    
-        <div className="resume-content">
-        <h2 className='font-semibold'>Experience</h2>
-
-          {
-            currentResumeDetails['experience']?.map((e, _i) => (
-              <li className='text-[18px]' key={_i}>{e}</li>
-            ))
-          }
-        </div>    
-         
-         </div>
+      </div>
     </Fragment>
     // </div>
   )
