@@ -4,6 +4,7 @@ import { Trainer } from "../models/TrainerModel.js";
 // Search Function
 const searchTrainer = asyncHandler(async(req, res) => {
     const { domain, price } = req.query;
+    console.log("QUERY ", req.query)
     try {
 
         const minPrice = price.gte ? parseFloat(price.gte) : undefined;
@@ -14,7 +15,7 @@ const searchTrainer = asyncHandler(async(req, res) => {
             // Match documents where trainingDomain contains the specified domain
             {
                 $match: {
-                    'trainingDomain.domain': domain
+                    'trainingDomain.domain': { $regex: new RegExp(domain, 'i') }
                 }
             },
             // Project to filter the trainingDomain array based on domain and price range

@@ -17,7 +17,7 @@ function Search() {
   const [rating, setRating] = useState('asc');
   console.log(rating)
   axios.defaults.withCredentials = true;
-    const searchHandler = async(event) => {
+  const searchHandler = async(event) => {
         event.preventDefault()
         if(query === "" || query.length < 1){
           alert("Please enter a search")
@@ -27,17 +27,17 @@ function Search() {
         }
         setLoading(true);
         setSearched(true);
-
+        // http://localhost:5000/api/trainer/search?price[lte]=5000&price[gte]=200&domain=PMP
         try {
-            let req_query = `http://localhost:5000/api/trainer/search?search=${query}`;
+            let req_query = `http://localhost:5000/api/trainer/search?domain=${query}`;
 
             // Append additional filters to the query string if they exist
-            if (startPrice) req_query  += `&startPrice=${startPrice}`;
-            if (endPrice) req_query  += `&endPrice=${endPrice}`;
-            if (startDate) req_query   += `&startDate=${startDate}`;
-            if (endDate) req_query   += `&endDate=${endDate}`;
+            if (startPrice) req_query  += `&price[gte]=${startPrice}`;
+            if (endPrice) req_query  += `&price[lte]=${endPrice}`;
+            // if (startDate) req_query   += `&startDate=${startDate}`;
+            // if (endDate) req_query   += `&endDate=${endDate}`;
             // if (rating) req_query  += `&rating=${rating}`;
-            console.log(req_query )
+            console.log(req_query)
             // Send the GET request with the query parameters
             const res = await axios.get(req_query);
             const data = await res.data;
@@ -49,7 +49,10 @@ function Search() {
             console.log(error)
         }
         setLoading(false)
-    }
+  }
+
+
+  
   return (
     <div className='container'> 
       <section>
@@ -138,42 +141,9 @@ function Search() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 2fr))', justifyContent: 'center', gap: '20px', placeContent:'center', margin:'40px' }}>
                 {result.map((trainer) => (
                   <div key={trainer._id} style={cardStyle}>
-                    <h3>{trainer.name}</h3>
-                    <p><strong>Trainer ID:</strong> {trainer.trainerId}</p>
-                    <p><strong>Type:</strong> {trainer.type_of_trainer}</p>
-                    <p><strong>Email:</strong> {trainer.contact_Details.email_id}</p>
-                    <p><strong>Mobile:</strong> {trainer.contact_Details.mobile_number}</p>
-                    <p><strong>NDA Accepted:</strong> {trainer.nda_Accepted ? 'Yes' : 'No'}</p>
-                    <p><strong>Price:</strong> {trainer.price.amount}/{trainer.price.type}</p>
-                    <p><strong>Rating:</strong> {trainer.rating}/5</p>
+                    <h3>{trainer.generalDetails.name}</h3>
+                    <p><strong>Trainer Email:</strong> {trainer.generalDetails.email}</p>
 
-                    <p><strong>Available Dates:</strong> {trainer.availableDate.map((date, index) => (
-                      <span key={index}>
-                        {new Date(date.startDate).toLocaleDateString()} - {new Date(date.endDate).toLocaleDateString()}
-                      </span>
-                    ))}
-                    </p>
-                    <p><strong>Resume:</strong></p>
-                    <ul>
-                      {trainer.resume_details?.professionalSummary.length > 0 && (
-                        <li><strong>Professional Summary:</strong> {trainer.resume_details.professionalSummary.join(', ')}</li>
-                      )}
-                      {trainer.resume_details?.technicalSkills.length > 0 && (
-                        <li><strong>Technical Skills:</strong> {trainer.resume_details.technicalSkills.join(', ')}</li>
-                      )}
-                      {trainer.resume_details?.careerHistory.length > 0 && (
-                        <li><strong>Career History:</strong> {trainer.resume_details.careerHistory.join(', ')}</li>
-                      )}
-                      {trainer.resume_details?.certifications.length > 0 && (
-                        <li><strong>Certifications:</strong> {trainer.resume_details.certifications.join(', ')}</li>
-                      )}
-                      {trainer.resume_details?.clientele.length > 0 && (
-                        <li><strong>clientele:</strong> {trainer.resume_details.clientele.join(', ')}</li>
-                      )}
-                      {trainer.resume_details?.education.length > 0 && (
-                        <li><strong>Education:</strong> {trainer.resume_details.education.join(', ')}</li>
-                      )}
-                    </ul>
                   </div>
                 ))}
               </div>
@@ -184,9 +154,6 @@ function Search() {
          )
         
       }
-      {/* {
-        quer
-      } */}
       </section>
 
     </div>
