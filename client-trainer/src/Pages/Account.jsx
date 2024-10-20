@@ -147,32 +147,32 @@ function Account() {
         <Card className="w-full max-w-4xl mx-auto ">
           <CardContent className="grid grid-cols-3 gap-6 p-6">
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" value={user.generalDetails.name} disabled/>
+              <Label className="text-slate-700" htmlFor="name">Name</Label>
+              <Input id="name" value={user.generalDetails.name} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="trainerId">Trainer ID</Label>
-              <Input id="trainerId" value={user.trainerId} disabled/>
+              <Label className="text-slate-700" htmlFor="trainerId">Trainer ID</Label>
+              <Input id="trainerId" value={user.trainerId} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="dob">Date of Birth</Label>
-              <Input id="dob" type="date" disabled/>
+              <Label className="text-slate-700" htmlFor="dob">Date of Birth</Label>
+              <Input id="dob" type="date" readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="mobileNumber">Mobile Number</Label>
-              <Input id="mobileNumber" value={user.generalDetails.phoneNumber} disabled/>
+              <Label className="text-slate-700" htmlFor="mobileNumber">Mobile Number</Label>
+              <Input id="mobileNumber" value={user.generalDetails.phoneNumber} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="alternateNumber">Alternate Number</Label>
-              <Input id="alternateNumber" value={user.generalDetails.alternateNumber} disabled/>
+              <Label className="text-slate-700" htmlFor="alternateNumber">Alternate Number</Label>
+              <Input id="alternateNumber" value={user.generalDetails.alternateNumber} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
-              <Input id="whatsappNumber" value={user.generalDetails.whatsappNumber} disabled/>
+              <Label className="text-slate-700" htmlFor="whatsappNumber">WhatsApp Number</Label>
+              <Input id="whatsappNumber" value={user.generalDetails.whatsappNumber} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="emailId">Email ID</Label>
-              <Input id="emailId" type="email" value={user.generalDetails.email} disabled/>
+              <Label className="text-slate-700" htmlFor="emailId">Email ID</Label>
+              <Input id="emailId" type="email" value={user.generalDetails.email} readOnly/>
             </div>
           </CardContent>
         </Card>
@@ -184,40 +184,40 @@ function Account() {
         <Card className="w-full max-w-4xl mx-auto">
           <CardContent className="grid grid-cols-3 gap-6 p-6">
             <div className="space-y-2">
-              <Label htmlFor="AccountName">Account Name</Label>
-              <Input id="AccountName" value={user.bankDetails.accountName} disabled/>
+              <Label className="text-slate-700" htmlFor="AccountName">Account Name</Label>
+              <Input id="AccountName" value={user.bankDetails.accountName} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="AccountNumber">Account Number</Label>
-              <Input id="AccountNumber" value={user.bankDetails.accountNumber} disabled/>
+              <Label className="text-slate-700" htmlFor="AccountNumber">Account Number</Label>
+              <Input id="AccountNumber" value={user.bankDetails.accountNumber} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="BankName">Bank Name</Label>
-              <Input id="BankName" value={user.bankDetails.bankName} disabled/>
+              <Label className="text-slate-700" htmlFor="BankName">Bank Name</Label>
+              <Input id="BankName" value={user.bankDetails.bankName} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="Branch">Branch</Label>
-              <Input id="Branch" value={user.bankDetails.bankBranch} disabled/>
+              <Label className="text-slate-700" htmlFor="Branch">Branch</Label>
+              <Input id="Branch" value={user.bankDetails.bankBranch} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="IFSCCode">IFSC Code</Label>
-              <Input id="IFSCCode" value={user.bankDetails.bankIFSCCode} disabled/>
+              <Label className="text-slate-700" htmlFor="IFSCCode">IFSC Code</Label>
+              <Input id="IFSCCode" value={user.bankDetails.bankIFSCCode} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="PancardNumber">Pancard Number</Label>
-              <Input id="PancardNumber" value={user.bankDetails.pancardNumber} disabled/>
+              <Label className="text-slate-700" htmlFor="PancardNumber">Pancard Number</Label>
+              <Input id="PancardNumber" value={user.bankDetails.pancardNumber} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="GSTNumber">GST Number</Label>
-              <Input id="GSTNumber" value={user.bankDetails.gstNumber} disabled/>
+              <Label className="text-slate-700" htmlFor="GSTNumber">GST Number</Label>
+              <Input id="GSTNumber" value={user.bankDetails.gstNumber} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="Aadhar">Aadhar</Label>
-              <Input id="Aadhar" value={user.bankDetails.aadharCardNumber} disabled/>
+              <Label className="text-slate-700" htmlFor="Aadhar">Aadhar</Label>
+              <Input id="Aadhar" value={user.bankDetails.aadharCardNumber} readOnly/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="VendorName">Vendor Name</Label>
-              <Input id="VendorName" value={user.bankDetails.vendorName} disabled/>
+              <Label className="text-slate-700" htmlFor="VendorName">Vendor Name</Label>
+              <Input id="VendorName" value={user.bankDetails.vendorName} readOnly/>
             </div>
           </CardContent>
         </Card>

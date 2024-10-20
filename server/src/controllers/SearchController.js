@@ -3,110 +3,64 @@ import { Trainer } from "../models/TrainerModel.js";
 
 // Search Function
 const searchTrainer = asyncHandler(async(req, res) => {
-    let pipeline = [];
-
-    const { domain } = req.query;
-
-    // Add the search stage
-    console.log(req.query)
+    const { domain, price } = req.query;
     try {
-        // // Search query
-        // pipeline.push({
-        //     $search: {
-        //         index: "search",
-        //         text: {
-        //             query: query,
-        //             path: {
-        //                 wildcard: "*" // Search across all fields
-        //             }
-        //         }
-        //     }
-        // });
 
-        // if (startDate && endDate) {
-        //     pipeline.push({
-        //         $match: {
-        //             $expr: {
-        //                 $not: {
-        //                     $elemMatch: {
-        //                         availableDate: {
-        //                             $elemMatch: {
-        //                                 $or: [
-        //                                     // Check if there's an overlap with any available date ranges
-        //                                     {
-        //                                         $and: [
-        //                                             { $lte: [new Date(startDate), "$availableDate.endDate"] },
-        //                                             { $gte: [new Date(endDate), "$availableDate.startDate"] }
-        //                                         ]
-        //                                     }
-        //                                 ]
-        //                             }
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     });
-        // }
+        const minPrice = price.gte ? parseFloat(price.gte) : undefined;
+        const maxPrice = price.lte ? parseFloat(price.lte) : undefined;
 
-        // Add the Price based staging to the pipeline
-        // if (startPrice && endPrice) {
-        //     console.log(startPrice, endPrice)
-        //     pipeline.push({
-        //         $match: {
-        //             "price.amount": {
-        //                 $gte: Number(startPrice),
-        //                 $lte: Number(endPrice)
-        //             }
-        //         }
-        //     });
-        // }
+        // Define the aggregation pipeline
+        const pipeline = [
+            // Match documents where trainingDomain contains the specified domain
+            {
+                $match: {
+                    'trainingDomain.domain': domain
+                }
+            },
+            // Project to filter the trainingDomain array based on domain and price range
+            {
+                $project: {
+                    name: 1, // Include any other fields you need
+                    trainingDomain: {
+                        $filter: {
+                            input: '$trainingDomain',
+                            as: 'td',
+                            cond: {
+                                $and: [
+                                    { $eq: ['$$td.domain', domain] },
+                                    minPrice !== undefined ? { $gte: [{ $toDouble: '$$td.price' }, minPrice] } : {},
+                                    maxPrice !== undefined ? { $lte: [{ $toDouble: '$$td.price' }, maxPrice] } : {}
+                                ]
+                            }
+                        }
+                    },
+                    generalDetails: 1,
+                    bankDetails: 1
+                }
+            },
+            // Ensure only documents with a non-empty trainingDomain array are returned
+            {
+                $match: {
+                    trainingDomain: { $ne: [] }
+                }
+            }
+        ];
 
-        // // Rating
-        // if (rating) {
-        //     pipeline.push({
-        //         $match: {
-        //             rating: {
-        //                 $gte: Number(rating)
-        //             }
-        //         }
-        //     });
-        // }
+        // Execute the aggregation
+        const result = await Trainer.aggregate(pipeline);
 
-        // // Remove Trainers Who has not accpeted NDA
-        // pipeline.push({
-        //     $match: {
-        //         nda_Accepted: true
-        //     }
-        // });
+        if (!result.length) {
+            return res.status(200).json({ message: 'No trainers found matching the criteria' });
+        }
 
-        // // Remove password projection
-        // pipeline.push({
-        //     $project:{
-        //         'password':0
-        //     }
-        // })
-
-
-        // console.log("Pipelining : ", pipeline)
-
-        // const ans = await Trainer.aggregate(pipeline);
-        // console.log("ANSWER : ", ans.length)
-
-        const result = await Trainer.find({
-            'trainingDomain.domain': domain
-        })
-        res.status(200).json(result)
+        res.status(200).json(result);
     } catch (err) {
         console.log(err)
-        res.status(500).json({ message: 'Trainer not available', err });
+        res
+            .status(500)
+            .json({ message: 'Trainer not available', err });
     }
-
 
 })
 
-
-
-export {
-    searchTrainer
-}
+export { searchTrainer }
