@@ -1,75 +1,16 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import Employee from "../models/EmployeeModel.js";
 import { Trainer } from "../models/TrainerModel.js";
+import { readFileSync, unlinkSync } from "fs"
+import axios from "axios";
+import { transformResumeData } from "../utils/azure/extract/extractfunction.js";
 
-
+const endpoint = process.env.AZURE_ENDPOINT;
+const apiKey = process.env.AZURE_API_KEY;
+const modelId = process.env.MODEL_ID;
 
 // Register Trainer - Create a new Trainer
 // POST - /register
-// const registerTrainer = asyncHandler(async(req, res) => {
-//     console.log(req.body)
-
-//     try {
-
-//         // Save the Trainer Details
-//         // Create a new Trainer
-//         const trainer = new Trainer({
-//             name: req.body.name,
-//             type_of_trainer: req.body.type_of_trainer,
-//             trainer_sourcer: req.body.trainer_sourcer,
-//             dob: req.body.dob,
-//             password: req.body.password,
-//             rating: req.body.rating,
-//             price: {
-//                 amount: req.body.price,
-//                 type: req.body.price_type
-//             },
-//             training_mode: req.body.mode,
-//             trainerId: await generateTrainerId(),
-//             is_FirstLogin: req.body.is_FirstLogin || true,
-//             nda_Accepted: req.body.type_of_trainer === "Internal" ? true : false,
-//             bank_Details: {
-//                 account_Name: req.body.bank_Details.account_Name,
-//                 account_Number: req.body.bank_Details.account_Number,
-//                 bank_Branch: req.body.bank_Details.bank_Branch,
-//                 bank_IFSC_code: req.body.bank_Details.bank_IFSC_code,
-//                 pancard_Number: req.body.bank_Details.pancard_Number,
-//                 aadharcard_number: req.body.bank_Details.aadharcard_number
-//             },
-//             contact_Details: {
-//                 mobile_number: req.body.contact_Details.mobile_number,
-//                 email_id: req.body.contact_Details.email_id,
-//                 alternate_contact_number: req.body.contact_Details.alternate_contact_number,
-//                 alternate_email_id: req.body.contact_Details.alternate_email_id
-//             },
-//             availableDate: req.body.availableDate,
-//             mainResume: {
-//                 professionalSummary: req.body.mainResume.professionalSummary,
-//                 technicalSkills: req.body.mainResume.technicalSkills,
-//                 careerHistory: req.body.mainResume.careerHistory,
-//                 certifications: req.body.mainResume.certifications,
-//                 education: req.body.mainResume.education,
-//                 trainingsDelivered: req.body.mainResume.trainingsDelivered,
-//                 clientele: req.body.mainResume.clientele,
-//                 experience: req.body.mainResume.experience,
-//                 file_url: "" //get from the Azure storage
-//             }
-
-//         });
-//         await trainer.save();
-
-//         res.status(201).json({
-//             message: 'Trainer created successfully',
-//             Trainer: trainer,
-//             success: true
-//         });
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ message: 'Trainer Not Added to the Server', err: err });
-//     }
-
-// })
-
 const registerTrainer = asyncHandler(async(req, res) => {
     console.log(req.body);
 
@@ -133,6 +74,86 @@ const registerTrainer = asyncHandler(async(req, res) => {
         res.status(500).json({ message: 'Trainer Not Added to the Server', err: err });
     }
 });
+
+
+
+// Upload the Resume to azure and extract the text
+const uploadResumeToAzureAndExtractText = asyncHandler(async(req, res) => {
+    // console.log("Hii", req.file)
+    try {
+        if (!req.file) {
+            return res.status(400).send({ error: "No file uploaded." });
+        }
+
+        console.log("object")
+
+        const filePath = req.file.path;
+        // console.log("filePath", filePath)
+        const fileBuffer = readFileSync(filePath);
+        // console.log("fileBuffer", fileBuffer)
+
+        const fileBase64 = fileBuffer.toString('base64');
+        // console.log("Filebase 64", fileBase64)
+        const url = `${process.env.AZURE_ENDPOINT}formrecognizer/documentModels/${process.env.MODEL_ID}:analyze?api-version=2023-07-31`;
+        console.log("url ", url)
+
+        const response = await axios.post(url, { base64Source: fileBase64 }, {
+            headers: {
+                "Ocp-Apim-Subscription-Key": process.env.AZURE_API_KEY,
+                "Content-Type": "application/json"
+            },
+        });
+
+        const operationLocation = response.headers['operation-location'];
+        console.log("Operation Location:", operationLocation);
+
+        // Poll for results
+        let analysisResult;
+        do {
+            // await new Promise(resolve => setTimeout(resolve, 1000));
+            const resultResponse = await axios.get(operationLocation, {
+                headers: { "Ocp-Apim-Subscription-Key": apiKey },
+            });
+            analysisResult = resultResponse.data;
+        } while (analysisResult.status !== "succeeded" && analysisResult.status !== "failed");
+
+        // Clean up the uploaded file
+        unlinkSync(filePath);
+
+        // Process the results to extract relevant fields
+        const processedResult = {
+            status: analysisResult.status,
+            createdDateTime: analysisResult.createdDateTime,
+            lastUpdatedDateTime: analysisResult.lastUpdatedDateTime,
+            fields: {}
+        };
+
+        // Extract fields from the documents array
+        if (analysisResult.analyzeResult &&
+            analysisResult.analyzeResult.documents &&
+            analysisResult.analyzeResult.documents.length > 0) {
+            const fields = analysisResult.analyzeResult.documents[0].fields;
+            for (const [key, value] of Object.entries(fields)) {
+                processedResult.fields[key] = {
+                    content: value.content
+                };
+            }
+        }
+
+        // Transform the processed result
+        const transformedResult = transformResumeData(processedResult);
+
+        res.status(200).json(transformedResult);
+    } catch (error) {
+        console.error("Error processing document:", error.message);
+        res.status(500).json({
+            error: "Failed to process document",
+            details: error.message,
+            responseData: error.response ? error.response.data : null
+        });
+    }
+})
+
 
 //Send PO to the Trainer for the respective deal
 
@@ -224,5 +245,6 @@ const updateResume = asyncHandler(async(req, res) => {
 
 export {
     registerTrainer,
-    updateResume
+    updateResume,
+    uploadResumeToAzureAndExtractText
 }
