@@ -53,7 +53,7 @@ function Home() {
     //   </div>
     // </div>
 
-    <div className='p-0 m-0 h-screen '>
+    <div className='p-0 m-0'>
       {/* Main Bar */}
       <div className='w-screen flex items-center p-3'>
         <div className=''>
@@ -91,7 +91,7 @@ function Home() {
 
 
       {/* Main Section */}
-      <div className="w-screen grid place-content-center h-screen">
+      <div className="w-screen grid place-content-center">
         <div className='w-[80vw]'>
           <Outlet/>
         </div>

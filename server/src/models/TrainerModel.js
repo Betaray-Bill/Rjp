@@ -165,7 +165,7 @@ const trainerSchema = mongoose.Schema({
     },
 }, { timestamps: true });
 
-trainerSchema.index({ TrainingDomain: 1, trainerId: 1 })
+trainerSchema.index({ trainingDomain: 1, trainerId: 1 })
 
 // Match user entered password to hashed password in database
 trainerSchema.methods.matchPassword = async function(enteredPassword) {
