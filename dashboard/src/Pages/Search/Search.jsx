@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 
 
 function Search() {
-  const {domainResults} = useSelector(state => state.searchTrainer)
-
+  const {domainResults, isSearching} = useSelector(state => state.searchTrainer)
+  
   
   return (
     <div className='main-container'> 
@@ -15,8 +15,9 @@ function Search() {
         <SearchBar />
         {/* Result COntainer */}
         {
-          domainResults?.length > 0 && <SearchResult />
+          // domainResults?.length > 0 && <SearchResult />
         }
+        <SearchResult />
       </div>
     </div>
   )
