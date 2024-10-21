@@ -66,7 +66,7 @@ function AddEmployee() {
                     <div>
                         <Label>Password</Label>
                         <Input
-                            type="password"
+                            type="current-password"
                             id="password"
                             name="password"
                             onChange={(e) => handleChange(e)}/>

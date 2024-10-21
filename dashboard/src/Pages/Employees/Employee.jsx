@@ -1,5 +1,6 @@
 import AddEmployee from '@/Layout/Employees/AddEmployee'
 import EditEmployee from '@/Layout/Employees/EditEmployee';
+import GetAllEmployee from '@/Layout/Employees/GetAllEmployee';
 import React, { useState } from 'react'
 const EmployeeFunctions = [
   {
@@ -9,6 +10,10 @@ const EmployeeFunctions = [
   {
     name: "Edit Employee",
     comp: <EditEmployee />
+  },
+  {
+    name: "Get All Employee",
+    comp: <GetAllEmployee />
   }
 ];
 function Employee() {
@@ -25,18 +30,12 @@ function Employee() {
 
 
     return ( 
-      <div className='w-[80vw] h-screen py-4 px-3 '>
+      <div className='w-[80vw] mt-10 h-max min-h-[80vh] py-4 px-3 '>
         <select name="" id=""  onChange={(e) => handleSelectChange(e)}>
           {EmployeeFunctions.map(func=>(
             <option key={func.name}>{func.name}</option>
           ))}
         </select>
-        {/* Add EMpl */}
-        
-        {/* Get ALl emp */}
-
-        {/* Edit Role change */}
-
         <div style={{ marginTop: "20px" }}>
           {selectedComponent}
         </div>

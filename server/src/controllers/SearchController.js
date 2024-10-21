@@ -8,45 +8,160 @@ const searchTrainer = asyncHandler(async(req, res) => {
     try {
         let minPrice
         let maxPrice
-        if (minPrice !== undefined) {
-            minPrice = price.gte ? price.gte : undefined;
+        if(price){
+            if (price.gte !== undefined) {
+                minPrice = price.gte ? price.gte : undefined;
+            }
+            if (price.lte !== undefined) {
+                maxPrice = price.lte ? price.lte : undefined;
+            }
         }
-        if (maxPrice !== undefined) {
-            maxPrice = price.lte ? price.lte : undefined;
-        }
-        // Define the aggregation pipeline
-        const pipeline = [{
+        let pipeline = []
+        if(domain){
+            pipeline.push(
+                {
                     $match: {
-                        'trainingDomain.domain': { $regex: new RegExp(domain, 'i') }
-                    }
+                      "trainingDomain.domain": {
+                        $regex: new RegExp(domain, "i"),
+                      },
+                    },
+                  }
+            )
+        }
+
+        if(price && minPrice && maxPrice){
+            pipeline.push({
+                $project: {
+                  trainingDomain: {
+                    $filter: {
+                      input: "$trainingDomain",
+                      as: "td",
+                      cond: {
+                        $and: [
+                          {
+                            $regexMatch: {
+                              input: "$$td.domain",
+                              regex: new RegExp(domain, "i"),
+                            },
+                          },
+                          {
+                            $gte: ["$$td.price", Number(minPrice)],
+                          },
+                          {
+                            $lte: ["$$td.price", Number(maxPrice)],
+                          },
+                        ],
+                      },
+                    },
+                  },
                 },
+              })
+        }else{
+            pipeline.push(
                 {
                     $project: {
-                        trainingDomain: {
-                            $filter: {
-                                input: '$trainingDomain',
-                                as: 'td',
-                                cond: {
-                                    $and: [{
-                                            $regexMatch: { input: '$$td.domain', regex: new RegExp(domain, 'i') }
-                                        },
-                                        // {
-                                        //     $gte: { '$trainingDomain.price': minPrice }
-                                        // }
+                      trainingDomain: {
+                        $filter: {
+                          input: "$trainingDomain",
+                          as: "td",
+                          cond: {
+                            $and: [
+                              {
+                                $regexMatch: {
+                                  input: "$$td.domain",
+                                  regex: new RegExp(domain, "i"),
+                                },
+                              }
+                            ],
+                          },
+                        },
+                      },
+                    },
+                  }
+            )
+        }
 
-                                    ]
-                                }
-
-                            }
-                        }
-                    }
-                },
-                {
-                    $match: {
-                        trainingDomain: { $ne: [] }
-                    }
+        // Remove Empty Results
+        pipeline.push(            
+            {
+                $match: {
+                    trainingDomain: { $ne: [] }
                 }
-            ]
+        })
+
+        //     {
+        //       $match: {
+        //         "trainingDomain.domain": {
+        //           $regex: new RegExp(domain, "i"),
+        //         },
+        //       },
+        //     },
+        //     {
+        //       $project: {
+        //         trainingDomain: {
+        //           $filter: {
+        //             input: "$trainingDomain",
+        //             as: "td",
+        //             cond: {
+        //               $and: [
+        //                 {
+        //                   $regexMatch: {
+        //                     input: "$$td.domain",
+        //                     regex: new RegExp(domain, "i"),
+        //                   },
+        //                 },
+        //                 {
+        //                   $gte: ["$$td.price", Number(minPrice)],
+        //                 },
+        //                 {
+        //                   $lte: ["$$td.price", Number(maxPrice)],
+        //                 },
+        //               ],
+        //             },
+        //           },
+        //         },
+        //       },
+        //     },
+        //     {
+        //         $match: {
+        //             trainingDomain: { $ne: [] }
+        //         }
+        //     }
+        //   ]
+
+        // Define the aggregation pipeline
+        // const pipeline = [{
+        //             $match: {
+        //                 'trainingDomain.domain': { $regex: new RegExp(domain, 'i') }
+        //             }
+        //         },
+        //         {
+        //             $project: {
+        //                 trainingDomain: {
+        //                     $filter: {
+        //                         input: '$trainingDomain',
+        //                         as: 'td',
+        //                         cond: {
+        //                             $and: [{
+        //                                     $regexMatch: { input: '$$td.domain', regex: new RegExp(domain, 'i') }
+        //                                 },
+        //                                 // {
+        //                                 //     $gte: { '$trainingDomain.price': minPrice }
+        //                                 // }
+
+        //                             ]
+        //                         }
+
+        //                     }
+        //                 }
+        //             }
+        //         },
+        //         {
+        //             $match: {
+        //                 trainingDomain: { $ne: [] }
+        //             }
+        //         }
+        //     ]
             // [
             //     // Match documents where trainingDomain contains the specified domain
             //     {

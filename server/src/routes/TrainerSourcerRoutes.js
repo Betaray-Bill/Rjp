@@ -1,10 +1,10 @@
 import express from 'express';
 import authMiddleware from '../middleware/authMiddleware.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
-import { registerTrainer, uploadResumeToAzureAndExtractText } from '../controllers/TrainerSourcerController.js';
+import { registerTrainer } from '../controllers/TrainerSourcerController.js';
 import { signOut } from '../controllers/AuthController.js';
-import multer from 'multer';
-const upload = multer({ dest: "uploads/" });
+// import multer from 'multer';
+// const upload = multer({ dest: "uploads/" });
 
 const router = express.Router();
 

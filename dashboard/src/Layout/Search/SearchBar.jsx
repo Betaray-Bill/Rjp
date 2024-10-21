@@ -14,6 +14,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {resetDomainResultsAndSearch, setDomainResults, setIsSearching, setSearchDomain} from '@/features/searchTrainerSlice';
 import {Label} from '@/components/ui/label';
+import { useMutation } from 'react-query';
 
 function SearchBar() {
     const [query,
@@ -43,6 +44,26 @@ function SearchBar() {
         setQuery(event.target.value)
     }
 
+    // Mutation
+    const searchMutation = useMutation((query) => {
+        return axios.get(query)
+        },
+        {
+        onSuccess: (data) => {
+            setResult(data.data);
+            dispatch(setDomainResults(data.data));
+            dispatch(setIsSearching(false))
+            console.log(data.data)
+        },
+        onSettled: () => {
+          console.log("Settled")
+        },
+        onError: (error) => {
+          console.log(error);
+        }
+      })
+    
+
     axios.defaults.withCredentials = true;
     const searchHandler = async(event) => {
         event.preventDefault()
@@ -71,13 +92,8 @@ function SearchBar() {
             // `&rating=${rating}`;
             console.log(req_query)
             // Send the GET request with the query parameters
-            const res = await axios.get(req_query);
-            const data = await res.data;
-            console.log(data);
-            setResult(data);
-            dispatch(setDomainResults(data));
-            // setQuery("")
-            dispatch(setIsSearching(false))
+            searchMutation.mutate(req_query)
+
 
         } catch (error) {
             // dispatch(signInFailure(error));
