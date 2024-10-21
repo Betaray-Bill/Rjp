@@ -103,7 +103,7 @@ const AddTrainer = () => {
           </div>
 
           {/* Training DOmain */}
-          <div className='mt-10 border  p-3 rounded-md '>
+          <div className='mt-10 border p-3 rounded-md '>
               <TrainingDomain />
           </div>
 

@@ -24,7 +24,7 @@ function SearchResult() {
     return (
         <div className='mt-8 p-3'>
             {
-                    domainResults.length > 0 &&
+                    domainResults.length > 0 ?
 
                     <Fragment>
                         <div className='flex justify-between '>
@@ -48,7 +48,7 @@ function SearchResult() {
                                                     <AvatarImage src="https://github.com/shadcn.png"/>
                                                     <AvatarFallback>CN</AvatarFallback>
                                                 </Avatar>
-                                                <p className='ml-2 font-medium'>{res.generalDetails.name}</p>
+                                                <p className='ml-2 font-medium'>{res.generalDetails?.name}</p>
                                             </div>
                                             <div>
                                                 <p className='text-gray-600'>
@@ -89,15 +89,15 @@ function SearchResult() {
                                             <div className='grid grid-cols-2 gap-[20px] mt-2'>
                                                 <p className='flex flex-col'>
                                                     <span className='text-gray-600'>phone Number</span>
-                                                    <span className='font-semibold'>{res.generalDetails.phoneNumber}</span>
+                                                    <span className='font-semibold'>{res.generalDetails?.phoneNumber}</span>
                                                 </p>
                                                 <p className='flex flex-col items-start'>
                                                     <span className='text-gray-600'>Whatsapp Number</span>
-                                                    <span className='font-semibold'>{res.generalDetails.phoneNumber}</span>
+                                                    <span className='font-semibold'>{res.generalDetails?.phoneNumber}</span>
                                                 </p>
                                                 <p className='flex flex-col items-start'>
                                                     <span className='text-gray-600'>Email Id</span>
-                                                    <span className='font-semibold'>{res.generalDetails.email}</span>
+                                                    <span className='font-semibold'>{res.generalDetails?.email}</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -107,7 +107,7 @@ function SearchResult() {
                                 ))
     }
                         </div> 
-                    </Fragment>
+                    </Fragment> : null
         
                 
             }

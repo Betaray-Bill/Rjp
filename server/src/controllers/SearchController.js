@@ -30,9 +30,9 @@ const searchTrainer = asyncHandler(async(req, res) => {
                                     $and: [{
                                             $regexMatch: { input: '$$td.domain', regex: new RegExp(domain, 'i') }
                                         },
-                                        {
-                                            $gte: { '$trainingDomain.price': minPrice }
-                                        }
+                                        // {
+                                        //     $gte: { '$trainingDomain.price': minPrice }
+                                        // }
 
                                     ]
                                 }

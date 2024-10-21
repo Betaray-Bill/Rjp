@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux'
 import AddTrainer from './Pages/AddEntity/AddTrainer'
 import {userAccess}  from './utils/CheckUserAccess.js'
 import {RolesEnum} from './utils/constants.js'
+import Employee from './Pages/Employees/Employee.jsx'
 
 
 function App() {
@@ -32,7 +33,7 @@ function App() {
             }
             {
                userAccess([RolesEnum.ADMIN], currentUser?.employee.role) &&
-              <Route path='add' element={<AddEntity />} />
+              <Route path='employee' element={<Employee />} />
             }
             {
               userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER, RolesEnum.MANAGER], currentUser?.employee.role) &&

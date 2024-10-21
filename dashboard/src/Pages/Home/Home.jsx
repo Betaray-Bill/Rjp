@@ -8,6 +8,7 @@ import logo from "../../assets/logo.png"
 import { Button } from '@/Components/ui/button'
 import { userAccess } from '../../utils/CheckUserAccess.js'
 import { RolesEnum } from '../../utils/constants.js'
+import { resetDomainResultsAndSearch } from '@/features/searchTrainerSlice'
 
 function Home() {
   const dispatch = useDispatch()
@@ -26,6 +27,7 @@ function Home() {
           const res = axios.get('http://localhost:5000/api/employee/signout')
           console.log(res.data)
             dispatch(signOut())
+            dispatch(resetDomainResultsAndSearch())
             navigate('/login')
         }catch(err){
             console.log(err)
@@ -69,7 +71,7 @@ function Home() {
             }
             {
               userAccess([RolesEnum.ADMIN, RolesEnum.MANAGER], currentUser?.employee.role) && 
-              <Link to="/home/add">Add +</Link>
+              <Link to="/home/employee">Add +</Link>
             }
             {
               userAccess([RolesEnum.ADMIN,RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) && 
