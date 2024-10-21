@@ -83,11 +83,11 @@ const handleDownload = () => {
 
             {/* Header with logo space */}
             <div className="flex flex-col items-center mb-6 relative">
-              <div className="flex justify-center w-full">
+              <div className="flex justify-center w-[50vw]">
                 <img
                   src={ResumeLogo}
                   alt="Logo"
-                  className="mb-10"
+                  className="mb-8  w-[50vw]"
                 />
               </div>
             </div>

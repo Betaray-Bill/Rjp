@@ -144,9 +144,15 @@ function ResumeNav() {
             }}>
                 <TooltipProvider>
                     <Tooltip>
-                        <TooltipTrigger><ion-icon style={{fontSize:"25px"}} name="download-outline"></ion-icon></TooltipTrigger>
+                        <TooltipTrigger>
+                            {
+                                !location.pathname.split('/').includes("preview") ?<ion-icon style={{fontSize:"25px"}} name="eye-outline"></ion-icon> :<ion-icon style={{fontSize:"25px"}} name="download-outline"></ion-icon>
+                            }
+                            </TooltipTrigger>
                         <TooltipContent>
-                        <p>Download</p>
+                            {
+                                !location.pathname.split('/').includes("preview") ?<p>Preview and Download</p> :<p>Download</p>
+                            }
                         </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
