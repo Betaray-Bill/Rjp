@@ -15,9 +15,8 @@ function Search() {
         <SearchBar />
         {/* Result COntainer */}
         {
-          // domainResults?.length > 0 && <SearchResult />
+          domainResults?.length > 0 && <SearchResult />
         }
-        <SearchResult />
       </div>
     </div>
   )

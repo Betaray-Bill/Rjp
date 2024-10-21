@@ -54,6 +54,7 @@ function SearchBar() {
             dispatch(setDomainResults(data.data));
             dispatch(setIsSearching(false))
             console.log(data.data)
+
         },
         onSettled: () => {
           console.log("Settled")

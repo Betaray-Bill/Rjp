@@ -24,7 +24,8 @@ function SearchResult() {
     return (
         <div className='mt-8 p-3'>
             {
-                    domainResults.length > 0 ?
+                    domainResults
+                     && domainResults.length > 0 ?
 
                     <Fragment>
                         <div className='flex justify-between '>
@@ -37,8 +38,7 @@ function SearchResult() {
                         </p>
                         </div>
                         <div className='mt-6 grid grid-cols-1 lg:grid-cols-2 gap-[25px]'>
-                            {domainResults
-                                ?.map((res, _i) => (
+                             { domainResults &&  domainResults?.map((res, _i) => (
                                     <div key={_i} className='border border-gray-200 rounded-md p-3'>
                                         {/* <h2>{res.generalDetails.name}</h2> */}
                                         {/* General Details */}
