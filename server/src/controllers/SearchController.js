@@ -9,48 +9,80 @@ const searchTrainer = asyncHandler(async(req, res) => {
         let minPrice
         let maxPrice
         if (minPrice !== undefined) {
-            minPrice = price.gte ? parseFloat(price.gte) : undefined;
+            minPrice = price.gte ? price.gte : undefined;
         }
         if (maxPrice !== undefined) {
-            maxPrice = price.lte ? parseFloat(price.lte) : undefined;
+            maxPrice = price.lte ? price.lte : undefined;
         }
         // Define the aggregation pipeline
-        const pipeline = [
-            // Match documents where trainingDomain contains the specified domain
-            {
-                $match: {
-                    'trainingDomain.domain': { $regex: new RegExp(domain, 'i') }
-                }
-            },
-            // Project to filter the trainingDomain array based on domain and price range
-            {
-                $project: {
-                    name: 1, // Include any other fields you need
-                    trainingDomain: {
-                        $filter: {
-                            input: '$trainingDomain',
-                            as: 'td',
-                            cond: {
-                                $and: [
-                                    { $regexMatch: { input: '$$td.domain', regex: new RegExp(domain, 'i') } },
-                                    minPrice !== undefined ? { $gte: [{ $toDouble: '$$td.price' }, minPrice] } : {},
-                                    maxPrice !== undefined ? { $lte: [{ $toDouble: '$$td.price' }, maxPrice] } : {}
-                                ]
+        const pipeline = [{
+                    $match: {
+                        'trainingDomain.domain': { $regex: new RegExp(domain, 'i') }
+                    }
+                },
+                {
+                    $project: {
+                        trainingDomain: {
+                            $filter: {
+                                input: '$trainingDomain',
+                                as: 'td',
+                                cond: {
+                                    $and: [{
+                                            $regexMatch: { input: '$$td.domain', regex: new RegExp(domain, 'i') }
+                                        },
+                                        {
+                                            $gte: { '$trainingDomain.price': minPrice }
+                                        }
+
+                                    ]
+                                }
+
                             }
                         }
-                    },
-                    generalDetails: 1,
-                    bankDetails: 1,
-                    trainerId: 1
+                    }
+                },
+                {
+                    $match: {
+                        trainingDomain: { $ne: [] }
+                    }
                 }
-            },
-            // Ensure only documents with a non-empty trainingDomain array are returned
-            {
-                $match: {
-                    trainingDomain: { $ne: [] }
-                }
-            }
-        ];
+            ]
+            // [
+            //     // Match documents where trainingDomain contains the specified domain
+            //     {
+            //         $match: {
+            //             'trainingDomain.domain': { $regex: new RegExp(domain, 'i') }
+            //         }
+            //     },
+            //     // Project to filter the trainingDomain array based on domain and price range
+            //     {
+            //         $project: {
+            //             name: 1, // Include any other fields you need
+            //             trainingDomain: {
+            //                 $filter: {
+            //                     input: '$trainingDomain',
+            //                     as: 'td',
+            //                     cond: {
+            //                         $and: [
+            //                             { $regexMatch: { input: '$$td.domain', regex: new RegExp(domain, 'i') } },
+            //                             // { $gte: ["$$td.price", minPrice] },
+            //                             // { $lte: ["$$td.price", maxPrice] }
+            //                         ]
+            //                     }
+            //                 }
+            //             },
+            //             generalDetails: 1,
+            //             bankDetails: 1,
+            //             trainerId: 1
+            //         }
+            //     },
+            //     // Ensure only documents with a non-empty trainingDomain array are returned
+            //     {
+            //         $match: {
+            //             trainingDomain: { $ne: [] }
+            //         }
+            //     }
+            // ];
 
         // Execute the aggregation
         const result = await Trainer.aggregate(pipeline);

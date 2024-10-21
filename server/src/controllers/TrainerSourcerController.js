@@ -4,6 +4,7 @@ import { Trainer } from "../models/TrainerModel.js";
 import { readFileSync, unlinkSync } from "fs"
 import axios from "axios";
 import { transformResumeData } from "../utils/azure/extract/extractfunction.js";
+import { resumeCopy } from "./TrainerController.js";
 
 const endpoint = process.env.AZURE_ENDPOINT;
 const apiKey = process.env.AZURE_API_KEY;
@@ -42,7 +43,7 @@ const registerTrainer = asyncHandler(async(req, res) => {
             },
             trainingDomain: req.body.trainingDomain.map(domain => ({
                 domain: domain.domain,
-                price: domain.price,
+                price: Number(domain.price),
                 paymentSession: domain.paymentSession
             })),
             mainResume: {
@@ -199,20 +200,26 @@ const updateResume = asyncHandler(async(req, res) => {
                 return res.status(404).json({ message: 'Trainer not found' });
             }
             await updatedTrainer.save()
+
+            // console.log("Result", trainer.resumeVersions)
+            res.status(200).json({
+                message: "Resume saved succesfully",
+                trainer: updatedTrainer
+            });
+
         } else {
             // if copy then check if the same resume exists, then update the docs in the collection
 
             console.log(req.body.trainingName)
             console.log("Length ", trainer.resumeVersions.length)
                 // const existingResume = await trainer.resumeVersions.forEach((e))
-
+            let resumeNew = []
             for (let i = 0; i < trainer.resumeVersions.length; i++) {
                 console.log(trainer.resumeVersions[i].trainingName)
                 if (trainer.resumeVersions[i].trainingName === req.body.trainingName) {
                     console.log("-----------------------------")
                     console.log(trainer.resumeVersions[i])
-
-                    await trainer.resumeVersions.splice(i, 1, {
+                    let newRes = {
                         professionalSummary: req.body.professionalSummary,
                         technicalSkills: req.body.technicalSkills,
                         careerHistory: req.body.careerHistory,
@@ -222,18 +229,26 @@ const updateResume = asyncHandler(async(req, res) => {
                         clientele: req.body.clientele,
                         experience: req.body.experience,
                         trainingName: req.body.trainingName
-                    })
-                    break;
+                    }
+                    resumeNew.push(newRes)
+                } else {
+                    resumeNew.push(trainer.resumeVersions[i])
                 }
             }
-            await trainer.save();
+            const updatedResumeTrainer = await Trainer.findByIdAndUpdate(
+                id, { $set: { resumeVersions: resumeNew } }, { new: true, runValidators: true }
+            )
+
+            await updatedResumeTrainer.save();
+
+            console.log("New ", resumeNew)
+
+            console.log("Result", updatedResumeTrainer.resumeVersions)
+            res.status(200).json({
+                message: "Resume saved succesfully",
+                trainer: updatedResumeTrainer
+            });
         }
-
-
-        res.status(200).json({
-            message: "Resume saved succesfully",
-            trainer: trainer
-        });
 
     } catch (err) {
         console.error("Error creating resume copy:", err);

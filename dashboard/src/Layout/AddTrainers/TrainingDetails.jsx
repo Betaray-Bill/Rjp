@@ -8,7 +8,7 @@ function TrainingDetails() {
     const dispatch = useDispatch();
 
     const [trainingDetails,
-        setTrainingDetails] = useState({trainerType: "Internal", modeOfTraining: ""})
+        setTrainingDetails] = useState({trainerType: "", modeOfTraining: ""})
 
     const handleChange = (event) => {
         const updatedTrainingDetails = {
@@ -28,7 +28,7 @@ function TrainingDetails() {
                 <div className='flex flex-col'>
                     <Label htmlFor="trainerType" className="mb-2">Type of Trainer</Label>
                     <select name="trainerType" id="" onChange={(e) => handleChange(e)}>
-                        {/* <option value="Select the Type"></option> */}
+                        <option value="Select the Type"></option>
                         {trainingTypes.map((mode, index) => (
                             <option key={index} value={mode}>{mode}</option>
                         ))

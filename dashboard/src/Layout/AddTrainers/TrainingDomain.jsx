@@ -70,9 +70,16 @@ function TrainingDomain() {
     const handleChange = (event, index) => {
         const { name, value } = event.target;
         console.log(name, value)
-        const updatedDomains = trainingDomain.map((domain, i) => 
-            i === index ? { ...domain, [name]: value } : domain
-        );
+        let updatedDomains
+        if(name == "price"){
+            updatedDomains = trainingDomain.map((domain, i) => 
+                i === index ? { ...domain, [name]: Number(value) } : domain
+            );
+        }else{
+            updatedDomains = trainingDomain.map((domain, i) => 
+                i === index ? { ...domain, [name]: value } : domain
+            );
+        }
 
         setTrainingDomain(updatedDomains)
         dispatch(setResumeDetails({ name: "trainingDomain", data: updatedDomains }));

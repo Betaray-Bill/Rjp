@@ -76,7 +76,7 @@ function SearchBar() {
             console.log(data);
             setResult(data);
             dispatch(setDomainResults(data));
-            setQuery("")
+            // setQuery("")
             dispatch(setIsSearching(false))
 
         } catch (error) {

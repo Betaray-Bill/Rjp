@@ -39,23 +39,34 @@ function ResumeForm() {
         trainingName: ''
     })
 
+    // useEffect(() => {
+    //     if(currentResumeName ==="Main Resume"){
+    //         setCurrentResume({...user.mainResume})
+    //     }
+    // }, [])
+
 
 
 
     // console.log(currentResume)
     useEffect(() => {
-        if (currentResumeName === saveResumeDetails.trainingName) {
-            setCurrentResume({
-                ...saveResumeDetails
-            })
-        } else {
-            setCurrentResume({
-                ...user.mainResume
-            })
-        }
+        // if (currentResumeName === currentResume.trainingName) {
+            console.log("Same reeume name: " + currentResumeName, saveResumeDetails.trainingName)
 
-        // console.log(currentResumeDetails)
-    }, [currentResumeName, isSubmit])
+            if(currentResumeName ==="Main Resume"){
+                setCurrentResume({...user.mainResume})
+            }else{
+                setCurrentResume({
+                    ...currentResumeDetails, trainingName: currentResumeName
+                })
+            }
+    
+
+    }, [currentResumeName])
+
+
+
+
 
     const handleChange = (e, field, index) => {
         const value = e.target.value;
@@ -82,7 +93,7 @@ function ResumeForm() {
 
     // Handler to add a new empty textarea for a specific field
     const handleAdd = (field) => {
-        if (!isEdit) {
+        // if (!isEdit) {
             setCurrentResume((prevState) => {
                 return {
                     ...prevState,
@@ -92,14 +103,14 @@ function ResumeForm() {
                     ], // Add empty string to the field array
                 };
             });
-        } else {
-            toast({duration: 3000, variant: "destructive", title: "Adding field disabled", description: "Click edit to take action"})
-        }
+        // } else {
+            toast({duration: 3000, variant: "success", title: "Adding field.."})
+        // }
     };
 
     // Handler to delete an item from a specific field
     const handleDelete = (field, index) => {
-        if (!isEdit) {
+        // if (!isEdit) {
             setCurrentResume((prevState) => {
                 const updatedArray = prevState[field].filter((_, i) => i !== index);
                 return {
@@ -107,9 +118,9 @@ function ResumeForm() {
                     [field]: updatedArray
                 };
             });
-        } else {
-            toast({variant: "destructive", duration: 3000, title: "Deleting field disabled", description: "Click edit to take action"})
-        }
+        // } else {
+            toast({variant: "success", duration: 3000, title: "Deleting the field"})
+        // }
     };
 
     // Function to render textareas for array fields
@@ -121,7 +132,7 @@ function ResumeForm() {
                     className='py-2 h- flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
                     <Textarea
                         value=""
-                        readOnly={isEdit}
+                        // readOnly={isEdit}
                         onChange={(e) => handleChange(e, fieldName, 0)}
                         placeholder={`Type your ${fieldName}`}
                         className="w-[30vw] text-gray-800 text-sm outline-none border-collapse border-none"/>
@@ -142,7 +153,7 @@ function ResumeForm() {
                 className='py-2 h- flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
                 <Textarea
                     value={value}
-                    readOnly={isEdit}
+                    // readOnly={isEdit}
                     onChange={(e) => handleChange(e, fieldName, index)}
                     placeholder={`Type your ${fieldName}`}
                     className="w-[30vw] text-gray-800 text-sm outline-none border-collapse border-none h-max"/>
@@ -159,12 +170,13 @@ function ResumeForm() {
     };
     // console.log(currentResumeName)
     // Handle Submitting the Copy resume
+    console.log(currentResume)
 
     axios.defaults.withCredentials = true;
     //    Update Mutation Query
     const submitResume = useMutation(
         (data) => axios.put(`http://localhost:5000/api/trainer/updateresume/${user._id}`, {
-                ...data,
+                ...data, trainingName:currentResumeName,
                 isMainResume: currentResumeName === "Main Resume"
                     ? true
                     : false
@@ -173,26 +185,30 @@ function ResumeForm() {
         {
             onSuccess: (data) => {
                 // console.log('Registration successful:', data.data);
-                queryClient.invalidateQueries({ queryKey:  ["user", user._id]    })
+                // queryClient.invalidateQueries({ queryKey:  ["user", user._id]    })
                 setIsSubmit(prev => !prev)
-                dispatch(setSaveResumeDetails({
-                    professionalSummary: [],
-                    technicalSkills: [],
-                    careerHistory: [],
-                    certifications: [],
-                    education: [],
-                    trainingsDelivered: [],
-                    clientele: [],
-                    experience: [],
-                    file_url: '',
-                    trainingName: ''
-                }))
-            
+                // dispatch(setSaveResumeDetails({
+                //     professionalSummary: [],
+                //     technicalSkills: [],
+                //     careerHistory: [],
+                //     certifications: [],
+                //     education: [],
+                //     trainingsDelivered: [],
+                //     clientele: [],
+                //     experience: [],
+                //     file_url: '',
+                //     trainingName: ''
+                // }))
+                
                 setIsEdit(false)
+                getTrainerDetails()
+                // dispatch(currentResumeName("Main Resume"))
+                // navigate('/home/resume/main')
                 toast({
-                    duration: 3000, variant: "success", title: "Submitted successfully",
-                    // description: "Click edit to take action",
+                    duration: 3000, variant: "success", title: "Submitted successfully"
                 })
+                // navigate('/home/resume/main')
+
             }
         }
     )
@@ -204,9 +220,9 @@ function ResumeForm() {
         // console.log('Form Data Submitted:', currentResumeName ,user._id);
         // Perform API call to Update the Data for this Resume
         try {
-
+            console.log(currentResume)
             submitResume.mutate(currentResume)
-
+            // navigate('/home/resume/main')
         } catch (error) {
             setIsSubmit(prev => !prev)
 
@@ -220,8 +236,6 @@ function ResumeForm() {
 
         try {
             const res = await axios.get(`http://localhost:5000/api/trainer/details/${user._id}`)
-            // console.log(res.data)
-            // setData(res.data)
             dispatch(setCredentials(res.data))
 
         } catch (err) {
@@ -261,14 +275,14 @@ function ResumeForm() {
                                 readOnly/>
                         </div>
                     : <div className='text-gray-700 font-medium px-3 py-1 bg-slate-200 rounded-full'>Main Resume</div>
-}
+                }
 
-                <Button
+                {/* <Button
                     className='px-[20px] py-[10px] rounded-md cursor-pointer text-white
                         bg-buttonPrimary flex align-middle items-center'
                     onClick={handleSaveResume}>
-                    {isEdit
-                        ? (
+                    isEdit
+                        ? 
                             <Fragment>
                                 <ion-icon
                                     name="pencil-outline"
@@ -277,7 +291,7 @@ function ResumeForm() {
                                 }}></ion-icon>
                                 <span className='ml-2'>Edit</span>
                             </Fragment>
-                        )
+                         )
                         : <Fragment>
                             <ion-icon
                                 name="bookmark-outline"
@@ -286,8 +300,8 @@ function ResumeForm() {
                             }}></ion-icon>
                             <span className='ml-2'>Save</span>
                         </Fragment>
-}
-                </Button>
+
+                </Button> */}
             </div>
             <form className='grid grid-cols-2 items-start'>
                 <div className='mt-4 rounded-sm p-2'>

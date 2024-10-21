@@ -92,7 +92,7 @@ const handleDownload = () => {
               </div>
             </div>
             <div className="">
-                <h1 className="text-3xl font-bold text-resumeText mb-10">{user.generalDetails.name}</h1>
+                <h1 className="text-3xl font-bold text-resumeText mb-10">{user.generalDetails.name.toUpperCase()}</h1>
             </div>
             {/* Resume content */}
             <div className="grid grid-cols-2 gap-10  mt-4">
