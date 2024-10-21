@@ -15,6 +15,8 @@ export default {
                 generalBorderColor: "#dadce0",
                 background: 'hsl(var(--background))',
                 foreground: 'hsl(var(--foreground))',
+                resumeText: '#166ab8',
+                resumeLine: 'rgb(110,138,152)',
                 card: {
                     DEFAULT: 'hsl(var(--card))',
                     foreground: 'hsl(var(--card-foreground))'

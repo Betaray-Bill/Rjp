@@ -175,7 +175,12 @@ function ResumeNew() {
               file_url: '',
               trainingName: ''
           })
-          navigate("/home/resume/main")
+          toast({
+            duration: 3000, variant: "success", title: "Submitted successfully",
+            // description: "Click edit to take action",
+        })
+        getTrainerDetails()
+        //   navigate("/home/resume/main")
           // setUser(response.data)
       }catch (error) {
           console.error('Registration failed:', error);
