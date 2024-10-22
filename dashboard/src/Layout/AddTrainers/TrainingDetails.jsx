@@ -27,7 +27,7 @@ function TrainingDetails() {
                 {/* Training courses, institution, duration, mode of training */}
                 <div className='flex flex-col'>
                     <Label htmlFor="trainerType" className="mb-2">Type of Trainer</Label>
-                    <select name="trainerType" id="" onChange={(e) => handleChange(e)}>
+                    <select name="trainerType" id="" onChange={(e) => handleChange(e)} className="w-[300px]">
                         <option value="Select the Type"></option>
                         {trainingTypes.map((mode, index) => (
                             <option key={index} value={mode}>{mode}</option>
@@ -40,7 +40,7 @@ function TrainingDetails() {
                     ? (
                         <div className='flex flex-col'>
                             <Label htmlFor="trainingMode" className="mb-2">Mode of Training</Label>
-                            <select name="modeOfTraining" id="" onChange={(e) => handleChange(e)}>
+                            <select name="modeOfTraining" id="" onChange={(e) => handleChange(e)} className="w-[300px]">
                                 <option value="Select the Type" defaultValue={true}>Select the Mode</option>
                                 {trainingModesEnum.map((mode, index) => (
                                     <option key={index} value={mode}>{mode}</option>

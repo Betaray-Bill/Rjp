@@ -115,6 +115,8 @@ const handleDownload = () => {
                 </ul>
               </div>
 
+
+             { currentResumeDetails['careerHistory'].length > 0 ?
               <div>
                 <h2 className="text-resumeText text-2xl font-semibold mt-4 mb-2 inline-block border-y-[1px] border-resumeLine py-1 px-4">CAREER HISTORY</h2>
                 <ul className="list-disc pl-5">
@@ -122,7 +124,7 @@ const handleDownload = () => {
                     <li className='text-justify text-[18px] leading-10' key={_i}>{e}</li>
                   ))}
                 </ul>
-                </div>
+              </div> : null}
               
               <div>
                 <h2 className="text-resumeText text-2xl font-semibold mt-4 mb-2 inline-block border-y-[1px] border-resumeLine py-1 px-4">CLIENTELE</h2>

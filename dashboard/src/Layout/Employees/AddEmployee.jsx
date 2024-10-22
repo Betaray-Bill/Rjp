@@ -12,11 +12,11 @@ function AddEmployee() {
     const handleChange = (event) => {
         // Update the state with the new value
         if(event.target.name === "roles"){
-            let a = empData.roles
+            let a =[]
             a.push(event.target.value);
             setEmpData({
                 ...empData,
-                roles: a
+                roles:a
             });
         }else{
             setEmpData({
@@ -26,10 +26,12 @@ function AddEmployee() {
         }
     }
 
+    console.log(empData)
+
     axios.defaults.withCredentials = true;
     const handleSubmit = async(event) => {
         event.preventDefault();
-
+        
         try {
             const response = await axios.post('http://localhost:5000/api/employee/register', empData); // Replace with your API endpoint
             console.log('Registration successful:', response.data);
@@ -49,15 +51,15 @@ function AddEmployee() {
                 <div className='grid place-content-center gap-10 items-center grid-cols-1 md:grid-cols-2 2xl:grid-cols-3'>
                     <div>
                         <Label htmlFor="name">Employee Name</Label>
-                        <Input type="text" id="" name="name" onChange={(e) => handleChange(e)}/>
+                        <Input required type="text" id="" name="name" onChange={(e) => handleChange(e)}/>
                     </div>
                     <div>
                         <Label>Email</Label>
-                        <Input type="text" name="email" onChange={(e) => handleChange(e)}/>
+                        <Input required type="text" name="email" onChange={(e) => handleChange(e)}/>
                     </div>
                     {/* <div>
                     <Label>Date Of Birth</Label>
-                    <Input
+                    <Input required
                         type="date"
                         id="name"
                         name="email"
@@ -65,8 +67,8 @@ function AddEmployee() {
                 </div> */}
                     <div>
                         <Label>Password</Label>
-                        <Input
-                            type="current-password"
+                        <Input required
+                            type="password"
                             id="password"
                             name="password"
                             onChange={(e) => handleChange(e)}/>
@@ -86,7 +88,7 @@ function AddEmployee() {
                     </div>
                     {/* <div>
                     <Label>Email</Label>
-                    <Input
+                    <Input required
                         type="text"
                         id="name"
                         name="email"

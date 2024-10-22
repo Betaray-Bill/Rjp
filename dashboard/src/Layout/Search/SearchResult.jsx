@@ -24,8 +24,7 @@ function SearchResult() {
     return (
         <div className='mt-8 p-3'>
             {
-                    domainResults
-                     && domainResults.length > 0 ?
+                    domainResults.length > 0 ?
 
                     <Fragment>
                         <div className='flex justify-between '>

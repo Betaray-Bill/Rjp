@@ -8,12 +8,30 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
-import { useQuery, useQueryClient } from 'react-query';
-
+  import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+  } from "@/components/ui/dropdown-menu"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
+import { useQuery } from 'react-query';
+import { useDispatch } from 'react-redux';
+import {setAllEmp} from '@/features/employeeSlice';
   
 
 function GetAllEmployee() {
-    const queryClient = useQueryClient()
+    const dispatch = useDispatch()
 
     const getAll = async() => {
         const response = await axios.get('http://localhost:5000/api/employee/getAll'); // Replace with your API endpoint
@@ -28,6 +46,14 @@ function GetAllEmployee() {
         cacheTime: 20 * 60 * 1000 
     });
 
+    console.log(data)
+
+    useEffect(() => {
+        if(data){
+            dispatch(setAllEmp(data))
+        }
+    }, [])
+
   return (
     <div>
         <p onClick={() => refetch()} className="flex items-center bg-gray-100 border border-black rounded-md cursor-pointer px-[10px] w-max py-[3px]">
@@ -38,22 +64,49 @@ function GetAllEmployee() {
             {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
             <TableHeader>
                 <TableRow>
-                <TableHead>S.no</TableHead>
-                <TableHead className="w-[100px]">Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Roles</TableHead>
-                {/* <TableHead className="text-right">Amount</TableHead> */}
-                </TableRow>
+                    <TableHead>S.no</TableHead>
+                    <TableHead className="w-[100px]">Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Roles</TableHead>
+                    {/* <TableHead className="text-left">Edit</TableHead> */}
+                    </TableRow>
             </TableHeader>
             <TableBody>
                 {data && data?.map((emp, index) => (
-                <TableRow key={index}>
+                <TableRow key={index} onClick={() => {
+                    console.log(`${index+1}.) ${emp.email}   `)
+                }}>
                     <TableCell className="font-medium">{index+1}</TableCell>
                     <TableCell className="font-medium">{emp.name}</TableCell>
                     <TableCell>{emp.email}</TableCell>
                     <TableCell className="text-left">{emp?.role?.map((e, _i) => (
                         <span className="mx-2 px-2 rounded-lg bg-gray-200" key={_i}>{e.name}</span>
                     ))}</TableCell>
+                        {/* <TableCell className="font-medium cursor-pointer">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger><ion-icon name="ellipsis-vertical-outline"></ion-icon></DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuLabel>Edit Profile</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem>
+                                        <Dialog>
+                                            <DialogTrigger>Add Role</DialogTrigger>
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                <DialogTitle>Edi</DialogTitle>
+                                                <DialogDescription>
+                                                    This action cannot be undone. This will permanently delete your account
+                                                    and remove your data from our servers.
+                                                </DialogDescription>
+                                                </DialogHeader>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </DropdownMenuItem>
+
+    
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </TableCell> */}
                 </TableRow>
                 ))}
             </TableBody>

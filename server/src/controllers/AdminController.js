@@ -95,6 +95,18 @@ const getAllEmployees = asyncHandler(async(req, res) => {
     }
 })
 
+// Get Single employee
+const getEmployeeById = asyncHandler(async(req, res) => {
+    try {
+        const employees = await Employee
+            .find({email:req.body.email})
+            .select('email name _id');
+        res.json(employees);
+    } catch (error) {
+        throw new ApiError(500, error)
+    }
+})
+
 // Update the role
 const updateEmployeeRole = asyncHandler(async(req, res) => {
     // Get Roles
@@ -104,7 +116,7 @@ const updateEmployeeRole = asyncHandler(async(req, res) => {
     const employeeId = req.params.empId
     try {
         // Check if the Employee Exist
-        const employee = await Employee.findById(employeeId)
+        const employee = await Employee.find({email:employeeId})
         console.log(employee)
         if (!employee) {
             return res
@@ -255,5 +267,6 @@ export {
     createCompany,
     getAllCompanyNamesAndIds,
     getCompanyDetails,
-    getAllEmployees
+    getAllEmployees,
+    getEmployeeById
 }

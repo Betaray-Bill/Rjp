@@ -1,5 +1,5 @@
 import express from 'express';
-import { addEmployee, createCompany, getAllCompanyNamesAndIds, getAllEmployees, getCompanyDetails, updateEmployeeRole } from '../controllers/AdminController.js';
+import { addEmployee, createCompany,getEmployeeById, getAllCompanyNamesAndIds, getAllEmployees, getCompanyDetails, updateEmployeeRole } from '../controllers/AdminController.js';
 import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import authMiddleware from '../middleware/authMiddleware.js';
@@ -15,6 +15,9 @@ router.post("/login", login)
 router.post("/register", authMiddleware, addEmployee)
 router.get("/signout", authMiddleware, signOut)
 router.get("/getAll", authMiddleware, authorizeRole(["ADMIN"]), getAllEmployees)
+
+// Get Single Emp
+router.get("/getemployee", authMiddleware, authorizeRole(["ADMIN"]) ,getEmployeeById )
 
 // Role Updating Routes
 router.put("/update-role/:empId", authMiddleware, authorizeRole(["ADMIN"]), updateEmployeeRole)

@@ -39,6 +39,8 @@ function SearchBar() {
     const dispatch = useDispatch()
     const {searchDomain} = useSelector(state => state.searchTrainer)
 
+    const [filter, setFilter] = useState(false)
+
     const handleDomainChange = (event) => {
         dispatch(setSearchDomain(event.target.value))
         setQuery(event.target.value)
@@ -107,61 +109,70 @@ function SearchBar() {
         <div className=''>
             <form onSubmit={searchHandler} className='bg-orange p-3'>
 
-                <div
-                    className='flex items-center justify-between w-[70vw] lg:w-[60wv] rounded-lg py-2 px-5 border border-slate-400'>
-                    <div className='flex items-center'>
-                        <ion-icon
-                            name="search-outline"
-                            style={{
-                            fontSize: "22px",
-                            color: "black"
-                        }}></ion-icon>
-                        <Input
-                            id="outlined-basic"
-                            onChange={(e) => handleDomainChange(e)}
-                            placeholder="Search Trainers by domain"
-                            value={query}
-                            className="min-w-[50vw] ml-4 border-none bg-none"></Input>
-                    </div>
-                    {/* <DropdownMenu>
-                    <DropdownMenuTrigger><ion-icon name="filter-outline" style={{fontSize:"22px", color:"black"}}></ion-icon></DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuLabel>Filters</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>Billing</DropdownMenuItem>
-                        <DropdownMenuItem>Team</DropdownMenuItem>
-                        <DropdownMenuItem>Subscription</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu> */}
-
-                </div>
-
-                <div>
-                    <h3 className='font-semibold'>Rate</h3>
-                    <div className='flex items-center'>
-                        <div>
-                            <Label className="text-gray-900 font-light">Start Price</Label>
+                    <div
+                        className='flex items-center  shadow-sm justify-between w-[70vw] lg:w-[60wv] rounded-lg py-2 px-5 border border-slate-400'>
+                        <div className='flex items-center'>
+                            <ion-icon
+                                name="search-outline"
+                                style={{
+                                fontSize: "22px",
+                                color: "black"
+                            }}></ion-icon>
                             <Input
-                                type="number"
-                                value={startPrice}
-                                onChange={(e) => setStartPrice(e.target.value)}
-                                className="w-[100px]"/>
+                                id="outlined-basic"
+                                onChange={(e) => handleDomainChange(e)}
+                                placeholder="Search Trainers by domain"
+                                value={query}
+                                className="min-w-[50vw] ml-4 border-none bg-none"></Input>
                         </div>
-                        <div className='ml-8'>
-                            <Label className="text-gray-900 font-light">Ending Price</Label>
-                            <Input
-                                type="number"
-                                value={endPrice}
-                                onChange={(e) => setEndPrice(e.target.value)}
-                                className="w-[100px]"/>
+                        
+                        <div className="hover:bg-gray-200 cursor-pointer rounded p-2"> 
+                            <ion-icon name="filter-outline" style={{fontSize:"22px", color:"black"}} onClick={() => {
+                                if(filter){
+                                    setFilter(false)
+                                }else{
+                                    setFilter(true)
+                                }
+                            }}></ion-icon>
                         </div>
-                    </div>
-                </div>
 
-                <Button type="submit">Search</Button>
+                    </div>
+                    <Button type="submit" className="hidden">Search</Button>
+                {
+                    filter ?
+                    (
+                        <div className='mt-4 border border-gray-400 py-2 px-4 rounded-lg shadow-md'>
+                            <div className="flex items-center cursor-pointer border-black border px-2 bg-blue-200 w-max rounded-md"  onClick={() => setFilter(false)}> 
+                                <ion-icon name="close-outline" style={{fontSize:"22px", color:"black"}}></ion-icon>
+                                <span>Filter</span>
+                            </div>
+                            <div className="mt-4">
+                                <div className='border w-max p-3 rounded-md'>
+                                    <h3 className='font-semibold'>Rate (₹)</h3>
+                                    <div className='flex mt-3'>
+                                        <div className="flex flex-col">
+                                            <Label className="text-gray-900 font-light">Start Price</Label>
+                                            <input
+                                                type="number"
+                                                value={startPrice}
+                                                onChange={(e) => setStartPrice(e.target.value)}
+                                                className="w-[100px] py-1 px-2 border mt-2 rounded-sm border-gray-700"/>
+                                        </div>
+                                        <div className="flex flex-col ml-3">
+                                            <Label className="text-gray-900 font-light">Ending Price</Label>
+                                            <input
+                                                type="number"
+                                                value={endPrice}
+                                                onChange={(e) => setEndPrice(e.target.value)}
+                                                className="w-[100px] py-1 px-2 border mt-2 rounded-sm border-gray-700"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : null
+                }
+
             </form>
 
         </div>
