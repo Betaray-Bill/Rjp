@@ -41,18 +41,12 @@ function GetAllEmployee() {
     const {data, refetch} = useQuery({
         queryKey:["getAllEmployees"], 
         queryFn:getAll,
-        refetchOnReconnect: true,
-        staleTime: 10 * 60 * 1000, 
-        cacheTime: 20 * 60 * 1000 
     });
 
     console.log(data)
-
-    useEffect(() => {
-        if(data){
-            dispatch(setAllEmp(data))
-        }
-    }, [])
+    if(data){
+        dispatch(setAllEmp(data))
+    }
 
   return (
     <div>

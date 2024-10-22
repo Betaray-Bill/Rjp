@@ -36,9 +36,9 @@ function SearchResult() {
                             <span className='ml-1'>Reset</span>
                         </p>
                         </div>
-                        <div className='mt-6 grid grid-cols-1 lg:grid-cols-2 gap-[25px]'>
+                        <div className='mt-6 grid grid-cols-1 lg:grid-cols-2 gap-[25px] place-content-center items-start'>
                              { domainResults &&  domainResults?.map((res, _i) => (
-                                    <div key={_i} className='border border-gray-200 rounded-md p-3'>
+                                    <div key={_i} className='border border-gray-200 rounded-md p-3 h-max w-[30vw]'>
                                         {/* <h2>{res.generalDetails.name}</h2> */}
                                         {/* General Details */}
                                         <div className='flex items-center justify-between my-4'>

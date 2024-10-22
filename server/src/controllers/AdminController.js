@@ -111,13 +111,14 @@ const getEmployeeById = asyncHandler(async(req, res) => {
 const updateEmployeeRole = asyncHandler(async(req, res) => {
     // Get Roles
     const { roles } = req.body;
+    console.log(req.body)
 
     // Get the Id of the Emp
     const employeeId = req.params.empId
     try {
         // Check if the Employee Exist
-        const employee = await Employee.find({email:employeeId})
-        console.log(employee)
+        const employee = await Employee.findById(employeeId)
+        console.log("Emp", employee)
         if (!employee) {
             return res
                 .status(500)
@@ -162,6 +163,7 @@ const updateEmployeeRole = asyncHandler(async(req, res) => {
             } else if (role === 'Trainer Sourcer') {
                 const trainerSourcerRole = new TrainerSourcer({ employeeId: employee._id });
                 await trainerSourcerRole.save();
+                console.log("Trainer Srccc ", trainerSourcerRole)
                 employee
                     .role
                     .push({ roleId: trainerSourcerRole._id, name: 'Trainer Sourcer' });

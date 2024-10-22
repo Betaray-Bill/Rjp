@@ -2,7 +2,7 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {TextField} from '@mui/material';
 import axios from 'axios';
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -45,6 +45,12 @@ function SearchBar() {
         dispatch(setSearchDomain(event.target.value))
         setQuery(event.target.value)
     }
+
+    useEffect(() => {
+        if(!filter){
+            setStartPrice('')
+        }
+    }, [filter])
 
     // Mutation
     const searchMutation = useMutation((query) => {

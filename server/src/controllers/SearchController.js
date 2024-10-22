@@ -81,6 +81,7 @@ const searchTrainer = asyncHandler(async(req, res) => {
                       },
                       generalDetails: 1,
                       bankDetails: 1,
+                      mainResume:1,
                       trainerId: 1
                     },
                   }
