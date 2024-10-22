@@ -148,6 +148,36 @@ const resumeCopy = asyncHandler(async(req, res) => {
     }
 })
 
+// Change password
+const changepassword = asyncHandler(async(req, res) => {
+    // Get the Trainer Id and check if he exits
+    const trainerId = req.params.id
+    const {currentPassword, newpassword} = req.body
+    const trainer =  await Trainer.findById(trainerId)
+    // console.log("Trainer ", trainer)
+    if(!trainer){
+        res.status(404).json({
+            message: 'Trainer does not exists',
+        });
+    }
+    // get the current password and check if its legit
+    let isValid = await trainer.matchPassword(currentPassword)
+    console.log(isValid)
+    if(isValid){
+        const updatepaswordTrainer = await Trainer.findByIdAndUpdate(
+            trainerId, {
+                password:newpassword
+            }, { new: true }
+        )
+
+        updatepaswordTrainer.save();
+        res.status(200).json({ message: 'Password Cahgned Successfully', updatepaswordTrainer });
+    }
+    // get new pass, then save
+    res.status(500).json({ message: "Error in changing the password"});
+})
+
+
 // Accept PO 
 
 
@@ -196,5 +226,6 @@ export {
     addTrainingDates,
     getTrainerById,
     getAllTrainer,
-    resumeCopy
+    resumeCopy,
+    changepassword
 }

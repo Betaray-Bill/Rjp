@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-// import Box from '@mui/material/Box';
-// import Button from '@mui/material/Button';
-// import Typography from '@mui/material/Typography';
-// import Modal from '@mui/material/Modal';
-// import { height } from '@mui/system';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
 import axios from 'axios';
 import PersonalDetails from '@/Layout/Accounts/PersonalDetails';
 import BankDetails from '@/Layout/Accounts/BankDetails';
@@ -113,6 +117,33 @@ function Account() {
     
     console.log(user)
 
+    // Pass change
+    const [pass, setPass] = useState({
+      currentPassword:"",
+      newpassword:"",
+      confirmnewpassword:""    
+    })
+    axios.defaults.withCredentials = true;
+    const submitHandler = async(e) => {
+      e.preventDefault()
+      if(pass.newpassword === pass.confirmnewpassword){
+        console.log("Same")
+        try {
+          const response = await axios.put(`http://localhost:5000/api/trainer/change-password/${user._id}`, {
+            newpassword:pass.newpassword,
+            currentPassword:pass.currentPassword
+          }); // Replace with your API endpoint
+          console.log('Password Adding successful:', response.data);
+        } catch (error) {
+            console.error('Password Adding failed:', error);
+        }
+    
+        // http://localhost:5000/api/trainer/change-password/${user._id}
+      }else{
+        alert("Not same")
+      }
+    }
+
   return (
     <div className='grid w-full place-content-center my-4'>
       <p className='text-md text-gray-700 mt-4 pb-[-2] font-semibold'>Accounts</p>
@@ -133,8 +164,38 @@ function Account() {
                 </Button>
               </div>
               <Button variant="outline" size="sm">
-                <PencilLine className="h-4 w-4 mr-2"/>
-                change Password 
+                <Dialog>
+                  <DialogTrigger>
+                    <div className='flex items-center '><PencilLine className="h-4 w-4 mr-2"/>
+                    <span>change Password </span></div>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Are you absolutely sure?</DialogTitle>
+                      <DialogDescription>
+                        <form onSubmit={submitHandler}>
+                          <div className='grid grid-cols-2 gap-8'>
+                            <div>
+                              <Label className="mt-4 mb-10">Current Password</Label>
+                              <Input type="password" name="currentPassword" placeholder="Current Password" required onChange={(e) => setPass({...pass, [e.target.name]:e.target.value})} />
+                            </div>
+                            <div>
+                              <Label className="mt-4 mb-10">New Password</Label>
+                              <Input type="password" name="newpassword" placeholder="New Password" required onChange={(e) => setPass({...pass, [e.target.name]:e.target.value})} />
+                            </div>
+                            <div>
+                              <Label className="mt-4 mb-10">Confirm New Password</Label>
+                              <Input type="password" name="confirmnewpassword" placeholder="Confirm New Password" required onChange={(e) => setPass({...pass, [e.target.name]:e.target.value})} />
+                            </div>
+
+                          </div>
+                          <Button type="submit" className="mt-4 w-full">Change Password</Button>
+                        </form>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+
               </Button>
             </div>
           </CardContent>
