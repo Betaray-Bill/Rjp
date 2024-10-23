@@ -134,11 +134,7 @@ function SearchBar() {
                         
                         <div className="hover:bg-gray-200 cursor-pointer rounded p-2"> 
                             <ion-icon name="filter-outline" style={{fontSize:"22px", color:"black"}} onClick={() => {
-                                if(filter){
-                                    setFilter(false)
-                                }else{
-                                    setFilter(true)
-                                }
+                                setFilter(!filter)
                             }}></ion-icon>
                         </div>
 

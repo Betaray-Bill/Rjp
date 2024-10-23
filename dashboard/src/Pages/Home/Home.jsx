@@ -17,6 +17,7 @@ import {
 import { userAccess } from '../../utils/CheckUserAccess.js'
 import { RolesEnum } from '../../utils/constants.js'
 import { resetDomainResultsAndSearch } from '@/features/searchTrainerSlice'
+import Sidebar from '@/Layout/Home/Sidebar'
 
 function Home() {
   const dispatch = useDispatch()
@@ -50,51 +51,7 @@ function Home() {
       <div className="flex">
 
         {/* Sidebar */}
-        <div className='h-screen fixed w-[280px] border-r-[1px]'>
-          <div className='p-4 flex items-center h-[80px]'>
-            <img src={logo} alt="RJP logo" className='w-20 h-10'/>
-            <p className='font-semibold text-lg pl-2 text-gray-700'>RJP Infotek</p>
-          </div>
-          {/* sidebar content */}
-          <div className='mt-10 m-4 py-2'>
-            <Link to="/home" className="flex items-center nav-link rounded-md py-2 px-[8px] mt-2">
-              <ion-icon name="home-outline" style={{fontSize:"18px"}} className=""></ion-icon>
-              <span className='ml-2 text-[16px] text-black'>
-                <p className='text-black'>Home</p>  
-              </span>
-            </Link>
-            {
-              userAccess([RolesEnum.ADMIN, RolesEnum.MANAGER, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && 
-                  <Link to="/home/search" className="flex items-center nav-link rounded-md py-2 px-[8px] mt-2">
-                      <ion-icon name="search-outline" style={{fontSize:"18px"}} className=""></ion-icon>
-                      <span className='ml-2 text-[16px] text-black'>
-                        <p className='text-black'>Search Trainers</p>
-                      </span>
-                  </Link>   
-                      
-            }
-            {
-             userAccess([RolesEnum.ADMIN, RolesEnum.MANAGER], currentUser?.employee.role) && 
-                  <Link to="/home/employee" className="flex items-center nav-link rounded-md  py-2 px-[8px] mt-2">
-                      <ion-icon name="person-add-outline" style={{fontSize:"18px"}} className=""></ion-icon>
-                      <span className='ml-2 text-[16px] text-black'>
-                        <p className='text-black'>Employee</p>
-                      </span>
-                  </Link>   
-                      
-            }
-            {
-               userAccess([RolesEnum.ADMIN,RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) && 
-                  <Link to="/home/trainer" className="flex items-center nav-link rounded-md  py-2 px-[8px] mt-2">
-                      <ion-icon name="book-outline" style={{fontSize:"18px"}} className=""></ion-icon>
-                      <span className='ml-2 text-[16px] text-black'>
-                        <p className='text-black'>Trainers</p>
-                      </span>
-                  </Link>   
-                      
-            }
-          </div>
-        </div>
+        <Sidebar />
 
         {/* Main Section */}
         <div className="grid w-full ml-[280px] place-content-center">
