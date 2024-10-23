@@ -1,6 +1,6 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import { Trainer } from "../models/TrainerModel.js";
-import generateToken from "../utils/generateToken.js";
+import { generateEmpToken, generateToken } from "../utils/generateToken.js";
 import bcrypt from 'bcryptjs';
 
 
@@ -153,11 +153,11 @@ const resumeCopy = asyncHandler(async(req, res) => {
 const changepassword = asyncHandler(async(req, res) => {
     // Get the Trainer Id and check if he exits
     const trainerId = req.params.id
-    const {currentPassword, newpassword} = req.body
+    const { currentPassword, newpassword } = req.body
     console.log(currentPassword, newpassword)
-    const trainer =  await Trainer.findById(trainerId)
+    const trainer = await Trainer.findById(trainerId)
     console.log("Trainer ", trainer.generalDetails.name)
-    if(!trainer){
+    if (!trainer) {
         res.status(404).json({
             message: 'Trainer does not exists',
         });
@@ -168,21 +168,21 @@ const changepassword = asyncHandler(async(req, res) => {
     })
 
     console.log(a)
-    // get the current password and check if its legit
-    let isValid = await trainer?.matchPassword(currentPassword)
-    console.log(isValid)
-    if(trainer && (await trainer.matchPassword(currentPassword))){
-        const updatepaswordTrainer = await Trainer.findByIdAndUpdate(
+        // get the current password and check if its legit
+        // let isValid = await trainer ? .matchPassword(currentPassword)
+        // console.log(isValid)
+    if (trainer && (await trainer.matchPassword(currentPassword))) {
+        const updatepasswordTrainer = await Trainer.findByIdAndUpdate(
             trainerId, {
-                password:newpassword
+                password: newpassword
             }, { new: true }
         )
 
-        updatepaswordTrainer.save();
-        res.status(200).json({ message: 'Password Cahgned Successfully', updatepaswordTrainer });
+        updatepasswordTrainer.save();
+        res.status(200).json({ message: 'Password Cahgned Successfully', updatepasswordTrainer });
     }
     // get new pass, then save
-    res.status(500).json({ message: "Error in changing the password"});
+    res.status(500).json({ message: "Error in changing the password" });
 })
 
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import authMiddleware from '../middleware/authMiddleware.js';
+import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { registerTrainer } from '../controllers/TrainerSourcerController.js';
 import { signOut } from '../controllers/AuthController.js';
@@ -9,12 +9,12 @@ import { signOut } from '../controllers/AuthController.js';
 const router = express.Router();
 
 
-router.get("/", authMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), (req, res) => {
+router.get("/", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), (req, res) => {
     res.status(200).send("Inside the Trainer Sourcer")
 })
 
 router.post("/register-trainer",
-    authMiddleware,
+    authEmployeeMiddleware,
     authorizeRole(["ADMIN", "Trainer Sourcer"]),
     registerTrainer
 )
@@ -23,7 +23,7 @@ router.post("/register-trainer",
 // router.post("/upload", upload.single("resume"), authMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), uploadResumeToAzureAndExtractText)
 
 
-router.get("/signout", authMiddleware, signOut)
+router.get("/signout", authEmployeeMiddleware, signOut)
 
 
 export default router

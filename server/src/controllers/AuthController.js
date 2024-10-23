@@ -1,7 +1,7 @@
 import Employee from "../models/EmployeeModel.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import generateToken from "../utils/generateToken.js";
+import { generateEmpToken, generateToken } from "../utils/generateToken.js";
 
 
 // Login
@@ -17,7 +17,7 @@ const login = asyncHandler(async(req, res) => {
         }
 
         // if(employee.role.name === "ADM)
-        let token = generateToken(res, employee._id);
+        let token = generateEmpToken(res, employee._id);
         console.log("login token ", token);
         res.status(200).json({
             employee
@@ -33,7 +33,7 @@ const login = asyncHandler(async(req, res) => {
 
 // SignOut - GET - /signout
 const signOut = asyncHandler(async(req, res) => {
-    res.clearCookie('jwt').status(200).json('Signout success!');
+    res.clearCookie('empToken').status(200).json('Signout success!');
 })
 
 

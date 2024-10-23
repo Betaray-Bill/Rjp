@@ -18,6 +18,7 @@ import { userAccess } from '../../utils/CheckUserAccess.js'
 import { RolesEnum } from '../../utils/constants.js'
 import { resetDomainResultsAndSearch } from '@/features/searchTrainerSlice'
 import Sidebar from '@/Layout/Home/Sidebar'
+import { Button } from '@/components/ui/button'
 
 function Home() {
   const dispatch = useDispatch()
@@ -69,6 +70,7 @@ function Home() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>  */}
+              <Button onClick={() => signOutNow()}>Sign out</Button>
               <Outlet/>
           </div>
         </div>

@@ -1,31 +1,31 @@
 import express from 'express';
-import { addEmployee, createCompany,getEmployeeById, getAllCompanyNamesAndIds, getAllEmployees, getCompanyDetails, updateEmployeeRole } from '../controllers/AdminController.js';
+import { addEmployee, createCompany, getEmployeeById, getAllCompanyNamesAndIds, getAllEmployees, getCompanyDetails, updateEmployeeRole } from '../controllers/AdminController.js';
 import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
-import authMiddleware from '../middleware/authMiddleware.js';
+import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get("/", authMiddleware, authorizeRole(["ADMIN"]), (req, res) => {
+router.get("/", authEmployeeMiddleware, authorizeRole(["ADMIN"]), (req, res) => {
     res.status(200).send("HIii")
 })
 
 // Auth Based Routes
 router.post("/login", login)
-router.post("/register", authMiddleware, addEmployee)
-router.get("/signout", authMiddleware, signOut)
-router.get("/getAll", authMiddleware, authorizeRole(["ADMIN"]), getAllEmployees)
+router.post("/register", authEmployeeMiddleware, addEmployee)
+router.get("/signout", authEmployeeMiddleware, signOut)
+router.get("/getAll", authEmployeeMiddleware, authorizeRole(["ADMIN"]), getAllEmployees)
 
 // Get Single Emp
-router.get("/getemployee", authMiddleware, authorizeRole(["ADMIN"]) ,getEmployeeById )
+router.get("/getemployee", authEmployeeMiddleware, authorizeRole(["ADMIN"]), getEmployeeById)
 
 // Role Updating Routes
-router.put("/update-role/:empId", authMiddleware, authorizeRole(["ADMIN"]), updateEmployeeRole)
+router.put("/update-role/:empId", authEmployeeMiddleware, authorizeRole(["ADMIN"]), updateEmployeeRole)
 
 // Company and Deal
-router.post("/create-company", authMiddleware, authorizeRole(["ADMIN", "MANAGER"]), createCompany)
-router.get("/company/:companyId", authMiddleware, getCompanyDetails)
-router.get("/company", authMiddleware, getAllCompanyNamesAndIds)
+router.post("/create-company", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER"]), createCompany)
+router.get("/company/:companyId", authEmployeeMiddleware, getCompanyDetails)
+router.get("/company", authEmployeeMiddleware, getAllCompanyNamesAndIds)
 
 
 
