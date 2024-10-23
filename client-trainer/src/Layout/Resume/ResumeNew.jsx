@@ -175,10 +175,10 @@ function ResumeNew() {
               file_url: '',
               trainingName: ''
           })
-          toast({
-            duration: 3000, variant: "success", title: "Submitted successfully",
-            // description: "Click edit to take action",
-        })
+        //   toast({
+        //     duration: 3000, variant: "success", title: "Submitted successfully",
+        //     // description: "Click edit to take action",
+        // })
         getTrainerDetails()
         //   navigate("/home/resume/main")
           // setUser(response.data)

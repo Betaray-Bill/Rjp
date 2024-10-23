@@ -13,7 +13,6 @@ import {userAccess}  from './utils/CheckUserAccess.js'
 import {RolesEnum} from './utils/constants.js'
 import Employee from './Pages/Employees/Employee.jsx'
 
-
 function App() {
   const [count, setCount] = useState(0)
   const {currentUser} = useSelector(state => state.auth)

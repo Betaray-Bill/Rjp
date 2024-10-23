@@ -1,6 +1,7 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import { Trainer } from "../models/TrainerModel.js";
 import generateToken from "../utils/generateToken.js";
+import bcrypt from 'bcryptjs';
 
 
 // Login - Trainer with trainerId and Trainer_password
@@ -153,17 +154,24 @@ const changepassword = asyncHandler(async(req, res) => {
     // Get the Trainer Id and check if he exits
     const trainerId = req.params.id
     const {currentPassword, newpassword} = req.body
+    console.log(currentPassword, newpassword)
     const trainer =  await Trainer.findById(trainerId)
-    // console.log("Trainer ", trainer)
+    console.log("Trainer ", trainer.generalDetails.name)
     if(!trainer){
         res.status(404).json({
             message: 'Trainer does not exists',
         });
     }
+    let a = bcrypt.compare(currentPassword, trainer.password, function(err, result) {
+        // result == true
+        console.log("true", result)
+    })
+
+    console.log(a)
     // get the current password and check if its legit
-    let isValid = await trainer.matchPassword(currentPassword)
+    let isValid = await trainer?.matchPassword(currentPassword)
     console.log(isValid)
-    if(isValid){
+    if(trainer && (await trainer.matchPassword(currentPassword))){
         const updatepaswordTrainer = await Trainer.findByIdAndUpdate(
             trainerId, {
                 password:newpassword

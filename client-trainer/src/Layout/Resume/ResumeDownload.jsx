@@ -79,7 +79,7 @@ const handleDownload = () => {
           <div className="absolute top-0 bottom-0 left-0 w-8 h-full bg-resumeText"></div>
           
           {/* Main content */}
-          <div className="pl-12 pr-6 py-6">
+          <div className="pl-12 pr-6 py-6 h-full">
 
             {/* Header with logo space */}
             <div className="flex flex-col items-center mb-6 relative">
