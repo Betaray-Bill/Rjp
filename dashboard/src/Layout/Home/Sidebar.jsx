@@ -136,6 +136,25 @@ function Sidebar() {
                         </span>
                     </Link>
 }
+              {userAccess([
+                    RolesEnum.ADMIN, RolesEnum.MANAGER
+                ], currentUser
+                    ?.employee.role) && <Link
+                        to="/home/company"
+                        className={`flex items-center nav-link rounded-md py-2 px-[8px] mt-2 ${isActive('company')
+                        ? "bg-blue-100"
+                        : "bg-white"}`}>
+                        <ion-icon
+                            name="podium-outline"
+                            style={{
+                            fontSize: "18px"
+                        }}
+                            className=""></ion-icon>
+                        <span className='ml-2 text-[16px] text-black'>
+                            <p className='text-black'>Company</p>
+                        </span>
+                    </Link>
+}
             </div>
 
             <div className='absolute bottom-0 p-4'>
@@ -154,7 +173,9 @@ function Sidebar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="flex items-center">
                     <ion-icon name="person-outline"></ion-icon>
-                    <span>Profile</span>
+                    <span>
+                      <Link to="/home/profile">Profile</Link>
+                    </span>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Button onClick={() => signOutNow()}>Sign out</Button>

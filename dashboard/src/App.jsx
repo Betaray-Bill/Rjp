@@ -12,6 +12,7 @@ import AddTrainer from './Pages/AddEntity/AddTrainer'
 import {userAccess}  from './utils/CheckUserAccess.js'
 import {RolesEnum} from './utils/constants.js'
 import Employee from './Pages/Employees/Employee.jsx'
+import AddCompany from './Layout/AddCompany'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -37,6 +38,11 @@ function App() {
             {
               userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER, RolesEnum.MANAGER], currentUser?.employee.role) &&
                <Route path='trainer' element={<AddTrainer />} />
+            }
+
+            {
+              userAccess([RolesEnum.ADMIN, RolesEnum.MANAGER], currentUser?.employee.role) &&
+               <Route path='company' element={<AddCompany />} />
             }
     
             <Route path='profile' element={<Profile />} />

@@ -243,7 +243,7 @@ function TrainingDomain() {
                         </PopoverTrigger>
                         <PopoverContent className="w-[60vw] p-0">
                             <Command>
-                                <Input  className="w-max min-w-[60vw] p-2 focus:ring-0 focus:ring-offset-0"    
+                                <Input  className="w-max min-w-[55vw]  m-2 focus:ring-0 focus:ring-offset-0"    
                                     placeholder="Search Domain by..... "
                                     onChange={(e) => getFilteredResults(e.target.value)}
                                     // value={value}
