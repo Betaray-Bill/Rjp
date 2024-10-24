@@ -14,9 +14,9 @@ import {RolesEnum} from './utils/constants.js'
 import Employee from './Pages/Employees/Employee.jsx'
 import AddCompany from './Layout/AddCompany'
 import Trainer from './Pages/Trainer/Trainer'
-import AddTrainer from './Layout/Trainer/AddTrainer'
-import GetAllEmployee from './Layout/Employees/GetAllEmployee'
+import AddTrainer from './Pages/AddEntity/AddTrainer'
 import GetTrainer from './Layout/Trainer/GetTrainer'
+import ViewTrainer from './Layout/Trainer/ViewTrainer'
 
 
 function App() {
@@ -49,7 +49,7 @@ function App() {
                   <Route path='add' element={<AddTrainer />} />
                   <Route path='' index element={<GetTrainer />} />
                   {/* <Route path='edit/:id' element={<AddTrainer />} /> */}
-                  {/* <Route path='view/:id' element={<Trainer />} /> */}
+                  <Route path='view/:id' element={<ViewTrainer />} />
                   <Route path='*' element={<Navigate to="/home" replace />} />
                 </Route>
               )

@@ -73,11 +73,11 @@ function GetTrainer() {
                     </TableRow>
             </TableHeader>
             <TableBody>
-                {data.trainers?.length>0 && data.trainers?.map((trainer, index) => (
+                {data?.trainers?.length>0 && data.trainers?.map((trainer, index) => (
                 <TableRow key={index} onClick={() => {
-                    console.log(`${index+1}.) ${trainer.email}   `)
+                        console.log(`${index+1}.) ${trainer.email} `)
                     }}
-                    className="cursor-pointer hover:bg-blue-50 rounded-md"
+                    className="cursor-pointer rounded-md"
                 >
                     <TableCell className="font-medium">{index+1}</TableCell>
                     <TableCell className="font-medium flex items-center">
@@ -89,7 +89,11 @@ function GetTrainer() {
                     </TableCell>
                     <TableCell>{trainer.generalDetails.email}</TableCell>
                     <TableCell>{trainer.trainingDetails.trainerType}</TableCell>
-                    
+                    <TableCell>
+                        <Link to={`/home/trainer/view/${trainer._id}`}>
+                            <Button className="bg-transparent border text-black rounded-none hover:bg-blue-400">View</Button>
+                        </Link>
+                    </TableCell>
                 </TableRow>
                 ))}
             </TableBody>
