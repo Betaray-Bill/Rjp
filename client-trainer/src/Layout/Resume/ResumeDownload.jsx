@@ -46,6 +46,31 @@ function ResumeDownload() {
             })
   
     };
+
+    // Function to shuffle an array (for randomness)
+    const shuffleArray = (array) => {
+        return array.sort(() => Math.random() - 0.5);
+    };
+    
+    const allContent = [
+        { title: "PROFESSIONAL SUMMARY", content: currentResumeDetails['professionalSummary'] },
+        { title: "TECHNICAL SKILLS", content: currentResumeDetails['technicalSkills'] },
+        { title: "CLIENTELE", content: currentResumeDetails['clientele'] },
+        { title: "CAREER HISTORY", content: currentResumeDetails['careerHistory'] },
+        { title: "TRAININGS DELIVERED", content: currentResumeDetails['trainingsDelivered'] },
+        { title: "EXPERIENCE", content: currentResumeDetails['experience'] },
+        { title: "CERTIFICATIONS", content: currentResumeDetails['certifications'] },
+        { title: "EDUCATION", content: currentResumeDetails['education'] },
+    ].filter(item => item.content.length > 0);  // Filter out empty sections
+    
+    // Shuffle the content for randomness
+    const shuffledContent = shuffleArray(allContent);
+    
+    // Split content evenly between two columns
+    const half = Math.ceil(shuffledContent.length / 2);
+    const leftColumnContent = shuffledContent.slice(0, half);
+    const rightColumnContent = shuffledContent.slice(half);
+
     return (
         <Fragment>
             <div className="flex justify-end m-4">
@@ -77,113 +102,46 @@ function ResumeDownload() {
                                     .name
                                     .toUpperCase()}</h1>
                         </div>
+                        
                         {/* Resume content */}
-                        <div className="grid grid-cols-2 gap-10  mt-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-4">
+                            {/* Left Column */}
+                            <div className="space-y-10">
+                            {leftColumnContent.map((section, index) => (
+                                <div key={index}>
+                                <h2 className="text-resumeText text-2xl font-semibold mb-2 border-y border-resumeLine py-1 px-4">
+                                    {section.title}
+                                </h2>
+                                <ul className="list-disc pl-5 space-y-2">
+                                    {section.content.map((item, _i) => (
+                                    <li className="text-justify text-base leading-7" key={_i}>
+                                        {item}
+                                    </li>
+                                    ))}
+                                </ul>
+                                </div>
+                            ))}
+                            </div>
 
-                            {currentResumeDetails['professionalSummary'].length > 0
-                                ? <div>
-                                        <h2
-                                            className="text-resumeText text-2xl font-semibold mb-2 inline-block border-y-[1px] border-resumeLine py-1 px-4">PROFESSIONAL SUMMARY</h2>
-                                        <ul className="list-disc pl-5">
-                                            {currentResumeDetails['professionalSummary']
-                                                ?.map((e, _i) => (
-                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
-                                                ))}
-                                        </ul>
-                                    </div>
-                                : null
-}
-
-                            {currentResumeDetails['technicalSkills'].length > 0
-                                ? <div>
-                                        <h2
-                                            className="text-resumeText text-2xl font-semibold mt-4 mb-2 inline-block border-y-[1px] border-resumeLine py-1 px-4">TECHNICAL SKILLS</h2>
-                                        <ul className="list-disc pl-5">
-                                            {currentResumeDetails['technicalSkills']
-                                                ?.map((e, _i) => (
-                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
-                                                ))}
-                                        </ul>
-                                    </div>
-                                : null}
-
-                            {currentResumeDetails['careerHistory'].length > 0
-                                ? <div>
-                                        <h2
-                                            className="text-resumeText text-2xl font-semibold mt-4 mb-2 inline-block border-y-[1px] border-resumeLine py-1 px-4">CAREER HISTORY</h2>
-                                        <ul className="list-disc pl-5">
-                                            {currentResumeDetails['careerHistory']
-                                                ?.map((e, _i) => (
-                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
-                                                ))}
-                                        </ul>
-                                    </div>
-                                : null}
-
-                            {currentResumeDetails['clientele'].length > 0
-                                ? <div>
-                                        <h2
-                                            className="text-resumeText text-2xl font-semibold mt-4 mb-2 inline-block border-y-[1px] border-resumeLine py-1 px-4">CLIENTELE</h2>
-                                        <ul className="list-disc pl-5">
-                                            {currentResumeDetails['clientele']
-                                                ?.map((e, _i) => (
-                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
-                                                ))}
-                                        </ul>
-                                    </div>
-                                : null}
-
-                            {currentResumeDetails['trainingsDelivered'].length > 0
-                                ? <div>
-                                        <h2
-                                            className="text-resumeText text-2xl font-semibold mb-2 inline-block border-y-[1px] border-resumeLine py-1 px-4">TRAININGS DELIVERED</h2>
-                                        <ul className="list-disc pl-5">
-                                            {currentResumeDetails['trainingsDelivered']
-                                                ?.map((e, _i) => (
-                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
-                                                ))}
-                                        </ul>
-                                    </div>
-                                : null}
-                            {currentResumeDetails['certifications'].length > 0
-                                ? <div>
-                                        <h2
-                                            className="text-resumeText text-2xl font-semibold mt-4 mb-2 inline-block border-y-[1px] border-resumeLine py-1 px-4">CERTIFICATIONS</h2>
-                                        <ul className="list-disc pl-5">
-                                            {currentResumeDetails['certifications']
-                                                ?.map((e, _i) => (
-                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
-                                                ))}
-                                        </ul>
-                                    </div>
-                                : null}
-
-                            {currentResumeDetails['experience'].length > 0
-                                ? <div>
-                                        <h2
-                                            className="text-resumeText text-2xl font-semibold mt-4 mb-2 inline-block border-y-[1px] border-resumeLine py-1 px-4">EXPERIENCE</h2>
-                                        <ul className="list-disc pl-5">
-                                            {currentResumeDetails['experience']
-                                                ?.map((e, _i) => (
-                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
-                                                ))}
-                                        </ul>
-                                    </div>
-                                : null}
-
-                            {currentResumeDetails['education'].length > 0
-                                ? <div>
-                                        <h2
-                                            className="text-resumeText text-2xl font-semibold mt-4 mb-2 inline-block border-y-[1px] border-resumeLine py-1 px-4">EDUCATION</h2>
-                                        <ul className="list-disc pl-5">
-                                            {currentResumeDetails['education']
-                                                ?.map((e, _i) => (
-                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
-                                                ))}
-                                        </ul>
-                                    </div>
-                                : null}
+                            {/* Right Column */}
+                            <div className="space-y-10">
+                            {rightColumnContent.map((section, index) => (
+                                <div key={index}>
+                                <h2 className="text-resumeText text-2xl font-semibold mb-2 border-y border-resumeLine py-1 px-4">
+                                    {section.title}
+                                </h2>
+                                <ul className="list-disc pl-5 space-y-2">
+                                    {section.content.map((item, _i) => (
+                                    <li className="text-justify text-base leading-7" key={_i}>
+                                        {item}
+                                    </li>
+                                    ))}
+                                </ul>
+                                </div>
+                            ))}
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
