@@ -30,28 +30,21 @@ function ResumeDownload() {
         const element = resumeRef.current;
         console.log(element)
         const getTargetElement = () => document.getElementById("resumeRef");
-        generatePDF(getTargetElement, {
-            filename: `${user.generalDetails.name}-${currentResumeName}`,
-            overrides: {
-                // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
-                pdf: {
-                    compress: true
-                },
-                // see https://html2canvas.hertzen.com/configuration for more options
-                canvas: {
-                    useCORS: true
+        console.log(getTargetElement)
+            generatePDF(getTargetElement, {
+                filename: `${user.generalDetails.name}-${currentResumeName}`,
+                overrides: {
+                    // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
+                    pdf: {
+                        compress: true
+                    },
+                    // see https://html2canvas.hertzen.com/configuration for more options
+                    canvas: {
+                        useCORS: true
+                    }
                 }
-            }
-        })
-        // console.log("object") html2canvas(elementgeneratePDF(targetRef, {filename:
-        // 'page.pdf'}), { scale: 2 })   .then((canvas) => {     const imgData =
-        // canvas.toDataURL('image/png');     const pdf = new jsPDF('p', 'mm', 'a4');
-        //  const width = pdf.internal.pageSize.getWidth(); // Width of A4 page in mm
-        //  const height= (canvas.height*width)/canvas.width; // Height of A4 page;
-        // pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-        // dispatch(setIsDownload({       bool:false, name:""     }))
-        // pdf.save(`${user.generalDetails.name}-${currentResumeName}`);   })
-        // .catch((error) => {     console.error('Error generating PDF: ', error);   });
+            })
+  
     };
     return (
         <Fragment>
@@ -74,8 +67,8 @@ function ResumeDownload() {
 
                         {/* Header with logo space */}
                         <div className="flex flex-col items-center mb-6 relative">
-                            <div className="flex justify-center w-[50vw]">
-                                <img src={ResumeLogo} alt="Logo" className="mb-8  w-[50vw]"/>
+                            <div className="flex justify-center w-[40vw]">
+                                <img src={ResumeLogo} alt="Logo" className="mb-8  w-[40vw]"/>
                             </div>
                         </div>
                         <div className="">
@@ -94,7 +87,7 @@ function ResumeDownload() {
                                         <ul className="list-disc pl-5">
                                             {currentResumeDetails['professionalSummary']
                                                 ?.map((e, _i) => (
-                                                    <li className='text-justify text-[18px] leading-10' key={_i}>{e}</li>
+                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
                                                 ))}
                                         </ul>
                                     </div>
@@ -108,7 +101,7 @@ function ResumeDownload() {
                                         <ul className="list-disc pl-5">
                                             {currentResumeDetails['technicalSkills']
                                                 ?.map((e, _i) => (
-                                                    <li className='text-justify text-[18px] leading-10' key={_i}>{e}</li>
+                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
                                                 ))}
                                         </ul>
                                     </div>
@@ -121,7 +114,7 @@ function ResumeDownload() {
                                         <ul className="list-disc pl-5">
                                             {currentResumeDetails['careerHistory']
                                                 ?.map((e, _i) => (
-                                                    <li className='text-justify text-[18px] leading-10' key={_i}>{e}</li>
+                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
                                                 ))}
                                         </ul>
                                     </div>
@@ -134,7 +127,7 @@ function ResumeDownload() {
                                         <ul className="list-disc pl-5">
                                             {currentResumeDetails['clientele']
                                                 ?.map((e, _i) => (
-                                                    <li className='text-justify text-[18px] leading-10' key={_i}>{e}</li>
+                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
                                                 ))}
                                         </ul>
                                     </div>
@@ -147,7 +140,7 @@ function ResumeDownload() {
                                         <ul className="list-disc pl-5">
                                             {currentResumeDetails['trainingsDelivered']
                                                 ?.map((e, _i) => (
-                                                    <li className='text-justify text-[18px] leading-10' key={_i}>{e}</li>
+                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
                                                 ))}
                                         </ul>
                                     </div>
@@ -159,7 +152,7 @@ function ResumeDownload() {
                                         <ul className="list-disc pl-5">
                                             {currentResumeDetails['certifications']
                                                 ?.map((e, _i) => (
-                                                    <li className='text-justify text-[18px] leading-10' key={_i}>{e}</li>
+                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
                                                 ))}
                                         </ul>
                                     </div>
@@ -172,7 +165,7 @@ function ResumeDownload() {
                                         <ul className="list-disc pl-5">
                                             {currentResumeDetails['experience']
                                                 ?.map((e, _i) => (
-                                                    <li className='text-justify text-[18px] leading-10' key={_i}>{e}</li>
+                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
                                                 ))}
                                         </ul>
                                     </div>
@@ -185,7 +178,7 @@ function ResumeDownload() {
                                         <ul className="list-disc pl-5">
                                             {currentResumeDetails['education']
                                                 ?.map((e, _i) => (
-                                                    <li className='text-justify text-[18px] leading-10' key={_i}>{e}</li>
+                                                    <li className='text-justify text-[16px] leading-10' key={_i}>{e}</li>
                                                 ))}
                                         </ul>
                                     </div>

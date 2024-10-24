@@ -70,7 +70,7 @@ function Home() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>  */}
-              <Button onClick={() => signOutNow()}>Sign out</Button>
+
               <Outlet/>
           </div>
         </div>
