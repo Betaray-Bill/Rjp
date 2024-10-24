@@ -1,16 +1,16 @@
 import React, { useState, useEffect, Fragment } from 'react';
 // import './AddTrainer.css'; // External CSS file for grid styling
 import { useDispatch, useSelector } from 'react-redux';
-import PersonalDetails from '@/Layout/AddTrainers/PersonalDetails.jsx';
-import ResumeDetails from '@/Layout/AddTrainers/Resume/ResumeDetails';
-import BankDetails from '@/Layout/AddTrainers/BankDetails';
 import { Button } from '@/components/ui/button';
-import TrainingDetails from '@/Layout/AddTrainers/TrainingDetails';
-import TrainingDomain from '@/Layout/AddTrainers/TrainingDomain';
 import { removeResumeDetails } from '@/features/trainerSlice';
 import { useMutation } from 'react-query';
 import axios from 'axios';
 import { useToast } from "@/hooks/use-toast"
+import PersonalDetails from '@/Layout/Trainer/AddTrainers/PersonalDetails';
+import TrainingDetails from '@/Layout/Trainer/AddTrainers/TrainingDetails';
+import BankDetails from '@/Layout/Trainer/AddTrainers/BankDetails';
+import TrainingDomain from '@/Layout/Trainer/AddTrainers/TrainingDomain';
+import ResumeDetails from '@/Layout/Trainer/AddTrainers/Resume/ResumeDetails';
 
 const AddTrainer = () => {
   // console.log("meow", add++)

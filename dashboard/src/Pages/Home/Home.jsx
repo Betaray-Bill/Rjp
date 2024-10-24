@@ -55,7 +55,7 @@ function Home() {
         <Sidebar />
 
         {/* Main Section */}
-        <div className="grid w-full ml-[280px] place-content-center">
+        <div className="grid w-full ml-[250px] p-4">
             <div className=''>
               {/* <div className='flex justify-end items-center p-4 absolute top-0 z-10 bg-pink-100'>
                 <DropdownMenu>
@@ -71,7 +71,9 @@ function Home() {
                 </DropdownMenu>
               </div>  */}
 
-              <Outlet/>
+              <div className='mt-10'>
+                <Outlet/>
+              </div>
           </div>
         </div>
       </div>

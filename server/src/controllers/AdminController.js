@@ -4,6 +4,7 @@ import Admin from "../models/RoleModels/AdminModel.js";
 import KeyAccounts from "../models/RoleModels/KeyAccountsModel.js";
 import Manager from "../models/RoleModels/ManagerModel.js";
 import TrainerSourcer from "../models/RoleModels/TrainerSourcerModel.js";
+import { Trainer } from "../models/TrainerModel.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
@@ -99,7 +100,7 @@ const getAllEmployees = asyncHandler(async(req, res) => {
 const getEmployeeById = asyncHandler(async(req, res) => {
     try {
         const employees = await Employee
-            .find({email:req.body.email})
+            .find({ email: req.body.email })
             .select('email name _id');
         res.json(employees);
     } catch (error) {
@@ -261,6 +262,30 @@ const getAllCompanyNamesAndIds = asyncHandler(async(req, res) => {
     }
 })
 
+// Get All Trainers
+
+const getAllTrainers = asyncHandler(async(req, res) => {
+    try {
+        // Find all trainers and project only name and _id fields
+        const trainers = await Trainer.find();
+
+        if (!trainers || trainers.length === 0) {
+            return res
+                .status(404)
+                .json({ message: "No trainers found" });
+        }
+
+        res
+            .status(200)
+            .json({ message: "Trainers retrieved successfully", trainers });
+    } catch (error) {
+        console.error("Error retrieving trainers:", error);
+        res
+            .status(500)
+            .json({ error: "Internal server error" });
+    }
+})
+
 // Create Deal
 
 export {
@@ -269,6 +294,7 @@ export {
     createCompany,
     getAllCompanyNamesAndIds,
     getCompanyDetails,
+    getAllTrainers,
     getAllEmployees,
     getEmployeeById
 }

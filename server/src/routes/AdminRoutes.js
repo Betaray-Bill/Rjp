@@ -1,5 +1,5 @@
 import express from 'express';
-import { addEmployee, createCompany, getEmployeeById, getAllCompanyNamesAndIds, getAllEmployees, getCompanyDetails, updateEmployeeRole } from '../controllers/AdminController.js';
+import { addEmployee, createCompany, getEmployeeById, getAllCompanyNamesAndIds, getAllEmployees, getCompanyDetails, updateEmployeeRole, getAllTrainers } from '../controllers/AdminController.js';
 import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
@@ -21,6 +21,7 @@ router.get("/getemployee", authEmployeeMiddleware, authorizeRole(["ADMIN"]), get
 
 // Role Updating Routes
 router.put("/update-role/:empId", authEmployeeMiddleware, authorizeRole(["ADMIN"]), updateEmployeeRole)
+router.get("/get-all-trainers", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER"]), getAllTrainers)
 
 // Company and Deal
 router.post("/create-company", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER"]), createCompany)

@@ -5,14 +5,19 @@ import Login from './Pages/Login/Login'
 import Home from './Pages/Home/Home'
 import ProtectedRoute from './utils/ProtectedRoutes.jsx'
 import Profile from './Pages/Profile/Profile.jsx'
-import AddEntity from './Pages/AddEntity/AddEntity.jsx'
+// import AddEntity from './Pages/AddEntity/AddEntity.jsx'
 import Search from './Pages/Search/Search.jsx'
 import { useSelector } from 'react-redux'
-import AddTrainer from './Pages/AddEntity/AddTrainer'
+// import AddTrainer from './Pages/AddEntity/AddTrainer'
 import {userAccess}  from './utils/CheckUserAccess.js'
 import {RolesEnum} from './utils/constants.js'
 import Employee from './Pages/Employees/Employee.jsx'
 import AddCompany from './Layout/AddCompany'
+import Trainer from './Pages/Trainer/Trainer'
+import AddTrainer from './Layout/Trainer/AddTrainer'
+import GetAllEmployee from './Layout/Employees/GetAllEmployee'
+import GetTrainer from './Layout/Trainer/GetTrainer'
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -23,6 +28,8 @@ function App() {
       <Routes>
         <Route path='/login' element={<Login />} />
         <Route path='/' index element={<Navigate to="/home" replace />}></Route>
+        {/* <Route path='/home/trainer' index element={<Navigate to="/home/trainer" replace />}></Route> */}
+
 
         <Route element={<ProtectedRoute />}>
           <Route path='/' index element={<Home />} />
@@ -37,7 +44,15 @@ function App() {
             }
             {
               userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER, RolesEnum.MANAGER], currentUser?.employee.role) &&
-               <Route path='trainer' element={<AddTrainer />} />
+              (
+                <Route path='trainer' element={<Trainer />}>
+                  <Route path='add' element={<AddTrainer />} />
+                  <Route path='' index element={<GetTrainer />} />
+                  {/* <Route path='edit/:id' element={<AddTrainer />} /> */}
+                  {/* <Route path='view/:id' element={<Trainer />} /> */}
+                  <Route path='*' element={<Navigate to="/home" replace />} />
+                </Route>
+              )
             }
 
             {
