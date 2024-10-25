@@ -49,7 +49,7 @@ function App() {
               </Route>
             }
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER, RolesEnum.MANAGER], currentUser?.employee.role) &&
+              userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER, RolesEnum.MANAGER, RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) &&
               (
                 <Route path='trainer' element={<Trainer />}>
                   <Route path='add' element={<AddTrainer />} />

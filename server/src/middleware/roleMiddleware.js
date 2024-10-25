@@ -5,7 +5,7 @@ const authorizeRole = (...allowedRoles) => {
         console.log("REQ", req.user)
         try {
             const employee = await Employee.findById(req.user._id)
-            console.log("Emo=p : " + employee)
+            console.log("Emp : " + employee)
             if (!employee) {
                 return res.status(404).json({ message: "Employee not found" })
             }

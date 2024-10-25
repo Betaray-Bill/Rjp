@@ -8,7 +8,8 @@ import {Button} from '@/components/ui/button';
 import {setSaveResumeDetails} from '@/features/resumeSlice';
 import {useToast} from "@/hooks/use-toast"
 import { useMutation, useQueryClient } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { setResumeDetails } from '@/features/trainerSlice';
 
 
 function ResumeForm() {
@@ -22,6 +23,7 @@ function ResumeForm() {
     const {currentResumeDetails, currentResumeName, saveResumeDetails, downloadResume} = useSelector(state => state.resume)
     const {user} = useSelector(state => state.auth)
     const navigate = useNavigate()
+    const location = useLocation()
     const dispatch = useDispatch()
     const [isEdit,
         setIsEdit] = useState(true)
@@ -63,6 +65,78 @@ function ResumeForm() {
     
 
     }, [currentResumeName])
+
+    // UPloading the Resume and Extracting the Resume
+    const [file, setFile] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    //   const [isEdit, setIsEdit] = useState(true)
+    const [error, setError] = useState(null);
+    const [extractedData, setExtractedData] = useState(null);
+    const fileInputRef = useRef(null);
+
+    // Function to handle the button click and trigger the file input click
+    const handleButtonClick = (e) => {
+        e.preventDefault()
+        console.log("1")
+        fileInputRef.current.click();
+        console.log("2")
+    };
+
+    // Function to handle file upload
+    const handleFileChange = async(event) => {
+        const file = event.target.files[0];
+        console.log("INSIDE the file: " + file)
+        if (file) {
+        // Handle the uploaded file here
+        console.log('File uploaded:', file.name);
+        setIsLoading(true);
+
+        setFile(event.target.files[0]);
+        setError(null);
+        setExtractedData(null);
+
+        await uploadToAzure(file)
+        fileInputRef.current.files = null
+        }
+    };
+
+    // Function to upload the resume to Azure and extract the data
+    const uploadToAzure = async(file) => {
+        const formData = new FormData();
+        formData.append("resume", file);
+        setIsUploading(true)
+        try {
+            const response = await axios.post("http://localhost:4000/upload", formData, {
+                headers: {
+                "Content-Type": "multipart/form-data",
+                },
+            });
+            setExtractedData(response.data);
+            console.log(response.data)
+            const newResume = {
+                professionalSummary: Array.isArray(response.data.fields.professionalSummary) ?  response.data.fields.professionalSummary : [],
+                technicalSkills: Array.isArray(response.data.fields.technicalSkills) ?  response.data.fields.technicalSkills : [],
+                careerHistory: Array.isArray(response.data.fields.careerHistory) ?  response.data.fields.careerHistory : [],
+                certifications: Array.isArray(response.data.fields.certifications) ?  response.data.fields.certifications : [],
+                education: Array.isArray(response.data.fields.education) ?  response.data.fields.education : [],
+                trainingsDelivered: Array.isArray(response.data.fields.trainingsDelivered) ?  response.data.fields.trainingsDelivered : [],
+                clientele: Array.isArray(response.data.fields.clientele) ?  response.data.fields.clientele : [],
+                experience: Array.isArray(response.data.fields.experience) ?  response.data.fields.experience : [],
+            };
+            dispatch(setResumeDetails({name: "mainResume", data: newResume}))
+            // setResume(newResume)
+            setCurrentResume({
+                ...newResume, trainingName: currentResumeName
+            })
+        } catch (error) {
+        console.error("Error extracting resume data:", error.response ? error.response.data : error.message);
+        setError(error.response ? error.response.data : error.message);
+        } finally {
+        setIsLoading(false);
+        setIsUploading(false)
+        }
+    }
 
 
 
@@ -264,163 +338,171 @@ function ResumeForm() {
 
     return (
         <div className="my-6 mb-6 w-[70vw] rounded-md ">
-            <div
-                className='flex justify-between m-8 border-b-1 border-gray-500 items-center'>
-                {currentResumeName !== 'Main Resume'
-                    ? <div className=''>
-                            <label htmlFor="">Training Name</label>
-                            <Input
-                                placeholder="Training Name"
-                                value={currentResumeDetails.trainingName}
-                                readOnly/>
+            <div className='flex justify-between items-center'>
+                <div
+                    className='flex justify-between m-8 border-b-1 border-gray-500 items-center'>
+                    {currentResumeName !== 'Main Resume'
+                        ? <div className=''>
+                                <label htmlFor="">Training Name</label>
+                                <Input
+                                    placeholder="Training Name"
+                                    value={currentResumeDetails.trainingName}
+                                    readOnly/>
+                            </div>
+                        : <div className='text-gray-700 font-medium px-3 py-1 bg-slate-200 rounded-full'>Main Resume</div>
+                    }
+                </div>
+
+                {
+                    location.pathname.split("/").includes('main') &&
+                    <div className='px-2'>
+                        <div className="w-full max-w-sm items-center gap-1.5 hidden">
+                            <Input  ref={fileInputRef} id="resume" type="file" onChange={handleFileChange} accept=".pdf,.docx" />
                         </div>
-                    : <div className='text-gray-700 font-medium px-3 py-1 bg-slate-200 rounded-full'>Main Resume</div>
+                        <div className='flex items-center justify-between'>
+                            {
+                                isUploading ? 
+                                <img src="https://media.lordicon.com/icons/wired/outline/2-cloud-upload.gif" 
+                                    className='w-[30px] mx-5'
+                                    alt="" 
+                                /> : null
+                            }
+                            <Button onClick={handleButtonClick} disabled={isLoading} className="bg-buttonPrimary text-white flex items-center justify-between">
+                                <ion-icon name="cloud-upload-outline"  style={{fontSize: "20px"}}></ion-icon>
+                                <span className='ml-3'>{isLoading ? "Processing..." : "Upload Resume"}</span>
+                            </Button>
+                        </div>
+                    </div>
+                     
                 }
-
-                {/* <Button
-                    className='px-[20px] py-[10px] rounded-md cursor-pointer text-white
-                        bg-buttonPrimary flex align-middle items-center'
-                    onClick={handleSaveResume}>
-                    isEdit
-                        ? 
-                            <Fragment>
+            </div>
+            {
+                isLoading ? 
+                <div className="text-center grid place-content-center w-full">
+                  <img src="https://www.icegif.com/wp-content/uploads/2023/07/icegif-1263.gif" width={300} alt="" />
+                  <p className='text-slate-700'>Processing your resume...</p>
+                </div> : 
+                <Fragment>
+                    <form className='grid grid-cols-2 items-start'>
+                        <div className='mt-4 rounded-sm p-2'>
+                            <h3 className='font-semibold flex justify-between items-center'>
+                                <span>Professional Summary:</span>
                                 <ion-icon
-                                    name="pencil-outline"
+                                    name="add-outline"
                                     style={{
-                                    fontSize: "16px"
-                                }}></ion-icon>
-                                <span className='ml-2'>Edit</span>
-                            </Fragment>
-                         )
-                        : <Fragment>
-                            <ion-icon
-                                name="bookmark-outline"
-                                style={{
-                                fontSize: "16px"
-                            }}></ion-icon>
-                            <span className='ml-2'>Save</span>
-                        </Fragment>
+                                    fontSize: "18px"
+                                }}
+                                    onClick={() => handleAdd('professionalSummary')}></ion-icon>
+                            </h3>
+                            {renderTextareas(currentResume.professionalSummary, 'professionalSummary')}
+                        </div>
 
-                </Button> */}
-            </div>
-            <form className='grid grid-cols-2 items-start'>
-                <div className='mt-4 rounded-sm p-2'>
-                    <h3 className='font-semibold flex justify-between items-center'>
-                        <span>Professional Summary:</span>
-                        <ion-icon
-                            name="add-outline"
-                            style={{
-                            fontSize: "18px"
-                        }}
-                            onClick={() => handleAdd('professionalSummary')}></ion-icon>
-                    </h3>
-                    {renderTextareas(currentResume.professionalSummary, 'professionalSummary')}
-                </div>
+                        {/* Technical Skills */}
+                        <div className='mt-4 p-3'>
+                            <h3 className='font-semibold flex justify-between items-center'>
+                                <span>Technical Skills:</span>
+                                <ion-icon
+                                    name="add-outline"
+                                    style={{
+                                    fontSize: "18px"
+                                }}
+                                    onClick={() => handleAdd('technicalSkills')}></ion-icon>
+                            </h3>
+                            {renderTextareas(currentResume.technicalSkills, 'technicalSkills')}
+                        </div>
 
-                {/* Technical Skills */}
-                <div className='mt-4 p-3'>
-                    <h3 className='font-semibold flex justify-between items-center'>
-                        <span>Technical Skills:</span>
-                        <ion-icon
-                            name="add-outline"
-                            style={{
-                            fontSize: "18px"
-                        }}
-                            onClick={() => handleAdd('technicalSkills')}></ion-icon>
-                    </h3>
-                    {renderTextareas(currentResume.technicalSkills, 'technicalSkills')}
-                </div>
+                        {/* Career History */}
+                        <div className='mt-4 p-3'>
+                            <h3 className='font-semibold flex justify-between items-center'>
+                                <span>Career History:</span>
+                                <ion-icon
+                                    name="add-outline"
+                                    style={{
+                                    fontSize: "18px"
+                                }}
+                                    onClick={() => handleAdd('careerHistory')}></ion-icon>
+                            </h3>
+                            {renderTextareas(currentResume.careerHistory, 'careerHistory')}
+                        </div>
 
-                {/* Career History */}
-                <div className='mt-4 p-3'>
-                    <h3 className='font-semibold flex justify-between items-center'>
-                        <span>Career History:</span>
-                        <ion-icon
-                            name="add-outline"
-                            style={{
-                            fontSize: "18px"
-                        }}
-                            onClick={() => handleAdd('careerHistory')}></ion-icon>
-                    </h3>
-                    {renderTextareas(currentResume.careerHistory, 'careerHistory')}
-                </div>
+                        {/* Certifications */}
+                        <div className='mt-4 p-3'>
+                            <h3 className='font-semibold flex justify-between items-center'>
+                                <span>Certifications:</span>
+                                <ion-icon
+                                    name="add-outline"
+                                    style={{
+                                    fontSize: "18px"
+                                }}
+                                    onClick={() => handleAdd('certifications')}></ion-icon>
+                            </h3>
+                            {renderTextareas(currentResume.certifications, 'certifications')}
+                        </div>
 
-                {/* Certifications */}
-                <div className='mt-4 p-3'>
-                    <h3 className='font-semibold flex justify-between items-center'>
-                        <span>Certifications:</span>
-                        <ion-icon
-                            name="add-outline"
-                            style={{
-                            fontSize: "18px"
-                        }}
-                            onClick={() => handleAdd('certifications')}></ion-icon>
-                    </h3>
-                    {renderTextareas(currentResume.certifications, 'certifications')}
-                </div>
+                        {/* Education */}
+                        <div className='mt-4 p-3'>
+                            <h3 className='font-semibold flex justify-between items-center'>
+                                <span>Education:</span>
+                                <ion-icon
+                                    name="add-outline"
+                                    style={{
+                                    fontSize: "18px"
+                                }}
+                                    onClick={() => handleAdd('education')}></ion-icon>
+                            </h3>
+                            {renderTextareas(currentResume.education, 'education')}
+                        </div>
 
-                {/* Education */}
-                <div className='mt-4 p-3'>
-                    <h3 className='font-semibold flex justify-between items-center'>
-                        <span>Education:</span>
-                        <ion-icon
-                            name="add-outline"
-                            style={{
-                            fontSize: "18px"
-                        }}
-                            onClick={() => handleAdd('education')}></ion-icon>
-                    </h3>
-                    {renderTextareas(currentResume.education, 'education')}
-                </div>
+                        {/* Trainings Delivered */}
+                        <div className='mt-4 p-3'>
+                            <h3 className='font-semibold flex justify-between items-center'>
+                                <span>Training Delivered:</span>
+                                <ion-icon
+                                    name="add-outline"
+                                    style={{
+                                    fontSize: "18px"
+                                }}
+                                    onClick={() => handleAdd('trainingsDelivered')}></ion-icon>
+                            </h3>
+                            {renderTextareas(currentResume.trainingsDelivered, 'trainingsDelivered')}
+                        </div>
 
-                {/* Trainings Delivered */}
-                <div className='mt-4 p-3'>
-                    <h3 className='font-semibold flex justify-between items-center'>
-                        <span>Training Delivered:</span>
-                        <ion-icon
-                            name="add-outline"
-                            style={{
-                            fontSize: "18px"
-                        }}
-                            onClick={() => handleAdd('trainingsDelivered')}></ion-icon>
-                    </h3>
-                    {renderTextareas(currentResume.trainingsDelivered, 'trainingsDelivered')}
-                </div>
+                        {/* Clientele */}
+                        <div className='mt-4 p-3'>
+                            <h3 className='font-semibold flex justify-between items-center'>
+                                <span>Clientele:</span>
+                                <ion-icon
+                                    name="add-outline"
+                                    style={{
+                                    fontSize: "18px"
+                                }}
+                                    onClick={() => handleAdd('clientele')}></ion-icon>
+                            </h3>
+                            {renderTextareas(currentResume.clientele, 'clientele')}
+                        </div>
 
-                {/* Clientele */}
-                <div className='mt-4 p-3'>
-                    <h3 className='font-semibold flex justify-between items-center'>
-                        <span>Clientele:</span>
-                        <ion-icon
-                            name="add-outline"
-                            style={{
-                            fontSize: "18px"
-                        }}
-                            onClick={() => handleAdd('clientele')}></ion-icon>
-                    </h3>
-                    {renderTextareas(currentResume.clientele, 'clientele')}
-                </div>
+                        {/* Experience */}
+                        <div className='mt-4 p-3'>
+                            <h3 className='font-semibold flex justify-between items-center'>
+                                <span>Experience:</span>
+                                <ion-icon
+                                    name="add-outline"
+                                    style={{
+                                    fontSize: "18px"
+                                }}
+                                    onClick={() => handleAdd('experience')}></ion-icon>
+                            </h3>
+                            {renderTextareas(currentResume.experience, 'experience')}
+                        </div>
 
-                {/* Experience */}
-                <div className='mt-4 p-3'>
-                    <h3 className='font-semibold flex justify-between items-center'>
-                        <span>Experience:</span>
-                        <ion-icon
-                            name="add-outline"
-                            style={{
-                            fontSize: "18px"
-                        }}
-                            onClick={() => handleAdd('experience')}></ion-icon>
-                    </h3>
-                    {renderTextareas(currentResume.experience, 'experience')}
-                </div>
-
-            </form>
-            <div className='grid place-content-center w-full my-8'>
-                <Button onClick={handleSubmit} disabled={isSubmit}>{isSubmit
-                        ? "Saving "
-                        : "Submit"}</Button>
-            </div>
+                    </form>
+                    <div className='grid place-content-center w-full my-8'>
+                        <Button onClick={handleSubmit} disabled={isSubmit}>{isSubmit
+                                ? "Saving "
+                                : "Submit"}</Button>
+                    </div>
+                </Fragment>
+            }
         </div>
     )
 }

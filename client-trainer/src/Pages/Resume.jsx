@@ -38,7 +38,7 @@ function Resume() {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="/home/resume/main">Resume</BreadcrumbLink>
+                        <BreadcrumbLink href="/home/resume">Resume</BreadcrumbLink>
                     </BreadcrumbItem>
                     {
                        path !== '' ? 

@@ -7,12 +7,14 @@ import {Button} from '@/components/ui/button'
 import axios from 'axios'
 import { setCredentials } from '@/features/authSlice'
 import { useNavigate } from 'react-router-dom'
+import { useToast } from '@/hooks/use-toast'
 
 function ResumeNew() {
     const {currentResumeDetails, currentResumeName} = useSelector(state => state.resume)
     const {user} = useSelector(state => state.auth)
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const {toast} = useToast()
 
     const [currentResume,
         setCurrentResume] = useState({
@@ -175,10 +177,10 @@ function ResumeNew() {
               file_url: '',
               trainingName: ''
           })
-        //   toast({
-        //     duration: 3000, variant: "success", title: "Submitted successfully",
-        //     // description: "Click edit to take action",
-        // })
+          toast({
+            duration: 3000, variant: "success", title: "Submitted successfully",
+            // description: "Click edit to take action",
+        })
         getTrainerDetails()
         //   navigate("/home/resume/main")
           // setUser(response.data)
@@ -203,8 +205,8 @@ function ResumeNew() {
     return (
         <div className='my-6 mb-6  bg-white rounded-md  '>
             <form className='grid grid-cols-2 items-start mt-4'>
-                <div className='py-2 ml-[-25px] my-2 rounded-md'>
-                    <label htmlFor="" className='mb-2'>Training Name</label>
+                <div className='py-2 my-2 rounded-md'>
+                    <label htmlFor="" className='mb-2 font-semibold'>Training Name</label>
                     <Input
                         className="w-[30vw]"
                         placeholder="Training Name"

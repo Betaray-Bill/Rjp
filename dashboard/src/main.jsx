@@ -25,7 +25,7 @@ createRoot(document.getElementById('root')).render(
         <StrictMode>
           <App />
           <Toaster />
-          {/* <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools> */}
+          <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
         </StrictMode>
         </PersistGate>
       </Provider>

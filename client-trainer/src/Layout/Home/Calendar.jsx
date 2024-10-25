@@ -9,7 +9,13 @@ import CalendarDate from "./CalendarDate";
 
 // Localizer for react-big-calendar using moment.js
 const localizer = momentLocalizer(moment);
-
+const events = [
+    {
+      title: 'My Event',
+      start: new Date(),
+      end: new Date('2024-10-31T14:59:00-05:00')
+    }
+  ]
 const CalendarComp = ({eventsDate}) => {
     console.log(eventsDate)
     const [dates,
@@ -174,7 +180,7 @@ const CalendarComp = ({eventsDate}) => {
             {/* Calendar */}
             <Calendar
                 localizer={localizer}
-                events={dates}
+                events={events}
                 startAccessor="start"
                 onSelectEvent={handleSelectEvent}
                 endAccessor="end"

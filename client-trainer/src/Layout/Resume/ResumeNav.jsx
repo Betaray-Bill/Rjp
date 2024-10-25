@@ -52,7 +52,7 @@ function ResumeNav() {
 
     // Check for the changes in the version of the Resume
     useEffect(() => {
-        console.log(position)
+        // console.log(position)
 
         if(user !== null || user !== undefined){
             if(position === 'Main Resume'){
@@ -64,7 +64,7 @@ function ResumeNav() {
             }else{
                 let resumeVersionId = user.resumeVersions.find(element => element.trainingName === position)
                 dispatch(setCurrentResumeName(resumeVersionId.trainingName))
-                console.log(resumeVersionId.trainingName)
+                // console.log(resumeVersionId.trainingName)
                 dispatch(setCurrentResumeDetails(resumeVersionId))
                 // console.log(currentResumeDetails)
                 navigate(`/home/resume/copy/${resumeVersionId.trainingName}`)
@@ -169,12 +169,7 @@ function ResumeNav() {
                                 className="border border-buttonPrimary text-buttonPrimary"
                             >Make a Copy</Button>
                         </div>
-                        <div className='px-2'>
-                            <Button variant="outline" className="flex items-center bg-buttonPrimary text-white">
-                                <ion-icon name="cloud-upload-outline" style={{fontSize:"18px"}}></ion-icon>
-                                <span className='pl-2'>Upload</span>
-                            </Button>   
-                        </div>
+                       
                     </Fragment>
                 ) : null
             }

@@ -15,8 +15,10 @@ import { domains } from '@/utils/constants'
 import { useDispatch } from 'react-redux'
 import { setResumeDetails } from '@/features/trainerSlice'
 
-function TrainingDomain() {
+function TrainingDomain({data}) {
     const dispatch = useDispatch();
+
+
 
     // Domain Search States
     const [open,
@@ -26,6 +28,11 @@ function TrainingDomain() {
 
     const [trainingDomain,
         setTrainingDomain] = useState([])
+
+        useEffect(() => {
+            setTrainingDomain(data)
+            // dispatch(setResumeDetails({name: "trainingDomain", data: data}));
+        }, [data])
 
     const handleSearchTerm = (e) => {
         console.log(e)
@@ -291,14 +298,16 @@ function TrainingDomain() {
                             <div className='flex items-start justify-between ml-10'>
                                 <div>
                                     <Label className="text-md font-medium text-slate-700">Enter Price (₹)</Label>
-                                    <Input type="number" placeholder="Enter Price(Rupees)" name="price" className="w-[200px]" onChange={(e) =>  handleChange(e, index)}/>
+                                    <Input type="number" placeholder="Enter Price(Rupees)" value={item.price} name="price" className="w-[200px]" onChange={(e) =>  handleChange(e, index)}/>
                                 </div>
                                 <div className='flex flex-col items-start justify-between ml-10'>
                                     <Label className="text-md font-medium text-slate-700">Enter Mode</Label>
-                                    <select name="paymentSession" id="" className='w-max'  onChange={(e) =>  handleChange(e, index)}>
+                                    <select name="paymentSession" id="" className='w-max' value={item.paymentSession}  onChange={(e) =>  handleChange(e, index)}>
                                         <option value="Select Mode">Select Mode</option>
-                                        <option value="Hourly">Hourly</option>
-                                        <option value="Per Day">Per Day</option>
+                                        <option value="Online Hourly">Online Hourly</option>
+                                        <option value="Online Per-day">Online Per-day</option>
+                                        <option value="Offline Hourly">Offline Hourly</option>
+                                        <option value="Offline Per Day">Offline Per Day</option>
                                     </select>
                                 </div>
                             </div>

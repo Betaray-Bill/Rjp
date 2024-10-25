@@ -3,9 +3,10 @@ import {Input} from '@/components/ui/input'
 import {Label} from '@/components/ui/label'
 import axios from 'axios'
 import React, {useState} from 'react'
+import { useToast } from "@/hooks/use-toast"
 
 function AddEmployee() {
-
+    const { toast } = useToast()
     const [empData,
         setEmpData] = useState({name: "", email: "", roles: [], password: ""})
 
@@ -35,6 +36,10 @@ function AddEmployee() {
         try {
             const response = await axios.post('http://localhost:5000/api/employee/register', empData); // Replace with your API endpoint
             console.log('Registration successful:', response.data);
+            toast({
+                title: "Employee Registered",
+                // description: "Friday, February 10, 2023 at 5:57 PM",
+            })
         } catch (error) {
             console.error('Registration failed:', error);
         }

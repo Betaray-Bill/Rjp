@@ -74,11 +74,11 @@ function BankDetails() {
                     <Label htmlFor="pancard_Number">Aadhar Card Number</Label>
                     <Input type="text" id="aadharcard_Number" name="aadharCardNumber" onChange={(e) => handleChange(e)}/>
                 </div>
-
+{/* 
                 {
                     trainerDetails?.trainingDetails?.trainerType === "External - Vendor" ? 
                     (
-                        <Fragment>
+                        <Fragment> */}
                             <div>
                                 <Label htmlFor="vendorName">Vendor Name</Label>
                                 <Input type="text" id="vendorName" name="vendorName" onChange={(e) => handleChange(e)}/>
@@ -87,9 +87,9 @@ function BankDetails() {
                                 <Label htmlFor="gstNumber">GST Number</Label>
                                 <Input type="text" id="gstNumber" name="gstNumber" onChange={(e) => handleChange(e)}/>
                             </div>
-                        </Fragment>
+                        {/* </Fragment>
                     ) : null
-                }
+                } */}
 
             </div>
         </div>

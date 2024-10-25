@@ -24,4 +24,9 @@ router.post("/:id/copy-resume", authMiddleware, resumeCopy)
 router.get("/signout", authMiddleware, signOut)
 router.put("/updateresume/:id", authMiddleware, updateResume)
 
+// get
+
+// Get Trainers as Emp they were Registered
+router.get("/getTrainers/:empId", authEmployeeMiddleware, authorizeRole(['ADMIN', 'KeyAccounts', 'MANAGER']), getAllTrainer)
+
 export default router

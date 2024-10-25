@@ -21,7 +21,7 @@ function GetTrainer() {
     const dispatch = useDispatch()
 
     const getAll = async() => {
-        const response = await axios.get('http://localhost:5000/api/employee//get-all-trainers'); // Replace with your API endpoint
+        const response = await axios.get('http://localhost:5000/api/employee/get-all-trainers'); // Replace with your API endpoint
         return response.data
     }
 

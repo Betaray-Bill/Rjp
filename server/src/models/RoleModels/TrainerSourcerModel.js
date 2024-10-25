@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 
 const trainerSourcerSchema = new mongoose.Schema({
     registeredTrainers: [{
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Trainer'
     }]
 });
 

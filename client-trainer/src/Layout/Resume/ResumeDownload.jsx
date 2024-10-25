@@ -64,7 +64,7 @@ function ResumeDownload() {
     ].filter(item => item.content.length > 0);  // Filter out empty sections
     
     // Shuffle the content for randomness
-    const shuffledContent = shuffleArray(allContent);
+    const shuffledContent = allContent;
     
     // Split content evenly between two columns
     const half = Math.ceil(shuffledContent.length / 2);

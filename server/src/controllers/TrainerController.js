@@ -225,6 +225,14 @@ const getAllTrainer = asyncHandler(async(req, res) => {
 })
 
 
+// Get Trainer by the Emp who registered him
+const getTrainersByEmpID = asyncHandler(async(req, res) => {
+
+    // Get Emp Id - check his role, if ADMIN return ALL else return from their ID
+
+
+})
+
 // Update
 
 export {

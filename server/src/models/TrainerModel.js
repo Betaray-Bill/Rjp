@@ -78,7 +78,7 @@ const trainerSchema = mongoose.Schema({
         paymentSession: {
             type: String,
             enum: [
-                'Hourly', 'Per Day'
+                'Online Hourly', 'Online Per-day', 'Offline Hourly', 'Offline Per Day'
             ],
             required: true
         }
