@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux'
 import { setResumeDetails } from '@/features/trainerSlice'
 
 
-function ResumeDetails() {
+function ResumeDetails({data}) {
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -26,6 +26,14 @@ function ResumeDetails() {
     clientele: [],
     experience: [],
   })
+
+  useEffect(() => {
+    if(data){
+      setResume(data)
+      setExtractedData(data)
+      setIsEdit(false)
+    }
+  }, [])
 
   const dispatch = useDispatch()
 

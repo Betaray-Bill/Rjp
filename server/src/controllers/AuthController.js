@@ -13,30 +13,33 @@ const login = asyncHandler(async(req, res) => {
 
     const employee = await Employee
         .findOne({ email })
-        .populate('role')
         .select("-password");
     console.log(req.body)
 
 
     let rolesExtract = employee.role
-
+    let rolesDetails = []
     for (let i = 0; i < rolesExtract.length; i++) {
         console.log(rolesExtract[i].name)
         if (rolesExtract[i].name === "ADMIN") {
             let roleData = await Admin.findById(rolesExtract[i].roleId)
             console.log("EMp ROle specs : ", roleData)
+            rolesDetails.push(roleData)
         }
         if (rolesExtract[i].name === "Trainer Sourcer") {
             let roleData = await TrainerSourcer.findById(rolesExtract[i].roleId)
             console.log("EMp ROle specs : ", roleData)
+            rolesDetails.push(roleData)
         }
         if (rolesExtract[i].name === "Manager") {
             let roleData = await Manager.findById(rolesExtract[i].roleId)
             console.log("EMp ROle specs : ", roleData)
+            rolesDetails.push(roleData)
         }
         if (rolesExtract[i].name === "KeyAccounts") {
             let roleData = await KeyAccounts.findById(rolesExtract[i].roleId)
             console.log("EMp ROle specs : ", roleData)
+            rolesDetails.push(roleData)
         }
     }
 
@@ -81,7 +84,7 @@ const login = asyncHandler(async(req, res) => {
         console.log("login token ", token);
         res
             .status(200)
-            .json({ employee });
+            .json({ employee, rolesDetails });
     } else {
         res.status(401);
         throw new Error('Invalid email or password');

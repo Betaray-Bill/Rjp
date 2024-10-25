@@ -32,7 +32,7 @@ function ViewTrainer() {
               <PersonalDetails data={data.generalDetails}/>
               <BankDetails />
               <TrainingDomain data={data.trainingDomain}/>
-              <ResumeDetails />
+              <ResumeDetails data={data.mainResume}/>
             </form>
           </div>
         )

@@ -13,7 +13,7 @@ router.get("/", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer
     res.status(200).send("Inside the Trainer Sourcer")
 })
 
-router.post("/register-trainer",
+router.post("/register-trainer/:trainerId",
     authEmployeeMiddleware,
     authorizeRole(["ADMIN", "Trainer Sourcer"]),
     registerTrainer

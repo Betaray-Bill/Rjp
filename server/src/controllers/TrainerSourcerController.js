@@ -14,7 +14,7 @@ const modelId = process.env.MODEL_ID;
 // POST - /register
 const registerTrainer = asyncHandler(async(req, res) => {
     console.log(req.body);
-
+    const trainerId = req.params.trainerId
     try {
         // Create a new Trainer using the updated schema
         const trainer = new Trainer({
@@ -64,6 +64,8 @@ const registerTrainer = asyncHandler(async(req, res) => {
 
         // Save the trainer to the database
         await trainer.save();
+
+        // get the Trainer Id
 
         res.status(201).json({
             message: 'Trainer created successfully',

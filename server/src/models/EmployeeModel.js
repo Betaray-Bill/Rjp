@@ -17,7 +17,8 @@ const employeeSchema = new mongoose.Schema({
     role: [{
         roleId: {
             type: mongoose.Schema.Types.Mixed,
-            required: true, // Reference the respective role schema based on role name
+            required: true, // Reference the respective role schema based on role 
+            refPath: 'role.name'
         },
         name: {
             type: String,
@@ -25,6 +26,10 @@ const employeeSchema = new mongoose.Schema({
             required: true
         }
     }],
+    roleId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Role' // Assuming Role is a Mongoose model
+    }]
 }, {
     timestamps: true
 })

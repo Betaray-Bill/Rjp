@@ -19,7 +19,7 @@ const AddTrainer = () => {
     const { currentUser } = useSelector(state => state.auth)
     const { trainerDetails } = useSelector(state => state.trainer)
 
-
+    console.log(currentUser)
     const handleReset = () => {
         dispatch(removeResumeDetails())
     }
@@ -30,7 +30,7 @@ const AddTrainer = () => {
     // Trainer Submission QUERY
     const [isSubmission, setIsSubmission] = useState(false)
     const trainerMutation = useMutation((data) => {
-        return axios.post('http://localhost:5000/api/trainersourcer/register-trainer', data)
+        return axios.post(`http://localhost:5000/api/trainersourcer/register-trainer/${currentUser._Id}`, data)
     }, {
         onSuccess: (data) => {
             console.log("2")

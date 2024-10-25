@@ -5,7 +5,6 @@ import { acceptNDA, addTrainingDates, getAllTrainer, getTrainerById, resumeCopy,
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { searchTrainer } from '../controllers/SearchController.js';
 import { changepassword } from '../controllers/TrainerController.js';
-
 import { updateResume } from '../controllers/TrainerSourcerController.js';
 
 const router = express.Router();

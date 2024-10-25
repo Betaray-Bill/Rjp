@@ -286,7 +286,7 @@ function TrainingDomain({data}) {
                 <div className='mt-8 p-3 gap-9'>
                     {/* Get all the Listed Domains selected by the user */}
                     {
-                        trainingDomain.length > 0 ? <h4>Domain List</h4> : null
+                        trainingDomain?.length > 0 ? <h4>Domain List</h4> : null
                     }
                     {
                         trainingDomain && trainingDomain.map((item, index) => (
