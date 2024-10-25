@@ -79,8 +79,8 @@ function GetAllEmployee() {
                         <span className="mx-2 px-2 rounded-lg bg-blue-100" key={_i}>{e.name}</span>
                     ))}</TableCell>
                     <TableCell>
-                        <Link to={`/home/employee/view${emp._id}`}>
-                        <Button className="bg-transparent text-black border border-black rounded-none hover:bg-blue-100">View</Button>
+                        <Link to={`/home/employee/view/${emp._id}`}>
+                            <Button className="bg-transparent text-black border border-black rounded-none hover:bg-blue-100">View</Button>
                         </Link>
                     </TableCell>
                         

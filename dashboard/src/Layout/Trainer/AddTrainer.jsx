@@ -81,11 +81,12 @@ const AddTrainer = () => {
 
       <div className='w-[80vw] h-screen py-4 px-3'>
       <div className='p-3'>
+        {/* <h>Add Trainer</h> */}
         {/* <Button onClick={handleReset}>Reset</Button> */}
         {/* FORM */}
         <form>
           {/* General Details */}
-          <div className='mt-10 border p-3 rounded-md'>
+          <div className='mt-4 border p-3 rounded-md'>
             <PersonalDetails />
           </div>
 

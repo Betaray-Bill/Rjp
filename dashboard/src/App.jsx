@@ -19,6 +19,7 @@ import ViewTrainer from './Layout/Trainer/ViewTrainer'
 import AddTrainer from './Layout/Trainer/AddTrainer'
 import GetAllEmployee from './Layout/Employees/GetAllEmployee'
 import AddEmployee from './Layout/Employees/AddEmployee'
+import ViewEmployee from './Layout/Employees/ViewEmployee'
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
               <Route path='employee' element={<Employee />}>
                 <Route path='' index element={<GetAllEmployee />} />
                 <Route path='add' element={<AddEmployee />} />
+                <Route path='view/:id' element={<ViewEmployee />} />
                 <Route path='*' element={<Navigate to="/home" replace />} />
               </Route>
             }
