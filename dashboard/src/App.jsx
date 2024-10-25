@@ -14,9 +14,11 @@ import {RolesEnum} from './utils/constants.js'
 import Employee from './Pages/Employees/Employee.jsx'
 import AddCompany from './Layout/AddCompany'
 import Trainer from './Pages/Trainer/Trainer'
-import AddTrainer from './Pages/AddEntity/AddTrainer'
 import GetTrainer from './Layout/Trainer/GetTrainer'
 import ViewTrainer from './Layout/Trainer/ViewTrainer'
+import AddTrainer from './Layout/Trainer/AddTrainer'
+import GetAllEmployee from './Layout/Employees/GetAllEmployee'
+import AddEmployee from './Layout/Employees/AddEmployee'
 
 
 function App() {
@@ -28,8 +30,6 @@ function App() {
       <Routes>
         <Route path='/login' element={<Login />} />
         <Route path='/' index element={<Navigate to="/home" replace />}></Route>
-        {/* <Route path='/home/trainer' index element={<Navigate to="/home/trainer" replace />}></Route> */}
-
 
         <Route element={<ProtectedRoute />}>
           <Route path='/' index element={<Home />} />
@@ -40,7 +40,11 @@ function App() {
             }
             {
                userAccess([RolesEnum.ADMIN], currentUser?.employee.role) &&
-              <Route path='employee' element={<Employee />} />
+              <Route path='employee' element={<Employee />}>
+                <Route path='' index element={<GetAllEmployee />} />
+                <Route path='add' element={<AddEmployee />} />
+                <Route path='*' element={<Navigate to="/home" replace />} />
+              </Route>
             }
             {
               userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER, RolesEnum.MANAGER], currentUser?.employee.role) &&

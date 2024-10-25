@@ -2,6 +2,7 @@ import AddEmployee from '@/Layout/Employees/AddEmployee'
 import EditEmployee from '@/Layout/Employees/EditEmployee';
 import GetAllEmployee from '@/Layout/Employees/GetAllEmployee';
 import React, { useState } from 'react'
+import { Outlet } from 'react-router-dom';
 const EmployeeFunctions = [
   {
     name: "Add Employee",
@@ -30,15 +31,17 @@ function Employee() {
 
 
     return ( 
-      <div className='w-[80vw] mt-10 h-max min-h-[80vh] py-4 px-3 '>
-        <select name="" id=""  onChange={(e) => handleSelectChange(e)}>
+      <div className='w-[80vw] mt-10 h-max min-h-[80vh] py-4 px-3'>
+        {/* <select name="" id=""  onChange={(e) => handleSelectChange(e)}>
           {EmployeeFunctions.map(func=>(
             <option key={func.name}>{func.name}</option>
           ))}
         </select>
         <div style={{ marginTop: "20px" }}>
           {selectedComponent}
-        </div>
+        </div> */}
+        <h2 className='text-xl font-semibold my-4'>Employee</h2>
+        <Outlet />
       </div>
     )
 }

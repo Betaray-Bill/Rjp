@@ -103,7 +103,7 @@ function Home() {
               >
                <ion-icon name="home-outline"></ion-icon> <span className='ml-3'>Home</span>
               </Link>
-              <Link to="resume"
+              <Link to="/home/resume/main"
                 className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md ${
                   isResume ? 'bg-primaryBgActive font-medium text-md' : 'bg-white'
                 }`}

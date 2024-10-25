@@ -13,76 +13,73 @@ import TrainingDomain from '@/Layout/Trainer/AddTrainers/TrainingDomain';
 import ResumeDetails from '@/Layout/Trainer/AddTrainers/Resume/ResumeDetails';
 
 const AddTrainer = () => {
-  // console.log("meow", add++)
-  const { toast } = useToast()
-  const dispatch = useDispatch()
-  const {currentUser} = useSelector(state => state.auth)
-  const {trainerDetails} = useSelector(state => state.trainer)
+    // console.log("meow", add++)
+    const { toast } = useToast()
+    const dispatch = useDispatch()
+    const { currentUser } = useSelector(state => state.auth)
+    const { trainerDetails } = useSelector(state => state.trainer)
 
 
-  const handleReset = () => {
-    dispatch(removeResumeDetails())
-  }
-
-  console.log(trainerDetails)
-
-
-  // Trainer Submission QUERY
-  const [isSubmission, setIsSubmission] = useState(false)
-  const trainerMutation = useMutation((data) => 
-    {
-      return axios.post('http://localhost:5000/api/trainersourcer/register-trainer', data)  
-    },
-    {
-      onSuccess: (data) => {
-      console.log("2")
-
-        setIsSubmission(prev => !prev)
-        console.log("Submission DOnes")
+    const handleReset = () => {
         dispatch(removeResumeDetails())
-        console.log(data)
-        if (data) {
-          // navigate('/home/dashboard');
-        console.log("3")
+    }
+
+    console.log(trainerDetails)
+
+
+    // Trainer Submission QUERY
+    const [isSubmission, setIsSubmission] = useState(false)
+    const trainerMutation = useMutation((data) => {
+        return axios.post('http://localhost:5000/api/trainersourcer/register-trainer', data)
+    }, {
+        onSuccess: (data) => {
+            console.log("2")
+
+            setIsSubmission(prev => !prev)
+            console.log("Submission DOnes")
+            dispatch(removeResumeDetails())
+            console.log(data)
+            if (data) {
+                // navigate('/home/dashboard');
+                console.log("3")
+            }
+        },
+        onSettled: () => {
+            console.log("Settled")
+            console.log("4")
+
+            setIsSubmission(prev => !prev)
+            toast({
+                title: "Trainer Added",
+                // description: "Friday, February 10, 2023 at 5:57 PM",
+            })
+        },
+        onError: (error) => {
+            console.log(error);
+            setIsSubmission(prev => !prev)
+            toast({
+                title: "Trainer adding error",
+                // description: "Friday, February 10, 2023 at 5:57 PM",
+            })
         }
-      },
-      onSettled: () => {
-        console.log("Settled")
-        console.log("4")
+    })
 
-        setIsSubmission(prev => !prev)
-        toast({
-          title: "Trainer Added",
-          // description: "Friday, February 10, 2023 at 5:57 PM",
-        })
-      },
-      onError: (error) => {
-        console.log(error);
-        setIsSubmission(prev => !prev)
-        toast({
-          title: "Trainer adding error",
-          // description: "Friday, February 10, 2023 at 5:57 PM",
-        })
-      }
+    const submitHandler = async(event) => {
+        event.preventDefault();
+        // console.log(formData)
+        console.log("Submit Handler")
+        try {
+            console.log("1")
+            trainerMutation.mutate(trainerDetails)
+        } catch (error) {
+            console.log(error);
+        }
     }
-  )
 
-  const submitHandler = async(event) => {  
-    event.preventDefault();
-    // console.log(formData)
-    console.log("Submit Handler")
-    try {
-      console.log("1")
-        trainerMutation.mutate(trainerDetails)
-    } catch (error) {
-        console.log(error);
-    }
-  }
-    
- 
-  return (
-    
-    <div className='w-[80vw] h-screen py-4 px-3'>
+
+    return (
+
+      <div className='w-[80vw] h-screen py-4 px-3'>
       <div className='p-3'>
         {/* <Button onClick={handleReset}>Reset</Button> */}
         {/* FORM */}
@@ -121,8 +118,7 @@ const AddTrainer = () => {
 
       </div>
     </div>
-  );
+    );
 };
 
 export default AddTrainer;
-

@@ -8,23 +8,6 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog"
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import {setAllEmp} from '@/features/employeeSlice';

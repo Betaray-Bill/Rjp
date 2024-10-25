@@ -8,26 +8,13 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import {setAllEmp} from '@/features/employeeSlice';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
   
 
 function GetAllEmployee() {
@@ -50,10 +37,18 @@ function GetAllEmployee() {
 
   return (
     <div>
-        <p onClick={() => refetch()} className="flex items-center bg-gray-100 border border-black rounded-md cursor-pointer px-[10px] w-max py-[3px]">
-            <ion-icon name="sync-outline"></ion-icon>
-            <span>Sync</span>
-        </p>
+        <div className='flex items-center justify-between'>
+            <p onClick={() => refetch()} className="flex items-center bg-blue-100 border border-black rounded-md cursor-pointer px-[10px] w-max py-[3px] mb-4">
+                <ion-icon name="sync-outline"></ion-icon>
+                <span>Sync</span>
+            </p>
+            <Link to="/home/employee/add">
+                <Button>
+                    <ion-icon name="add-outline" style={{fontSize:"20px"}}></ion-icon>
+                    <span>Add Employee</span>
+                </Button>
+            </Link>
+        </div>
         <Table>
             {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
             <TableHeader>
@@ -62,6 +57,7 @@ function GetAllEmployee() {
                     <TableHead className="w-[100px]">Name</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Roles</TableHead>
+                    <TableHead></TableHead>
                     {/* <TableHead className="text-left">Edit</TableHead> */}
                     </TableRow>
             </TableHeader>
@@ -71,36 +67,23 @@ function GetAllEmployee() {
                     console.log(`${index+1}.) ${emp.email}   `)
                 }}>
                     <TableCell className="font-medium">{index+1}</TableCell>
-                    <TableCell className="font-medium">{emp.name}</TableCell>
+                    <TableCell className="font-medium flex items-center">
+                        <Avatar>
+                            <AvatarImage src="https://github.com/shadcn.png" />
+                            <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                        <span className='ml-2'>{emp.name}</span>
+                    </TableCell>
                     <TableCell>{emp.email}</TableCell>
                     <TableCell className="text-left">{emp?.role?.map((e, _i) => (
-                        <span className="mx-2 px-2 rounded-lg bg-gray-200" key={_i}>{e.name}</span>
+                        <span className="mx-2 px-2 rounded-lg bg-blue-100" key={_i}>{e.name}</span>
                     ))}</TableCell>
-                        {/* <TableCell className="font-medium cursor-pointer">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger><ion-icon name="ellipsis-vertical-outline"></ion-icon></DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                    <DropdownMenuLabel>Edit Profile</DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem>
-                                        <Dialog>
-                                            <DialogTrigger>Add Role</DialogTrigger>
-                                            <DialogContent>
-                                                <DialogHeader>
-                                                <DialogTitle>Edi</DialogTitle>
-                                                <DialogDescription>
-                                                    This action cannot be undone. This will permanently delete your account
-                                                    and remove your data from our servers.
-                                                </DialogDescription>
-                                                </DialogHeader>
-                                            </DialogContent>
-                                        </Dialog>
-                                    </DropdownMenuItem>
-
-    
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell> */}
+                    <TableCell>
+                        <Link to={`/home/employee/view${emp._id}`}>
+                        <Button className="bg-transparent text-black border border-black rounded-none hover:bg-blue-100">View</Button>
+                        </Link>
+                    </TableCell>
+                        
                 </TableRow>
                 ))}
             </TableBody>
