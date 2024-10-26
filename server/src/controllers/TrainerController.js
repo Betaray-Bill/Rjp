@@ -200,7 +200,7 @@ const getTrainerById = asyncHandler(async(req, res) => {
     const { id } = req.params;
 
     try {
-        const trainer = await Trainer.findById(id);
+        const trainer = await Trainer.findById(id).select('-bankDetails -password -nda_Accepted -is_FirstLogin');
         if (!trainer) {
             return res.status(404).json({ message: "Trainer not found" });
         }

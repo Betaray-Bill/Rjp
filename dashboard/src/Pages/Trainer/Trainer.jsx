@@ -68,7 +68,10 @@ function Trainer() {
 
             <h2 className='text-xl mt-10 font-semibold my-4'>Trainer</h2>
         </div>
-      <Outlet />
+        <div className=''>
+            <Outlet />
+        </div>
+                        
     </div>
   )
 }

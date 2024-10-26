@@ -74,7 +74,7 @@ function GetTrainer() {
                     <TableCell>{trainer.trainingDetails.trainerType}</TableCell>
                     <TableCell>
                         <Link to={`/home/trainer/view/${trainer._id}`}>
-                            <Button className="bg-transparent border text-black rounded-none hover:bg-blue-400">View</Button>
+                            <Button className="bg-transparent border text-black rounded-none hover:bg-blue-200">View</Button>
                         </Link>
                     </TableCell>
                 </TableRow>

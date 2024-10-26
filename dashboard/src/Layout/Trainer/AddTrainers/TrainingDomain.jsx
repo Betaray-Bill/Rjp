@@ -213,13 +213,13 @@ function TrainingDomain({data}) {
                         </PopoverContent>
                     </Popover> */}
 
-                    <Popover open={open} onOpenChange={setOpen} className="w-[60vw] md:w-[60vw] justify-start p-2">
+                    <Popover open={open} onOpenChange={setOpen} className="w-[70vw] md:w-[70vw] justify-start p-2">
                         <PopoverTrigger asChild className='p-6 rounded-full'>
                             <Button
                                 variant="outline"
                                 role="combobox"
                                 aria-expanded={open}
-                                className="w-[60vw] justify-between"
+                                className="w-[70vw] justify-between"
                             >
                                 {!value ? (
                                     <span className="flex items-center justify-between">
@@ -248,7 +248,7 @@ function TrainingDomain({data}) {
                                 )}
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-[60vw] p-0">
+                        <PopoverContent className="w-[70vw] p-0">
                             <Command>
                                 <Input  className="w-max min-w-[55vw]  m-2 focus:ring-0 focus:ring-offset-0"    
                                     placeholder="Search Domain by..... "

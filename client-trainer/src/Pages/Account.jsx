@@ -239,14 +239,14 @@ function Account() {
         </Card>
       </div>
 
-      <div className='w-[80vw] mt-8 p-6 bg-white rounded-md'>
+      {/* <div className='w-[80vw] mt-8 p-6 bg-white rounded-md'>
         Bank Details
 
         <Card className="mx-auto mt-4">
           <CardContent className="grid grid-cols-3 gap-6 p-6">
             <div className="space-y-2">
               <Label className="text-slate-700" htmlFor="AccountName">Account Name</Label>
-              <Input id="AccountName" value={user.bankDetails.accountName} readOnly/>
+              <Input id="AccountName" value={user?.bankDetails?.accountName} readOnly/>
             </div>
             <div className="space-y-2">
               <Label className="text-slate-700" htmlFor="AccountNumber">Account Number</Label>
@@ -282,7 +282,7 @@ function Account() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
       <p className='text-end text-red-500 mt-10'>To update your details please contact the company</p>
     </div>
   )
