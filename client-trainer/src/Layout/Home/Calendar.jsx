@@ -14,6 +14,25 @@ const events = [
       title: 'My Event',
       start: new Date(),
       end: new Date('2024-10-31T14:59:00-05:00')
+    },
+    {
+        id: 9,
+        title: 'Happy Hour',
+        start: new Date(2024, 11, 12, 17, 0, 0, 0),
+        end: new Date(2024, 11, 15, 17, 30, 0, 0),
+        desc: 'Most important meal of the day',
+    },
+    {
+        id: 10,
+        title: 'Dinner',
+        start: new Date(2024, 11, 7, 20, 0, 0, 0),
+        end: new Date(2024, 11, 8, 21, 0, 0, 0),
+    },
+    {
+        id: 11,
+        title: 'Birthday Party',
+        start: new Date(2024, 11, 13, 7, 0, 0),
+        end: new Date(2024, 12, 13, 10, 30, 0),
     }
   ]
 const CalendarComp = ({eventsDate}) => {
