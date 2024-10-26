@@ -14,6 +14,7 @@ import Resume from './Pages/Resume.jsx'
 import ResumeForm from './Layout/Resume/ResumeForm'
 import ResumeNew from './Layout/Resume/ResumeNew'
 import ResumeDownload from './Layout/Resume/ResumeDownload'
+import ResumeExtractor from './Pages/ResumeExtractor '
 
 
 function App() {
@@ -36,7 +37,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path='/' index element={<Navigate to="/home/dashboard" replace />}></Route>
         <Route path='/home/resume' index element={<Navigate to="/home/resume/main" replace />}></Route>
-
+        <Route path="/resume" element={<ResumeExtractor />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute/> }>
