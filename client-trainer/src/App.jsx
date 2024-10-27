@@ -14,7 +14,7 @@ import Resume from './Pages/Resume.jsx'
 import ResumeForm from './Layout/Resume/ResumeForm'
 import ResumeNew from './Layout/Resume/ResumeNew'
 import ResumeDownload from './Layout/Resume/ResumeDownload'
-import ResumeExtractor from './Pages/ResumeExtractor '
+import ResumeExtractor from './Pages/ResumeExtractor'
 
 
 function App() {
