@@ -15,6 +15,7 @@ import ResumeForm from './Layout/Resume/ResumeForm'
 import ResumeNew from './Layout/Resume/ResumeNew'
 import ResumeDownload from './Layout/Resume/ResumeDownload'
 import ResumeExtractor from './Pages/ResumeExtractor'
+import AzureBlobUploader from './Pages/AzureBlobUploader'
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
         <Route path='/' index element={<Navigate to="/home/dashboard" replace />}></Route>
         <Route path='/home/resume' index element={<Navigate to="/home/resume/main" replace />}></Route>
         <Route path="/resume" element={<ResumeExtractor />} />
+        <Route path="/fileupload" element={<AzureBlobUploader />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute/> }>

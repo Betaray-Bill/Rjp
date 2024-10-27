@@ -13,7 +13,7 @@
           console.log(user)
           setData(user)
         }
-    })
+    }, [user])
     
 
     return (

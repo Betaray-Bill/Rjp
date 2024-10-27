@@ -7,6 +7,8 @@ import adminRoutes from "./routes/AdminRoutes.js";
 import trainerSourcerRoutes from "./routes/TrainerSourcerRoutes.js";
 import trainerRoutes from "./routes/TrainerRoutes.js";
 import azureRoutes from "./routes/azureRoutes.js";
+import http from "http";
+import azureBlobRoutes from "./routes/azureBlobRoutes.js";
 
 dotenv.config();
 
@@ -34,7 +36,8 @@ app.get("/", (req, res) => res.send("Hii, Good Request !!!"));
 app.use("/api/employee", adminRoutes);
 app.use("/api/trainersourcer", trainerSourcerRoutes);
 app.use("/api/trainer", trainerRoutes);
-app.use("/api/azure", azureRoutes); // Azure routes for checking connection and file upload
+app.use("/api/resumeextractor", azureRoutes); // Azure routes for checking connection and file upload
+app.use("/api/filestorage", azureBlobRoutes);
 
 // Start server
 app.listen(PORT, () => {
