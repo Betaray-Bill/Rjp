@@ -1,6 +1,6 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import Employee from "../models/EmployeeModel.js";
-import { Trainer } from "../models/TrainerModel.js";
+import { Resume, Trainer } from "../models/TrainerModel.js";
 import { readFileSync, unlinkSync } from "fs"
 import axios from "axios";
 import { transformResumeData } from "../utils/azure/extract/extractfunction.js";
@@ -16,6 +16,21 @@ const registerTrainer = asyncHandler(async(req, res) => {
     console.log(req.body);
     const trainerId = req.params.trainerId
     try {
+        // Register the Main Resume and get its Id from its collections
+        const mainResume = new Resume({
+            professionalSummary: req.body.mainResume.professionalSummary,
+            technicalSkills: req.body.mainResume.technicalSkills,
+            careerHistory: req.body.mainResume.careerHistory,
+            certifications: req.body.mainResume.certifications,
+            education: req.body.mainResume.education,
+            trainingsDelivered: req.body.mainResume.trainingsDelivered,
+            clientele: req.body.mainResume.clientele,
+            experience: req.body.mainResume.experience,
+            isMainResume: true
+        })
+        await mainResume.save()
+        console.log("main resume is ", mainResume)
+
         // Create a new Trainer using the updated schema
         const trainer = new Trainer({
             generalDetails: {
@@ -46,27 +61,27 @@ const registerTrainer = asyncHandler(async(req, res) => {
                 price: Number(domain.price),
                 paymentSession: domain.paymentSession
             })),
-            mainResume: {
-                professionalSummary: req.body.mainResume.professionalSummary,
-                technicalSkills: req.body.mainResume.technicalSkills,
-                careerHistory: req.body.mainResume.careerHistory,
-                certifications: req.body.mainResume.certifications,
-                education: req.body.mainResume.education,
-                trainingsDelivered: req.body.mainResume.trainingsDelivered,
-                clientele: req.body.mainResume.clientele,
-                experience: req.body.mainResume.experience
-            },
+            resumeVersion: [mainResume._id],
+            trainer_sourcer: trainerId,
             isFirstLogin: true,
             ndaAccepted: req.body.trainingDetails.trainerType === "Internal" ? true : false,
             password: req.body.generalDetails.dateOfBirth,
             trainerId: await generateTrainerId(),
         });
 
+        console.log("Trainer Data is ------------------------------------------")
+        console.log(await trainer.populate('resumeVersion'));
+
         // Save the trainer to the database
         await trainer.save();
 
-        // get the Trainer Id
+        // get the Trainer Id and save it in the resume version docs
+        const resume = await Resume.findByIdAndUpdate(mainResume._id, {
+            trainer_id: trainer._id
+        }, { new: true });
+        await resume.save()
 
+        // Return the Result    
         res.status(201).json({
             message: 'Trainer created successfully',
             Trainer: trainer,

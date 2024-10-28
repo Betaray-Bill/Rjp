@@ -30,14 +30,14 @@ const AddTrainer = () => {
     // Trainer Submission QUERY
     const [isSubmission, setIsSubmission] = useState(false)
     const trainerMutation = useMutation((data) => {
-        return axios.post(`http://localhost:5000/api/trainersourcer/register-trainer/${currentUser._Id}`, data)
+        return axios.post(`http://localhost:5000/api/trainersourcer/register-trainer/${currentUser.employee._id}`, data)
     }, {
         onSuccess: (data) => {
             console.log("2")
 
             setIsSubmission(prev => !prev)
             console.log("Submission DOnes")
-            dispatch(removeResumeDetails())
+            // dispatch(removeResumeDetails())
             console.log(data)
             if (data) {
                 // navigate('/home/dashboard');

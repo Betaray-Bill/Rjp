@@ -96,7 +96,7 @@ function ViewTrainer() {
                 }
                  {
                   viewData === "Resumes" && 
-                  <ViewResume resumes={[...data.resumeVersions, {...data.mainResume}]} />
+                  <ViewResume />
                 }
               </form>
             </div>

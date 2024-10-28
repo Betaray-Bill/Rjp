@@ -1,5 +1,5 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import { Trainer } from "../models/TrainerModel.js";
+import { Resume, Trainer } from "../models/TrainerModel.js";
 import { generateEmpToken, generateToken } from "../utils/generateToken.js";
 import bcrypt from 'bcryptjs';
 
@@ -12,10 +12,11 @@ const trainerLogin = asyncHandler(async(req, res) => {
         return res.status(400).json({ message: "Please provide both email and password." })
     }
 
-    const trainer = await Trainer.find({ "generalDetails.email": email }).select("-password")
+    const trainer = await Trainer.find({ "generalDetails.email": email }).populate('resumeVersion').select("-password")
     console.log(trainer)
     if (trainer) {
         console.log(trainer)
+            // await trainer
         let token = generateToken(res, trainer._id);
         console.log("login token ", token);
         res.status(200).json({ trainer });
@@ -111,7 +112,7 @@ const addTrainingDates = asyncHandler(async(req, res) => {
     });
 })
 
-// Make a copy of the resume
+// Make a copy of the resume - Create a New Resume By the Trainer
 const resumeCopy = asyncHandler(async(req, res) => {
     const { id } = req.params;
     console.log("Trainer Id", id)
@@ -124,8 +125,8 @@ const resumeCopy = asyncHandler(async(req, res) => {
 
     try {
 
-        // save the resume's Id in the trainer's docs
-        trainer.resumeVersions.push({
+        // Create A new docs for this resume - save it in the trainers profile
+        const resume = new Resume({
             professionalSummary: req.body.professionalSummary,
             technicalSkills: req.body.technicalSkills,
             careerHistory: req.body.careerHistory,
@@ -134,9 +135,14 @@ const resumeCopy = asyncHandler(async(req, res) => {
             trainingsDelivered: req.body.trainingsDelivered,
             clientele: req.body.clientele,
             experience: req.body.experience,
-            trainingName: req.body.trainingName
-        });
-        await trainer.save();
+            trainingName: req.body.trainingName,
+            isMainResume: false
+        })
+        await resume.save()
+
+        // Save the docs Id in the Trainer Profile 
+        await trainer.resumeVersion.push(resume._id);
+        await trainer.save()
 
         res.status(200).json({
             message: "Resume copy created successfully",

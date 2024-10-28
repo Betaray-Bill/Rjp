@@ -1,6 +1,50 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+const resumeSchema = mongoose.Schema({
+    trainer_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Trainer'
+    },
+    professionalSummary: {
+        type: [String]
+    },
+    technicalSkills: {
+        type: [String]
+    },
+    careerHistory: {
+        type: [String]
+    },
+    certifications: {
+        type: [String]
+    },
+    education: {
+        type: [String]
+    },
+    trainingsDelivered: {
+        type: [String]
+    },
+    clientele: {
+        type: [String]
+    },
+    experience: {
+        type: [String]
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    trainingName: {
+        type: String
+    },
+    isMainResume: {
+        type: Boolean,
+        default: false
+    }
+}, {
+    timestamps: true
+})
+
 const trainerSchema = mongoose.Schema({
     generalDetails: {
         name: {
@@ -83,66 +127,71 @@ const trainerSchema = mongoose.Schema({
             required: true
         }
     }],
-    mainResume: {
-        professionalSummary: [{
-            type: String
-        }],
-        technicalSkills: [{
-            type: String
-        }],
-        careerHistory: [{
-            type: String
-        }],
-        certifications: [{
-            type: String
-        }],
-        education: [{
-            type: String
-        }],
-        trainingsDelivered: [{
-            type: String
-        }],
-        clientele: [{
-            type: String
-        }],
-        experience: [{
-            type: String
-        }]
-    },
-    resumeVersions: [{
-        professionalSummary: {
-            type: [String]
-        },
-        technicalSkills: {
-            type: [String]
-        },
-        careerHistory: {
-            type: [String]
-        },
-        certifications: {
-            type: [String]
-        },
-        education: {
-            type: [String]
-        },
-        trainingsDelivered: {
-            type: [String]
-        },
-        clientele: {
-            type: [String]
-        },
-        experience: {
-            type: [String]
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now
-        },
-        trainingName: {
-            type: String
-        }, // Training name for version
-    }],
+    // mainResume: {
+    //     professionalSummary: [{
+    //         type: String
+    //     }],
+    //     technicalSkills: [{
+    //         type: String
+    //     }],
+    //     careerHistory: [{
+    //         type: String
+    //     }],
+    //     certifications: [{
+    //         type: String
+    //     }],
+    //     education: [{
+    //         type: String
+    //     }],
+    //     trainingsDelivered: [{
+    //         type: String
+    //     }],
+    //     clientele: [{
+    //         type: String
+    //     }],
+    //     experience: [{
+    //         type: String
+    //     }]
+    // },
+    // resumeVersions: [{
+    //     professionalSummary: {
+    //         type: [String]
+    //     },
+    //     technicalSkills: {
+    //         type: [String]
+    //     },
+    //     careerHistory: {
+    //         type: [String]
+    //     },
+    //     certifications: {
+    //         type: [String]
+    //     },
+    //     education: {
+    //         type: [String]
+    //     },
+    //     trainingsDelivered: {
+    //         type: [String]
+    //     },
+    //     clientele: {
+    //         type: [String]
+    //     },
+    //     experience: {
+    //         type: [String]
+    //     },
+    //     createdAt: {
+    //         type: Date,
+    //         default: Date.now
+    //     },
+    //     trainingName: {
+    //         type: String
+    //     }, // Training name for version
+    // }],
     // Other information like NDA, Trainer Who added him
+
+    resumeVersion: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Resume'
+    }],
     trainer_sourcer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TrainerSourcer'
@@ -181,7 +230,7 @@ trainerSchema.pre('save', async function(next) {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-// const Resume = mongoose.model('Resume', resumeSchema);
+const Resume = mongoose.model('Resume', resumeSchema);
 const Trainer = mongoose.model('Trainer', trainerSchema);
 
-export { Trainer }
+export { Trainer, Resume }

@@ -22,18 +22,8 @@ function ViewResume({resumes}) {
     const [value, setValue] = useState("")
     const [resumeDetails, setResumeDetails] = useState([])
     // console.log(resumes)
-    useEffect(() => {
-        // setResumeNames(
-        console.log("values")
-        if(value==="Main Resume"){
-            setResumeDetails(resumes[resumes.length-1])
-        }else{
-            console.log("ins")
-            let a = resumes.filter((r)=>r.trainingName===value)
-            setResumeDetails(a)
-        }
-    }, [value])
- console.log(resumeDetails)
+   
+    console.log(resumeDetails)
   return (
     <div className='border-t pt-4'>
         <div className='flex items-center justify-between'>
@@ -87,7 +77,7 @@ function ViewResume({resumes}) {
         </div>
 
         <div>
-            {/* <ResumeDetails /> */}
+            <ResumeDetails />
         </div>
     </div>
   )

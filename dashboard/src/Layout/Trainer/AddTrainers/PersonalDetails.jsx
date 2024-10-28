@@ -5,15 +5,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setResumeDetails} from '@/features/trainerSlice.js';
 
 
-function PersonalDetails({data}) {
+function PersonalDetails() {
     const dispatch = useDispatch();
     const {trainerDetails} = useSelector(state => state.trainer)
 
-    useEffect(() => {
-        if(data) {
-            setGeneralDetails(data)
-        }
-    }, [data])
 
     const [generalDetails,
         setGeneralDetails] = useState({name: "", email: "", phoneNumber: Number(), whatsappNumber: Number(), alternateNumber: Number(), dateOfBirth:Date()})
@@ -37,12 +32,12 @@ function PersonalDetails({data}) {
                 className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[25px] mb-3 mt-3 place-items-center'>
                 <div>
                     <Label htmlFor="Name">Name</Label>
-                    <Input type="text" id="name" name="name" onChange={(e) => handleChange(e)} value={generalDetails.name}/>
+                    <Input type="text" id="name" name="name" onChange={(e) => handleChange(e)} />
                 </div>
 
                 <div>
                     <Label htmlFor="Email">Email</Label>
-                    <Input type="email" id="Email" name="email" onChange={(e) => handleChange(e)} value={generalDetails.email}/>
+                    <Input type="email" id="Email" name="email" onChange={(e) => handleChange(e)}/>
                 </div>
 
                 <div>
@@ -53,7 +48,6 @@ function PersonalDetails({data}) {
                     <Input
                         type="number"
                         id="Phone Number"
-                        value={generalDetails.phoneNumber} 
                         name="phoneNumber"
                         onChange={(e) => handleChange(e)}/>
                 </div>
@@ -65,9 +59,7 @@ function PersonalDetails({data}) {
                     <Input
                         type="number"
                         id="Whatsapp Number"
-                        value={generalDetails.whatsappNumber
-                        ? generalDetails.whatsappNumber
-                        : generalDetails.phoneNumber}
+                        value={generalDetails.whatsappNumber === null ?  generalDetails.phoneNumber: generalDetails.whatsappNumber}
                         name="whatsappNumber"
                         onChange={(e) => handleChange(e)}/>
                 </div>
@@ -77,7 +69,6 @@ function PersonalDetails({data}) {
                     <Input
                         type="number"
                         id="Alternate Number"
-                        value={generalDetails.alternateNumber}
                         name="alternateNumber"
                         onChange={(e) => handleChange(e)}/>
                 </div>
@@ -107,7 +98,7 @@ function PersonalDetails({data}) {
                             />
                         </PopoverContent>
                     </Popover> */}
-                    <Input type="date" className="w-max" id="name" name="dateOfBirth" onChange={(e) => handleChange(e)} value={(new Date(generalDetails.dateOfBirth))}/>
+                    <Input type="date" className="w-max" id="name" name="dateOfBirth" onChange={(e) => handleChange(e)}/>
                 </div>
 
 
