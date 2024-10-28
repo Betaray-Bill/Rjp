@@ -5,13 +5,19 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setResumeDetails} from '@/features/trainerSlice.js';
 
 
-function PersonalDetails() {
+function PersonalDetails({data}) {
     const dispatch = useDispatch();
     const {trainerDetails} = useSelector(state => state.trainer)
 
 
     const [generalDetails,
-        setGeneralDetails] = useState({name: "", email: "", phoneNumber: Number(), whatsappNumber: Number(), alternateNumber: Number(), dateOfBirth:Date()})
+        setGeneralDetails] = useState({name: "", email: "", phoneNumber: null, whatsappNumber: null, alternateNumber: null, dateOfBirth:Date()})
+
+    useEffect(() => {
+        if(data) {
+            setGeneralDetails(data)
+        }
+    }, [data])
 
  
     const handleChange = (event) => {
@@ -32,12 +38,12 @@ function PersonalDetails() {
                 className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[25px] mb-3 mt-3 place-items-center'>
                 <div>
                     <Label htmlFor="Name">Name</Label>
-                    <Input type="text" id="name" name="name" onChange={(e) => handleChange(e)} />
+                    <Input type="text" value={generalDetails.name} id="name" name="name" onChange={(e) => handleChange(e)} />
                 </div>
 
                 <div>
                     <Label htmlFor="Email">Email</Label>
-                    <Input type="email" id="Email" name="email" onChange={(e) => handleChange(e)}/>
+                    <Input type="email" value={generalDetails.email} id="Email" name="email" onChange={(e) => handleChange(e)}/>
                 </div>
 
                 <div>
@@ -48,6 +54,7 @@ function PersonalDetails() {
                     <Input
                         type="number"
                         id="Phone Number"
+                        value={generalDetails.phoneNumber ? generalDetails.phoneNumber : ""}
                         name="phoneNumber"
                         onChange={(e) => handleChange(e)}/>
                 </div>
@@ -69,36 +76,14 @@ function PersonalDetails() {
                     <Input
                         type="number"
                         id="Alternate Number"
+                        value={generalDetails.alternateNumber !== "" ? generalDetails.alternateNumber : ""}  // if alternateNumber is null then take phoneNumber
                         name="alternateNumber"
                         onChange={(e) => handleChange(e)}/>
                 </div>
 
                 <div className='flex flex-col'>
                     <Label htmlFor="Date of Birth" className="mb-2">Date of Birth</Label>
-                    {/* <Popover>
-                        <PopoverTrigger asChild>
-                            <Button
-                            variant={"outline"}
-                            className={cn(
-                                "w-[300px] justify-start text-left font-normal",
-                                !date && "text-muted-foreground"
-                            )}
-                            >
-                            <CalendarIcon />
-                            {date ? format(date, "PPP") : <span>Pick a date</span>}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                            <Calendar
-                                mode="single"
-                                // name="dateOfBirth" onChange={(e) => handleChange(e)}
-                                selected={date}
-                                onSelect={setDate}
-                                initialFocus
-                            />
-                        </PopoverContent>
-                    </Popover> */}
-                    <Input type="date" className="w-max" id="name" name="dateOfBirth" onChange={(e) => handleChange(e)}/>
+                    <Input type="date" className="w-max" id="name" name="dateOfBirth" onChange={(e) => handleChange(e)} value={generalDetails.dateOfBirth}/>
                 </div>
 
 
