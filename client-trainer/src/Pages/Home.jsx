@@ -87,7 +87,7 @@ function Home() {
   return (
     <div className='flex w-screen h-screen overflow-hidden'>
       {/* SideBar */}
-      <div className='md:w-[15vw] h-screen bg-white p-4'>
+      <div className='w-[250px] h-screen bg-white p-4'>
         {/* Sidebar Logo */}
         <div className='flex pb-4 justify-between items-start'>
           <img src={logo} alt="Rjp Logo" className='w-30 h-11 mx-4'/>

@@ -41,14 +41,6 @@ function ResumeForm() {
         trainingName: ''
     })
 
-    // useEffect(() => {
-    //     if(currentResumeName ==="Main Resume"){
-    //         setCurrentResume({...user.mainResume})
-    //     }
-    // }, [])
-
-
-
 
     // console.log(currentResume)
     useEffect(() => {
@@ -56,7 +48,7 @@ function ResumeForm() {
             console.log("Same reeume name: " + currentResumeName, saveResumeDetails.trainingName)
 
             if(currentResumeName ==="Main Resume"){
-                setCurrentResume({...user.mainResume})
+                setCurrentResume({...user.resumeVersion[0]})
             }else{
                 setCurrentResume({
                     ...currentResumeDetails, trainingName: currentResumeName
@@ -249,11 +241,8 @@ function ResumeForm() {
     axios.defaults.withCredentials = true;
     //    Update Mutation Query
     const submitResume = useMutation(
-        (data) => axios.put(`http://localhost:5000/api/trainer/updateresume/${user._id}`, {
+        (data) => axios.put(`http://localhost:5000/api/trainer/updateresume/${user._id}/resume/${currentResume._id}`, {
                 ...data, trainingName:currentResumeName,
-                isMainResume: currentResumeName === "Main Resume"
-                    ? true
-                    : false
             }) // Replace with your API endpoint
         ,
         {

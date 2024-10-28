@@ -29,7 +29,6 @@ const registerTrainer = asyncHandler(async(req, res) => {
             isMainResume: true
         })
         await mainResume.save()
-        console.log("main resume is ", mainResume)
 
         // Create a new Trainer using the updated schema
         const trainer = new Trainer({
@@ -68,9 +67,6 @@ const registerTrainer = asyncHandler(async(req, res) => {
             password: req.body.generalDetails.dateOfBirth,
             trainerId: await generateTrainerId(),
         });
-
-        console.log("Trainer Data is ------------------------------------------")
-        console.log(await trainer.populate('resumeVersion'));
 
         // Save the trainer to the database
         await trainer.save();
@@ -194,78 +190,26 @@ const generateTrainerId = async() => {
 
 // update an existing Resume
 const updateResume = asyncHandler(async(req, res) => {
-    const { id } = req.params;
-    console.log("Trainer Id", id)
-    console.log(req.body)
-
+    const { trainer_id } = req.params;
     // Check if the trainer exits
-    const trainer = await Trainer.findById(id);
+    const trainer = await Trainer.findById(trainer_id);
     if (!trainer) {
         return res.status(404).json({ message: "Trainer not found" });
     }
-
+    // Get the Resume Id 
+    const { resume_id } = req.params;
     try {
-        // Check if it the main or copy resume
-        let isMainResume = req.body.isMainResume
-            // if main then updateBytrainerID
-        if (isMainResume) {
-            let updatedTrainer = await Trainer.findByIdAndUpdate(
-                id, { $set: { mainResume: {...req.body } } }, { new: true, runValidators: true }
-            )
+        // Update the Resume Field 
+        const updateResume = await Resume.findByIdAndUpdate(
+            resume_id, { $set: {...req.body } }, { new: true, runValidators: true }
+        )
+        await updateResume.save()
 
-            if (!updatedTrainer) {
-                return res.status(404).json({ message: 'Trainer not found' });
-            }
-            await updatedTrainer.save()
+        res.status(200).json({
+            message: "Resume saved successfully",
+            trainer: updateResume
+        });
 
-            // console.log("Result", trainer.resumeVersions)
-            res.status(200).json({
-                message: "Resume saved succesfully",
-                trainer: updatedTrainer
-            });
-
-        } else {
-            // if copy then check if the same resume exists, then update the docs in the collection
-
-            console.log(req.body.trainingName)
-            console.log("Length ", trainer.resumeVersions.length)
-                // const existingResume = await trainer.resumeVersions.forEach((e))
-            let resumeNew = []
-            for (let i = 0; i < trainer.resumeVersions.length; i++) {
-                console.log(trainer.resumeVersions[i].trainingName)
-                if (trainer.resumeVersions[i].trainingName === req.body.trainingName) {
-                    console.log("-----------------------------")
-                    console.log(trainer.resumeVersions[i])
-                    let newRes = {
-                        professionalSummary: req.body.professionalSummary,
-                        technicalSkills: req.body.technicalSkills,
-                        careerHistory: req.body.careerHistory,
-                        certifications: req.body.certifications,
-                        education: req.body.education,
-                        trainingsDelivered: req.body.trainingsDelivered,
-                        clientele: req.body.clientele,
-                        experience: req.body.experience,
-                        trainingName: req.body.trainingName
-                    }
-                    resumeNew.push(newRes)
-                } else {
-                    resumeNew.push(trainer.resumeVersions[i])
-                }
-            }
-            const updatedResumeTrainer = await Trainer.findByIdAndUpdate(
-                id, { $set: { resumeVersions: resumeNew } }, { new: true, runValidators: true }
-            )
-
-            await updatedResumeTrainer.save();
-
-            console.log("New ", resumeNew)
-
-            console.log("Result", updatedResumeTrainer.resumeVersions)
-            res.status(200).json({
-                message: "Resume saved succesfully",
-                trainer: updatedResumeTrainer
-            });
-        }
 
     } catch (err) {
         console.error("Error creating resume copy:", err);

@@ -21,7 +21,7 @@ router.get("/details/:id", authMiddleware, getTrainerById)
 router.get("/getAll", authMiddleware, authorizeRole(['ADMIN', 'KeyAccounts', 'MANAGER']), getAllTrainer)
 router.post("/:id/copy-resume", authMiddleware, resumeCopy)
 router.get("/signout", authMiddleware, signOut)
-router.put("/updateresume/:id", authMiddleware, updateResume)
+router.put("/updateResume/:trainer_id/resume/:resume_id", authMiddleware, updateResume)
 
 // get
 

@@ -140,9 +140,10 @@ const resumeCopy = asyncHandler(async(req, res) => {
         })
         await resume.save()
 
-        // Save the docs Id in the Trainer Profile 
+        // Save the resume to the trainer profile
         await trainer.resumeVersion.push(resume._id);
-        await trainer.save()
+        await trainer.save();
+
 
         res.status(200).json({
             message: "Resume copy created successfully",
@@ -206,7 +207,7 @@ const getTrainerById = asyncHandler(async(req, res) => {
     const { id } = req.params;
 
     try {
-        const trainer = await Trainer.findById(id).select('-bankDetails -password -nda_Accepted -is_FirstLogin');
+        const trainer = await Trainer.findById(id).populate('resumeVersion').select('-bankDetails -password -nda_Accepted -is_FirstLogin');
         if (!trainer) {
             return res.status(404).json({ message: "Trainer not found" });
         }

@@ -22,7 +22,7 @@ function ViewResume({resumes}) {
     const [value, setValue] = useState("")
     const [resumeDetails, setResumeDetails] = useState([])
     // console.log(resumes)
-   
+    
     console.log(resumeDetails)
   return (
     <div className='border-t pt-4'>

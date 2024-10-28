@@ -43,13 +43,13 @@ function ResumeNav() {
     useEffect(() => {
         if(user !== null || user !== undefined){
             setResumeName([])
-            setResumeName(prev => [...prev, "Main Resume"])
-            user.resumeVersions.forEach(element => {
+            // setResumeName(prev => [...prev, "Main Resume"])
+            user.resumeVersion.forEach(element => {
                 setResumeName(prevState => [...prevState, element.trainingName])
             });
         }
     }, [])
-
+    console.log(resumeName)
     // Check for the changes in the version of the Resume
     useEffect(() => {
         // console.log(position)
@@ -57,12 +57,12 @@ function ResumeNav() {
         if(user !== null || user !== undefined){
             if(position === 'Main Resume'){
                 dispatch(setCurrentResumeName("Main Resume"))
-                dispatch(setCurrentResumeDetails(user.mainResume))
+                dispatch(setCurrentResumeDetails(user.resumeVersion[0]))
                 if(location.pathname !== '/home/resume'){
                     navigate('/home/resume/main')
                 }   
             }else{
-                let resumeVersionId = user.resumeVersions.find(element => element.trainingName === position)
+                let resumeVersionId = user.resumeVersion.find(element => element.trainingName === position)
                 dispatch(setCurrentResumeName(resumeVersionId.trainingName))
                 // console.log(resumeVersionId.trainingName)
                 dispatch(setCurrentResumeDetails(resumeVersionId))
@@ -100,7 +100,7 @@ function ResumeNav() {
                                     : "Select Resume..."}
                                 </span>
                                 <ion-icon name="swap-vertical-outline" style={{fontSize:"20px"}} className="ml-2 h-4 w-4 shrink-0 opacity-50"></ion-icon>
-                            {/* <CaretSortIcon   /> */}
+                          
                             </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-max p-0">
@@ -139,7 +139,7 @@ function ResumeNav() {
                 dispatch(setIsDownload({
                     bool:true, name:currentResumeName
                 }))
-
+                console.log(currentResumeName)
                 navigate(`/home/resume/download/preview/${currentResumeName}`)
             }}>
                 <TooltipProvider>

@@ -1,8 +1,9 @@
 import express from 'express';
 import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
-import { registerTrainer } from '../controllers/TrainerSourcerController.js';
+import { registerTrainer, updateResume } from '../controllers/TrainerSourcerController.js';
 import { signOut } from '../controllers/AuthController.js';
+import { resumeCopy } from '../controllers/TrainerController.js';
 // import multer from 'multer';
 // const upload = multer({ dest: "uploads/" });
 
@@ -24,6 +25,10 @@ router.post("/register-trainer/:trainerId",
 
 
 router.get("/signout", authEmployeeMiddleware, signOut)
+
+// Handling Trainer Data
+router.put("/updateResume/:trainer_id/resume/:resume_id", authEmployeeMiddleware, updateResume)
+
 
 
 export default router
