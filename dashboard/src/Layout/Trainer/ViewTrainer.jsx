@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select"
 import { Button } from '@/components/ui/button'
 import ViewResume from './ViewTrainer/ViewResume'
+import ViewGeneralDetails from './ViewTrainer/ViewGeneralDetails'
 
 function ViewTrainer() {
   const params = useParams()
@@ -85,10 +86,10 @@ function ViewTrainer() {
             </div>
 
             <div className='mt-5'>
-              <form action="" className='border-t pt-4'>
+              <div action="" className='border-t pt-4'>
                 { 
                   viewData === "Details" && 
-                  <PersonalDetails data={data.generalDetails}/>
+                  <ViewGeneralDetails data={data.generalDetails}/>
                 }
                  {
                   viewData === "Training Domains" && 
@@ -98,7 +99,7 @@ function ViewTrainer() {
                   viewData === "Resumes" && 
                   <ViewResume data={data.resumeVersion}/>
                 }
-              </form>
+              </div>
             </div>
             
           </div>

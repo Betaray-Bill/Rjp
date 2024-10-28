@@ -32,7 +32,11 @@ function ViewResumeDetails({data, isNew}) {
         // setExtractedData(data)
         // setIsEdit(false)
       }
-    }, [data.trainingName])
+
+      if(isNew){
+        // New Resume is getting created
+      }
+    }, [data.trainingName, isNew])
   
     const dispatch = useDispatch()
 
