@@ -31,16 +31,7 @@ const initialState = {
         //  Training Domain
         trainingDomain: [],
         // Resume Details - Main Resume
-        mainResume: {
-            professionalSummary: [],
-            technicalSkills: [],
-            careerHistory: [],
-            certifications: [],
-            education: [],
-            trainingsDelivered: [],
-            clientele: [],
-            experience: [],
-        }
+        resumeVersion: []
     },
 };
 
@@ -81,16 +72,7 @@ const trainerSlice = createSlice({
                     modeOfTraining: "",
                 },
                 trainingDomain: [],
-                mainResume: {
-                    professionalSummary: [],
-                    technicalSkills: [],
-                    careerHistory: [],
-                    certifications: [],
-                    education: [],
-                    trainingsDelivered: [],
-                    clientele: [],
-                    experience: [],
-                }
+                resumeVersion: []
             }
         }
 

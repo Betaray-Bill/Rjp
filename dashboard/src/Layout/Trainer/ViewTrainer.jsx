@@ -84,9 +84,9 @@ function ViewTrainer() {
               </div>
             </div>
 
-            <div className='mt-10'>
-              <form action="">
-                {
+            <div className='mt-5'>
+              <form action="" className='border-t pt-4'>
+                { 
                   viewData === "Details" && 
                   <PersonalDetails data={data.generalDetails}/>
                 }
@@ -96,7 +96,7 @@ function ViewTrainer() {
                 }
                  {
                   viewData === "Resumes" && 
-                  <ViewResume />
+                  <ViewResume data={data.resumeVersion}/>
                 }
               </form>
             </div>

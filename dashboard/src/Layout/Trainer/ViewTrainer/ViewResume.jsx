@@ -14,18 +14,32 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import ResumeDetails from '../AddTrainers/Resume/ResumeDetails'
+import { useSelector } from 'react-redux'
+import ViewResumeDetails from './ViewResumeDetails'
 
 
 
-function ViewResume({resumes}) {
+function ViewResume({data}) {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState("")
-    const [resumeDetails, setResumeDetails] = useState([])
-    // console.log(resumes)
+    const [isNew, setIsNew] = useState(false)
+    // const {trainerDetails} = useSelector(state => state.trainer)
+    const [resumeDetails, setResumeDetails] = useState([])  
+
+
+    useEffect(() => {
+        // console.log("Changed to " + value.trainingName)
+        let res = data?.filter(element => {
+            return element.trainingName === value.trainingName
+        });
+        // console.log(res)
+        setResumeDetails(res)
+        // setResumeDetails()
+    }, [value.trainingName])
     
-    console.log(resumeDetails)
+    // console.log(resumeDetails)
   return (
-    <div className='border-t pt-4'>
+    <div className=''>
         <div className='flex items-center justify-between'>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
@@ -33,12 +47,12 @@ function ViewResume({resumes}) {
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-[200px] justify-between"
+                    className="w-[200px] justify-between flex items-center"
                     >
-                        {
-                            value ? (value.trainingName ? value.trainingName : "Main Resume") :"Select Resume"
-                        }
-                 
+                        <span>{
+                            value ?  value.trainingName  : "Select Resume"
+                        }</span>
+                        <ion-icon style={{fontSize:"18px"}} name="chevron-collapse-outline"></ion-icon>
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-0">
@@ -47,17 +61,17 @@ function ViewResume({resumes}) {
                     <CommandList>
                         <CommandEmpty>No Resume found.</CommandEmpty>
                         <CommandGroup>
-                        {resumes?.map((framework, index) => (
+                        {data?.map((framework, index) => (
                             <CommandItem
                                 key={index}
-                                value={framework.trainingName ? framework.trainingName : "Main Resume"}
+                                value={framework.trainingName}
                                 onSelect={(currentValue) => {
                                     setValue(currentValue === value ? "" : (framework))
                                     setOpen(false)
                                 }}
                             >
                         
-                            {framework.trainingName ? framework.trainingName : "Main Resume"}
+                            {framework.trainingName}
                             </CommandItem>
                         ))}
                         </CommandGroup>
@@ -66,18 +80,24 @@ function ViewResume({resumes}) {
                 </PopoverContent>
             </Popover>
 
-            {/* <div>
-                <Button className="bg-blue-700">
-                    <ion-icon name="download-outline" style={{fontSize:"24px"}}></ion-icon>
+            <div className='flex items-center justify-between'>
+                <Button className="bg-white text-gray-800 border-2 border-black">
+                    <ion-icon name="download-outline" style={{fontSize:"18px"}}></ion-icon>
                     <span>Download</span>
                 </Button>
-            </div> */}
+
+                <Button className="ml-4" onClick={() => {setIsNew(true)}}>
+                    <ion-icon name="add-outline" style={{fontSize:"18px"}}></ion-icon>
+                    <span>New Resume</span>
+                </Button>
+            </div>
 
 
         </div>
 
         <div>
-            <ResumeDetails />
+            
+            { value  && <ViewResumeDetails data={value} isNew={isNew}/>}
         </div>
     </div>
   )

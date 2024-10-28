@@ -17,7 +17,7 @@ router.put("/update-profile/:id", authMiddleware, updateTrainerProfile)
 router.put("/change-password/:id", authMiddleware, changepassword)
 router.get("/search", authEmployeeMiddleware, authorizeRole(['ADMIN', 'KeyAccounts', 'MANAGER']), searchTrainer)
 router.post('/trainingDates/:id', authMiddleware, addTrainingDates)
-router.get("/details/:id", authMiddleware, getTrainerById)
+router.get("/details/:id", authEmployeeMiddleware, getTrainerById)
 router.get("/getAll", authMiddleware, authorizeRole(['ADMIN', 'KeyAccounts', 'MANAGER']), getAllTrainer)
 router.post("/:id/copy-resume", authMiddleware, resumeCopy)
 router.get("/signout", authMiddleware, signOut)
@@ -26,6 +26,6 @@ router.put("/updateResume/:trainer_id/resume/:resume_id", authMiddleware, update
 // get
 
 // Get Trainers as Emp they were Registered
-router.get("/getTrainers/:empId", authEmployeeMiddleware, authorizeRole(['ADMIN', 'KeyAccounts', 'MANAGER']), getAllTrainer)
+router.get("/getTrainers", authEmployeeMiddleware, authorizeRole(['ADMIN', 'KeyAccounts', 'MANAGER']), getAllTrainer)
 
 export default router
