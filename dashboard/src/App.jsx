@@ -42,7 +42,7 @@ function App() {
               <Route path='search' element={<Search />} />
             }
             {
-               userAccess([RolesEnum.ADMIN], currentUser?.employee.role) &&
+               userAccess([RolesEnum.ADMIN, RolesEnum.MANAGER ], currentUser?.employee.role) &&
               <Route path='employee' element={<Employee />}>
                 <Route path='' index element={<GetAllEmployee />} />
                 <Route path='add' element={<AddEmployee />} />

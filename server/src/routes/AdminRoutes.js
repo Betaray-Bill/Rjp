@@ -1,5 +1,5 @@
 import express from 'express';
-import { addEmployee, createCompany, getEmployeeById, getAllCompanyNamesAndIds, getAllEmployees, getCompanyDetails, updateEmployeeRole, getAllTrainers } from '../controllers/AdminController.js';
+import { addEmployee, getEmployeeById, getAllEmployees, updateEmployeeRole, getAllTrainers } from '../controllers/AdminController.js';
 import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
@@ -14,7 +14,7 @@ router.get("/", authEmployeeMiddleware, authorizeRole(["ADMIN"]), (req, res) => 
 router.post("/login", login)
 router.post("/register", authEmployeeMiddleware, addEmployee)
 router.get("/signout", authEmployeeMiddleware, signOut)
-router.get("/getAll", authEmployeeMiddleware, authorizeRole(["ADMIN"]), getAllEmployees)
+router.get("/getAll", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER"]), getAllEmployees)
 
 // Get Single Emp
 router.get("/getemployee", authEmployeeMiddleware, authorizeRole(["ADMIN"]), getEmployeeById)
@@ -26,9 +26,9 @@ router.put("/update-role/:empId", authEmployeeMiddleware, authorizeRole(["ADMIN"
 router.get("/get-all-trainers", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER", "Trainer Sourcer"]), getAllTrainers)
 
 // Company and Deal
-router.post("/create-company", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER"]), createCompany)
-router.get("/company/:companyId", authEmployeeMiddleware, getCompanyDetails)
-router.get("/company", authEmployeeMiddleware, getAllCompanyNamesAndIds)
+// router.post("/create-company", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER"]), createCompany)
+// router.get("/company/:companyId", authEmployeeMiddleware, getCompanyDetails)
+// router.get("/company", authEmployeeMiddleware, getAllCompanyNamesAndIds)
 
 
 
