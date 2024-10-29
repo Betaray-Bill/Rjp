@@ -17,7 +17,7 @@ function ViewResumeDetails({data, isNew}) {
     const [error, setError] = useState(null);
     const params = useParams()
     const [resume, setResume] = useState()
-    const toast = useToast()
+    const {toast} = useToast()
     // console.log(resume)
     useEffect(() => {
       if(data && !isNew){
@@ -179,7 +179,10 @@ function ViewResumeDetails({data, isNew}) {
             console.log("object")
             console.log(resume)
             await axios.put(`http://localhost:5000/api/trainersourcer/updateResume/${params.id}/resume/${data._id}`, resume)
-
+            toast({
+                title:"Resume is Updated",
+                description:`${data.trainingName} is Updated`
+            })
         
         }catch(e){
             console.error(e)

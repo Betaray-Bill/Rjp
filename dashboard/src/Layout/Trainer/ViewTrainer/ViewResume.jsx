@@ -18,7 +18,7 @@ import { useSelector } from 'react-redux'
 import ViewResumeDetails from './ViewResumeDetails'
 import ViewNewResume from './ViewNewResume'
 import { Outlet, useNavigate, useParams } from 'react-router-dom'
-
+import { useToast } from "@/hooks/use-toast"
 
 
 function ViewResume({data}) {
@@ -30,6 +30,8 @@ function ViewResume({data}) {
     const params = useParams()
     const navigate = useNavigate()
     console.log(data)
+    const { toast } = useToast()
+ 
     useEffect(() => {
         // console.log("Changed to " + value.trainingName)
         let res = data?.filter(element => {
@@ -88,17 +90,17 @@ function ViewResume({data}) {
                     <ion-icon name="download-outline" style={{fontSize:"18px"}}></ion-icon>
                     <span>Download</span>
                 </Button>
-                        
-                {/* {
+
+                {
                     !isNew ?
                     <Button className="ml-4" onClick={() => {
                         setIsNew(true)
-                        navigate(`/home/trainer/view/${params.id}/add`);
+                        // navigate(`/home/trainer/view/${params.id}/add`);
                     }}>
                         <ion-icon name="add-outline" style={{fontSize:"18px"}}></ion-icon>
                         <span>New Resume</span>
                     </Button> : null
-                } */}
+                }
             </div>
 
 
@@ -107,7 +109,9 @@ function ViewResume({data}) {
         <div>
             
             { 
-                value  && <ViewResumeDetails data={value} isNew={isNew}/> 
+                value? <ViewResumeDetails data={value} isNew={isNew}/> : (
+                    isNew ? <ViewNewResume />:null 
+                )
             }
             {/* <Outlet /> */}
         </div>

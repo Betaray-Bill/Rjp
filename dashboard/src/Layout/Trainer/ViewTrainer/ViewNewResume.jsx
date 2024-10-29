@@ -17,7 +17,7 @@ function ViewNewResume({isNew}) {
     const [extractedData, setExtractedData] = useState(null);
     const [error, setError] = useState(null);
     const [resume, setResume] = useState()
-    const toast = useToast()
+    const {toast} = useToast()
     const params = useParams()
     // console.log(resume)
     useEffect(() => {  
@@ -176,6 +176,12 @@ function ViewNewResume({isNew}) {
             await axios.post(`http://localhost:5000/api/trainersourcer/${params.id}/copy-resume`, resume)
             console.log(`http://localhost:5000/api/trainersourcer/${params.id}/copy-resume`)
             // navigate
+            toast({
+                title:"New Resume Is Created",
+                description: "New Resume Has Been Created Successfully",
+                status: "success",
+                duration: 5000
+            })
         
         }catch(e){
             console.error(e)
