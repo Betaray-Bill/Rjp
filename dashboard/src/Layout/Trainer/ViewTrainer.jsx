@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { useParams } from 'react-router-dom'
 import PersonalDetails from './AddTrainers/PersonalDetails'
@@ -17,6 +17,7 @@ import {
 import { Button } from '@/components/ui/button'
 import ViewResume from './ViewTrainer/ViewResume'
 import ViewGeneralDetails from './ViewTrainer/ViewGeneralDetails'
+import ViewTrainingDomain from './ViewTrainer/ViewTrainingDomain'
 
 function ViewTrainer() {
   const params = useParams()
@@ -29,6 +30,10 @@ function ViewTrainer() {
     const response = await axios.get(`http://localhost:5000/api/trainer/details/${params.id}`); // Replace with your API endpoint
     return response.data
   }
+
+  useEffect(() => {
+    getTrainerById(params.id)
+  }, [])
 
   const {data, refetch,isLoading} = useQuery({
       queryKey:["getTrainerById", params.id], 
@@ -67,33 +72,18 @@ function ViewTrainer() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className='font-semibold text-lg'>
-                {/* Trainer {data.generalDetails?.name} */}
-                {
-                  !isEdit ? 
-                  (
-                    <Button onClick={() => setIsEdit(true)} className="flex items-center">
-                      <ion-icon name="pencil-outline"></ion-icon> Edit
-                    </Button>
-                  ): 
-                  (
-                    <Button onClick={submitHandler}>
-                       Submit
-                    </Button>
-                  )
-                }
-              </div>
+              
             </div>
 
             <div className='mt-5'>
               <div action="" className='border-t pt-4'>
                 { 
                   viewData === "Details" && 
-                  <ViewGeneralDetails data={data.generalDetails}/>
+                  <ViewGeneralDetails id={data._id} data={data.generalDetails}/>
                 }
                  {
                   viewData === "Training Domains" && 
-                  <TrainingDomain data={data.trainingDomain}/>
+                  <ViewTrainingDomain id={data._id} data={data.trainingDomain}/>
                 }
                  {
                   viewData === "Resumes" && 

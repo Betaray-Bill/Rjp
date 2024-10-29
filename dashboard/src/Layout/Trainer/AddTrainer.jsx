@@ -70,6 +70,7 @@ const AddTrainer = () => {
         console.log("Submit Handler")
         try {
             console.log("1")
+            console.log(trainerDetails)
             trainerMutation.mutate(trainerDetails)
         } catch (error) {
             console.log(error);

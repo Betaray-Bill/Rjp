@@ -9,7 +9,7 @@ import {
     TableRow,
   } from "@/components/ui/table"
 import { useQuery } from 'react-query';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {setAllEmp} from '@/features/employeeSlice';
 import axios from 'axios';
 import { Button } from '@/components/ui/button'
@@ -19,9 +19,11 @@ import { Link } from 'react-router-dom'
 function GetTrainer() {
     const [trainer, setTrainer] = useState([])
     const dispatch = useDispatch()
+    const {currentUser} = useSelector(state => state.auth)
 
     const getAll = async() => {
-        const response = await axios.get('http://localhost:5000/api/employee/get-all-trainers'); // Replace with your API endpoint
+        const response = await axios.get(`http://localhost:5000/api/trainersourcer/getTrainer/${currentUser.employee._id}`); // Replace with your API endpoint
+        console.log(response.data.trainers)
         return response.data
     }
 
@@ -56,7 +58,7 @@ function GetTrainer() {
                     </TableRow>
             </TableHeader>
             <TableBody>
-                {data?.trainers?.length>0 && data.trainers?.map((trainer, index) => (
+                {data?.trainers?.length>0 && data?.trainers?. map((trainer, index) => (
                 <TableRow key={index} onClick={() => {
                         console.log(`${index+1}.) ${trainer.email} `)
                     }}

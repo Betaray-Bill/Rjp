@@ -25,6 +25,7 @@ function ResumeDetails({data}) {
     trainingsDelivered: [],
     clientele: [],
     experience: [],
+    trainingName:""
   })
 
   useEffect(() => {

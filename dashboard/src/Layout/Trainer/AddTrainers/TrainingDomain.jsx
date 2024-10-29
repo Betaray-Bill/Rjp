@@ -15,9 +15,8 @@ import { domains } from '@/utils/constants'
 import { useDispatch } from 'react-redux'
 import { setResumeDetails } from '@/features/trainerSlice'
 
-function TrainingDomain({data}) {
+function TrainingDomain({}) {
     const dispatch = useDispatch();
-
 
 
     // Domain Search States
@@ -26,20 +25,18 @@ function TrainingDomain({data}) {
     const [value,
         setValue] = useState("")
 
-    const [trainingDomain,
-        setTrainingDomain] = useState([])
+    const [trainingDomain, setTrainingDomain] = useState([])
 
         useEffect(() => {
-            console.log("dataa ", data)
-            setTrainingDomain(data)
-            // dispatch(setResumeDetails({name: "trainingDomain", data: data}));
-        }, [data])
+            // setTrainingDomain(data)
+            dispatch(setResumeDetails({name: "trainingDomain", data: trainingDomain}));
+        }, [])
 
     const handleSearchTerm = (e) => {
         console.log(e)
         if (e) {
 
-                if (trainingDomain?.length == 0) {
+                if (trainingDomain.length == 0) {
                     setTrainingDomain([
                         {
                             domain: e,
@@ -71,7 +68,7 @@ function TrainingDomain({data}) {
     const [trainingDetails,
         setTrainingDetails] = useState({
             domain: "",
-            price: null,
+            price: Number(),
             paymentSession: ""
         })
 
@@ -290,7 +287,7 @@ function TrainingDomain({data}) {
                         trainingDomain?.length > 0 ? <h4>Domain List</h4> : null
                     }
                     {
-                        trainingDomain && trainingDomain?.map((item, index) => (
+                        trainingDomain && trainingDomain.map((item, index) => (
                         <div key={index} className="mb-2 mt-4 flex items-start w-[70vw] p-4 rounded-md justify-between border border-slate-100 shadow-md">
                             <div className='flex flex-col'>
                                 <Label className="text-lg font-semibold">{index + 1}. {item.domain}</Label>
@@ -299,11 +296,11 @@ function TrainingDomain({data}) {
                             <div className='flex items-start justify-between ml-10'>
                                 <div>
                                     <Label className="text-md font-medium text-slate-700">Enter Price (₹)</Label>
-                                    <Input type="number" placeholder="Enter Price(Rupees)" value={item.price ? item.price : ""} name="price" className="w-[200px]" onChange={(e) =>  handleChange(e, index)}/>
+                                    <Input type="number" placeholder="Enter Price(Rupees)"  name="price" className="w-[200px]" onChange={(e) =>  handleChange(e, index)}/>
                                 </div>
                                 <div className='flex flex-col items-start justify-between ml-10'>
                                     <Label className="text-md font-medium text-slate-700">Enter Mode</Label>
-                                    <select name="paymentSession" id="" className='w-max'  onChange={(e) =>  handleChange(e, index)} value={item.paymentSession}>
+                                    <select name="paymentSession" id="" className='w-max' value={item.paymentSession}  onChange={(e) =>  handleChange(e, index)}>
                                         <option value="Select Mode">Select Mode</option>
                                         <option value="Online Hourly">Online Hourly</option>
                                         <option value="Online Per-day">Online Per-day</option>

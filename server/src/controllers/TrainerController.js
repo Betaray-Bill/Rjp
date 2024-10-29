@@ -60,7 +60,7 @@ const acceptNDA = asyncHandler(async(req, res) => {
 const updateTrainerProfile = asyncHandler(async(req, res) => {
     const { id } = req.params;
     const updateData = req.body;
-
+    console.log(req.body)
     try {
         // Find the trainer by ID and update their profile
         const updatedTrainer = await Trainer.findByIdAndUpdate(
@@ -117,7 +117,8 @@ const resumeCopy = asyncHandler(async(req, res) => {
     const { id } = req.params;
     console.log("Trainer Id", id)
     console.log(req.body)
-        // Check if the trainer exits
+
+    // Check if the trainer exits
     const trainer = await Trainer.findById(id);
     if (!trainer) {
         return res.status(404).json({ message: "Trainer not found" });
@@ -249,6 +250,6 @@ export {
     addTrainingDates,
     getTrainerById,
     getAllTrainer,
-    resumeCopy,
+    resumeCopy, // - Create a New Resume
     changepassword
 }

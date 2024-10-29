@@ -29,8 +29,8 @@ const authMiddleware = asyncHandler(async(req, res, next) => {
 // Middleware to authenticate and authorize users
 const authEmployeeMiddleware = asyncHandler(async(req, res, next) => {
     let token = req.cookies.empToken; // Get JWT from cookies
-    // console.log("1")
-    // console.log(token)
+    console.log("1")
+    console.log(token)
     if (!token) {
         // Write a sign out function over here
         return res.status(401).json({ message: 'Access denied. No token provided.' });

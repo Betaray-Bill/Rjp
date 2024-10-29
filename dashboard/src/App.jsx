@@ -20,6 +20,8 @@ import AddTrainer from './Layout/Trainer/AddTrainer'
 import GetAllEmployee from './Layout/Employees/GetAllEmployee'
 import AddEmployee from './Layout/Employees/AddEmployee'
 import ViewEmployee from './Layout/Employees/ViewEmployee'
+import ViewNewResume from './Layout/Trainer/ViewTrainer/ViewNewResume'
+import ViewResumeDetails from './Layout/Trainer/ViewTrainer/ViewResumeDetails'
 
 
 function App() {
@@ -55,7 +57,12 @@ function App() {
                   <Route path='add' element={<AddTrainer />} />
                   <Route path='' index element={<GetTrainer />} />
                   {/* <Route path='edit/:id' element={<AddTrainer />} /> */}
-                  <Route path='view/:id' element={<ViewTrainer />} />
+                  <Route path='view/:id' element={<ViewTrainer />}>
+                    <Route path='add' element={<ViewNewResume />} />
+                    {/* <Route path='resume' element={<ViewResumeDetails />} /> */}
+                    {/* <Route path='add' element={<ViewNewResume />} /> */}
+
+                  </Route>
                   <Route path='*' element={<Navigate to="/home" replace />} />
                 </Route>
               )

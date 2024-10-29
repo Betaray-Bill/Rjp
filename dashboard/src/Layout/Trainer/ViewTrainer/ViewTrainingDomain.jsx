@@ -17,8 +17,7 @@ import { setResumeDetails } from '@/features/trainerSlice'
 
 function ViewTrainingDomain({data}) {
     const dispatch = useDispatch();
-
-
+    const [isEdit, setIsEdit] = useState(true)
 
     // Domain Search States
     const [open,
@@ -141,8 +140,26 @@ function ViewTrainingDomain({data}) {
 
     return (
         <div className='mb-6 grid place-content-center items-center'>
-            <h2
-                className='text-slate-700 grid place-content-center items-center text-lg py-4 pt-2 font-semibold'>Training Domains</h2>
+            <div className='flex justify-between'>
+                <h2 className='text-slate-700 grid place-content-center items-center text-lg py-4 pt-2 font-semibold'>Training Domains</h2>
+                {/* <div>
+                    {
+                        isEdit ? 
+                        (
+                            <Button
+                                onClick={() => setIsEdit(false)}>Edit</Button>
+                            // </Button>
+                        ):
+                        (
+                            <Button>
+                                Submit
+                            </Button>
+                        )
+                    }
+                </div> */}
+
+            </div>
+            
             <div className='mt-3'>
                 <div className='flex flex-col'>
                     {/* <Label htmlFor="trainingDomain" className="mb-3">Training Domain</Label> */}

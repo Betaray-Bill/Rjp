@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { setResumeDetails } from '@/features/trainerSlice';
 import { useToast } from '@/hooks/use-toast';
@@ -8,41 +9,35 @@ import React, { useRef, useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-function ViewResumeDetails({data, isNew}) {
+function ViewNewResume({isNew}) {
     const [file, setFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [isEdit, setIsEdit] = useState(true)
     const [extractedData, setExtractedData] = useState(null);
     const [error, setError] = useState(null);
-    const params = useParams()
     const [resume, setResume] = useState()
     const toast = useToast()
+    const params = useParams()
     // console.log(resume)
-    useEffect(() => {
-      if(data && !isNew){
-        console.log(data[0])
+    useEffect(() => {  
+        console.log("Clicked on New Resume")
         setResume({
-            professionalSummary: data ? data.professionalSummary : [],
-            technicalSkills: data ? data.technicalSkills : [],
-            careerHistory: data ? data.careerHistory : [],
-            certifications: data ? data.certifications : [],
-            education: data ? data.education : [],
-            trainingsDelivered: data ? data.trainingsDelivered : [],
-            clientele: data ? data.clientele : [],
-            experience: data ? data.experience : [],
+            professionalSummary:[],
+            technicalSkills:[],
+            careerHistory:[],
+            certifications:[],
+            education:[],
+            trainingsDelivered:[],
+            clientele:[],
+            experience:[],
+            trainingName: ""
           })
-        // setExtractedData(data)
-        // setIsEdit(false)
-      }
-
-      if(isNew){
-        // New Resume is getting created    
-      }
-    }, [data.trainingName, isNew])
+    }, [])
   
     const dispatch = useDispatch()
 
+    console.log("Clicked on New Resume")
 
   
     // -----------------------Render the Resume Details Sections -------------------------------
@@ -178,8 +173,9 @@ function ViewResumeDetails({data, isNew}) {
         try{
             console.log("object")
             console.log(resume)
-            await axios.put(`http://localhost:5000/api/trainersourcer/updateResume/${params.id}/resume/${data._id}`, resume)
-
+            await axios.post(`http://localhost:5000/api/trainersourcer/${params.id}/copy-resume`, resume)
+            console.log(`http://localhost:5000/api/trainersourcer/${params.id}/copy-resume`)
+            // navigate
         
         }catch(e){
             console.error(e)
@@ -187,7 +183,8 @@ function ViewResumeDetails({data, isNew}) {
         }
 
     }
-  
+    
+    console.log(resume)
   
     return ( 
         <div>
@@ -201,6 +198,14 @@ function ViewResumeDetails({data, isNew}) {
 
           
          <form onSubmit={submitResumeHandler}>
+            <div>
+                <Label>Training Name</Label>
+                <Input 
+                    placeholder="Enter training name"
+                    value={resume?.trainingName}
+                    onChange={(e) => setResume({...resume, trainingName:e.target.value})}
+                />
+            </div>
             <div className='grid grid-cols-1 md:grid-cols-2 items-start '>
                   <div className='mt-4 rounded-sm p-2'>
                       <h3 className='font-semibold flex justify-between items-center'>
@@ -324,4 +329,4 @@ function ViewResumeDetails({data, isNew}) {
   }
   
 
-export default ViewResumeDetails
+export default ViewNewResume

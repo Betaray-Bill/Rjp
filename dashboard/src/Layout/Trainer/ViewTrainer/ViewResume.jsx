@@ -16,6 +16,8 @@ import {
 import ResumeDetails from '../AddTrainers/Resume/ResumeDetails'
 import { useSelector } from 'react-redux'
 import ViewResumeDetails from './ViewResumeDetails'
+import ViewNewResume from './ViewNewResume'
+import { Outlet, useNavigate, useParams } from 'react-router-dom'
 
 
 
@@ -25,8 +27,9 @@ function ViewResume({data}) {
     const [isNew, setIsNew] = useState(false)
     // const {trainerDetails} = useSelector(state => state.trainer)
     const [resumeDetails, setResumeDetails] = useState([])  
-
-
+    const params = useParams()
+    const navigate = useNavigate()
+    console.log(data)
     useEffect(() => {
         // console.log("Changed to " + value.trainingName)
         let res = data?.filter(element => {
@@ -35,9 +38,9 @@ function ViewResume({data}) {
         // console.log(res)
         setResumeDetails(res)
         // setResumeDetails()
-    }, [value.trainingName])
+    }, [])
     
-    // console.log(resumeDetails)
+    console.log(params.id)
   return (
     <div className=''>
         <div className='flex items-center justify-between'>
@@ -85,11 +88,17 @@ function ViewResume({data}) {
                     <ion-icon name="download-outline" style={{fontSize:"18px"}}></ion-icon>
                     <span>Download</span>
                 </Button>
-
-                <Button className="ml-4" onClick={() => {setIsNew(true)}}>
-                    <ion-icon name="add-outline" style={{fontSize:"18px"}}></ion-icon>
-                    <span>New Resume</span>
-                </Button>
+                        
+                {/* {
+                    !isNew ?
+                    <Button className="ml-4" onClick={() => {
+                        setIsNew(true)
+                        navigate(`/home/trainer/view/${params.id}/add`);
+                    }}>
+                        <ion-icon name="add-outline" style={{fontSize:"18px"}}></ion-icon>
+                        <span>New Resume</span>
+                    </Button> : null
+                } */}
             </div>
 
 
@@ -97,7 +106,10 @@ function ViewResume({data}) {
 
         <div>
             
-            { value  && <ViewResumeDetails data={value} isNew={isNew}/>}
+            { 
+                value  && <ViewResumeDetails data={value} isNew={isNew}/> 
+            }
+            {/* <Outlet /> */}
         </div>
     </div>
   )
