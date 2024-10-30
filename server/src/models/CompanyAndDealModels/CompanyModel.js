@@ -1,35 +1,41 @@
 import mongoose from 'mongoose';
 
+// company contact Schema
+const companyContactSchema = new mongoose.Schema({
+    contactName: {
+        type: String,
+        required: true
+    },
+    contactEmail: {
+        type: String,
+        required: true
+    },
+    contactPhoneNumber: {
+        type: Number,
+        required: true
+    },
+    Projects: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project"
+    }]
+})
+
 const companySchema = new mongoose.Schema({
     companyName: {
         type: String,
         required: true
     },
-    contact_details: [
-        {
-            contact_name: {
-                type: String,
-                required: true
-            },
-            contact_email: {
-                type: String,
-                required: true
-            },
-            contact_phone_number: {
-                type: Number,
-                required: true
-            }
-        }
-    ]
-    // Deals: [{
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Deal'
-    // }]
-}, {
-    timestamps: true,
-})
+    contact_details: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'CompanyContact'
+    }],
+    Projects: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project"
+    }]
+}, { timestamps: true })
 
-
+const CompanyContact = mongoose.model('CompanyContact', companyContactSchema);
 const Company = mongoose.model('Company', companySchema);
 
-export default Company
+export { Company, CompanyContact }

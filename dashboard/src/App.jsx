@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux'
 import {userAccess}  from './utils/CheckUserAccess.js'
 import {RolesEnum} from './utils/constants.js'
 import Employee from './Pages/Employees/Employee.jsx'
-import AddCompany from './Layout/AddCompany'
+import AddCompany from './Layout/Company/AddCompany'
 import Trainer from './Pages/Trainer/Trainer'
 import GetTrainer from './Layout/Trainer/GetTrainer'
 import ViewTrainer from './Layout/Trainer/ViewTrainer'
@@ -22,6 +22,7 @@ import AddEmployee from './Layout/Employees/AddEmployee'
 import ViewEmployee from './Layout/Employees/ViewEmployee'
 import ViewNewResume from './Layout/Trainer/ViewTrainer/ViewNewResume'
 import ViewResumeDetails from './Layout/Trainer/ViewTrainer/ViewResumeDetails'
+import Company from './Pages/Company/Company'
 
 
 function App() {
@@ -38,11 +39,11 @@ function App() {
           <Route path='/' index element={<Home />} />
           <Route path='/home' element={<Home />}>
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.MANAGER, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && 
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && 
               <Route path='search' element={<Search />} />
             }
             {
-               userAccess([RolesEnum.ADMIN, RolesEnum.MANAGER ], currentUser?.employee.role) &&
+               userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) &&
               <Route path='employee' element={<Employee />}>
                 <Route path='' index element={<GetAllEmployee />} />
                 <Route path='add' element={<AddEmployee />} />
@@ -51,7 +52,7 @@ function App() {
               </Route>
             }
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER, RolesEnum.MANAGER, RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) &&
+              userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) &&
               (
                 <Route path='trainer' element={<Trainer />}>
                   <Route path='add' element={<AddTrainer />} />
@@ -69,8 +70,11 @@ function App() {
             }
 
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.MANAGER], currentUser?.employee.role) &&
-               <Route path='company' element={<AddCompany />} />
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) &&
+               <Route path='company' element={<Company />}>
+                {/* add-company */}
+                <Route path='add-company' element={<AddCompany />} />
+               </Route>
             }
     
             <Route path='profile' element={<Profile />} />

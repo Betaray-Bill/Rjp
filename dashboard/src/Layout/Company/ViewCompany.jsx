@@ -1,11 +1,11 @@
 import React from 'react'
 
-function Trainers() {
+function ViewCompany() {
   return (
     <div>
-      Trainers
+      
     </div>
   )
 }
 
-export default Trainers
+export default ViewCompany

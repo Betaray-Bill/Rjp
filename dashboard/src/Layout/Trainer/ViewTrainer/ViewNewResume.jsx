@@ -9,7 +9,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-function ViewNewResume({isNew}) {
+function ViewNewResume({data, isNew}) {
     const [file, setFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
@@ -20,20 +20,24 @@ function ViewNewResume({isNew}) {
     const {toast} = useToast()
     const params = useParams()
     // console.log(resume)
-    useEffect(() => {  
-        console.log("Clicked on New Resume")
-        setResume({
-            professionalSummary:[],
-            technicalSkills:[],
-            careerHistory:[],
-            certifications:[],
-            education:[],
-            trainingsDelivered:[],
-            clientele:[],
-            experience:[],
-            trainingName: ""
-          })
-    }, [])
+    useEffect(() => {
+        if(data){
+          setResume({
+              professionalSummary: data ? data.professionalSummary : [],
+              technicalSkills: data ? data.technicalSkills : [],
+              careerHistory: data ? data.careerHistory : [],
+              certifications: data ? data.certifications : [],
+              education: data ? data.education : [],
+              trainingsDelivered: data ? data.trainingsDelivered : [],
+              clientele: data ? data.clientele : [],
+              experience: data ? data.experience : [],
+            })
+          // setExtractedData(data)
+          // setIsEdit(false)
+        }
+  
+      }, [])
+    
   
     const dispatch = useDispatch()
 

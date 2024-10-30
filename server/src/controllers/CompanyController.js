@@ -1,9 +1,9 @@
-import Company from "../models/CompanyAndDealModels/CompanyModel.js";
+import { CompanyContact, Company } from "../models/CompanyAndDealModels/CompanyModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 // Create a Company - new Company for a deal
 const createCompany = asyncHandler(async(req, res) => {
-    const { companyName, contact_name, contact_email, contact_phone_number } = req.body
+    const { companyName, contact_name, c, contact_phone_number } = req.body
 
     // check if the company exists
     const existingCompany = await Company.findOne({ companyName: companyName })
@@ -14,13 +14,18 @@ const createCompany = asyncHandler(async(req, res) => {
     }
 
     try {
+
+        const companyContact = new CompanyContact({
+            contactName: contact_name,
+            contactEmail: contact_name,
+            contactPhoneNumber: contact_phone_number
+        })
+
+        await companyContact.save();
+
         const company = new Company({
             companyName,
-            contact_details: {
-                contact_name,
-                contact_email,
-                contact_phone_number
-            }
+            contact_details: [companyContact._id]
         });
 
         await company.save();
@@ -39,7 +44,7 @@ const createCompany = asyncHandler(async(req, res) => {
 const getCompanyDetails = asyncHandler(async(req, res) => {
     const { companyId } = req.params;
 
-    const company = await Company.findById(companyId);
+    const company = await Company.findById(companyId).populate('contact_details');
     // .populate('Deals')
     if (!company) {
         return res
@@ -61,9 +66,17 @@ const createContact = asyncHandler(async(req, res) => {
         contact_phone_number
     }
     try {
+        const companyContact = new CompanyContact({
+            contactName: contact_name,
+            contactEmail: contact_name,
+            contactPhoneNumber: contact_phone_number
+        })
+
+        await companyContact.save();
+
         await Company.findByIdAndUpdate(companyId, {
             $push: {
-                contact_details: details
+                contact_details: companyContact._id
             }
         }, { new: true });
 

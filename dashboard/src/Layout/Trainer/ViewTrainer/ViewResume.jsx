@@ -110,7 +110,7 @@ function ViewResume({data}) {
             
             { 
                 value? <ViewResumeDetails data={value} isNew={isNew}/> : (
-                    isNew ? <ViewNewResume />:null 
+                    isNew ? <ViewNewResume data={data[0]}/>:null 
                 )
             }
             {/* <Outlet /> */}

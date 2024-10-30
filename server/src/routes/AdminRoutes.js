@@ -14,7 +14,7 @@ router.get("/", authEmployeeMiddleware, authorizeRole(["ADMIN"]), (req, res) => 
 router.post("/login", login)
 router.post("/register", authEmployeeMiddleware, addEmployee)
 router.get("/signout", authEmployeeMiddleware, signOut)
-router.get("/getAll", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER"]), getAllEmployees)
+router.get("/getAll", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), getAllEmployees)
 
 // Get Single Emp
 router.get("/getemployee", authEmployeeMiddleware, authorizeRole(["ADMIN"]), getEmployeeById)
@@ -23,10 +23,10 @@ router.get("/getemployee", authEmployeeMiddleware, authorizeRole(["ADMIN"]), get
 
 // Role Updating Routes
 router.put("/update-role/:empId", authEmployeeMiddleware, authorizeRole(["ADMIN"]), updateEmployeeRole)
-router.get("/get-all-trainers", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER", "Trainer Sourcer"]), getAllTrainers)
+router.get("/get-all-trainers", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts", "Trainer Sourcer"]), getAllTrainers)
 
 // Company and Deal
-// router.post("/create-company", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER"]), createCompany)
+// router.post("/create-company", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), createCompany)
 // router.get("/company/:companyId", authEmployeeMiddleware, getCompanyDetails)
 // router.get("/company", authEmployeeMiddleware, getAllCompanyNamesAndIds)
 

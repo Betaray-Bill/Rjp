@@ -8,10 +8,10 @@ const router = express.Router();
 
 
 // Company 
-router.post("/create-company", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER"]), createCompany)
-router.get("/company/:companyId", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER"]), getCompanyDetails)
+router.post("/create-company", authEmployeeMiddleware, authorizeRole(["ADMIN"]), createCompany)
+router.get("/company/:companyId", authEmployeeMiddleware, authorizeRole(["ADMIN"]), getCompanyDetails)
 router.get("/company", authEmployeeMiddleware, getAllCompanyNamesAndIds)
-router.put("/create-contact/:companyId", authEmployeeMiddleware, authorizeRole(["ADMIN", "MANAGER"]), createContact)
+router.put("/create-contact/:companyId", authEmployeeMiddleware, authorizeRole(["ADMIN"]), createContact)
 
 
 export default router

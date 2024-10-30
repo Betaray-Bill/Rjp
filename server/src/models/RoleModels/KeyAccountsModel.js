@@ -2,8 +2,9 @@ import mongoose from "mongoose";
 
 
 const KeyAccountsSchema = new mongoose.Schema({
-    Deals: [{
-        type: String
+    Projects: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project"
     }]
 });
 

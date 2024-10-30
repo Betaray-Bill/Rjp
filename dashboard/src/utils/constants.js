@@ -1,7 +1,7 @@
 // rolesEnum.js
 export const RolesEnum = Object.freeze({
     ADMIN: 'ADMIN',
-    MANAGER: 'Manager',
+    // MANAGER: 'Manager',
     TRAINER_SOURCER: 'Trainer Sourcer',
     KEY_ACCOUNT: 'KeyAccounts',
     // Add more roles as needed
