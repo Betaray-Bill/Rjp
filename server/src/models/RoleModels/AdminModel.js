@@ -8,6 +8,10 @@ const adminSchema = new mongoose.Schema({
     registeredTrainers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Trainer'
+    }],
+    Projects: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project"
     }]
 });
 

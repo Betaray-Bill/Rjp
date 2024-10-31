@@ -2,15 +2,35 @@ import mongoose from "mongoose";
 
 const projectSchema = new mongoose.Schema({
     projectName: {
-        type: String,
+        type: String
     },
     company: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Company'
+        name: {
+            type: String
+        },
+        Company_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Company'
+        }
+    },
+    contactDetails: {
+        // type: mongoose.Schema.Types.ObjectId, ref: 'CompanyContact'
+        name: {
+            type: String
+        },
+        email: {
+            type: String
+        },
+        contactNumber: {
+            type: String
+        }
     },
     domain: {
         type: String,
         required: true
+    },
+    description: {
+        type: String
     },
     trainingDates: {
         startDate: Date,
@@ -21,7 +41,7 @@ const projectSchema = new mongoose.Schema({
         type: String,
         enum: ['Virtual', 'In-Person']
     },
-    employee: [{
+    employees: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Employee'
     }],
@@ -29,9 +49,7 @@ const projectSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Trainer'
     }]
-}, {
-    timestamps: true,
-});
+}, { timestamps: true });
 
 const Project = mongoose.model('Project', projectSchema);
 export default Project;

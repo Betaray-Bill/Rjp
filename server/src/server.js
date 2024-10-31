@@ -7,6 +7,7 @@ import adminRoutes from "./routes/AdminRoutes.js";
 import companyRoutes from "./routes/CompanyRoutes.js";
 import trainerSourcerRoutes from "./routes/TrainerSourcerRoutes.js";
 import trainerRoutes from "./routes/TrainerRoutes.js";
+import projectRoutes from "./routes/ProjectRoutes.js"
 import azureRoutes from "./routes/azureRoutes.js";
 import http from "http";
 import azureBlobRoutes from "./routes/azureBlobRoutes.js";
@@ -40,6 +41,8 @@ app.use("/api/trainersourcer", trainerSourcerRoutes);
 app.use("/api/trainer", trainerRoutes);
 app.use("/api/resumeextractor", azureRoutes); // Azure routes for checking connection and file upload
 app.use("/api/filestorage", azureBlobRoutes);
+app.use("/api/project", projectRoutes)
+
 
 // Start server
 app.listen(PORT, () => {

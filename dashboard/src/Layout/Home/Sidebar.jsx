@@ -99,6 +99,26 @@ function Sidebar() {
                     </Link>
 }
                 {userAccess([
+                    RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT
+                ], currentUser
+                    ?.employee.role) && 
+                    <Link
+                        to="/home/projects"
+                        className={`flex items-center nav-link rounded-md py-2 px-[8px] mt-2 ${isActive('projects')
+                        ? "bg-blue-100"
+                        : "bg-white"}`}>
+                        <ion-icon
+                            name="search-outline"
+                            style={{
+                            fontSize: "18px"
+                        }}
+                            className=""></ion-icon>
+                        <span className='ml-2 text-[16px] text-black'>
+                            <p className='text-black'>Projects</p>
+                        </span>
+                    </Link>
+                }
+                {userAccess([
                     RolesEnum.ADMIN, RolesEnum.MANAGER
                 ], currentUser
                     ?.employee.role) && <Link

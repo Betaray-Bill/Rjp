@@ -23,6 +23,9 @@ import ViewEmployee from './Layout/Employees/ViewEmployee'
 import ViewNewResume from './Layout/Trainer/ViewTrainer/ViewNewResume'
 import ViewResumeDetails from './Layout/Trainer/ViewTrainer/ViewResumeDetails'
 import Company from './Pages/Company/Company'
+import Project from './Pages/Project/Project'
+import AddProject from './Layout/Project/AddProject'
+import ViewProjects from './Layout/Project/ViewProjects'
 
 
 function App() {
@@ -76,7 +79,16 @@ function App() {
                 <Route path='add-company' element={<AddCompany />} />
                </Route>
             }
-    
+
+
+            {
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) &&
+               <Route path='projects' element={<Project />}>
+                {/* add-company */}
+                <Route path='' index element={<ViewProjects />} />
+                <Route path='create' element={<AddProject />} />
+               </Route>
+            }
             <Route path='profile' element={<Profile />} />
           </Route>
         </Route>
