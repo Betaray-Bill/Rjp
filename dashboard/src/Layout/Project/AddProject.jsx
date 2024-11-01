@@ -10,9 +10,26 @@ import {
 } from "@/components/ui/popover"
 import { Button } from '@/components/ui/button'
 import axios from 'axios'
-
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList
+} from "@/components/ui/command"
+import { domains } from '@/utils/constants'
+// import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
+// import {Label} from '@/components/ui/label'
+// import {Button} from '@/components/ui//button'
 
 function AddProject() {
+
+    // Domain Search States
+    const [open,
+        setOpen] = useState(false)
+    const [value,
+        setValue] = useState("")
 
     const [projectData,
         setProjectData] = useState({
@@ -122,6 +139,60 @@ function AddProject() {
 
     console.log(projectData)
 
+
+    
+    const getFilteredResults = (searchTerm) => {
+        setValue(searchTerm)
+        console.log(searchTerm)
+        if (!searchTerm) return [];
+        console.log("searchTerm", searchTerm)
+        const lowercasedTerm = searchTerm.toLowerCase();
+
+        const a = domains   
+            .map((domain) => {
+                const filteredSubtopics = domain.subtopics
+                    .map((subtopic) => {
+                        // Include subtopic if its name or topic matches, or any of its points match
+                        const matchesSubtopic = subtopic.subtopic.toLowerCase().includes(lowercasedTerm);
+                        const matchesTopic = domain.topic.toLowerCase().includes(lowercasedTerm);
+
+                        // Filter points that match the search term
+                        const filteredPoints = subtopic.points.filter((point) =>
+                            point.toLowerCase().includes(lowercasedTerm)
+                        );
+
+                        // If subtopic or topic matches, include all points; otherwise, include only filtered points
+                        if (matchesSubtopic || matchesTopic || filteredPoints.length > 0) {
+                            return { ...subtopic, points: matchesSubtopic || matchesTopic ? subtopic.points : filteredPoints };
+                        }
+
+                        return null;
+                    })
+                    .filter((subtopic) => subtopic !== null);
+
+                // Include the domain if it has any matching subtopics
+                if (filteredSubtopics.length > 0) {
+                    return { ...domain, subtopics: filteredSubtopics };
+                }
+
+                return null;
+            })
+            .filter((domain) => domain !== null);
+
+        console.log("A ", a)
+        setFilterResults(a);
+    };
+
+    const [filteredResults, setFilterResults] = useState(domains);
+    // console.log(domains)
+
+
+    const handleSubmit =(e) => {
+        e.preventDefault()
+        console.log(projectData)
+        // Submit the form data to the server
+    }
+
     return (
         <div className=''>
             <div className='border-b-[1px] pb-5'>
@@ -130,13 +201,13 @@ function AddProject() {
 
             <div className='mt-8'>
                 {/* Project details form */}
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div>
                         <div>
-                            <h2 className='font-semibold'>Project Information</h2>
+                            <h2 className='font-semibold '>Project Information</h2>
                         </div>
-                        <div className="grid grid-cols-2 gap-8 mt-8">
-                            <div className="flex items-center justify-between">
+                        <div className="grid grid-cols-1 gap-8 mt-8">
+                            <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Project Name</Label>
                                 <Input
                                     type="text"
@@ -145,7 +216,7 @@ function AddProject() {
                                     onChange={handleChange}/>
                             </div>
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Company Name</Label>
                                 {/* <Select
                                     name="company.name"
@@ -176,16 +247,86 @@ function AddProject() {
                                 </select>
                             </div>
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Domain</Label>
-                                <Input
+                                {/* <Input
                                     type="text"
                                     name="domain"
                                     value={projectData.domain}
-                                    onChange={handleChange}/>
+                                    onChange={handleChange}/> */}
+                                <Popover open={open} onOpenChange={setOpen} >
+                                    <PopoverTrigger asChild className='p-2 rounded-md w-max min-w-[300px]:'>
+                                        <Button
+                                            variant="outline"
+                                            role="combobox"
+                                            aria-expanded={open}
+                                            className="justify-start"
+                                        >
+                                            {!projectData.domain ? (
+                                                <span className="flex items-center justify-start">
+                                                    <ion-icon
+                                                        name="search-outline"
+                                                        style={{ fontSize: "18px", marginRight: "12px" }}
+                                                    ></ion-icon>
+                                                    Select Domain
+                                                </span>
+                                            ) : (
+                                                <span className='flex items-center align-middle'>
+                                                    <div className='flex items-center justify-start  text-slate-900'>
+                                                        <span>{projectData.domain}</span>
+                                                        <ion-icon name="close-outline" style={{ fontSize: "18px", marginLeft: "12px" }} onClick={
+                                                            () => {
+                                                                setOpen(false);
+                                                                setValue('');
+                                                                setFilterResults(domains);
+                                                            }
+                                                        }></ion-icon>
+                                                    </div>
+                                                </span>
+                                            )}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className=" p-0">
+                                        <Command>
+                                            <Input  className="w-max m-2 focus:ring-0 focus:ring-offset-0"    
+                                                placeholder="Search Domain by..... "
+                                                onChange={(e) => getFilteredResults(e.target.value)}
+                                                value={value}
+                                            />
+                                            <CommandList>
+                                                <CommandEmpty>No results found.</CommandEmpty>
+                                                {filteredResults?.map((domain) => (
+                                                    <CommandGroup key={domain.topic} heading={domain.topic}>
+                                                        {domain.subtopics.map((subtopic) => (
+                                                            <CommandGroup key={subtopic.subtopic} heading={subtopic.subtopic}>
+                                                                {subtopic.points.map((point) => (
+                                                                    <CommandItem
+                                                                        key={point}
+                                                                        value={point}
+                                                                        onSelect={() => {
+                                                                            console.log("object", point)
+                                                                            setProjectData(prevData => ({
+                                                                                ...prevData,
+                                                                                domain: point
+                                                                            }))
+                                                                            setOpen(false);
+                                                                            setValue()
+                                                                        }}
+                                                                    >
+                                                                        {point}
+                                                                    </CommandItem>
+                                                                ))}
+                                                            </CommandGroup>
+                                                        ))}
+                                                    </CommandGroup>
+                                                ))}
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
                             </div>
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Description</Label>
                                 <Input
                                     type="text"
@@ -194,7 +335,7 @@ function AddProject() {
                                     onChange={handleChange}/>
                             </div>
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Mode of Training</Label>
                                 <Select
                                     name="modeOfTraining"
@@ -212,7 +353,7 @@ function AddProject() {
                                 </Select>
                             </div>
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Training Start Date</Label>
                                 <Input
                                     type="date"
@@ -222,7 +363,7 @@ function AddProject() {
                                    
                             </div>
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Training End Date</Label>
                                 <Input
                                     type="date"
@@ -231,7 +372,7 @@ function AddProject() {
                                     onChange={handleChange}/>
                             </div>
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Training Timing</Label>
                                 <Input
                                     type="text"
@@ -244,13 +385,13 @@ function AddProject() {
 
 
                     {/* Company Contact Details */}
-                    <div className='mt-10'>
+                    <div className='mt-10 '>
                         <div>
-                            <h2 className='font-semibold'>Contact Information</h2>
+                            <h2 className='font-semibold '>Contact Information</h2>
                         </div>
                         <div className="grid grid-cols-2 gap-8 mt-8">
                             {/* Other fields for company and contact details */}
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Contact Name</Label>
                                 <select name="contactDetails.contactName" id="" className='w-[300px]' onChange={(e) => {
                                     // console.log(e.target.value)
@@ -270,7 +411,7 @@ function AddProject() {
                                     onChange={handleChange}/> */}
                             </div>
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Contact Email</Label>
                                 <Input
                                     type="email"
@@ -279,7 +420,7 @@ function AddProject() {
                                     onChange={handleChange}/>
                             </div>
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Contact Number</Label>
                                 <Input
                                     type="text"
@@ -290,6 +431,9 @@ function AddProject() {
                         </div>
                     </div>
                 </form>
+            </div>
+            <div className='flex justify-center my-10'>
+                <Button type="submit">Submit</Button>
             </div>
             {/* {
                 JSON.stringify(projectData)
