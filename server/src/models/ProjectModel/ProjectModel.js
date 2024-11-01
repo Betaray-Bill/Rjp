@@ -4,6 +4,9 @@ const projectSchema = new mongoose.Schema({
     projectName: {
         type: String
     },
+    projectOwner: {
+        type: String
+    },
     company: {
         name: {
             type: String
@@ -24,6 +27,9 @@ const projectSchema = new mongoose.Schema({
         contactNumber: {
             type: String
         }
+    },
+    amount: {
+        type: Number
     },
     domain: {
         type: String,

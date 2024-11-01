@@ -101,7 +101,8 @@ const getAllCompanyNamesAndIds = asyncHandler(async(req, res) => {
         // Find all companies and project only name and _id fields
         const companies = await Company
             .find()
-            .select('companyName contact_details');
+            .select('companyName')
+            .populate('contact_details');
         console.log(companies)
         if (!companies || companies.length === 0) {
             return res

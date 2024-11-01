@@ -108,7 +108,7 @@ function Sidebar() {
                         ? "bg-blue-100"
                         : "bg-white"}`}>
                         <ion-icon
-                            name="search-outline"
+                            name="file-tray-stacked-outline"
                             style={{
                             fontSize: "18px"
                         }}
