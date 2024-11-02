@@ -29,7 +29,9 @@ import { fontSize } from '@mui/system'
    
 function AddEmployee() {
     const {allEmployee} = useSelector(state => state.employee)
-    console.log(allEmployee)
+    const {project} = useSelector(state => state.project)
+
+    console.log(project)
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState("")
     const [searchTerm, setSearchTerm] = useState("")
@@ -45,7 +47,7 @@ function AddEmployee() {
     const handleSearchEmployee = (searchTerm) => {
         const filteredEmployees = allEmployee.filter(emp => emp.name.toLowerCase().includes(searchTerm.toLowerCase()))
         setEmployees(filteredEmployees)
-        console.log(filteredEmployees)
+        // console.log(filteredEmployees)
     }
 
     const handleSelectedEmployee = (emp) => {
@@ -59,9 +61,9 @@ function AddEmployee() {
     }
 
     const handleDeleteSelectedEmployee = (emp) => {
-        console.log(emp)
+        // console.log(emp)
         let a = selectedEmployees.filter(e => e._id !== emp._id)
-        console.log(a)
+        // console.log(a)
         setSelectedEmployees(a)
     }
 
@@ -90,9 +92,10 @@ function AddEmployee() {
                     <span>Selected {selectedEmployees.length} Employees</span>
                 </div>
             </div>
+
             {
                 (employees.length > 0 && searchTerm !== "") && (
-                    <div className='absolute w-max z-50 bg-white border rounded-md mt-[4px] mb-10'>
+                    <div className='absolute w-max z-50 bg-white border rounded-md mt-[4px] mb-10 shadow-md'>
                         <div className="ml-2">
                             <div className='flex items-center my-2 cursor-pointer px-2 justify-between'>
                                         <Table>
@@ -173,7 +176,6 @@ function AddEmployee() {
                         </TableBody>
                     </Table>
                 </div>
-            
         }
 
     </div>

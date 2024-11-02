@@ -19,16 +19,22 @@ import {
     CommandList
 } from "@/components/ui/command"
 import { domains } from '@/utils/constants'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import AddEmployee from './Components/AddEmployee'
+import { setCredentials } from '@/features/projectSlice'
+import { useToast } from '@/hooks/use-toast'
 // import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
 // import {Label} from '@/components/ui/label'
 // import {Button} from '@/components/ui//button'
 
 function AddProject() {
+    const toast = useToast()
     // Emp Selector
     const {allEmployee} = useSelector(state => state.employee)
-    console.log(allEmployee)
+    const {currentUser} = useSelector(state => state.auth)
+    console.log(currentUser)
+
+    const dispatch = useDispatch()
     
     // Domain Search States
     const [open,
@@ -65,12 +71,12 @@ function AddProject() {
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        console.log(value)
+        // console.log(value)
         // Update nested fields if necessary
         if (name.includes('.')) {
             const keys = name.split('.');
             if(keys[0] === 'company'){
-                console.log("COmp")
+                // console.log("COmp")
                 setProjectData(prevData => ({
                    ...prevData,
                     company: {
@@ -78,7 +84,7 @@ function AddProject() {
                         id: companyData.find(c => c.companyName === value)._id
                     }
                 }));
-                console.log(companyData.find(c => c.companyName === value))
+                // console.log(companyData.find(c => c.companyName === value))
                 setCompanyContactData(companyData.find(c => c.companyName === value).contact_details)
             }else{
                 setProjectData(prevData => ({
@@ -95,11 +101,13 @@ function AddProject() {
                 [name]: value
             }));
         }
+
+        
     };
 
     const handleContactChange = value => {
         let a = companyContactData.find(c => c.contactName === value)
-        console.log(a)
+        // console.log(a)
         setProjectData(prevData => ({
             ...prevData,
             contactDetails: {
@@ -108,6 +116,8 @@ function AddProject() {
                 contactPhoneNumber: a?.contactPhoneNumber
             }
         }));
+
+        // dispatch(setCredentials({ projectData}))
     }
 
     // Fetch the DATA of companies and contact Person
@@ -115,10 +125,10 @@ function AddProject() {
         try {
             const response = await axios.get('http://localhost:5000/api/company/company');
             const data = await response.data
-            console.log(data.companies)
+            // console.log(data.companies)
             setCompanyData(data.companies);
         } catch (error) {
-            console.error('Error:', error);
+            // console.error('Error:', error);
         }
     }
 
@@ -132,13 +142,13 @@ function AddProject() {
 
     }, [projectData.company.name])
 
-    console.log(projectData)
+    // console.log(projectData)
   
     const getFilteredResults = (searchTerm) => {
         setValue(searchTerm)
-        console.log(searchTerm)
+        // console.log(searchTerm)
         if (!searchTerm) return [];
-        console.log("searchTerm", searchTerm)
+        // console.log("searchTerm", searchTerm)
         const lowercasedTerm = searchTerm.toLowerCase();
 
         const a = domains   
@@ -172,18 +182,30 @@ function AddProject() {
             })
             .filter((domain) => domain !== null);
 
-        console.log("A ", a)
+        // console.log("A ", a)
         setFilterResults(a);
     };
 
     const [filteredResults, setFilterResults] = useState(domains);
-    // console.log(domains)
+    console.log(domains)
 
 
-    const handleSubmit =(e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault()
-        console.log(projectData)
+        // console.log(projectData)
         // Submit the form data to the server
+        try{
+            const result = await axios.post(`http://localhost:5000/api/project/create/${currentUser.employee._id}`, projectData)
+            const response = await result.data;
+
+            console.log(response)
+        toast({
+            title: "Project Created",
+            // description: "Friday, February 10, 2023 at 5:57 PM",
+        })
+        }catch(err){
+            console.error('Error:', err);
+        }
     }
 
     return (
@@ -229,7 +251,7 @@ function AddProject() {
                                 </Select> */}
                                 <select name="company.name" className='w-[300px]' id="" onChange={(value) => {
                                     handleChange(value)
-                                    console.log(value.target.value)
+                                    // console.log(value.target.value)
                                 }}>
                                      <option value="">Select Company</option>
                                      {
@@ -297,7 +319,7 @@ function AddProject() {
                                                                         key={point}
                                                                         value={point}
                                                                         onSelect={() => {
-                                                                            console.log("object", point)
+                                                                            // console.log("object", point)
                                                                             setProjectData(prevData => ({
                                                                                 ...prevData,
                                                                                 domain: point
@@ -387,7 +409,7 @@ function AddProject() {
                             <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Contact Name</Label>
                                 <select name="contactDetails.contactName" id="" className='w-[300px]' onChange={(e) => {
-                                    // console.log(e.target.value)
+                                    console.log(e.target.value)
                                     handleContactChange(e.target.value)
                                 }}>
                                     <option value="">Contact Name</option>
@@ -431,11 +453,13 @@ function AddProject() {
                         </div>
                        <AddEmployee />
                     </div>
+
+                    <div className='flex justify-center my-10'>
+                        <Button type="submit">Submit</Button>
+                    </div>
                 </form>
             </div>
-            <div className='flex justify-center my-10'>
-                <Button type="submit">Submit</Button>
-            </div>
+
             {/* {
                 JSON.stringify(projectData)
             } */}

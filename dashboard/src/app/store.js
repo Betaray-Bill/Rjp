@@ -3,7 +3,7 @@ import authReducer from '../features/authSlice.js'
 import trainerReducer from '../features/trainerSlice.js'
 import searchTrainerReducer from '../features/searchTrainerSlice.js'
 import employeeReducer from '../features/employeeSlice.js'
-
+import projectReducer from '../features/projectSlice.js'
 import {
     persistReducer,
     persistStore,
@@ -17,11 +17,12 @@ import {
 import storage from 'redux-persist/lib/storage';
 
 
-const rootReducer = combineReducers({ 
-    auth: authReducer, 
-    trainer: trainerReducer, 
-    employee: employeeReducer, 
+const rootReducer = combineReducers({
+    auth: authReducer,
+    trainer: trainerReducer,
+    employee: employeeReducer,
     searchTrainer: searchTrainerReducer,
+    project: projectReducer
 });
 
 const persistConfig = {
