@@ -9,7 +9,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from '@/components/ui/button'
-import axios from 'axios'
+import axios, { all } from 'axios'
 import {
     Command,
     CommandEmpty,
@@ -19,12 +19,17 @@ import {
     CommandList
 } from "@/components/ui/command"
 import { domains } from '@/utils/constants'
+import { useSelector } from 'react-redux'
+import AddEmployee from './Components/AddEmployee'
 // import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
 // import {Label} from '@/components/ui/label'
 // import {Button} from '@/components/ui//button'
 
 function AddProject() {
-
+    // Emp Selector
+    const {allEmployee} = useSelector(state => state.employee)
+    console.log(allEmployee)
+    
     // Domain Search States
     const [open,
         setOpen] = useState(false)
@@ -118,29 +123,17 @@ function AddProject() {
     }
 
     useEffect(() => {
-        console.log("Meow")
         // Fetch All the Company Name and the Contact Person
         fetchCompaniesAndContactPerson()
 
     }, [])
-
-    const handleCompanySelect = (value) => {
-        console.log(value)
-        setProjectData(prevData => ({
-            ...prevData,
-            company: { id: value.is, name: value.companyName }
-        }));
-    }
-
 
     useEffect(() => {
 
     }, [projectData.company.name])
 
     console.log(projectData)
-
-
-    
+  
     const getFilteredResults = (searchTerm) => {
         setValue(searchTerm)
         console.log(searchTerm)
@@ -202,7 +195,7 @@ function AddProject() {
             <div className='mt-8'>
                 {/* Project details form */}
                 <form onSubmit={handleSubmit}>
-                    <div>
+                    <div className='border rounded-md py-5 px-3'>
                         <div>
                             <h2 className='font-semibold '>Project Information</h2>
                         </div>
@@ -354,7 +347,7 @@ function AddProject() {
                             </div>
 
                             <div className="flex items-center justify-start">
-                                <Label className="font-normal mr-4">Training Start Date</Label>
+                                <Label className="font-normal mr-4">Training start Date</Label>
                                 <Input
                                     type="date"
                                     name="trainingDates.startDate"
@@ -385,7 +378,7 @@ function AddProject() {
 
 
                     {/* Company Contact Details */}
-                    <div className='mt-10 '>
+                    <div className='mt-10 border rounded-md py-5 px-3'>
                         <div>
                             <h2 className='font-semibold '>Contact Information</h2>
                         </div>
@@ -429,6 +422,14 @@ function AddProject() {
                                     onChange={handleChange}/>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Employee Adding Section */}
+                    <div className='mt-10 border rounded-md py-5 px-3'>
+                        <div>
+                            <h2 className='font-semibold '>Employees Information</h2>
+                        </div>
+                       <AddEmployee />
                     </div>
                 </form>
             </div>
