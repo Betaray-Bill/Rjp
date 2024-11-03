@@ -4,20 +4,25 @@ import {TextField} from '@mui/material';
 import axios from 'axios';
 import React, {useEffect, useState} from 'react'
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+  } from "@/components/ui/dropdown-menu"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+  } from "@/components/ui/popover"
   
 import {useDispatch, useSelector} from 'react-redux';
 import {resetDomainResultsAndSearch, setDomainResults, setIsSearching, setSearchDomain} from '@/features/searchTrainerSlice';
@@ -143,7 +148,7 @@ function SearchBar() {
                                 className="min-w-[50vw] ml-4 border-none bg-none"></Input>
                         </div>
                         
-                        <div className="hover:bg-gray-200 cursor-pointer rounded p-2"> 
+                        {/* <div className="hover:bg-gray-200 cursor-pointer rounded p-2"> 
                             <ion-icon name="filter-outline" style={{fontSize:"22px", color:"black"}} onClick={() => {
                                 if(filter){
                                     setFilter(false)
@@ -151,68 +156,78 @@ function SearchBar() {
                                     setFilter(true)
                                 }
                             }}></ion-icon>
-                        </div>
+                        </div> */}
 
                     </div>
                     <Button type="submit" className="hidden">Search</Button>
-                {
+                {/* {
                     filter ?
-                    (
-                        <div className='mt-4 border border-gray-400 py-2 px-4 rounded-lg shadow-md'>
-                            <div className="flex items-center cursor-pointer border-black border px-2 bg-blue-200 w-max rounded-md"  onClick={() => setFilter(false)}> 
-                                <ion-icon name="close-outline" style={{fontSize:"22px", color:"black"}}></ion-icon>
-                                <span>Filter</span>
+                    ( */}
+                        <div className='mt-4 py-2 px-4 flex items-start justify-between'>
+                            <div className="flex items-center justify-between cursor-pointer border-gray-200 border px-3 py-[3px] rounded-full"  onClick={() => setFilter(false)}> 
+                                <ion-icon name="filter-outline" style={{fontSize:"20px", color:"black"}}></ion-icon>
+                                <p className='ml-3'>Filter</p>
                             </div>
-                            <div className="mt-4 flex items-start">
+                            <div className=" flex items-center">
                                 {/* PRice Filter */}
-                                <div className='border w-max p-3 rounded-md'>
-                                    <h3 className='font-semibold'>Rate (₹)</h3>
-                                    <div className='flex mt-3'>
-                                        <div className="flex flex-col">
-                                            <Label className="text-gray-900 font-light">Start Price</Label>
-                                            <input
-                                                type="number"
-                                                value={startPrice}
-                                                onChange={(e) => setStartPrice(e.target.value)}
-                                                className="w-[100px] py-1 px-2 border mt-2 rounded-sm border-gray-700"/>
-                                        </div>
-                                        <div className="flex flex-col ml-3">
-                                            <Label className="text-gray-900 font-light">Ending Price</Label>
-                                            <input
-                                                type="number"
-                                                value={endPrice}
-                                                onChange={(e) => setEndPrice(e.target.value)}
-                                                className="w-[100px] py-1 px-2 border mt-2 rounded-sm border-gray-700"/>
-                                        </div>
-                                    </div>
+                                <div className='border w-max px-4 py-[3px]  rounded-full'>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <span  className="border-none cursor-pointer">Rate (₹)</span>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-80">
+                                            <div className="grid gap-4">
+                                            <div className="space-y-2">
+                                                <h4 className="font-medium leading-none">Rate Per Session</h4>
+                                                {/* <p className="text-sm text-muted-foreground">
+                                                Set the dimensions for the layer.
+                                                </p> */}
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <div className="grid grid-cols-3 items-center gap-4">
+                                                        <Label>Start Price</Label>
+                                                        <input
+                                                            type="number"
+                                                            value={startPrice}
+                                                            onChange={(e) => setStartPrice(e.target.value)}
+                                                            className="w-[100px] py-1 px-2 border mt-2 rounded-sm border-gray-700"/>
+                                                </div>
+                                                <div className="grid grid-cols-3 items-center gap-4">
+                                                        <Label>End Price</Label>
+                                                        <input
+                                                            type="number"
+                                                            value={endPrice}
+                                                            onChange={(e) => setEndPrice(e.target.value)}
+                                                            className="w-[100px] py-1 px-2 border mt-2 rounded-sm border-gray-700"/>
+                                                </div>
+                                                
+                                            </div>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
                                 </div>
-
                                 {/* Type of Training Mode */}
-                                <div className='p-3 rounded-md mx-4 border '>
-                                    <h3 className='font-semibold'>Type of Training Mode</h3>
-                                    <div className='flex mt-3'>
-                                        <Select onValueChange={(e) => {
-                                            console.log(e)
-                                            setTrainingType(e)
-                                        }} >
-                                            <SelectTrigger className="w-max">
-                                                <SelectValue placeholder="Select Training Mode" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="Select Mode">Select Mode</SelectItem>
-                                                <SelectItem value="Online Hourly">Online Hourly</SelectItem>
-                                                <SelectItem value="Online Per-day">Online Per-day</SelectItem>
-                                                <SelectItem value="Offline Hourly">Offline Hourly</SelectItem>
-                                                <SelectItem value="Offline Per Day">Offline Per Day</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-
-                                    </div>
+                                <div className='ml-4'>
+                                            <Select onValueChange={(e) => {
+                                                console.log(e)
+                                                setTrainingType(e)
+                                            }} className="rounded-full border-none">
+                                                <SelectTrigger className="w-max rounded-full">
+                                                    <SelectValue placeholder="Select Training Mode" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {/* <SelectItem value="Select Mode">Select Mode</SelectItem> */}
+                                                    <SelectItem value="Online Hourly">Online Hourly</SelectItem>
+                                                    <SelectItem value="Online Per-day">Online Per-day</SelectItem>
+                                                    <SelectItem value="Offline Hourly">Offline Hourly</SelectItem>
+                                                    <SelectItem value="Offline Per Day">Offline Per Day</SelectItem>
+                                                </SelectContent>
+                                            </Select>
                                 </div>
                             </div>
                         </div>
-                    ) : null
-                }
+                    {/* ) : null
+                } */}
 
             </form>
 

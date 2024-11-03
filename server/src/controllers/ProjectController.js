@@ -122,14 +122,68 @@ const createProject = asyncHandler(async(req, res) => {
 })
 
 
+// Get Projects from the Emp
+const getProjectsByEmp = asyncHandler(async(req, res) => {
+    const { empId } = req.params;
+    const employee = await Employee.findById(empId)
+    if (!employee) {
+        return res.status(404).json({ message: "Employee not found" });
+    }
+
+    let projects
+    if (employee) {
+        console.log("Inside EMp", employee.role)
+            // get the TrainerSourcer Id and then push the trainers Id in the docs
+        for (let i = 0; i < employee.role.length; i++) {
+            console.log(employee.role[i].name)
+            if (employee.role[i].name === 'KeyAccounts') {
+                // console.log("Tainer Src")
+                projects = await KeyAccounts.findById(employee.role[i].roleId).select('Projects').populate({
+                    path: 'Projects',
+                    populate: {
+                        path: 'employees', // Path of employee IDs within each Project
+                        select: 'name email', // Only fetch the 'name' field from each employee
+                    },
+                });
+                // await trainer.save()
+                break;
+            }
+
+            if (employee.role[i].name == 'ADMIN') {
+                console.log('Admin is present')
+                projects = await Admin.findById(employee.role[i].roleId).select('Projects').populate({
+                    path: 'Projects',
+                    populate: {
+                        path: 'employees', // Path of employee IDs within each Project
+                        select: 'name email', // Only fetch the 'name' field from each employee
+                    },
+                });
+                // await trainer.save()
+                // await trainer.save()
+                break;
+            }
+        }
+    }
+    if (!projects) {
+        return res.status(404).json({ message: "No projects found" });
+    }
+
+    res.json({ projects });
+})
+
+
 // Get Projects By Id
 
 const getProjectDetails = asyncHandler(async(req, res) => {
     const { projectId } = req.params;
 
-    const project = await Project.findById(projectId)
-        .populate('company.Company_id')
-        // .populate('employees')
+    const project = await Project.findById(projectId).populate({
+        path: 'employees',
+        select: 'name role email', // Only fetch the 'name' and 'role' fields
+    });
+
+    // .populate('company.Company_id')
+    // .populate('employees')
 
 
     if (!project) {
@@ -148,5 +202,6 @@ const getProjectDetails = asyncHandler(async(req, res) => {
 
 export {
     createProject,
-    getProjectDetails
+    getProjectDetails,
+    getProjectsByEmp
 }

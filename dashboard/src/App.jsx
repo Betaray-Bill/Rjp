@@ -26,6 +26,8 @@ import Company from './Pages/Company/Company'
 import Project from './Pages/Project/Project'
 import AddProject from './Layout/Project/AddProject'
 import ViewProjects from './Layout/Project/ViewProjects'
+import ProjectSearchTrainer from './Layout/Project/Components/ProjectSearchTrainer'
+import ViewSingleProject from './Layout/Project/ViewSingleProject'
 
 
 function App() {
@@ -85,8 +87,9 @@ function App() {
               userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) &&
                <Route path='projects' element={<Project />}>
                 {/* add-company */}
-                <Route path='' index element={<ViewProjects />} />
+                <Route path=''  index element={<ViewProjects />} />
                 <Route path='create' element={<AddProject />} />
+                <Route path='view/:projectId' element={<ViewSingleProject />} />
                </Route>
             }
             <Route path='profile' element={<Profile />} />

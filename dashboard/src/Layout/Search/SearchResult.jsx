@@ -59,20 +59,22 @@ function SearchResult() {
                                         </div>
                                         {/* Domain Based Details */}
                                         <div
-                                            className='flex items-center justify-between my-5 border p-2 rounded-md border-gray-200'>
-                                            <div>
-                                                <h2 className='text-gray-600'>Training Domain</h2>
-                                                <p>
-                                                    <span className='text-black font-semibold'>{res.trainingDomain[0].domain}</span>
-                                                </p>
+                                            className='my-5 border p-2 rounded-md border-gray-200'>
+                                            <div className='flex items-center justify-between'>
+                                                <div>
+                                                    <h2 className='text-gray-600'>Training Domain</h2>
+                                                    <p>
+                                                        <span className='text-black font-semibold '>{res.trainingDomain[0].domain}</span>
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <h2 className='text-gray-600'>Price</h2>
+                                                    <p>
+                                                        <span className='text-black font-semibold'>₹{res.trainingDomain[0].price}</span>
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h2 className='text-gray-600'>Price</h2>
-                                                <p>
-                                                    <span className='text-black font-semibold'>₹{res.trainingDomain[0].price}</span>
-                                                </p>
-                                            </div>
-                                            <div>
+                                            <div className='mt-6'>
                                                 <h2 className='text-gray-600'>Session Taken</h2>
                                                 <p>
                                                     <span className='text-black font-semibold'>{res.trainingDomain[0].paymentSession}</span>

@@ -5,7 +5,8 @@ const projectSchema = new mongoose.Schema({
         type: String
     },
     projectOwner: {
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee'
     },
     company: {
         name: {
