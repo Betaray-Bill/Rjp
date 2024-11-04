@@ -137,14 +137,14 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
         for (let i = 0; i < employee.role.length; i++) {
             console.log(employee.role[i].name)
             if (employee.role[i].name === 'KeyAccounts') {
-                // console.log("Tainer Src")
-                projects = await KeyAccounts.findById(employee.role[i].roleId).select('Projects').populate({
-                    path: 'Projects',
-                    populate: {
-                        path: 'employees', // Path of employee IDs within each Project
-                        select: 'name email', // Only fetch the 'name' field from each employee
-                    },
-                });
+                projects = await KeyAccounts.findById(employee.role[i].roleId).select('Projects')
+                    .populate({
+                        path: 'Projects',
+                        // populate: {
+                        //     path: 'employees', // Path of employee IDs within each Project
+                        //     select: 'name email', // Only fetch the 'name' field from each employee
+                        // },
+                    });
                 // await trainer.save()
                 break;
             }
@@ -153,10 +153,10 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
                 console.log('Admin is present')
                 projects = await Admin.findById(employee.role[i].roleId).select('Projects').populate({
                     path: 'Projects',
-                    populate: {
-                        path: 'employees', // Path of employee IDs within each Project
-                        select: 'name email', // Only fetch the 'name' field from each employee
-                    },
+                    // populate: {
+                    //     path: 'employees', // Path of employee IDs within each Project
+                    //     select: 'name email', // Only fetch the 'name' field from each employee
+                    // },
                 });
                 // await trainer.save()
                 // await trainer.save()
@@ -179,7 +179,7 @@ const getProjectDetails = asyncHandler(async(req, res) => {
 
     const project = await Project.findById(projectId).populate({
         path: 'employees',
-        select: 'name role email', // Only fetch the 'name' and 'role' fields
+        select: 'name email', // Only fetch the 'name' and 'role' fields
     });
 
     // .populate('company.Company_id')

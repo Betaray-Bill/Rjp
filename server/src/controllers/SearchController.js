@@ -10,12 +10,13 @@ const searchTrainer = asyncHandler(async(req, res) => {
         let maxPrice
         if (price) {
             if (price.gte !== undefined) {
-                minPrice = price.gte ? price.gte : undefined;
+                minPrice = price.gte ? Number(price.gte) : undefined;
             }
             if (price.lte !== undefined) {
-                maxPrice = price.lte ? price.lte : undefined;
+                maxPrice = price.lte ? Number(price.lte) : undefined;
             }
         }
+        console.log(minPrice, maxPrice)
         let pipeline = []
         if (domain) {
             pipeline.push({
@@ -27,7 +28,7 @@ const searchTrainer = asyncHandler(async(req, res) => {
             })
         }
 
-        if (price && minPrice && maxPrice && type) {
+        if (minPrice && maxPrice && type) {
             pipeline.push({
                 $project: {
                     trainingDomain: {
@@ -60,9 +61,38 @@ const searchTrainer = asyncHandler(async(req, res) => {
                 },
             })
         } else {
-            if (type) {
-
+            console.log("NO type")
+            if (minPrice && maxPrice) {
+                pipeline.push({
+                    $project: {
+                        trainingDomain: {
+                            $filter: {
+                                input: "$trainingDomain",
+                                as: "td",
+                                cond: {
+                                    $and: [{
+                                            $regexMatch: {
+                                                input: "$$td.domain",
+                                                regex: new RegExp(domain, "i"),
+                                            },
+                                        },
+                                        {
+                                            $gte: ["$$td.price", Number(minPrice)],
+                                        },
+                                        {
+                                            $lte: ["$$td.price", Number(maxPrice)],
+                                        }
+                                    ],
+                                },
+                            },
+                        },
+                        generalDetails: 1,
+                        // bankDetails: 1,
+                        trainerId: 1
+                    },
+                })
             } else {
+                console.log(":Only DOMAIN")
                 pipeline.push({
                     $project: {
                         trainingDomain: {

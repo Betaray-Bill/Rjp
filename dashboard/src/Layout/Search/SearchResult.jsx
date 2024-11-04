@@ -106,7 +106,7 @@ function SearchResult() {
                                         <span className='text-blue-600 cursor-pointer'>View More...</span>
                                     </div>
                                 ))
-    }
+                            }
                         </div> 
                     </Fragment> : null
         

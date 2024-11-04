@@ -8,7 +8,6 @@ import Profile from './Pages/Profile/Profile.jsx'
 // import AddEntity from './Pages/AddEntity/AddEntity.jsx'
 import Search from './Pages/Search/Search.jsx'
 import { useSelector } from 'react-redux'
-// import AddTrainer from './Pages/AddEntity/AddTrainer'
 import {userAccess}  from './utils/CheckUserAccess.js'
 import {RolesEnum} from './utils/constants.js'
 import Employee from './Pages/Employees/Employee.jsx'
@@ -27,7 +26,7 @@ import Project from './Pages/Project/Project'
 import AddProject from './Layout/Project/AddProject'
 import ViewProjects from './Layout/Project/ViewProjects'
 import ProjectSearchTrainer from './Layout/Project/Components/ProjectSearchTrainer'
-import ViewSingleProject from './Layout/Project/ViewSingleProject'
+import ViewSingleProject from './Layout/Project/SingleProject/ViewSingleProject'
 
 
 function App() {

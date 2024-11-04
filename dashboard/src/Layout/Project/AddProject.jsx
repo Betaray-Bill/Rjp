@@ -298,15 +298,7 @@ function AddProject() {
                 title: "Project Created",
                 // description: "Friday, February 10, 2023 at 5:57 PM",
             })
-            // setEmployees([])
-            // setSelectedEmployees([])
-            // search based in the domain
-            // let req_query = `http://localhost:5000/api/trainer/search?domain=${projectData.domain}`;
-            // const search = await axios.get(req_query)
-            // console.log(search.data)
-            // dispatch(setDomainResults(search.data));
-            // redirect to a route  --> /project/
-            // navigate('home/projects/view/:projectId')
+
         }catch(err){
             console.error('Error:', err);
         }

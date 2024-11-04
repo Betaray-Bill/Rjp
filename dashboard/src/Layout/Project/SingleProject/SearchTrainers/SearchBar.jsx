@@ -11,25 +11,15 @@ import {
     SelectValue,
   } from "@/components/ui/select"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
-import {
     Popover,
     PopoverContent,
     PopoverTrigger,
   } from "@/components/ui/popover"
-  
-import {useDispatch, useSelector} from 'react-redux';
-import {resetDomainResultsAndSearch, setDomainResults, setIsSearching, setSearchDomain} from '@/features/searchTrainerSlice';
 import {Label} from '@/components/ui/label';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 
-function SearchBar({domainSearch}) {
+function SearchBar({trainers}) {
     const [query,
         setQuery] = useState("")
     const [result,
@@ -49,14 +39,11 @@ function SearchBar({domainSearch}) {
     const [rating,
         setRating] = useState('asc');
     const [trainingTyp, setTrainingType] = useState('');
-        // onValueChange={field.onChange} defaultValue={field.value}
-    const dispatch = useDispatch()
-    const {searchDomain} = useSelector(state => state.searchTrainer)
 
     const [filter, setFilter] = useState(false)
 
     const handleDomainChange = (event) => {
-        dispatch(setSearchDomain(event.target.value))
+        // dispatch(setSearchDomain(event.target.value))
         setQuery(event.target.value)
     }
 
@@ -66,11 +53,6 @@ function SearchBar({domainSearch}) {
         }
     }, [filter])
 
-    useEffect(() => {
-        if(domainSearch){
-            setSearchDomain(domainSearch)
-        }
-    }, [domainSearch])
 
     // Search Query
     const fetchSearchResults = async () => {
@@ -78,10 +60,10 @@ function SearchBar({domainSearch}) {
         if (startPrice) req_query += `&price[gte]=${Number(startPrice)}`;
         if (endPrice) req_query += `&price[lte]=${Number(endPrice)}`;
         if (trainingTyp) req_query += `&type=${trainingTyp}`;
-        console.log(req_query);
+        // console.log(req_query);
         
         const response = await axios.get(req_query);
-        console.log(response.data)
+        // console.log(response.data)
         return response.data;
     };
 
@@ -91,17 +73,20 @@ function SearchBar({domainSearch}) {
         fetchSearchResults,
         {
           enabled: false, // Disable automatic fetching
+          staleTime: 1000 * 60 * 5, // data stays fresh for 5 minutes
+            cacheTime: 1000 * 60 * 10,
           onSuccess: (data) => {
             setResult(data);
-            dispatch(setDomainResults(data));
-            dispatch(setIsSearching(false));
-            console.log(data);
+            // console.log(data)
+            // dispatch(setresult(data));
+            // dispatch(setIsSearching(false));
+            // console.log(data);
           },
           onError: (error) => {
-            console.log(error);
+            // console.log(error);
           },
           onSettled: () => {
-            console.log("Settled");
+            // console.log("Settled");
           }
         }
     );
@@ -116,24 +101,50 @@ function SearchBar({domainSearch}) {
         }
         setLoading(true);
         setSearched(true);
-        dispatch(setIsSearching(true))
+        // dispatch(setIsSearching(true))
 
         try {
             await refetch(); // Trigger the query fetch with the current parameters
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
           
         setLoading(false);
-
     }
 
+    // Add Trainer to the Project
+    const [selectedTrainers, setSelectedTrainers] = useState([])
+
+    // useEffect(() => {
+    //     if(trainers && trainers.length > 0){
+    //         setSelectedTrainers(trainers)
+    //     }
+    // }, [])
+
+    const addTrainerToProject = async(trainer) => {
+        // event.preventDefault()
+        // console.log(trainer)
+        if (!selectedTrainers || selectedTrainers.length === 0){
+            setSelectedTrainers([trainer._id])
+        }else{
+            for(let i=0; i<selectedTrainers.length; i++) {
+                if(selectedTrainers[i] === trainer._id){
+                    alert("Trainer already selected")
+                    return
+                }
+            }            
+            let a = selectedTrainers
+            a.push(trainer._id)
+            setSelectedTrainers(a)
+        }
+    }
+    // console.log(selectedTrainers)
     return (
         <div className=''>
             <form onSubmit={searchHandler} className='bg-orange p-3'>
 
                     <div
-                        className='flex items-center  shadow-sm justify-between w-[70vw] lg:w-[60wv] rounded-lg py-2 px-5 border border-slate-400'>
+                        className='flex items-center  shadow-sm justify-between w-[70vw] lg:w-[60wv] rounded-full py-2 px-5 border border-slate-400'>
                         <div className='flex items-center'>
                             <ion-icon
                                 name="search-outline"
@@ -148,17 +159,6 @@ function SearchBar({domainSearch}) {
                                 value={query}
                                 className="min-w-[50vw] ml-4 border-none bg-none"></Input>
                         </div>
-                        
-                        {/* <div className="hover:bg-gray-200 cursor-pointer rounded p-2"> 
-                            <ion-icon name="filter-outline" style={{fontSize:"22px", color:"black"}} onClick={() => {
-                                if(filter){
-                                    setFilter(false)
-                                }else{
-                                    setFilter(true)
-                                }
-                            }}></ion-icon>
-                        </div> */}
-
                     </div>
                     <Button type="submit" className="hidden">Search</Button>
                 {/* {
@@ -210,7 +210,7 @@ function SearchBar({domainSearch}) {
                                 {/* Type of Training Mode */}
                                 <div className='ml-4'>
                                             <Select onValueChange={(e) => {
-                                                console.log(e)
+                                                // console.log(e)
                                                 setTrainingType(e)
                                             }} className="rounded-full border-none">
                                                 <SelectTrigger className="w-max rounded-full">
@@ -231,7 +231,102 @@ function SearchBar({domainSearch}) {
                 } */}
 
             </form>
+            
+            {/* Print th */}
 
+            {
+                result && result.length > 0 && 
+                (
+                    <div className='mt-6 grid grid-cols-1 lg:grid-cols-2 gap-[25px] place-content-center items-start'>
+                    { result &&  result?.map((res, _i) => (
+                           <div key={_i} className='border border-gray-200 rounded-md p-3 h-max w-[30vw]'>
+                               {/* <h2>{res.generalDetails.name}</h2> */}
+                               {/* General Details */}
+                               <div className='flex items-center justify-between my-4'>
+                                   <div className='flex items-center'>
+                                       <Avatar>
+                                           <AvatarImage src="https://github.com/shadcn.png"/>
+                                           <AvatarFallback>CN</AvatarFallback>
+                                       </Avatar>
+                                       <p className='ml-2 font-medium'>{res.generalDetails?.name}</p>
+                                   </div>
+                                   <div>
+                                       <p className='text-gray-600'>
+                                           ID:
+                                           <span className='text-black font-semibold'>{res.trainerId}</span>
+                                       </p>
+                                   </div>
+
+                               </div>
+                               {/* Domain Based Details */}
+                               <div
+                                   className='my-5 border p-2 rounded-md border-gray-200'>
+                                   <div className='flex items-center justify-between'>
+                                       <div>
+                                           <h2 className='text-gray-600'>Training Domain</h2>
+                                           <p>
+                                               <span className='text-black font-semibold '>{res.trainingDomain[0].domain}</span>
+                                           </p>
+                                       </div>
+                                       <div>
+                                           <h2 className='text-gray-600'>Price</h2>
+                                           <p>
+                                               <span className='text-black font-semibold'>₹{res.trainingDomain[0].price}</span>
+                                           </p>
+                                       </div>
+                                   </div>
+                                   <div className='mt-6'>
+                                       <h2 className='text-gray-600'>Session Taken</h2>
+                                       <p>
+                                           <span className='text-black font-semibold'>{res.trainingDomain[0].paymentSession}</span>
+                                       </p>
+                                   </div>
+                               </div>
+
+                               {/* COntact Details */}
+                               <div className='my-5  border p-2 rounded-md border-gray-200'>
+                                   <div>
+                                       <h2 className='text-gray-600'>Contact Details</h2>
+                                   </div>
+                                   <div className='grid grid-cols-2 gap-[20px] mt-2'>
+                                       <p className='flex flex-col'>
+                                           <span className='text-gray-600'>phone Number</span>
+                                           <span className='font-semibold'>{res.generalDetails?.phoneNumber}</span>
+                                       </p>
+                                       <p className='flex flex-col items-start'>
+                                           <span className='text-gray-600'>Whatsapp Number</span>
+                                           <span className='font-semibold'>{res.generalDetails?.phoneNumber}</span>
+                                       </p>
+                                       <p className='flex flex-col items-start'>
+                                           <span className='text-gray-600'>Email Id</span>
+                                           <span className='font-semibold'>{res.generalDetails?.email}</span>
+                                       </p>
+                                   </div>
+                               </div>
+
+                               <div className='flex items-center justify-between' >
+                                <span className='text-blue-600 cursor-pointer'>View More...</span>
+                                
+                                {
+                                    selectedTrainers.includes(res._id) ? 
+                                    (
+                                        <div className='bg-blue-800 text-white px-3 py-1 cursor-pointer' onClick={() => addTrainerToProject(res)}> 
+                                            Add Trainer
+                                        </div>
+                                    ) : (
+                                        <div className='flex items-center'>
+                                            <ion-icon name="checkmark-done-outline" style={{fontSize:"20px", color:"#4CAF50"}}></ion-icon>
+                                            <span className='text-green-700 font-semibold'>Added</span>
+                                        </div>
+                                    )
+                                }
+                               </div>
+                           </div>
+                       ))
+                   }
+               </div> 
+                )
+            }
         </div>
     )
 }
