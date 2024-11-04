@@ -16,10 +16,11 @@ import {
     PopoverTrigger,
   } from "@/components/ui/popover"
 import {Label} from '@/components/ui/label';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 
-function SearchBar({trainers}) {
+function SearchBar({domain, id}) {
+    const queryClient = useQueryClient();
     const [query,
         setQuery] = useState("")
     const [result,
@@ -46,6 +47,10 @@ function SearchBar({trainers}) {
         // dispatch(setSearchDomain(event.target.value))
         setQuery(event.target.value)
     }
+    useEffect(() => {
+        // setQuery(domain)
+        refetch()
+    }, [])
 
     useEffect(() => {
         if(!filter){
@@ -56,7 +61,7 @@ function SearchBar({trainers}) {
 
     // Search Query
     const fetchSearchResults = async () => {
-        let req_query = `http://localhost:5000/api/trainer/search?domain=${query.trim()}`;
+        let req_query = `http://localhost:5000/api/trainer/search?domain=${domain.trim()}`;
         if (startPrice) req_query += `&price[gte]=${Number(startPrice)}`;
         if (endPrice) req_query += `&price[lte]=${Number(endPrice)}`;
         if (trainingTyp) req_query += `&type=${trainingTyp}`;
@@ -77,10 +82,6 @@ function SearchBar({trainers}) {
             cacheTime: 1000 * 60 * 10,
           onSuccess: (data) => {
             setResult(data);
-            // console.log(data)
-            // dispatch(setresult(data));
-            // dispatch(setIsSearching(false));
-            // console.log(data);
           },
           onError: (error) => {
             // console.log(error);
@@ -90,7 +91,7 @@ function SearchBar({trainers}) {
           }
         }
     );
-    axios.defaults.withCredentials = true;
+
     const searchHandler = async(event) => {
         event.preventDefault()
         if (query === "" || query.length < 1) {
@@ -115,30 +116,62 @@ function SearchBar({trainers}) {
     // Add Trainer to the Project
     const [selectedTrainers, setSelectedTrainers] = useState([])
 
-    // useEffect(() => {
-    //     if(trainers && trainers.length > 0){
-    //         setSelectedTrainers(trainers)
-    //     }
-    // }, [])
 
     const addTrainerToProject = async(trainer) => {
         // event.preventDefault()
         // console.log(trainer)
-        if (!selectedTrainers || selectedTrainers.length === 0){
-            setSelectedTrainers([trainer._id])
-        }else{
+        if (selectedTrainers.length === 0){
+            console.log("1")
+            setSelectedTrainers([...selectedTrainers,trainer])
+        }else{ 
+            console.log("2")
+
             for(let i=0; i<selectedTrainers.length; i++) {
-                if(selectedTrainers[i] === trainer._id){
+            console.log("2")
+
+                if(selectedTrainers[i]._id === trainer._id){
                     alert("Trainer already selected")
                     return
                 }
             }            
-            let a = selectedTrainers
-            a.push(trainer._id)
-            setSelectedTrainers(a)
+            console.log("3")
+
+            setSelectedTrainers((prev) => [...prev, trainer])
+            console.log("2", a)
+
         }
     }
-    // console.log(selectedTrainers)
+
+    const deleteSelectedTrainer = async(trainer) => {
+        let a = selectedTrainers.filter(t => t._id !== trainer._id)
+        setSelectedTrainers(a)
+    }
+    console.log(selectedTrainers)
+
+    // Submit the changes
+    const saveTrainer = async() => {
+        // event.preventDefault()
+        // console.log(trainer)
+        // console.log("Submit Handler")
+        try {
+            // console.log("1")
+            // console.log(trainerDetails)
+            // trainerMutation.mutate(trainerDetails)
+            axios.defaults.withCredentials = true;
+            let a = []
+            selectedTrainers.forEach((e) =>  a.push(e._id))
+            console.log(a)
+            const trainerSubmit = await axios.put(`http://localhost:5000/api/project/add-trainers/${id}`, a)
+            const response = await trainerSubmit.data;
+            console.log(response)
+            setSelectedTrainers([])
+            queryClient.invalidateQueries(['ViewProject', id]);
+            // refetch()
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    
     return (
         <div className=''>
             <form onSubmit={searchHandler} className='bg-orange p-3'>
@@ -156,7 +189,7 @@ function SearchBar({trainers}) {
                                 id="outlined-basic"
                                 onChange={(e) => handleDomainChange(e)}
                                 placeholder="Search Trainers by domain"
-                                value={query}
+                                value={query ? query : domain}
                                 className="min-w-[50vw] ml-4 border-none bg-none"></Input>
                         </div>
                     </div>
@@ -231,8 +264,22 @@ function SearchBar({trainers}) {
                 } */}
 
             </form>
+            {
+                selectedTrainers.length > 0 ?
+                <div className='text-right'>
+                    <Button onClick={saveTrainer}>Save</Button>
+                </div> : null
+            }
             
             {/* Print th */}
+            {
+                selectedTrainers?.map((e, _i) => (
+                    <div className='border rounded-full px-2 ml-4 w-max inline-block' key={_i}>
+                        <span className=''>{e.generalDetails.email}</span>
+                        <ion-icon name="close-outline" onClick={() =>deleteSelectedTrainer(e)}></ion-icon>
+                    </div>
+                ))
+            }
 
             {
                 result && result.length > 0 && 
@@ -307,19 +354,19 @@ function SearchBar({trainers}) {
                                <div className='flex items-center justify-between' >
                                 <span className='text-blue-600 cursor-pointer'>View More...</span>
                                 
-                                {
-                                    selectedTrainers.includes(res._id) ? 
-                                    (
-                                        <div className='bg-blue-800 text-white px-3 py-1 cursor-pointer' onClick={() => addTrainerToProject(res)}> 
+                                {/* {
+                                    !selectedTrainers.includes(res._id) ? 
+                                    ( */}
+                                        <div className='bg-blue-800 text-white px-3 py-2 cursor-pointer' onClick={() => addTrainerToProject(res)}> 
                                             Add Trainer
                                         </div>
-                                    ) : (
-                                        <div className='flex items-center'>
-                                            <ion-icon name="checkmark-done-outline" style={{fontSize:"20px", color:"#4CAF50"}}></ion-icon>
-                                            <span className='text-green-700 font-semibold'>Added</span>
-                                        </div>
-                                    )
-                                }
+                                {/* //     ) : (
+                                //         <div className='flex items-center'>
+                                //             <ion-icon name="checkmark-done-outline" style={{fontSize:"20px", color:"#4CAF50"}}></ion-icon>
+                                //             <span className='text-green-700 font-semibold'>Added</span>
+                                //         </div>
+                                //     )
+                                // } */}
                                </div>
                            </div>
                        ))

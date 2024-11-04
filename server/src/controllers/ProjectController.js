@@ -173,13 +173,15 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
 
 
 // Get Projects By Id
-
 const getProjectDetails = asyncHandler(async(req, res) => {
     const { projectId } = req.params;
 
     const project = await Project.findById(projectId).populate({
         path: 'employees',
         select: 'name email', // Only fetch the 'name' and 'role' fields
+    }).populate({
+        path: 'trainers',
+        select: 'generalDetails.name generalDetails.email trainingDetails.trainerType', // Only fetch the 'name' and 'role' fields
     });
 
     // .populate('company.Company_id')
@@ -193,6 +195,45 @@ const getProjectDetails = asyncHandler(async(req, res) => {
     res.json({ project });
 })
 
+// Append the trainers list in the Project
+const addTrainer = asyncHandler(async(req, res) => {
+    const { projectId } = req.params;
+    const { empId } = req.params;
+
+    // Check if the Project exists
+    const project = await Project.findById(projectId);
+    if (!project) {
+        return res.status(404).json({ message: "Project not found" });
+    }
+
+    const trainersList = req.body;
+
+    try {
+        // Check for repetitions
+        for (let i = 0; i < trainersList.length; i++) {
+            for (let j = 0; j < project.trainers.length; i++) {
+                if (project.trainers[j] == trainersList[i]) {
+                    return res.status(200).json({ message: "Trainer Already Present" });
+                }
+            }
+        }
+        // Update the Project's trainer section
+        const prj = await Project.findByIdAndUpdate(projectId, {
+            $push: {
+                trainers: trainersList
+            }
+        }, { new: true });
+
+        res.json({ message: "Trainers added to the project.", project: prj });
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ message: 'Error adding trainers.', error: err.message });
+
+    }
+
+})
+
+
 // update a project - ADMIN delete a project - ADMIN Add a trainer - KA, Admin
 
 
@@ -203,5 +244,6 @@ const getProjectDetails = asyncHandler(async(req, res) => {
 export {
     createProject,
     getProjectDetails,
-    getProjectsByEmp
+    getProjectsByEmp,
+    addTrainer
 }

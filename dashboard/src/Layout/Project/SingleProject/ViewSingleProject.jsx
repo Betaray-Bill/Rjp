@@ -37,8 +37,10 @@ function ViewSingleProject() {
 //  console.log(projectId.projectId)
   const { data: projects, isLoading, error } = useQuery(
     ['ViewProject', projectId.projectId], 
+    
     fetchProjects,
     {
+      enabled: !!projectId.projectId,
       staleTime: 1000 * 60 * 5, // data stays fresh for 5 minutes
       cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
     }
@@ -47,7 +49,7 @@ function ViewSingleProject() {
   if (isLoading) return <div><Loading /></div>
   if (error) return <div>Error: {error.message}</div>
   console.log(projects)
-  const { company, contactDetails, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
+  const {_id,  company, contactDetails, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
 
   return (
     <div className=''>
@@ -99,8 +101,13 @@ function ViewSingleProject() {
           {
             isAdd &&(
               <div className='mt-10 border-t pt-5' ref={sectionRef}>
-                <SearchBar />
-                {/* <SearchResult /> */}
+                <div className='text-right'>
+                  <ion-icon 
+                    onClick={() => setIsAdd(false)}
+                    name="close-outline" 
+                    style={{fontSize:"22px", cursor:"pointer", borderRadius:"50%", border:"1px solid black"}} ></ion-icon>
+                </div>
+                <SearchBar domain={domain} id={_id}/>
               </div>
             )
           }
