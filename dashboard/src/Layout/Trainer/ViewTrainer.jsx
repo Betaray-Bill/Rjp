@@ -23,7 +23,7 @@ function ViewTrainer() {
   const params = useParams()
   const {trainerDetails} = useSelector(state => state.trainer)
   const [isEdit, setIsEdit] = useState(false)
-  const [viewData, setViewData] = useState("Resumes")
+  const [viewData, setViewData] = useState("Details")
   // console.log(data) 
 
   const getTrainerById = async() => {

@@ -71,14 +71,28 @@ function DealsDisplay() {
             {
               user && user.projects
               .map((deal, index) => (
-                <div key={index} className='border rounded-md p-4 m-2  hover:shadow-md transition-shadow transition-ease-in-out cursor-pointer'>
-                  <h4 className='font-semibold'>{deal.projectName}</h4>
-                  {/* <p>Project: {deal.projectName}</p> */}
-                  <p>Domain: {deal.domain}</p>
-                  <p>Mode: {deal.modeOfTraining}</p>
-                  <p>Start Date: {new Date(deal.trainingDates?.startDate).toDateString()}</p>
-                  <p>End Date: {new Date(deal.trainingDates?.endDate).toDateString()}</p>
-                  {/* <hr /> */}
+                <div key={index} 
+                  className='border rounded-md p-4 m-2  hover:shadow-md transition-shadow transition-ease-in-out cursor-pointer'
+                >
+                  <div className='flex items-center justify-between'>
+                    <h4 className='font-semibold underline'>{deal.projectName}</h4>
+                    <span className='border border-black rounded-md px-2 bg-blue-200'>{deal.modeOfTraining}</span>
+                  </div>
+                  <div  className='flex items-center justify-start mt-4'>
+                    <span>
+                      Training : 
+                    </span>
+                    <span className='font-semibold ml-3'>{deal.domain}</span>
+                  </div>
+                  <div className='flex items-center justify-start mt-2'>
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    <div className='ml-3 flex items-center justify-between'>
+                      <span>{new Date(deal.trainingDates?.startDate).toDateString()}</span>
+                      <span className='mx-3'>-</span>
+                      <span>{new Date(deal.trainingDates?.endDate).toDateString()}</span>
+                    </div>
+                  </div>
+
                 </div>
               ))}
           </div>
