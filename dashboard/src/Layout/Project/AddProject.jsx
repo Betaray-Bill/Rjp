@@ -271,29 +271,29 @@ function AddProject() {
             //     navigate(`home/projects/view/${response.data?.project._id}`)
             // }
             console.log(response.project._id)
-            navigate(`view/${response.project._id}`)
-            // setProjectData({
-            //     projectName: '',
-            //     company: {
-            //         name: '',
-            //         id: ''
-            //     },
-            //     contactDetails: {
-            //         contactName: '',
-            //         contactEmail    : '',
-            //         contactPhoneNumber: ''
-            //     },
-            //     domain: '',
-            //     description: '',
-            //     trainingDates: {
-            //         startDate: '',
-            //         endDate: '',
-            //         timing: ''
-            //     },
-            //     modeOfTraining: '',
-            //     employee: [],
-            //     trainers: []
-            // })
+            navigate(`/home/projects/view/${response.project._id}`)
+            setProjectData({
+                projectName: '',
+                company: {
+                    name: '',
+                    id: ''
+                },
+                contactDetails: {
+                    contactName: '',
+                    contactEmail    : '',
+                    contactPhoneNumber: ''
+                },
+                domain: '',
+                description: '',
+                trainingDates: {
+                    startDate: '',
+                    endDate: '',
+                    timing: ''
+                },
+                modeOfTraining: '',
+                employee: [],
+                trainers: []
+            })
             toast({
                 title: "Project Created",
                 // description: "Friday, February 10, 2023 at 5:57 PM",

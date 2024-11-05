@@ -161,7 +161,7 @@ function SearchBar({domain, id}) {
             let a = []
             selectedTrainers.forEach((e) =>  a.push(e._id))
             console.log(a)
-            const trainerSubmit = await axios.put(`http://localhost:5000/api/project/add-trainers/${id}`, a)
+            const trainerSubmit = await axios.put(`http://localhost:5000/api/project/add-trainers/${id}`, {trainers:a})
             const response = await trainerSubmit.data;
             console.log(response)
             setSelectedTrainers([])

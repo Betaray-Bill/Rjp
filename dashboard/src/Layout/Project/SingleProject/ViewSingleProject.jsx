@@ -8,15 +8,17 @@ import {
 import axios from 'axios'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Loading from '@/utils/Loading'
 import SearchResult from '@/Layout/Search/SearchResult'
 import SearchBar from './SearchTrainers/SearchBar'
 import ViewTrainers from './ViewTrainers'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 function ViewSingleProject() {
   const projectId = useParams()
+  const navigate = useNavigate();
   const [collapse, setCollapse] = useState(false)
 
   // Scroll to a Section
@@ -49,35 +51,40 @@ function ViewSingleProject() {
   if (isLoading) return <div><Loading /></div>
   if (error) return <div>Error: {error.message}</div>
   console.log(projects)
-  const {_id,  company, contactDetails, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
+  const {_id,  company, contactDetails,amount, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
 
   return (
     <div className=''>
-      
+      <button onClick={() => navigate(-1)} className='flex items-center mt-[-10] mb-4'>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+        <span className='ml-2'>Go Back</span>
+      </button>
       {/* PRoject Data */}
-      <div className='border rounded-md shadow-md py-4 px-3'>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <h2 className="text-black ">Project Name</h2>
-            <p className="text-gray-900">{projectName}</p>
+      <div className='border rounded-md shadow-md py-4 px-4'>
+        <div className="grid grid-cols-3 gap-8 place-content-between">
+          <div className='flex flex-col justify-between'>
+            <h2 className="text-left text-gray-700 mb-[3px]">Project Name</h2>
+            <Input type="text" className="text-gray-900 font-medium" readOnly value={projectName} />
           </div>
-          <div>
-            <h2 className="text-black ">Domain</h2>
-            <p className="text-gray-900">{domain}</p>
+          <div className='flex flex-col justify-between'>
+            <h2 className="text-left text-gray-700 mb-[3px]">Domain</h2>
+            <Input type="text" className="text-gray-900 font-medium" readOnly value={domain} />
           </div>
-          <div>
-            <h2 className="text-black ">Mode of Training</h2>
-            <p className="text-gray-900">{modeOfTraining}</p>
+          <div className='flex flex-col justify-between'>
+            <h2 className="text-left text-gray-700 mb-[3px]">Company</h2>
+            <Input type="text" className="text-gray-900 font-medium" readOnly value={company.name} />
           </div>
-          <div>
-            <h2 className="text-black ">Description</h2>
-            <p className="text-gray-900">{description}</p>
+          <div className='flex flex-col justify-between'>
+            <h2 className="text-left text-gray-700 mb-[3px]">Mode of Training</h2>
+            <Input type="text" className="text-gray-900 font-medium" readOnly value={modeOfTraining} />
           </div>
-          <div>
-            <h2 className="text-black ">Training Dates</h2>
-            <p className="text-gray-900">
-              {new Date(trainingDates.startDate).toLocaleDateString()} - {new Date(trainingDates.endDate).toLocaleDateString()}
-            </p>
+          <div className='flex flex-col justify-between'>
+            <h2 className="text-left text-gray-700 mb-[3px]">Amount</h2>
+            <Input type="number" className="text-gray-900 font-medium" value={amount} />
+          </div>
+          <div className='flex flex-col justify-between'>
+            <h2 className="text-left text-gray-700 mb-[3px]">Training Dates</h2>
+            <Input type="date" className="text-gray-900 font-medium" readOnly value={new Date(trainingDates.startDate).toISOString().split('T')[0]} />
           </div>
         </div>
       </div>

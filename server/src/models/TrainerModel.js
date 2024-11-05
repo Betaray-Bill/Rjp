@@ -212,6 +212,10 @@ const trainerSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    projects: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Project'
+    }]
 }, { timestamps: true });
 
 trainerSchema.index({ trainingDomain: 1, trainerId: 1 })

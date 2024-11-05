@@ -4,6 +4,7 @@ import Project from "../models/ProjectModel/ProjectModel.js";
 import Admin from "../models/RoleModels/AdminModel.js";
 import KeyAccounts from "../models/RoleModels/KeyAccountsModel.js";
 import Manager from "../models/RoleModels/ManagerModel.js";
+import Trainer from "../models/RoleModels/TrainerSourcerModel.js";
 import TrainerSourcer from "../models/RoleModels/TrainerSourcerModel.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
@@ -198,33 +199,30 @@ const getProjectDetails = asyncHandler(async(req, res) => {
 // Append the trainers list in the Project
 const addTrainer = asyncHandler(async(req, res) => {
     const { projectId } = req.params;
-    const { empId } = req.params;
-
-    // Check if the Project exists
+    // const { empId } = req.params;
+    console.log("Add trainer")
+        // Check if the Project exists
     const project = await Project.findById(projectId);
     if (!project) {
         return res.status(404).json({ message: "Project not found" });
     }
 
-    const trainersList = req.body;
-
+    const trainersList = req.body.trainers;
+    console.log(req.body)
     try {
-        // Check for repetitions
-        for (let i = 0; i < trainersList.length; i++) {
-            for (let j = 0; j < project.trainers.length; i++) {
-                if (project.trainers[j] == trainersList[i]) {
-                    return res.status(200).json({ message: "Trainer Already Present" });
-                }
-            }
-        }
+
         // Update the Project's trainer section
-        const prj = await Project.findByIdAndUpdate(projectId, {
+        await Project.findByIdAndUpdate(projectId, {
             $push: {
                 trainers: trainersList
             }
         }, { new: true });
 
-        res.json({ message: "Trainers added to the project.", project: prj });
+        await Trainer.updateMany({ _id: { $in: trainersList } }, // Select all documents with IDs in docIds
+            { $addToSet: { projects: projectId } } // Add projectId to the projects field (avoid duplicates)
+        );
+
+        res.json({ message: "Trainers added to the project." });
     } catch (err) {
         console.log(err)
         return res.status(500).json({ message: 'Error adding trainers.', error: err.message });
