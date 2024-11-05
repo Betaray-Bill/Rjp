@@ -208,7 +208,20 @@ const getTrainerById = asyncHandler(async(req, res) => {
     const { id } = req.params;
 
     try {
-        const trainer = await Trainer.findById(id).populate('resumeVersion').select('-bankDetails -password -nda_Accepted -is_FirstLogin');
+        const trainer = await Trainer.findById(id)
+            .populate('resumeVersion')
+            .select('-bankDetails -password -nda_Accepted -is_FirstLogin')
+            .populate({
+                path: 'projects',
+                // populate: {
+                // path: 'employees', // Path of employee IDs within each Project
+                select: 'company.name projectName domain trainingDates modeOfTraining', // Only fetch the 'name' field from each employee
+                // },
+            })
+            // .populate({
+            //     path: 'projects.projectOwner',
+            //     select: 'name email', // Only fetch the 'employeeId' field from each employee
+            // });
         if (!trainer) {
             return res.status(404).json({ message: "Trainer not found" });
         }

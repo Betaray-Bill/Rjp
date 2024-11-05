@@ -271,7 +271,7 @@ function AddProject() {
             //     navigate(`home/projects/view/${response.data?.project._id}`)
             // }
             console.log(response.project._id)
-            navigate(`/home/projects/view/${response.project._id}`)
+            // navigate(`/home/projects/view/${response.project._id}`)
             setProjectData({
                 projectName: '',
                 company: {
@@ -298,6 +298,7 @@ function AddProject() {
                 title: "Project Created",
                 // description: "Friday, February 10, 2023 at 5:57 PM",
             })
+            navigate(`/home/projects/view/${response.project._id}`)
 
         }catch(err){
             console.error('Error:', err);

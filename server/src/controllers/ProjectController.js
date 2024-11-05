@@ -4,8 +4,8 @@ import Project from "../models/ProjectModel/ProjectModel.js";
 import Admin from "../models/RoleModels/AdminModel.js";
 import KeyAccounts from "../models/RoleModels/KeyAccountsModel.js";
 import Manager from "../models/RoleModels/ManagerModel.js";
-import Trainer from "../models/RoleModels/TrainerSourcerModel.js";
 import TrainerSourcer from "../models/RoleModels/TrainerSourcerModel.js";
+import { Trainer } from "../models/TrainerModel.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
@@ -209,18 +209,26 @@ const addTrainer = asyncHandler(async(req, res) => {
 
     const trainersList = req.body.trainers;
     console.log(req.body)
+    console.log(trainersList)
     try {
 
         // Update the Project's trainer section
         await Project.findByIdAndUpdate(projectId, {
-            $push: {
+            $addToSet: {
                 trainers: trainersList
             }
         }, { new: true });
 
-        await Trainer.updateMany({ _id: { $in: trainersList } }, // Select all documents with IDs in docIds
-            { $addToSet: { projects: projectId } } // Add projectId to the projects field (avoid duplicates)
-        );
+        console.log(project._id)
+        for (let i = 0; i < trainersList.length; i++) {
+            console.log("1", trainersList[i])
+            await Trainer.findByIdAndUpdate(trainersList[i], {
+                $addToSet: { projects: project._id }
+            }, { new: true });
+            // console.log("Trainer updated", trainer)
+        }
+
+
 
         res.json({ message: "Trainers added to the project." });
     } catch (err) {

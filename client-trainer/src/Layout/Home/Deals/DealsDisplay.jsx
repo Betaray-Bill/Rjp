@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 
 function DealsDisplay() {
-
+  const {user}  = useSelector(state => state.auth)
+  console.log(user.projects)
   const [deals,setDeals] = useState( [{
     name: "Deal 1",
     description: "Description for Deal 1",
@@ -60,27 +62,28 @@ function DealsDisplay() {
 
   return (
     <div className='p-4 ml-2'>
-      {["In Progress", "Upcoming", "Completed"].map((status) => (
+      {/* {["In Progress", "Upcoming", "Completed"].map((status) => (
         <div key={status} className='py-2'>
           <h3 className='text-lg font-medium ml-2 mt-5 flex items-start border-b pb-3 mb-3'><span className='text-buttonPrimary pr-3' style={{fontSize:"20px"}}>
             {icons[status]}</span> <span>{status} Deals</span>
-          </h3>
+          </h3> */}
           <div className='grid grid-cols-3'>
-          {deals
-            .filter((deal) => deal.status === status)
-            .map((deal, index) => (
-              <div key={index} className='border rounded-md p-4 m-2  hover:shadow-md transition-shadow transition-ease-in-out cursor-pointer'>
-                <h4 className='font-semibold'>{deal.name}</h4>
-                <p>{deal.description}</p>
-                <p>Start Date: {deal.startDate.toDateString()}</p>
-                <p>End Date: {deal.endDate.toDateString()}</p>
-                <p>Priority: {deal.priority}</p>
-                {/* <hr /> */}
-              </div>
-            ))}
+            {
+              user && user.projects
+              .map((deal, index) => (
+                <div key={index} className='border rounded-md p-4 m-2  hover:shadow-md transition-shadow transition-ease-in-out cursor-pointer'>
+                  <h4 className='font-semibold'>{deal.projectName}</h4>
+                  {/* <p>Project: {deal.projectName}</p> */}
+                  <p>Domain: {deal.domain}</p>
+                  <p>Mode: {deal.modeOfTraining}</p>
+                  <p>Start Date: {new Date(deal.trainingDates.startDate).toDateString()}</p>
+                  <p>End Date: {new Date(deal.trainingDates.endDate).toDateString()}</p>
+                  {/* <hr /> */}
+                </div>
+              ))}
           </div>
-        </div>
-      ))}
+        {/* </div>
+      ))} */}
       {/* Show Current Deals */}
 
       {/* Show Upcoming Deals */}
