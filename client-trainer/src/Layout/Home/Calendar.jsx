@@ -35,136 +35,157 @@ const events = [
         end: new Date(2024, 12, 13, 10, 30, 0),
     }
   ]
-const CalendarComp = ({eventsDate}) => {
-    console.log(eventsDate)
+const CalendarComp = () => {
+    // console.log(eventsDate)
     const [dates,
         setDates] = useState([])
 
-    const formatDateTOCalendar = (date) => {
-        eventsDate.forEach(date => {
-            setDates(prev => [
-                ...prev, {
-                    start: new Date(date.start),
-                    end: new Date(date.end),
-                    title: date.title
-                }
-            ]);
-        })
-    }
+    
 
-    useEffect(() => {
-        setDates([])
-        if (eventsDate) {
-            formatDateTOCalendar(eventsDate)
-        }
-    }, [eventsDate
-            ?.length])
+    // const formatDateTOCalendar = (date) => {
+    //     eventsDate.forEach(date => {
+    //         setDates(prev => [
+    //             ...prev, {
+    //                 start: new Date(date.start),
+    //                 end: new Date(date.end),
+    //                 title: date.title
+    //             }
+    //         ]);
+    //     })
+    // }
+
+    // useEffect(() => {
+    //     // setDates([])
+    //     // if (eventsDate) {
+    //     //     formatDateTOCalendar(eventsDate)
+    //     // }
+    // }, [eventsDate
+    //         ?.length])
 
     const [data,
         setData] = useState()
     const {user} = useSelector((state) => state.auth)
     const dispatch = useDispatch();
-
+    console.log(user.projects)
     axios.defaults.withCredentials = true;
-    const getTrainerDetails = async() => {
-        //console.log(data?._id)
 
-        try {
-            const res = await axios.get(`http://localhost:5000/api/trainer/details/${data._id}`)
-            console.log(res.data)
-            setData(res.data)
-            dispatch(setCredentials(res.data))
-        } catch (err) {
-            console.log("Error fetching the data")
-        }
-    }
+
+
+    // const getTrainerDetails = async() => {
+    //     //console.log(data?._id)
+
+    //     try {
+    //         const res = await axios.get(`http://localhost:5000/api/trainer/details/${data._id}`)
+    //         console.log(res.data)
+    //         setData(res.data)
+    //         dispatch(setCredentials(res.data))
+    //     } catch (err) {
+    //         console.log("Error fetching the data")
+    //     }
+    // }
 
     // const [events, setEvents] = useState([]);
-    const [newEvent,
-        setNewEvent] = useState({title: "", start: "", end: ""});
+    // const [newEvent,
+    //     setNewEvent] = useState({title: "", start: "", end: ""});
     // console.log(events, eventsDate)
-    const convertToTime = (time) => {
-        let val = time.getTime();
-        const res = new Date(val);
-        console.log(res.toUTCString().split(" ")[4]);
-        return res
-            .toUTCString()
-            .split(" ")[4];
-    };
+    // const convertToTime = (time) => {
+    //     let val = time.getTime();
+    //     const res = new Date(val);
+    //     console.log(res.toUTCString().split(" ")[4]);
+    //     return res
+    //         .toUTCString()
+    //         .split(" ")[4];
+    // };
 
     // Function to check if the new event overlaps with existing events
-    const isOverlapping = (start, end) => {
-        console.log(start, end);
-        console.log("---------------------------");
-        return eventsDate.some((event) => {
-            const eventStart = new Date(event.start);
-            const eventEnd = new Date(event.end);
-            const newStart = new Date(start);
-            const newEnd = new Date(end);
+    // const isOverlapping = (start, end) => {
+    //     console.log(start, end);
+    //     console.log("---------------------------");
+    //     return eventsDate.some((event) => {
+    //         const eventStart = new Date(event.start);
+    //         const eventEnd = new Date(event.end);
+    //         const newStart = new Date(start);
+    //         const newEnd = new Date(end);
 
-            // New Event Time
-            let newStartTime = convertToTime(newStart);
-            let newEndTime = convertToTime(newEnd);
+    //         // New Event Time
+    //         let newStartTime = convertToTime(newStart);
+    //         let newEndTime = convertToTime(newEnd);
 
-            // Old Event time
-            let OldStartTime = convertToTime(eventStart);
-            let OldEndTime = convertToTime(eventEnd);
+    //         // Old Event time
+    //         let OldStartTime = convertToTime(eventStart);
+    //         let OldEndTime = convertToTime(eventEnd);
 
-            // Check if the new event overlaps with the existing event
-            return ((newStart < eventEnd && newEnd > eventStart && newStartTime >= OldStartTime && newStartTime < OldEndTime) || (newEnd > OldStartTime && newEndTime <= OldEndTime) || // New end time is within an existing event
-                    (newStartTime <= OldStartTime && newEnd >= OldEndTime)
-            // New event completely overlaps an existing event
-            );
-        });
-    };
+    //         // Check if the new event overlaps with the existing event
+    //         return ((newStart < eventEnd && newEnd > eventStart && newStartTime >= OldStartTime && newStartTime < OldEndTime) || (newEnd > OldStartTime && newEndTime <= OldEndTime) || // New end time is within an existing event
+    //                 (newStartTime <= OldStartTime && newEnd >= OldEndTime)
+    //         // New event completely overlaps an existing event
+    //         );
+    //     });
+    // };
 
     // Handle form submission
     axios.defaults.withCredentials = true;
-    const handleSubmit = async(e) => {
-        e.preventDefault();
+    // const handleSubmit = async(e) => {
+    //     e.preventDefault();
 
-        const {title, start, end} = newEvent;
+    //     const {title, start, end} = newEvent;
 
-        if (!title || !start || !end) {
-            alert("Please fill all fields.");
-            return;
-        }
+    //     if (!title || !start || !end) {
+    //         alert("Please fill all fields.");
+    //         return;
+    //     }
 
-        if (new Date(start) >= new Date(end)) {
-            alert("End time must be after the start time.");
-            return;
-        }
+    //     if (new Date(start) >= new Date(end)) {
+    //         alert("End time must be after the start time.");
+    //         return;
+    //     }
 
-        if (isOverlapping(start, end)) {
-            console.log("Event details:", start, end);
+    //     if (isOverlapping(start, end)) {
+    //         console.log("Event details:", start, end);
 
-            alert("This event overlaps with an existing event. Please choose a different time.");
-            return;
-        } else {
-            // post it in the API
-            try {
-                const res = await axios.post(`http://localhost:5000/api/trainer/trainingDates/${data._id}`, newEvent)
-                console.log(res.data)
-                if (res) {
-                    getTrainerDetails()
-                }
-            } catch (err) {
-                console.log(err)
-            }
-            // render the state to update it
-        }
-        setNewEvent({title: "", start: "", end: ""});
-    };
+    //         alert("This event overlaps with an existing event. Please choose a different time.");
+    //         return;
+    //     } else {
+    //         // post it in the API
+    //         try {
+    //             const res = await axios.post(`http://localhost:5000/api/trainer/trainingDates/${data._id}`, newEvent)
+    //             console.log(res.data)
+    //             if (res) {
+    //                 getTrainerDetails()
+    //             }
+    //         } catch (err) {
+    //             console.log(err)
+    //         }
+    //         // render the state to update it
+    //     }
+    //     setNewEvent({title: "", start: "", end: ""});
+    // };
 
     const handleSelectEvent = (event) => {
         console.log("Event details:", event);
         alert(`Event Title: ${event.title}\nStart: ${event.start}\nEnd: ${event.end}`);
     }
 
+    const allocateDate = () => {
+        let a =[]
+        for(let i = 0; i <user.projects.length; i++) {
+            let obj = {}
+            obj.title = user.projects[i].projectName
+            obj.start = new Date(user.projects[i].trainingDates.startDate)
+            obj.end = new Date(user.projects[i].trainingDates.endDate)
+            a.push(obj)
+        }
+
+        console.log(a)
+        
+        setDates(a)
+    }
+
     // Update the State
     useEffect(() => {
-        getTrainerDetails()
+        // getTrainerDetails()
         setData(user)
+        allocateDate()
     }, [])
 
     return (
@@ -199,7 +220,7 @@ const CalendarComp = ({eventsDate}) => {
             {/* Calendar */}
             <Calendar
                 localizer={localizer}
-                events={events}
+                events={dates}
                 startAccessor="start"
                 onSelectEvent={handleSelectEvent}
                 endAccessor="end"

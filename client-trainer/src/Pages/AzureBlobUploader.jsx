@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+// import { c } from "vite/dist/node/types.d-aGj9QkWt";
 
 const AzureBlobUploader = () => {
   const [file, setFile] = useState(null);
@@ -9,7 +10,7 @@ const AzureBlobUploader = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useSelector((state) => state.auth);
-
+  // console.log(user.projects)
   useEffect(() => {
     console.log("User object:", user); // Log the user object to verify its structure
 
@@ -54,7 +55,7 @@ const AzureBlobUploader = () => {
 
   return (
     <div style={{ padding: "20px", maxWidth: "400px", margin: "auto" }}>
-      <h2>Upload File to Azure Blob Storage</h2>
+      {/* <h2>Upload File to Azure Blob Storage</h2>
 
       <div style={{ marginBottom: "10px" }}>
         <input type="file" onChange={handleFileChange} />
@@ -65,7 +66,7 @@ const AzureBlobUploader = () => {
       </button>
 
       {uploadStatus && <p style={{ color: "green", marginTop: "20px" }}>{uploadStatus}</p>}
-      {error && <p style={{ color: "red", marginTop: "20px" }}>{error}</p>}
+      {error && <p style={{ color: "red", marginTop: "20px" }}>{error}</p>} */}
     </div>
   );
 };

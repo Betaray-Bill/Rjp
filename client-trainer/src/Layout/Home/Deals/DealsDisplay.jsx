@@ -76,8 +76,8 @@ function DealsDisplay() {
                   {/* <p>Project: {deal.projectName}</p> */}
                   <p>Domain: {deal.domain}</p>
                   <p>Mode: {deal.modeOfTraining}</p>
-                  <p>Start Date: {new Date(deal.trainingDates.startDate).toDateString()}</p>
-                  <p>End Date: {new Date(deal.trainingDates.endDate).toDateString()}</p>
+                  <p>Start Date: {new Date(deal.trainingDates?.startDate).toDateString()}</p>
+                  <p>End Date: {new Date(deal.trainingDates?.endDate).toDateString()}</p>
                   {/* <hr /> */}
                 </div>
               ))}

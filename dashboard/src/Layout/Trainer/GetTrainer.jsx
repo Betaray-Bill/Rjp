@@ -54,7 +54,6 @@ function GetTrainer() {
                     <TableHead className="">Name</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Type</TableHead>
-                    {/* <TableHead className="text-left">Edit</TableHead> */}
                     </TableRow>
             </TableHeader>
             <TableBody>
