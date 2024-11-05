@@ -26,8 +26,10 @@ function ViewSingleProject() {
   const [isAdd, setIsAdd] = useState(false)
   const scrollToSection = () => {
     setIsAdd(true)
-    sectionRef.current.scrollIntoView({ behavior: 'smooth' });
-
+    setTimeout(() => {
+      sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, [100])
+    
   };
 
   const { currentUser } = useSelector(state => state.auth)
@@ -105,6 +107,7 @@ function ViewSingleProject() {
           <ViewTrainers trainers={trainers}/>
           {/* <SearchBar domainSearch={domain}/> */}
 
+          {/* <div ref={sectionRef}></div> */}
           {
             isAdd &&(
               <div className='mt-10 border-t pt-5' ref={sectionRef}>

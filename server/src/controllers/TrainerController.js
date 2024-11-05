@@ -215,7 +215,7 @@ const getTrainerById = asyncHandler(async(req, res) => {
                 path: 'projects',
                 // populate: {
                 // path: 'employees', // Path of employee IDs within each Project
-                select: 'company.name projectName domain trainingDates modeOfTraining', // Only fetch the 'name' field from each employee
+                select: 'company.name projectName domain trainingDates modeOfTraining contactDetails', // Only fetch the 'name' field from each employee
                 // },
             })
             // .populate({

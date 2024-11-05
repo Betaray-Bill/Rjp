@@ -22,7 +22,7 @@ import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 function SearchBar({domain, id}) {
     const queryClient = useQueryClient();
     const [query,
-        setQuery] = useState("")
+        setQuery] = useState(domain ? domain : "")
     const [result,
         setResult] = useState([])
     const [isLoading,

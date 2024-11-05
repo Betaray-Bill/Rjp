@@ -92,7 +92,12 @@ function DealsDisplay() {
                       <span>{new Date(deal.trainingDates?.endDate).toDateString()}</span>
                     </div>
                   </div>
-
+                  {/* <div className='flex items-center'>
+                    <span>
+                      View
+                    </span>
+                    <ion-icon name="unlink-outline"></ion-icon>
+                  </div> */}
                 </div>
               ))}
           </div>
