@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import CardProject from '@/Pages/Company/CardProject'
+import CardProject from '@/Layout/Project/Pipeline/Components/CardProject'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
