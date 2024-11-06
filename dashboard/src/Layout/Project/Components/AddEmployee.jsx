@@ -10,23 +10,8 @@ import {
     TableRow,
   } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-  } from "@/components/ui/command"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-  } from "@/components/ui/popover"
-import { Check } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { fontSize } from '@mui/system'
-   
+
 function AddEmployee() {
     const {allEmployee} = useSelector(state => state.employee)
     const {project} = useSelector(state => state.project)

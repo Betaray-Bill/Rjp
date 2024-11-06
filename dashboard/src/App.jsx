@@ -34,7 +34,7 @@ function App() {
   const {currentUser} = useSelector(state => state.auth)
 
   return (
-    <div className='overflow-x-hidden'>
+    <div className=''>
       <Routes>
         <Route path='/login' element={<Login />} />
         <Route path='/' index element={<Navigate to="/home" replace />}></Route>

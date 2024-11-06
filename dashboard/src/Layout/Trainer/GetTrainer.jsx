@@ -74,7 +74,7 @@ function GetTrainer() {
                     <TableCell>{trainer.generalDetails.email}</TableCell>
                     <TableCell>{trainer.trainingDetails.trainerType}</TableCell>
                     <TableCell>
-                        <Link to={`/home/trainer/view/${trainer._id}`}>
+                        <Link to={`/home/trainer/view/${trainer._id}`} target='_blank'>
                             <Button className="bg-transparent border text-black rounded-none hover:bg-blue-200">View</Button>
                         </Link>
                     </TableCell>

@@ -36,7 +36,7 @@
               : null
         }
         
-        <div className='mt-10'>
+        <div className='my-10'>
           <div className='w-[80vw] bg-white rounded-md border border-generalBorderColor'>
             <div className="border-b mt-4 pb-4">
               <span className="text-slate-800 font-semibold flex items-center ml-10">

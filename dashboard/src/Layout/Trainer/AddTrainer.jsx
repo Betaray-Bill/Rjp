@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react';
 // import './AddTrainer.css'; // External CSS file for grid styling
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
-import { removeResumeDetails } from '@/features/trainerSlice';
+import { removeResumeDetails, resetTrainerDetails } from '@/features/trainerSlice';
 import { useMutation } from 'react-query';
 import axios from 'axios';
 import { useToast } from "@/hooks/use-toast"
@@ -11,10 +11,12 @@ import TrainingDetails from '@/Layout/Trainer/AddTrainers/TrainingDetails';
 import BankDetails from '@/Layout/Trainer/AddTrainers/BankDetails';
 import TrainingDomain from '@/Layout/Trainer/AddTrainers/TrainingDomain';
 import ResumeDetails from '@/Layout/Trainer/AddTrainers/Resume/ResumeDetails';
+import { useNavigate } from 'react-router-dom';
 
 const AddTrainer = () => {
     // console.log("meow", add++)
     const { toast } = useToast()
+    const navigate = useNavigate()
     const dispatch = useDispatch()
     const { currentUser } = useSelector(state => state.auth)
     const { trainerDetails } = useSelector(state => state.trainer)
@@ -72,6 +74,11 @@ const AddTrainer = () => {
             console.log("1")
             console.log(trainerDetails)
             trainerMutation.mutate(trainerDetails)
+            dispatch(removeResumeDetails())
+            dispatch(resetTrainerDetails())
+
+            navigate("/home/trainer")
+
         } catch (error) {
             console.log(error);
         }

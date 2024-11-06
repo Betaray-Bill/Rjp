@@ -57,6 +57,7 @@ function AddProject() {
     const [projectData,
         setProjectData] = useState({
         projectName: '',
+        amount:null,
         projectOwner:currentUser && currentUser.employee._id,
         company: {
             name: '',
@@ -151,9 +152,6 @@ function AddProject() {
 
     }, [])
 
-    useEffect(() => {
-
-    }, [projectData.company.name])
 
     // console.log(projectData)
   
@@ -332,22 +330,6 @@ function AddProject() {
 
                             <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Company Name</Label>
-                                {/* <Select
-                                    name="company.name"
-                                    onValueChange={(value) => handleChange(value)
-                                }>
-                                    <SelectTrigger className="w-[300px]">
-                                        <SelectValue/>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {
-                                            companyData && companyData.map((company, index) => (
-                                             <SelectItem key={index} value={company}>{company.companyName}</SelectItem>
-                                            ))
-                                        }
-
-                                    </SelectContent>
-                                </Select> */}
                                 <select name="company.name" className='w-[300px]' id="" onChange={(value) => {
                                     handleChange(value)
                                     // console.log(value.target.value)
@@ -363,11 +345,6 @@ function AddProject() {
 
                             <div className="flex items-center justify-start">
                                 <Label className="font-normal mr-4">Domain</Label>
-                                {/* <Input
-                                    type="text"
-                                    name="domain"
-                                    value={projectData.domain}
-                                    onChange={handleChange}/> */}
                                 <Popover open={open} onOpenChange={setOpen} >
                                     <PopoverTrigger asChild className='p-2 rounded-md w-max min-w-[300px]:'>
                                         <Button
@@ -492,6 +469,15 @@ function AddProject() {
                                     type="text"
                                     name="trainingDates.timing"
                                     value={projectData.trainingDates.timing}
+                                    onChange={handleChange}/>
+                            </div>
+
+                            <div className="flex items-center justify-start">
+                                <Label className="font-normal mr-4">Amount (₹)</Label>
+                                <Input
+                                    type="text"
+                                    name="amount"
+                                    value={projectData.amount}
                                     onChange={handleChange}/>
                             </div>
                         </div>
@@ -668,9 +654,6 @@ function AddProject() {
                     </div>
                 </form>
             </div>
-            {
-                JSON.stringify(projectData)
-            }
         </div>
     )
 }
