@@ -37,7 +37,7 @@ function PipeLine() {
 
   return (  
     <div className='overflow-x-auto overflow-y-hidden'>
-        <div className='flex space-x-8 w-[max]'>
+        <div className='flex space-x-6 w-[max]'>
             {
                 stages.map((stage, index) => (
                     <Column index={index} stage={stage} projects={projects}/>

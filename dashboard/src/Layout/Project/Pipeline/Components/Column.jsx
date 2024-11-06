@@ -15,7 +15,7 @@ function Column({index, stage, projects}) {
             {/* Project Card */}
             {projects && projects
                 ?.map((project) => (
-                    <Link to={`/home/projects/view/${project._id}`} target='_blank'>
+                    <Link to={`/home/projects/view/${project._id}`}>
                         <CardProject key={project._id} projects={project}/>
                     </Link>
                 ))

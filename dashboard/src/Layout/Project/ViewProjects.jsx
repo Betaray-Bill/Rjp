@@ -11,8 +11,10 @@ function ViewProjects() {
 
   return (
     <div>
-      <div className='flex justify-between'>
-            <div></div>
+      <div className='flex justify-between items-center'>
+            <div className='text-xl font-semibold text-gray-800'>
+              Projects
+            </div>
             <Link to="/home/projects/create">
                 <Button className="rounded-none bg-blue-700">Create Project</Button>
             </Link>
