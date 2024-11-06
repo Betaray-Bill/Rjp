@@ -4,7 +4,7 @@ function CardProjects({projects}) {
     console.log(projects)
     return (
         <div
-            className='border border-gray-400 w-[350px] rounded-sm p-4 py-3 my-5 cursor-pointer bg-white'>
+            className='border border-gray-200 w-[350px] rounded-sm p-4 py-3 my-5 cursor-pointer bg-white'>
             <div className='flex items-center justify-between'>
                 <h4 className='font-semibold '>{projects.projectName}</h4>
                 <span className='rounded-md px-2 bg-blue-100'>{projects.company.name}</span>

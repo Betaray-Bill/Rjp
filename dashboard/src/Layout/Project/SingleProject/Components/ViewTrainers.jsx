@@ -29,6 +29,7 @@ function ViewTrainers({trainers}) {
                             <TableHead>Email</TableHead>
                             <TableHead>Type</TableHead>
                             <TableHead className="text-left"></TableHead>
+                            <TableHead></TableHead>
                             <TableHead className="text-left"></TableHead>
                             </TableRow>
                     </TableHeader>
@@ -50,8 +51,11 @@ function ViewTrainers({trainers}) {
                                 <TableCell>{trainer.generalDetails.email}</TableCell>
                                 <TableCell>{trainer.trainingDetails.trainerType}</TableCell>
                                 <TableCell>
+                                    <Button  className="bg-transparent text-black border border-black rounded-none hover:bg-blue-100">Resume</Button>
+                                </TableCell>
+                                <TableCell>
                                     <Link to={`/home/trainer/view/${trainer._id}`}  target="_blank">
-                                        <Button className="bg-transparent border text-black rounded-none hover:bg-blue-200">View</Button>
+                                        <ion-icon name="create-outline"style={{ fontSize:"20px"}}></ion-icon>
                                     </Link>
                                 </TableCell>
                                 <TableCell>

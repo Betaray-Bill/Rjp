@@ -11,10 +11,11 @@ import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import Loading from '@/utils/Loading'
 import SearchResult from '@/Layout/Search/SearchResult'
-import SearchBar from './SearchTrainers/SearchBar'
-import ViewTrainers from './ViewTrainers'
+import SearchBar from './Components/SearchTrainers/SearchBar'
+import ViewTrainers from './Components/ViewTrainers'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import ViewEmployee from './Components/ViewEmployee'
 
 function ViewSingleProject() {
   const projectId = useParams()
@@ -53,7 +54,7 @@ function ViewSingleProject() {
   if (isLoading) return <div><Loading /></div>
   if (error) return <div>Error: {error.message}</div>
   console.log(projects)
-  const {_id,  company, contactDetails,amount, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
+  const {_id,  company, contactDetails,amount,employees, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
 
   return (
     <div className=''>
@@ -123,6 +124,9 @@ function ViewSingleProject() {
           }
         </div>
       </div>
+
+      {/* Employees */}
+      <ViewEmployee employees={employees}/>
     </div>
   )
 }

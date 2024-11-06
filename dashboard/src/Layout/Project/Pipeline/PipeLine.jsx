@@ -40,7 +40,12 @@ function PipeLine() {
         <div className='flex space-x-6 w-[max]'>
             {
                 stages.map((stage, index) => (
-                    <Column index={index} stage={stage} projects={projects}/>
+                    <Column 
+                      key={index} 
+                      index={index} 
+                      stage={stage} 
+                      projects={projects}
+                    />
                 ))
             }
         </div>

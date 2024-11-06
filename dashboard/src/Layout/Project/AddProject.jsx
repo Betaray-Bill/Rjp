@@ -318,8 +318,8 @@ function AddProject() {
                         <div>
                             <h2 className='font-semibold '>Project Information</h2>
                         </div>
-                        <div className="grid grid-cols-1 gap-8 mt-8">
-                            <div className="flex items-center justify-start">
+                        <div className="grid grid-cols-2 gap-8 mt-8">
+                            <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Project Name</Label>
                                 <Input
                                     type="text"
@@ -328,7 +328,7 @@ function AddProject() {
                                     onChange={handleChange}/>
                             </div>
 
-                            <div className="flex items-center justify-start">
+                            <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Company Name</Label>
                                 <select name="company.name" className='w-[300px]' id="" onChange={(value) => {
                                     handleChange(value)
@@ -343,7 +343,7 @@ function AddProject() {
                                 </select>
                             </div>
 
-                            <div className="flex items-center justify-start">
+                            <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Domain</Label>
                                 <Popover open={open} onOpenChange={setOpen} >
                                     <PopoverTrigger asChild className='p-2 rounded-md w-max min-w-[300px]:'>
@@ -351,10 +351,10 @@ function AddProject() {
                                             variant="outline"
                                             role="combobox"
                                             aria-expanded={open}
-                                            className="justify-start"
+                                            className="justify-between"
                                         >
                                             {!projectData.domain ? (
-                                                <span className="flex items-center justify-start">
+                                                <span className="flex items-center justify-between">
                                                     <ion-icon
                                                         name="search-outline"
                                                         style={{ fontSize: "18px", marginRight: "12px" }}
@@ -363,7 +363,7 @@ function AddProject() {
                                                 </span>
                                             ) : (
                                                 <span className='flex items-center align-middle'>
-                                                    <div className='flex items-center justify-start  text-slate-900'>
+                                                    <div className='flex items-center justify-between  text-slate-900'>
                                                         <span>{projectData.domain}</span>
                                                         <ion-icon name="close-outline" style={{ fontSize: "18px", marginLeft: "12px" }} onClick={
                                                             () => {
@@ -417,7 +417,7 @@ function AddProject() {
                                 </Popover>
                             </div>
 
-                            <div className="flex items-center justify-start">
+                            <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Description</Label>
                                 <Input
                                     type="text"
@@ -426,7 +426,7 @@ function AddProject() {
                                     onChange={handleChange}/>
                             </div>
 
-                            <div className="flex items-center justify-start">
+                            <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Mode of Training</Label>
                                 <Select
                                     name="modeOfTraining"
@@ -444,7 +444,7 @@ function AddProject() {
                                 </Select>
                             </div>
 
-                            <div className="flex items-center justify-start">
+                            <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Training start Date</Label>
                                 <Input
                                     type="date"
@@ -454,7 +454,7 @@ function AddProject() {
                                    
                             </div>
 
-                            <div className="flex items-center justify-start">
+                            <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Training End Date</Label>
                                 <Input
                                     type="date"
@@ -463,7 +463,7 @@ function AddProject() {
                                     onChange={handleChange}/>
                             </div>
 
-                            <div className="flex items-center justify-start">
+                            <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Training Timing</Label>
                                 <Input
                                     type="text"
@@ -472,7 +472,7 @@ function AddProject() {
                                     onChange={handleChange}/>
                             </div>
 
-                            <div className="flex items-center justify-start">
+                            <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Amount (₹)</Label>
                                 <Input
                                     type="text"
@@ -491,7 +491,7 @@ function AddProject() {
                         </div>
                         <div className="grid grid-cols-2 gap-8 mt-8">
                             {/* Other fields for company and contact details */}
-                            <div className="flex items-center justify-start">
+                            <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Contact Name</Label>
                                 <select name="contactDetails.contactName" id="" className='w-[300px]' onChange={(e) => {
                                     console.log(e.target.value)
@@ -511,7 +511,7 @@ function AddProject() {
                                     onChange={handleChange}/> */}
                             </div>
 
-                            <div className="flex items-center justify-start">
+                            <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Contact Email</Label>
                                 <Input
                                     type="email"
@@ -520,7 +520,7 @@ function AddProject() {
                                     onChange={handleChange}/>
                             </div>
 
-                            <div className="flex items-center justify-start">
+                            <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Contact Number</Label>
                                 <Input
                                     type="text"
