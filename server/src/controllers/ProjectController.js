@@ -26,6 +26,7 @@ const createProject = asyncHandler(async(req, res) => {
     const {
         projectName,
         company,
+        projectOwner,
         contactDetails,
         domain,
         description,
@@ -52,6 +53,7 @@ const createProject = asyncHandler(async(req, res) => {
     try {
         const newProject = new Project({
             projectName,
+            projectOwner,
             company: {
                 name: company.name,
                 Company_id: company.id

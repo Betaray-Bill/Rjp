@@ -64,7 +64,7 @@ function SearchResult() {
                                                 <div className=' items-center'>
                                                     <h2 className='text-gray-600'>Training Domain</h2>
                                                     <p>
-                                                        <span className='text-black font-medium '> {res.trainingDomain[0].domain}</span>
+                                                        <span className='text-black font-medium'> {res.trainingDomain[0].domain}</span>
                                                     </p>
                                                 </div>
                                             </div>
