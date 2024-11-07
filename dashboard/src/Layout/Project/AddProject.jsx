@@ -34,6 +34,7 @@ import { setCredentials } from '@/features/projectSlice'
 import { useToast } from '@/hooks/use-toast'
 import { setDomainResults } from '@/features/searchTrainerSlice'
 import { useNavigate } from 'react-router-dom'
+import { useQueryClient } from 'react-query'
 // import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
 // import {Label} from '@/components/ui/label'
 // import {Button} from '@/components/ui//button'
@@ -44,6 +45,7 @@ function AddProject() {
     // Emp Selector
     const {allEmployee} = useSelector(state => state.employee)
     const {currentUser} = useSelector(state => state.auth)
+    const queryClient = useQueryClient();
     
 
     const dispatch = useDispatch()
@@ -292,10 +294,13 @@ function AddProject() {
                 employee: [],
                 trainers: []
             })
+            queryClient.invalidateQueries(['projects', currentUser.employee._id])
+
             toast({
                 title: "Project Created",
                 // description: "Friday, February 10, 2023 at 5:57 PM",
             })
+            
             navigate(`/home/projects/view/${response.project._id}`)
 
         }catch(err){

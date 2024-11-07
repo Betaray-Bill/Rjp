@@ -34,8 +34,15 @@ const resumeSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
+
     trainingName: {
-        type: String
+        name: {
+            type: String
+        },
+        project: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Project'
+        }
     },
     isMainResume: {
         type: Boolean,

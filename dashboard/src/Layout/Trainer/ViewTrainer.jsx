@@ -19,7 +19,7 @@ function ViewTrainer() {
     const [isEdit,
         setIsEdit] = useState(false)
     const [viewData,
-        setViewData] = useState("Details")
+        setViewData] = useState("Resumes")
     // console.log(data)
 
     const getTrainerById = async() => {
@@ -28,7 +28,7 @@ function ViewTrainer() {
     }
 
     useEffect(() => {
-        getTrainerById(params.id)
+        // getTrainerById(params.id)
     }, [])
 
     const {data, refetch, isLoading} = useQuery({
@@ -86,7 +86,7 @@ function ViewTrainer() {
 }
                                 {viewData === "Training Domains" && <ViewTrainingDomain id={data._id} data={data.trainingDomain}/>
 }
-                                {viewData === "Resumes" && <ViewResume data={data.resumeVersion}/>
+                                {viewData === "Resumes" && <ViewResume data={data.resumeVersion} projects={data.projects}/>
 }
                             </div>
                         </div>

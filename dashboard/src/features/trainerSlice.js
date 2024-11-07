@@ -40,7 +40,7 @@ const initialState = {
             trainingsDelivered: [],
             clientele: [],
             experience: [],
-            trainingName: ""
+            trainingName: []
         }
     },
 };
@@ -56,6 +56,7 @@ const trainerSlice = createSlice({
             } else {
                 state.trainerDetails = {...state.trainerDetails, [action.payload.name]: {...action.payload.data } }
             }
+            console.log(state.trainerDetails)
         },
         removeResumeDetails: (state) => {
             state.trainerDetails = {
@@ -91,7 +92,7 @@ const trainerSlice = createSlice({
                     trainingsDelivered: [],
                     clientele: [],
                     experience: [],
-                    trainingName: ""
+                    trainingName: []
 
                 }
             }
@@ -136,7 +137,7 @@ const trainerSlice = createSlice({
                     trainingsDelivered: [],
                     clientele: [],
                     experience: [],
-                    trainingName: ""
+                    trainingName: []
                 }
             }
         }

@@ -9,7 +9,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-function ViewNewResume({data, isNew}) {
+function ViewNewResume({data, projects}) {
     const [file, setFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
@@ -42,6 +42,22 @@ function ViewNewResume({data, isNew}) {
     const dispatch = useDispatch()
 
     console.log("Clicked on New Resume")
+
+    const handleTrainingNameChange = (e) => {
+        // setResume({...resume, trainingName:e.target.value})
+        console.log(e)
+        let trainingDetails = {}
+        for(let i=0; i<projects.length; i++){
+            if(projects[i]._id === e){
+                console.log(projects[i])
+                trainingDetails._id = projects[i]._id
+                trainingDetails.name = projects[i].projectName
+                break;
+            }
+        }
+
+        setResume({...resume, trainingName:trainingDetails})
+    }
 
   
     // -----------------------Render the Resume Details Sections -------------------------------
@@ -210,11 +226,22 @@ function ViewNewResume({data, isNew}) {
          <form onSubmit={submitResumeHandler}>
             <div>
                 <Label>Training Name</Label>
-                <Input 
+                {/* <Input 
                     placeholder="Enter training name"
                     value={resume?.trainingName}
                     onChange={(e) => setResume({...resume, trainingName:e.target.value})}
-                />
+                /> */}
+                <select 
+                    className='ml-4'  
+                    onChange={(e) => handleTrainingNameChange(e.target.value)}
+                >
+                    <option value="Select Training">Select Training</option>
+                    {
+                        projects && projects?.map((e, _i) => (
+                            <option key={_i} value={e._id}>{e.projectName}</option>
+                        ))
+                    }
+                </select>
             </div>
             <div className='grid grid-cols-1 md:grid-cols-2 items-start '>
                   <div className='mt-4 rounded-sm p-2'>

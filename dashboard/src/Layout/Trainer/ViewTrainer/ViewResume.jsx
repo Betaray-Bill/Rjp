@@ -21,7 +21,7 @@ import { Outlet, useNavigate, useParams } from 'react-router-dom'
 import { useToast } from "@/hooks/use-toast"
 
 
-function ViewResume({data}) {
+function ViewResume({data, projects}) {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState("")
     const [isNew, setIsNew] = useState(false)
@@ -55,7 +55,7 @@ function ViewResume({data}) {
                     className="w-[200px] justify-between flex items-center"
                     >
                         <span>{
-                            value ?  value.trainingName  : "Select Resume"
+                            value ?  value.trainingName.name ? value.trainingName.name : value.trainingName : "Select Resume"
                         }</span>
                         <ion-icon style={{fontSize:"18px"}} name="chevron-collapse-outline"></ion-icon>
                     </Button>
@@ -69,14 +69,14 @@ function ViewResume({data}) {
                         {data?.map((framework, index) => (
                             <CommandItem
                                 key={index}
-                                value={framework.trainingName}
+                                value={framework.trainingName.name ? framework.trainingName.name : framework.trainingName}
                                 onSelect={(currentValue) => {
-                                    setValue(currentValue === value ? "" : (framework))
+                                    setValue(currentValue === value.name ? "" : (framework))
                                     setOpen(false)
                                 }}
                             >
                         
-                            {framework.trainingName}
+                            {framework.trainingName.name ? framework.trainingName.name : framework.trainingName}
                             </CommandItem>
                         ))}
                         </CommandGroup>
@@ -95,7 +95,7 @@ function ViewResume({data}) {
                     !isNew ?
                     <Button className="ml-4" onClick={() => {
                         setIsNew(true)
-                        // navigate(`/home/trainer/view/${params.id}/add`);
+                        navigate(`/home/trainer/view/${params.id}/add`);
                     }}>
                         <ion-icon name="add-outline" style={{fontSize:"18px"}}></ion-icon>
                         <span>New Resume</span>
@@ -110,7 +110,7 @@ function ViewResume({data}) {
             
             { 
                 value? <ViewResumeDetails data={value} isNew={isNew}/> : (
-                    isNew ? <ViewNewResume data={data[0]}/>:null 
+                    isNew ? <ViewNewResume data={data[0]} projects={projects}/>:null 
                 )
             }
             {/* <Outlet /> */}

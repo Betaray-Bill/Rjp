@@ -52,9 +52,20 @@ const projectSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Employee'
     }],
+    // trainers: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Trainer'
+    // }]
+
     trainers: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Trainer'
+        trainer: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Trainer'
+        },
+        resume: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Resume'
+        }
     }]
 }, { timestamps: true });
 

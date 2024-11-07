@@ -2,24 +2,31 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { Resume, Trainer } from "../models/TrainerModel.js";
 import { generateEmpToken, generateToken } from "../utils/generateToken.js";
 import bcrypt from 'bcryptjs';
-
+import Project from "../models/ProjectModel/ProjectModel.js";
 
 // Login - Trainer with trainerId and Trainer_password
 const trainerLogin = asyncHandler(async(req, res) => {
     const { email, password } = req.body
     console.log(req.body)
     if (email === "" || password === "") {
-        return res.status(400).json({ message: "Please provide both email and password." })
+        return res
+            .status(400)
+            .json({ message: "Please provide both email and password." })
     }
 
-    const trainer = await Trainer.find({ "generalDetails.email": email }).populate('resumeVersion').select("-password")
+    const trainer = await Trainer
+        .find({ "generalDetails.email": email })
+        .populate('resumeVersion')
+        .select("-password")
     console.log(trainer)
     if (trainer) {
         console.log(trainer)
             // await trainer
         let token = generateToken(res, trainer._id);
         console.log("login token ", token);
-        res.status(200).json({ trainer });
+        res
+            .status(200)
+            .json({ trainer });
     } else {
         res.status(401);
         throw new Error('Invalid email or password');
@@ -27,57 +34,57 @@ const trainerLogin = asyncHandler(async(req, res) => {
 
 })
 
-
 // Accept the NDA
 const acceptNDA = asyncHandler(async(req, res) => {
     // Get the Id of the Trainer
     const trainerId = req.query.trainerId
     console.log(req.query.trainerId)
-        // Check if the Trainer Exist   
-    const trainer = await Trainer.findByIdAndUpdate(
-        trainerId, {
-            nda_Accepted: true,
-            is_FirstLogin: false
-        }, { new: true }
-    )
+        // Check if the Trainer Exist
+    const trainer = await Trainer.findByIdAndUpdate(trainerId, {
+        nda_Accepted: true,
+        is_FirstLogin: false
+    }, { new: true })
 
     try {
         await trainer.save();
-        res.status(200).json({ message: 'NDA accepted successfully', trainer });
+        res
+            .status(200)
+            .json({ message: 'NDA accepted successfully', trainer });
     } catch (err) {
-        res.status(500).json({ message: "Error in accepting the NDA", err: err.message });
+        res
+            .status(500)
+            .json({ message: "Error in accepting the NDA", err: err.message });
     }
 })
 
-
-// Rejected the NDA - Sign out
-
-
-// Sign out
-
-
-// Update the Profile By Trainer
+// Rejected the NDA - Sign out Sign out Update the Profile By Trainer
 const updateTrainerProfile = asyncHandler(async(req, res) => {
     const { id } = req.params;
     const updateData = req.body;
     console.log(req.body)
     try {
         // Find the trainer by ID and update their profile
-        const updatedTrainer = await Trainer.findByIdAndUpdate(
-            id, { $set: updateData }, { new: true, runValidators: true }
-        );
+        const updatedTrainer = await Trainer.findByIdAndUpdate(id, {
+            $set: updateData
+        }, {
+            new: true,
+            runValidators: true
+        });
 
         if (!updatedTrainer) {
-            return res.status(404).json({ message: "Trainer not found" });
+            return res
+                .status(404)
+                .json({ message: "Trainer not found" });
         }
 
-        res.status(200).json({
-            message: "Trainer profile updated successfully",
-            trainer: updatedTrainer
-        });
+        res
+            .status(200)
+            .json({ message: "Trainer profile updated successfully", trainer: updatedTrainer });
     } catch (error) {
         console.error("Error updating trainer profile:", error);
-        res.status(500).json({ error: "Internal server error" });
+        res
+            .status(500)
+            .json({ error: "Internal server error" });
     }
 
 })
@@ -89,27 +96,25 @@ const addTrainingDates = asyncHandler(async(req, res) => {
     console.log(trainingDates);
 
     // Append training dates
-    const trainer = await Trainer.findByIdAndUpdate(
-        id, {
-            $push: {
-                availableDate: {
-                    start: new Date(trainingDates.start),
-                    end: new Date(trainingDates.end),
-                    title: trainingDates.title
-                }
+    const trainer = await Trainer.findByIdAndUpdate(id, {
+        $push: {
+            availableDate: {
+                start: new Date(trainingDates.start),
+                end: new Date(trainingDates.end),
+                title: trainingDates.title
             }
-        }, { new: true }
-    )
-
+        }
+    }, { new: true })
 
     if (!trainer) {
-        return res.status(404).json({ message: "Trainer not found" });
+        return res
+            .status(404)
+            .json({ message: "Trainer not found" });
     }
 
-    res.status(200).json({
-        message: "Training dates added successfully",
-        trainer: trainer
-    });
+    res
+        .status(200)
+        .json({ message: "Training dates added successfully", trainer: trainer });
 })
 
 // Make a copy of the resume - Create a New Resume By the Trainer
@@ -121,7 +126,9 @@ const resumeCopy = asyncHandler(async(req, res) => {
     // Check if the trainer exits
     const trainer = await Trainer.findById(id);
     if (!trainer) {
-        return res.status(404).json({ message: "Trainer not found" });
+        return res
+            .status(404)
+            .json({ message: "Trainer not found" });
     }
 
     try {
@@ -136,24 +143,36 @@ const resumeCopy = asyncHandler(async(req, res) => {
             trainingsDelivered: req.body.trainingsDelivered,
             clientele: req.body.clientele,
             experience: req.body.experience,
-            trainingName: req.body.trainingName,
+            trainingName: {
+                name: req.body.trainingName.name,
+                project: req.body.trainingName._id
+            },
             isMainResume: false
         })
         await resume.save()
 
         // Save the resume to the trainer profile
-        await trainer.resumeVersion.push(resume._id);
+        await trainer
+            .resumeVersion
+            .push(resume._id);
         await trainer.save();
 
+        // Save the Resume to the Trainer's resume Field in the Project
+        await Project.findByIdAndUpdate(req.body.trainingName._id, {
+            $set: {
+                "trainers.resume": resume._id
+            }
+        }, { new: true })
 
-        res.status(200).json({
-            message: "Resume copy created successfully",
-            trainer: trainer
-        });
+        res
+            .status(200)
+            .json({ message: "Resume copy created successfully", trainer: trainer });
 
     } catch (err) {
         console.error("Error creating resume copy:", err);
-        res.status(500).json({ error: "Internal server error" });
+        res
+            .status(500)
+            .json({ error: "Internal server error" });
     }
 })
 
@@ -166,9 +185,9 @@ const changepassword = asyncHandler(async(req, res) => {
     const trainer = await Trainer.findById(trainerId)
     console.log("Trainer ", trainer.generalDetails.name)
     if (!trainer) {
-        res.status(404).json({
-            message: 'Trainer does not exists',
-        });
+        res
+            .status(404)
+            .json({ message: 'Trainer does not exists' });
     }
     let a = bcrypt.compare(currentPassword, trainer.password, function(err, result) {
         // result == true
@@ -176,81 +195,82 @@ const changepassword = asyncHandler(async(req, res) => {
     })
 
     console.log(a)
-        // get the current password and check if its legit
-        // let isValid = await trainer ? .matchPassword(currentPassword)
-        // console.log(isValid)
+        // get the current password and check if its legit let isValid = await trainer ?
+        // .matchPassword(currentPassword) console.log(isValid)
     if (trainer && (await trainer.matchPassword(currentPassword))) {
-        const updatepasswordTrainer = await Trainer.findByIdAndUpdate(
-            trainerId, {
-                password: newpassword
-            }, { new: true }
-        )
+        const updatepasswordTrainer = await Trainer.findByIdAndUpdate(trainerId, {
+            password: newpassword
+        }, { new: true })
 
         updatepasswordTrainer.save();
-        res.status(200).json({ message: 'Password Cahgned Successfully', updatepasswordTrainer });
+        res
+            .status(200)
+            .json({ message: 'Password Cahgned Successfully', updatepasswordTrainer });
     }
     // get new pass, then save
-    res.status(500).json({ message: "Error in changing the password" });
+    res
+        .status(500)
+        .json({ message: "Error in changing the password" });
 })
 
-
-// Accept PO 
-
-
-// Reject PO 
-
-
-//Raise Invoice
-
-
-// Get Trainer by ID
+// Accept PO Reject PO Raise Invoice Get Trainer by ID
 const getTrainerById = asyncHandler(async(req, res) => {
     const { id } = req.params;
 
     try {
-        const trainer = await Trainer.findById(id)
+        const trainer = await Trainer
+            .findById(id)
             .populate('resumeVersion')
             .select('-bankDetails -password -nda_Accepted -is_FirstLogin')
             .populate({
                 path: 'projects',
-                // populate: {
-                // path: 'employees', // Path of employee IDs within each Project
+                // populate: { path: 'employees', // Path of employee IDs within each Project
                 select: 'company.name projectName domain trainingDates modeOfTraining contactDetails', // Only fetch the 'name' field from each employee
                 // },
             })
-            // .populate({
-            //     path: 'projects.projectOwner',
-            //     select: 'name email', // Only fetch the 'employeeId' field from each employee
-            // });
+            // .populate({     path: 'projects.projectOwner',     select: 'name email', //
+            // Only fetch the 'employeeId' field from each employee });
         if (!trainer) {
-            return res.status(404).json({ message: "Trainer not found" });
+            return res
+                .status(404)
+                .json({ message: "Trainer not found" });
         }
-        res.status(200).json(trainer);
+        res
+            .status(200)
+            .json(trainer);
     } catch (err) {
-        return res.status(404).json({ message: "Trainer not found" });
+        return res
+            .status(404)
+            .json({ message: "Trainer not found" });
     }
 })
 
 // get all trainers
 const getAllTrainer = asyncHandler(async(req, res) => {
     try {
-        const trainers = await Trainer.find().select('-password');
+        const trainers = await Trainer
+            .find()
+            .select('-password');
         if (!trainers || trainers.length === 0) {
-            return res.status(404).json({ message: "No trainers found" });
+            return res
+                .status(404)
+                .json({ message: "No trainers found" });
         }
-        res.status(200).json(trainers);
+        res
+            .status(200)
+            .json(trainers);
     } catch (error) {
         console.error("Error getting all trainers:", error);
-        res.status(500).json({ error: "Internal server error" });
+        res
+            .status(500)
+            .json({ error: "Internal server error" });
     }
 })
-
 
 // Get Trainer by the Emp who registered him
 const getTrainersByEmpID = asyncHandler(async(req, res) => {
 
     // Get Emp Id - check his role, if ADMIN return ALL else return from their ID
-
 
 })
 
