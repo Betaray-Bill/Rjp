@@ -125,6 +125,10 @@ const trainerSchema = mongoose.Schema({
                 'Online Hourly', 'Online Per-day', 'Offline Hourly', 'Offline Per Day'
             ],
             required: true
+        },
+        type: {
+            type: String,
+            // required: true
         }
     }],
     // mainResume: {

@@ -284,9 +284,9 @@ function SearchBar({domain, id}) {
             {
                 result && result.length > 0 && 
                 (
-                    <div className='mt-6 grid lg:grid-cols-2 gap-[25px] place-content-center items-start'>
+                    <div className='mt-6 place-content-center items-start'>
                     { result &&  result?.map((res, _i) => (
-                           <div key={_i} className='border flex items-start justify-between border-gray-200 rounded-md p-3 h-max w-[75vw] min-w-[70vw]'>
+                           <div key={_i} className='border my-5 flex items-start justify-between border-gray-200 rounded-md p-3 h-max w-[75vw] min-w-[70vw]'>
                                 {/* General Details */}
                                 <div className='flex items-start flex-col justify-between'>
                                             <div className='flex items-center'>

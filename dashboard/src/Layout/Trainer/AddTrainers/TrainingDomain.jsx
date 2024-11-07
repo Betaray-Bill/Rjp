@@ -41,7 +41,8 @@ function TrainingDomain({}) {
                         {
                             domain: e,
                             price: Number(),
-                            paymentSession: ""
+                            paymentSession: "",
+                            type:"",
                         }
                     ])
                 } else {
@@ -50,7 +51,8 @@ function TrainingDomain({}) {
                         {
                             domain: e,
                             price: Number(),
-                            paymentSession: ""
+                            paymentSession: "",
+                            type:""
                         }
                     ])
                 }
@@ -69,7 +71,8 @@ function TrainingDomain({}) {
         setTrainingDetails] = useState({
             domain: "",
             price: Number(),
-            paymentSession: ""
+            paymentSession: "",
+            type:""
         })
 
     const handleChange = (event, index) => {
@@ -134,6 +137,8 @@ function TrainingDomain({}) {
 
     const [filteredResults, setFilterResults] = useState(domains);
     // console.log(domains)
+
+    console.log(trainingDomain)
 
 
     return (
@@ -293,7 +298,16 @@ function TrainingDomain({}) {
                                 <Label className="text-lg font-semibold">{index + 1}. {item.domain}</Label>
                                 <span className='mt-2 py-2' onClick={() => handleDelete(index)}><ion-icon name="trash-outline" style={{color:"red", cursor:"pointer"}}></ion-icon></span>
                             </div>
-                            <div className='flex items-start justify-between ml-10'>
+                            <div className='flex items-start justify-between '>
+                                <div className='flex flex-col items-start justify-between mr-10'>
+                                    <Label className="text-md font-medium text-slate-700">Enter Type</Label>
+                                    <select name="type" id="" className='w-max' value={item.type}  onChange={(e) =>  handleChange(e, index)}>
+                                        <option value="Select Type">Select Type</option>
+                                        <option value="Lateral">Lateral</option>
+                                        <option value="Induction">Induction</option>
+                                        <option value="Both">Both</option>
+                                    </select>
+                                </div>
                                 <div>
                                     <Label className="text-md font-medium text-slate-700">Enter Price (₹)</Label>
                                     <Input type="number" placeholder="Enter Price(Rupees)"  name="price" className="w-[200px]" onChange={(e) =>  handleChange(e, index)}/>
