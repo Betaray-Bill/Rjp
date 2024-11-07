@@ -142,8 +142,8 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
                     .populate({
                         path: 'Projects',
                         // populate: {
-                        //     path: 'employees', // Path of employee IDs within each Project
-                        //     select: 'name email', // Only fetch the 'name' field from each employee
+                        // path: 'employees', // Path of employee IDs within each Project
+                        select: 'projectName domain company.name  projectOwner contactDetails.name contactDetails.email trainingDates', // Only fetch the 'name' field from each employee
                         // },
                     });
                 // await trainer.save()
@@ -156,7 +156,7 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
                     path: 'Projects',
                     // populate: {
                     //     path: 'employees', // Path of employee IDs within each Project
-                    //     select: 'name email', // Only fetch the 'name' field from each employee
+                    select: 'projectName domain company.name  projectOwner contactDetails.name contactDetails.email trainingDates', // Only fetch the 'name' field from each employee
                     // },
                 });
                 // await trainer.save()
@@ -240,6 +240,36 @@ const addTrainer = asyncHandler(async(req, res) => {
 })
 
 
+// Delete Trainers from the project
+const deleteTrainer = asyncHandler(async(req, res) => {
+    const { projectId } = req.params;
+    const trainersList = req.body.trainers;
+    console.log(req.body)
+    console.log(trainersList)
+
+    try {
+
+        console.log("1", trainersList)
+        await Project.findByIdAndUpdate(projectId, {
+            $pull: {
+                trainers: trainersList
+            }
+        }, { new: true });
+        // console.log("Trainer Deleted", trainer)
+        await Trainer.findByIdAndUpdate(trainersList, {
+            $pull: { projects: projectId }
+        }, { new: true });
+
+
+        res.json({ message: "Trainers Deleted to the project." });
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ message: 'Error Deleting trainers.', error: err.message });
+
+    }
+
+})
+
 // update a project - ADMIN delete a project - ADMIN Add a trainer - KA, Admin
 
 
@@ -251,5 +281,6 @@ export {
     createProject,
     getProjectDetails,
     getProjectsByEmp,
-    addTrainer
+    addTrainer,
+    deleteTrainer
 }

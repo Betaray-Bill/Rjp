@@ -36,12 +36,12 @@ function SearchResult() {
                             <span className='ml-1'>Reset</span>
                         </p>
                         </div>
-                        <div className='mt-6 grid grid-cols-1 lg:grid-cols-2 gap-[25px] place-content-center items-start'>
+                        <div className='mt-6 grid gap-[25px] place-content-center items-start'>
                              { domainResults &&  domainResults?.map((res, _i) => (
-                                    <div key={_i} className='border border-gray-200 rounded-md p-3 h-max w-[30vw]'>
+                                    <div key={_i} className='border flex  items-start justify-between border-gray-200 rounded-md p-3 h-max w-[70vw]'>
                                         {/* <h2>{res.generalDetails.name}</h2> */}
                                         {/* General Details */}
-                                        <div className='flex items-center justify-between my-4'>
+                                        <div className='flex items-start flex-col justify-between'>
                                             <div className='flex items-center'>
                                                 <Avatar>
                                                     <AvatarImage src="https://github.com/shadcn.png"/>
@@ -50,7 +50,7 @@ function SearchResult() {
                                                 <p className='ml-2 font-medium'>{res.generalDetails?.name}</p>
                                             </div>
                                             <div>
-                                                <p className='text-gray-600'>
+                                                <p className='text-gray-600 mt-2'>
                                                     ID:
                                                     <span className='text-black font-semibold'>{res.trainerId}</span>
                                                 </p>
@@ -59,46 +59,43 @@ function SearchResult() {
                                         </div>
                                         {/* Domain Based Details */}
                                         <div
-                                            className='my-5 border p-2 rounded-md border-gray-200'>
+                                            className='flex flex-col justify-start'>
                                             <div className='flex items-center justify-between'>
-                                                <div>
+                                                <div className=' items-center'>
                                                     <h2 className='text-gray-600'>Training Domain</h2>
                                                     <p>
-                                                        <span className='text-black font-semibold '>{res.trainingDomain[0].domain}</span>
+                                                        <span className='text-black font-medium '> {res.trainingDomain[0].domain}</span>
                                                     </p>
                                                 </div>
-                                                <div>
-                                                    <h2 className='text-gray-600'>Price</h2>
-                                                    <p>
-                                                        <span className='text-black font-semibold'>₹{res.trainingDomain[0].price}</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className='mt-6'>
-                                                <h2 className='text-gray-600'>Session Taken</h2>
-                                                <p>
-                                                    <span className='text-black font-semibold'>{res.trainingDomain[0].paymentSession}</span>
-                                                </p>
                                             </div>
                                         </div>
 
-                                        {/* COntact Details */}
-                                        <div className='my-5  border p-2 rounded-md border-gray-200'>
-                                            <div>
-                                                <h2 className='text-gray-600'>Contact Details</h2>
+                                        <div className='flex items-center justify-between '>
+                                                <div>
+                                                    <h2 className='text-gray-600'>Session Taken</h2>
+                                                    <p>
+                                                        <span className='text-black font-medium'>{res.trainingDomain[0].paymentSession}</span>
+                                                    </p>
+                                                </div>
+                                                <div className='ml-4'>
+                                                    <h2 className='text-gray-600'>Price</h2>
+                                                    <p>
+                                                        <span className='text-black font-medium'>₹{res.trainingDomain[0].price}</span>
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div className='grid grid-cols-2 gap-[20px] mt-2'>
-                                                <p className='flex flex-col'>
-                                                    <span className='text-gray-600'>phone Number</span>
-                                                    <span className='font-semibold'>{res.generalDetails?.phoneNumber}</span>
+
+
+                                        {/* COntact Details */}
+                                        <div className=' border-gray-200'>
+                                            <div className='flex flex-col items-start gap-[20px]'>
+                                                <p className='flex items-center'>
+                                                    <ion-icon style={{fontSize:"20px", color:"gray", marginRight:"5px"}}  name="call-outline"></ion-icon>
+                                                    <span className='font-medium'>{res.generalDetails?.phoneNumber}</span>
                                                 </p>
-                                                <p className='flex flex-col items-start'>
-                                                    <span className='text-gray-600'>Whatsapp Number</span>
-                                                    <span className='font-semibold'>{res.generalDetails?.phoneNumber}</span>
-                                                </p>
-                                                <p className='flex flex-col items-start'>
-                                                    <span className='text-gray-600'>Email Id</span>
-                                                    <span className='font-semibold'>{res.generalDetails?.email}</span>
+                                                <p className='flex  items-center'>
+                                                    <ion-icon style={{fontSize:"20px", color:"gray", marginRight:"5px"}}  name="mail-outline"></ion-icon>
+                                                    <span className='font-medium'>{res.generalDetails?.email}</span>
                                                 </p>
                                             </div>
                                         </div>

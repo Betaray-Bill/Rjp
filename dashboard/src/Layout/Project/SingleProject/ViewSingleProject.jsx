@@ -58,10 +58,15 @@ function ViewSingleProject() {
 
   return (
     <div className=''>
-      <button onClick={() => navigate(-1)} className='flex items-center mt-[-10] mb-4'>
-        <ion-icon name="arrow-back-outline"></ion-icon>
-        <span className='ml-2'>Go Back</span>
-      </button>
+      <div className='flex items-center justify-between mb-3'>
+        <button onClick={() => navigate(-1)} className='flex items-center mt-[-10] mb-4'>
+          <ion-icon name="arrow-back-outline"></ion-icon>
+          <span className='ml-2'>Go Back</span>
+        </button>
+        <div>
+          <Button className="rounded-none">Edit</Button>
+        </div>
+      </div>
       {/* PRoject Data */}
       <div className='border rounded-md shadow-md py-4 px-4'>
         <div className="grid grid-cols-3 gap-8 place-content-between">
@@ -101,7 +106,10 @@ function ViewSingleProject() {
       <div className='border rounded-md mt-8 py-4 px-3 shadow-sm'>
         <div className='flex items-center justify-between'>
           <div className='font-semibold'>Trainers</div>
-          <Button onClick={scrollToSection}>Add Trainer</Button>
+          <Button onClick={scrollToSection} className='flex items-center bg-blue-950 rounded-none'>
+            <ion-icon name="search-outline" style={{fontSize:"20px"}}></ion-icon>
+            <span>Search Trainer</span>
+          </Button>
         </div>
         <div>
           {/* Search Bar */}
@@ -126,7 +134,7 @@ function ViewSingleProject() {
       </div>
 
       {/* Employees */}
-      <ViewEmployee employees={employees}/>
+      {/* <ViewEmployee employees={employees}/>  */}
     </div>
   )
 }

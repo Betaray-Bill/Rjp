@@ -532,13 +532,13 @@ function AddProject() {
                     </div>
 
                     {/* Employee Adding Section */}
-                    <div className='mt-10 border rounded-md py-5 px-3'>
+                    {/* <div className='mt-10 border rounded-md py-5 px-3'>
                         <div>
                             <h2 className='font-semibold '>Employees Information</h2>
                         </div>
                         <div className='mt-8'>
         
-                            {/* Search Employees - add btn*/}
+                            Search Employees - add btn
                             <div className='relative'>
                                 <div className='flex items-center justify-between'>
                                     <div className='border px-2 w-max flex items-center rounded-md'>
@@ -546,8 +546,6 @@ function AddProject() {
                                         <Input
                                             placeholder="Search emails..."
                                             value={searchTerm}
-                                            // onChange={(eve
-                                                // table.getColumn("email")?.setFilterValue(event.target.value)
                                             onChange={(e) => {
                                                 handleSearchEmployee(event.target.value)
                                                 setSearchTerm(event.target.value)
@@ -647,7 +645,7 @@ function AddProject() {
                             }
 
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className='flex justify-center my-10'>
                         <Button type="submit">Submit</Button>

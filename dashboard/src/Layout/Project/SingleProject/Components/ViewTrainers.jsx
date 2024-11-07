@@ -8,11 +8,44 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
-import { Link } from 'react-router-dom'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,DialogFooter,
+    DialogTitle,DialogClose,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
+import { Link, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+import { useQueryClient } from 'react-query'
+import { useToast } from '@/hooks/use-toast'
+import axios from 'axios'
 
 function ViewTrainers({trainers}) {
+    const projectId = useParams() 
+    const queryClient = useQueryClient();
+    const {toast} = useToast()
+    // const [deleteTrainers, setDeleteTrainers] = useState([])
 
+    const deleteTrainer = async(id) => {
+        console.log(id, projectId.projectId)
+        try{
+            const response = await axios.put(`http://localhost:5000/api/project/delete-trainers/${projectId.projectId}`, {trainers: id})
+            console.log(response.data)
+            queryClient.invalidateQueries(['ViewProject', projectId.projectId ]);
+            toast({
+                title: "Trainer deleted successfully",
+                // description: "Friday, February 10, 2023 at 5:57 PM",
+              })
+        }catch(err){
+            console.error(err)
+            toast({
+                title: "Trainer Deletion Error",
+                // description: "Friday, February 10, 2023 at 5:57 PM",
+              })
+        }
+    }
 
 
   return (
@@ -35,9 +68,7 @@ function ViewTrainers({trainers}) {
                     </TableHeader>
                     <TableBody>
                         {trainers?.length>0 && trainers?. map((trainer, index) => (
-                            <TableRow key={index} onClick={() => {
-                                    console.log(`${index+1}.) ${trainer.email} `)
-                                }}
+                            <TableRow key={index}
                                 className="cursor-pointer rounded-md"
                             >
                                 <TableCell className="font-medium">{index+1}</TableCell>
@@ -59,7 +90,32 @@ function ViewTrainers({trainers}) {
                                     </Link>
                                 </TableCell>
                                 <TableCell>
-                                    <ion-icon name="trash-outline"style={{color:"red", fontSize:"20px"}}></ion-icon>
+                                    <Dialog>
+                                        <DialogTrigger>
+                                            <ion-icon 
+                                                name="trash-outline" 
+                                                style={{color:"red", fontSize:"20px"}}
+                                            ></ion-icon>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader>
+                                            <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                            <DialogDescription>
+                                                This action cannot be undone. This will  delete the trainer
+                                                and remove his data from the Training.
+                                            </DialogDescription>
+                                            </DialogHeader>
+                                            <DialogFooter>
+                                                <DialogClose asChild>
+                                                    <Button      
+                                                        type="submit"      
+                                                        className="bg-red-700"                                     
+                                                        onClick={() => deleteTrainer(trainer._id)}>Delete</Button>
+                                                </DialogClose>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
+
                                 </TableCell>
                             </TableRow>
                         ))}

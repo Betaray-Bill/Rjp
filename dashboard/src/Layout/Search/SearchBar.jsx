@@ -55,6 +55,14 @@ function SearchBar({domainSearch}) {
 
     const [filter, setFilter] = useState(false)
 
+    useEffect(() => {
+        if(query === ""){
+            setStartPrice('')
+            setEndPrice('')
+            setTrainingType('')
+        }
+    }, [query])
+
     const handleDomainChange = (event) => {
         dispatch(setSearchDomain(event.target.value))
         setQuery(event.target.value)

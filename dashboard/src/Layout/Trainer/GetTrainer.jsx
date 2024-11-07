@@ -30,6 +30,8 @@ function GetTrainer() {
     const {data, refetch} = useQuery({
         queryKey:["getAllTrainers"], 
         queryFn:getAll,
+        staleTime: 1000 * 60 * 5, // data stays    fresh for 5 minutes
+        cacheTime: 1000 * 60 * 10
     });
 
   return (

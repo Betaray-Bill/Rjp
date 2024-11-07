@@ -6,12 +6,13 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import CardProject from '@/Layout/Project/Pipeline/Components/CardProject';
 const stages = [
-    "one ",
-    "two",
-    "three",
-    "four",
-    "five",
-    "six",
+    "Training Requirement ",
+    "Reply",
+    "Proposal Sent",
+    "PO received / Invoice Raised",
+    "Training Delivery",
+    "Invoice Sent",
+    "Payment",
 ]
 function PipeLine() {
 

@@ -1,14 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-  } from "@/components/ui/breadcrumb"
-  
 
 function Trainer() {
 

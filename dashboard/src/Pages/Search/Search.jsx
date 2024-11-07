@@ -10,7 +10,7 @@ function Search() {
   return (
     <div className='main-container'> 
       {/* Main Container */}
-      <div className='w-[80vw] p-4 grid place-content-center'>
+      <div className='w-max p-4 grid place-content-center'>
         {/* Search Component */}
         <SearchBar />
         {/* Result COntainer */}
