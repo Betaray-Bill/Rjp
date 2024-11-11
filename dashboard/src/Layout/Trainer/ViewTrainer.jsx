@@ -6,15 +6,17 @@ import PersonalDetails from './AddTrainers/PersonalDetails'
 import BankDetails from './AddTrainers/BankDetails'
 import TrainingDomain from './AddTrainers/TrainingDomain'
 import ResumeDetails from './AddTrainers/Resume/ResumeDetails'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {Button} from '@/components/ui/button'
 import ViewResume from './ViewTrainer/ViewResume'
 import ViewGeneralDetails from './ViewTrainer/ViewGeneralDetails'
 import ViewTrainingDomain from './ViewTrainer/ViewTrainingDomain'
+import { setCurrentTrainerDetails } from '@/features/currentTrainerSlice'
 
 function ViewTrainer() {
     const params = useParams()
+    const dispatch = useDispatch()
     const {trainerDetails} = useSelector(state => state.trainer)
     const [isEdit,
         setIsEdit] = useState(false)
@@ -24,6 +26,7 @@ function ViewTrainer() {
 
     const getTrainerById = async() => {
         const response = await axios.get(`http://localhost:5000/api/trainer/details/${params.id}`); // Replace with your API endpoint
+        dispatch(setCurrentTrainerDetails(response.data))
         return response.data
     }
 

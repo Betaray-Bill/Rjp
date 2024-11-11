@@ -6,7 +6,7 @@ import { setResumeDetails } from '@/features/trainerSlice';
 import { useToast } from '@/hooks/use-toast';
 import axios from 'axios';
 import React, { useRef, useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 function ViewNewResume({data, projects}) {
@@ -31,6 +31,7 @@ function ViewNewResume({data, projects}) {
               trainingsDelivered: data ? data.trainingsDelivered : [],
               clientele: data ? data.clientele : [],
               experience: data ? data.experience : [],
+              projects: data ? data.projects : [],
             })
           // setExtractedData(data)
           // setIsEdit(false)
@@ -43,21 +44,21 @@ function ViewNewResume({data, projects}) {
 
     console.log("Clicked on New Resume")
 
-    const handleTrainingNameChange = (e) => {
-        // setResume({...resume, trainingName:e.target.value})
-        console.log(e)
-        let trainingDetails = {}
-        for(let i=0; i<projects.length; i++){
-            if(projects[i]._id === e){
-                console.log(projects[i])
-                trainingDetails._id = projects[i]._id
-                trainingDetails.name = projects[i].projectName
-                break;
-            }
-        }
+    // const handleTrainingNameChange = (e) => {
+    //     // setResume({...resume, trainingName:e.target.value})
+    //     console.log(e)
+    //     let trainingDetails = {}
+    //     for(let i=0; i<projects.length; i++){
+    //         if(projects[i]._id === e){
+    //             console.log(projects[i])
+    //             trainingDetails._id = projects[i]._id
+    //             trainingDetails.name = projects[i].projectName
+    //             break;
+    //         }
+    //     }
 
-        setResume({...resume, trainingName:trainingDetails})
-    }
+    //     setResume({...resume, projects:trainingDetails})
+    // }
 
   
     // -----------------------Render the Resume Details Sections -------------------------------
@@ -209,28 +210,45 @@ function ViewNewResume({data, projects}) {
         }
 
     }
-    
+     // Select Project to the Resume
+     const addProjectToResume = async(projectId) => {
+        console.log(projectId)
+        if(projectId == ""){
+            alert("Please select a project")
+            return
+        }
+
+        // console.log(e)
+        let trainingDetails = {}
+
+
+        setResume({...resume, projects:projectId})
+
+        // try{
+        //     console.log(`http://localhost:5000/api/project/add-resume/${projectId}/trainer/${trainerDetails._id}/resume`)
+        //     await axios.put(`http://localhost:5000/api/project/add-resume/${projectId}/trainer/${trainerDetails._id}/resume`, {resumeId:data._id})
+        //     toast({
+        //         title:"Resume is Added",
+        //         description:`${data.trainingName} is Updated`
+        //     })
+        
+        // }catch(e){
+        //     console.error(e)
+        //     setError('Failed to add project to resume')
+        // }
+    }
+    const {trainerDetails} = useSelector(state  => state.currentTrainer)
+
     console.log(resume)
   
     return ( 
-        <div>
-          <div className='flex items-center justify-between mt-8'>
-            {/* <h2 className='text-slate-700 text-lg py-4 font-semibold'>Resume Details</h2> */}
-  
-            {/* <div className="w-full max-w-sm items-center gap-1.5 hidden">
-              <Input ref={fileInputRef} id="resume" type="file" onChange={handleFileChange} accept=".pdf,.docx" />
-            </div> */}
-          </div>
+        <div className='mt-8'> 
 
           
          <form onSubmit={submitResumeHandler}>
-            <div>
+            {/* <div>
                 <Label>Training Name</Label>
-                {/* <Input 
-                    placeholder="Enter training name"
-                    value={resume?.trainingName}
-                    onChange={(e) => setResume({...resume, trainingName:e.target.value})}
-                /> */}
+
                 <select 
                     className='ml-4'  
                     onChange={(e) => handleTrainingNameChange(e.target.value)}
@@ -242,6 +260,30 @@ function ViewNewResume({data, projects}) {
                         ))
                     }
                 </select>
+            </div> */}
+
+            <div>
+                {
+                    trainerDetails.projects.length > 0 ? 
+                    (
+                        <div className='flex items-center'>
+                            <select name="" id="" onChange={(e) => {
+                                addProjectToResume(e.target.value)
+                            }}>
+                                <option value="">Add to a Project</option>
+                                {
+                                    trainerDetails?.projects?.map(project => (
+                                        <option value={project._id}>{project.projectName}</option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                    ) : (
+                        <div className='flex items-center'>
+                            <p className='text-sm text-gray-500'>No projects assigned yet.</p>
+                        </div>
+                    )
+                }
             </div>
             <div className='grid grid-cols-1 md:grid-cols-2 items-start '>
                   <div className='mt-4 rounded-sm p-2'>

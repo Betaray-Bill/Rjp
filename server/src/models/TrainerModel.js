@@ -39,11 +39,13 @@ const resumeSchema = mongoose.Schema({
         name: {
             type: String
         },
-        project: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Project'
-        }
+
     },
+    projects: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Project'
+
+    }],
     isMainResume: {
         type: Boolean,
         default: false

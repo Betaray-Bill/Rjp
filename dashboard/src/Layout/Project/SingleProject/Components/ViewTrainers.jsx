@@ -58,10 +58,12 @@ function ViewTrainers({trainers}) {
 
     const handelTrainerDelete = async(id) => {
         console.log(id, projectId.projectId)
-
+        console.log(id)
         deleteTrainer(id)
        
     }
+
+    console.log(trainers[0])
 
     return (
         <div>
@@ -91,16 +93,16 @@ function ViewTrainers({trainers}) {
                                                     <AvatarImage src="https://github.com/shadcn.png"/>
                                                     <AvatarFallback>CN</AvatarFallback>
                                                 </Avatar>
-                                                <span className='ml-2'>{trainer.generalDetails.name}</span>
+                                                <span className='ml-2'>{trainer.trainer.generalDetails?.name}</span>
                                             </TableCell>
-                                            <TableCell>{trainer.generalDetails.email}</TableCell>
-                                            <TableCell>{trainer.trainingDetails.trainerType}</TableCell>
+                                            <TableCell>{trainer.trainer.generalDetails.email}</TableCell>
+                                            <TableCell>{trainer.trainer.trainingDetails.trainerType}</TableCell>
                                             <TableCell>
                                                 <Button
                                                     className="bg-transparent text-black border border-black rounded-none hover:bg-blue-100">Resume</Button>
                                             </TableCell>
                                             <TableCell>
-                                                <Link to={`/home/trainer/view/${trainer._id}`} target="_blank">
+                                                <Link to={`/home/trainer/view/${trainer.trainer._id}`} target="_blank">
                                                     <ion-icon
                                                         name="create-outline"
                                                         style={{
@@ -131,7 +133,7 @@ function ViewTrainers({trainers}) {
                                                                 <Button
                                                                     type="submit"
                                                                     className="bg-red-700"
-                                                                    onClick={() => handelTrainerDelete(trainer._id)}>Delete</Button>
+                                                                    onClick={() => handelTrainerDelete(trainer.trainer._id)}>Delete</Button>
                                                             </DialogClose>
                                                         </DialogFooter>
                                                     </DialogContent>

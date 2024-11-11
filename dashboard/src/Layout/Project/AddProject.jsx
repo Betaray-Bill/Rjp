@@ -294,7 +294,7 @@ function AddProject() {
                 employee: [],
                 trainers: []
             })
-            queryClient.invalidateQueries(['projects', currentUser.employee._id])
+            queryClient.invalidateQueries(['projects', currentUser.employee._id ])
 
             toast({
                 title: "Project Created",

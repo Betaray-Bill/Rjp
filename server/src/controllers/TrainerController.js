@@ -143,10 +143,11 @@ const resumeCopy = asyncHandler(async(req, res) => {
             trainingsDelivered: req.body.trainingsDelivered,
             clientele: req.body.clientele,
             experience: req.body.experience,
-            trainingName: {
-                name: req.body.trainingName.name,
-                project: req.body.trainingName._id
-            },
+            // trainingName: {
+            //     name: req.body.trainingName.name,
+            //     project: req.body.trainingName._id
+            // },
+            projects: req.body.projects._id,
             isMainResume: false
         })
         await resume.save()
@@ -158,7 +159,7 @@ const resumeCopy = asyncHandler(async(req, res) => {
         await trainer.save();
 
         // Save the Resume to the Trainer's resume Field in the Project
-        await Project.findByIdAndUpdate(req.body.trainingName._id, {
+        await Project.findByIdAndUpdate(req.body.projects._id, {
             $set: {
                 "trainers.resume": resume._id
             }
@@ -220,12 +221,19 @@ const getTrainerById = asyncHandler(async(req, res) => {
     try {
         const trainer = await Trainer
             .findById(id)
-            .populate('resumeVersion')
+            .populate({
+                path: 'resumeVersion',
+                populate: {
+                    path: 'projects',
+                    select: 'projectName', // Only fetch the 'employeeId' field from each employee
+                },
+
+            })
             .select('-bankDetails -password -nda_Accepted -is_FirstLogin')
             .populate({
                 path: 'projects',
                 // populate: { path: 'employees', // Path of employee IDs within each Project
-                select: 'company.name projectName domain trainingDates modeOfTraining contactDetails', // Only fetch the 'name' field from each employee
+                select: 'company.name projectName domain', // Only fetch the 'name' field from each employee
                 // },
             })
             // .populate({     path: 'projects.projectOwner',     select: 'name email', //

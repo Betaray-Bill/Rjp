@@ -19,7 +19,7 @@ function CardProjects({projects}) {
                 <span className='font-light'>
                     Owner :
                 </span>
-                <span className='font-medium'>{projects.projectOwner}</span>
+                <span className='font-medium'>{projects.projectOwner.name}</span>
             </div>
             <div className='flex items-center justify-start mt-2'>
                 <ion-icon name="calendar-outline" style={{fontSize:"20px"}}></ion-icon>

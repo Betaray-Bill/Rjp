@@ -3,7 +3,7 @@ import { addEmployee, getEmployeeById, getAllEmployees, updateEmployeeRole, getA
 import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
-import { addTrainer, createProject, deleteTrainer, getProjectDetails, getProjectsByEmp } from '../controllers/ProjectController.js';
+import { addResumeToProject, addTrainer, createProject, deleteTrainer, getProjectDetails, getProjectsByEmp } from '../controllers/ProjectController.js';
 
 const router = express.Router();
 
@@ -12,5 +12,7 @@ router.post("/create/:empId", authEmployeeMiddleware, authorizeRole(['ADMIN', 'K
 router.get("/projects-employees/:empId", authEmployeeMiddleware, authorizeRole(['ADMIN', 'KeyAccounts']), getProjectsByEmp)
 router.put("/add-trainers/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN", 'KeyAccounts']), addTrainer)
 router.put("/delete-trainers/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), deleteTrainer)
+router.put("/add-resume/:projectId/trainer/:trainerId/resume", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), addResumeToProject)
+
 
 export default router

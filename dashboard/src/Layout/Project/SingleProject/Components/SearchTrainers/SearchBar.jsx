@@ -137,7 +137,7 @@ function SearchBar({domain, id}) {
             console.log("3")
 
             setSelectedTrainers((prev) => [...prev, trainer])
-            console.log("2", a)
+            // console.log("2", a)
 
         }
     }
@@ -150,13 +150,7 @@ function SearchBar({domain, id}) {
 
     // Submit the changes
     const saveTrainer = async() => {
-        // event.preventDefault()
-        // console.log(trainer)
-        // console.log("Submit Handler")
         try {
-            // console.log("1")
-            // console.log(trainerDetails)
-            // trainerMutation.mutate(trainerDetails)
             axios.defaults.withCredentials = true;
             let a = []
             selectedTrainers.forEach((e) =>  a.push(e._id))

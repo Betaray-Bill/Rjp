@@ -17,7 +17,7 @@ import ResumeDetails from '../AddTrainers/Resume/ResumeDetails'
 import { useSelector } from 'react-redux'
 import ViewResumeDetails from './ViewResumeDetails'
 import ViewNewResume from './ViewNewResume'
-import { Outlet, useNavigate, useParams } from 'react-router-dom'
+import { Link, Outlet, useNavigate, useParams } from 'react-router-dom'
 import { useToast } from "@/hooks/use-toast"
 
 
@@ -55,7 +55,7 @@ function ViewResume({data, projects}) {
                     className="w-[200px] justify-between flex items-center"
                     >
                         <span>{
-                            value ?  value.trainingName.name ? value.trainingName.name : value.trainingName : "Select Resume"
+                            value ?  value.trainingName.name ? value.trainingName.name : value.trainingName  : "Select Resume"
                         }</span>
                         <ion-icon style={{fontSize:"18px"}} name="chevron-collapse-outline"></ion-icon>
                     </Button>
@@ -73,6 +73,8 @@ function ViewResume({data, projects}) {
                                 onSelect={(currentValue) => {
                                     setValue(currentValue === value.name ? "" : (framework))
                                     setOpen(false)
+                                    console.log(params)
+                                    // navigate(`/home/trainer/view/${params.id}/resume/${framework}`)
                                 }}
                             >
                         
@@ -93,12 +95,14 @@ function ViewResume({data, projects}) {
 
                 {
                     !isNew ?
-                    <Button className="ml-4" onClick={() => {
-                        setIsNew(true)
-                        navigate(`/home/trainer/view/${params.id}/add`);
-                    }}>
-                        <ion-icon name="add-outline" style={{fontSize:"18px"}}></ion-icon>
-                        <span>New Resume</span>
+                    <Button className="ml-4" onClick={() => setIsNew(true)}>
+                        <span className="flex items-center" onClick={() => { 
+                            setIsNew(true)
+                            // navigate(`/home/trainer/view/${params.id}/add`);
+                         }}>
+                            <ion-icon name="add-outline" style={{fontSize:"18px"}}></ion-icon>
+                            <span>New Resume</span>
+                        </span>
                     </Button> : null
                 }
             </div>
@@ -109,11 +113,14 @@ function ViewResume({data, projects}) {
         <div>
             
             { 
-                value? <ViewResumeDetails data={value} isNew={isNew}/> : (
-                    isNew ? <ViewNewResume data={data[0]} projects={projects}/>:null 
-                )
+                value? (
+                    !isNew ? <ViewResumeDetails data={value} isNew={isNew}/> : <ViewNewResume/>
+                ) :
+                (
+                    isNew ? <ViewNewResume data={data[0]}/> : null
+                ) 
+                
             }
-            {/* <Outlet /> */}
         </div>
     </div>
   )

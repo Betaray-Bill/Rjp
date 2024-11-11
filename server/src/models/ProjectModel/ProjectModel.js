@@ -48,10 +48,6 @@ const projectSchema = new mongoose.Schema({
         type: String,
         enum: ['Virtual', 'In-Person']
     },
-    employees: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Employee'
-    }],
     // trainers: [{
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: 'Trainer'

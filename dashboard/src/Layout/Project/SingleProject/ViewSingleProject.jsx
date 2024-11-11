@@ -16,6 +16,7 @@ import ViewTrainers from './Components/ViewTrainers'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import ViewEmployee from './Components/ViewEmployee'
+import ViewCompanyContact from './Components/ViewCompanyContact'
 
 function ViewSingleProject() {
   const projectId = useParams()
@@ -98,6 +99,7 @@ function ViewSingleProject() {
       </div>
 
       {/* Company Contact Person - default Hidden */}
+      <ViewCompanyContact data={company} contact={contactDetails}/>  
 
       {/* Trainer Section - Search Bar [FIlters, Search Result, seach Result with add function to add them in the projects] */}
 
