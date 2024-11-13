@@ -98,10 +98,16 @@ function ViewTrainers({trainers}) {
                                             <TableCell>{trainer.trainer.generalDetails.email}</TableCell>
                                             <TableCell>{trainer.trainer.trainingDetails.trainerType}</TableCell>
                                             <TableCell>
-                                                <Link to={`/home/trainer/resume/${trainer.resume._id}`} target='_blank'
-                                                    className="bg-transparent px-3 py-2 text-black border border-black rounded-none hover:bg-blue-100">
-                                                        Resume
-                                                </Link>
+                                               
+                                                {
+                                                    trainer.resume !== undefined &&
+                                                    trainer?.resume._id !== undefined ? (
+                                                        <Link to={`/home/trainer/resume/${trainer.resume._id}`} target='_blank'
+                                                            className="bg-transparent px-3 py-2 text-black border border-black rounded-none hover:bg-blue-100">
+                                                                Resume
+                                                        </Link>
+                                                    ) : <i className='font-light text-gray-700'>No resume</i>
+                                                }
                                             </TableCell>
                                             <TableCell>
                                                 <Link to={`/home/trainer/view/${trainer.trainer._id}`} target="_blank">
