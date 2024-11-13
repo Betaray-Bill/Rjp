@@ -77,7 +77,7 @@ function ViewTrainers({trainers}) {
                                 <TableHead className="">Name</TableHead>
                                 <TableHead>Email</TableHead>
                                 <TableHead>Type</TableHead>
-                                <TableHead className="text-left"></TableHead>
+                                <TableHead className="text-left">Resume</TableHead>
                                 <TableHead></TableHead>
                                 <TableHead className="text-left"></TableHead>
                             </TableRow>

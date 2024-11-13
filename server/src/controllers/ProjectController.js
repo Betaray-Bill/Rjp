@@ -235,8 +235,19 @@ const addTrainer = asyncHandler(async(req, res) => {
             .status(404)
             .json({ message: "Project not found" });
     }
-
     const trainersList = req.body.trainers;
+
+    // Check if the trainers exist in the project
+    const existingTrainers = project.trainers.filter(trainer =>
+        trainersList.includes(trainer.trainer.toString())
+    );
+    if (existingTrainers.length > 0) {
+        return res
+            .status(400)
+            .json({ message: "Some trainers already exist in the project" });
+    }
+
+    // const trainersList = req.body.trainers;
     console.log(req.body)
     console.log(trainersList)
     try {
