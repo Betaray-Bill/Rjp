@@ -143,6 +143,7 @@ const resumeCopy = asyncHandler(async(req, res) => {
             trainingsDelivered: req.body.trainingsDelivered,
             clientele: req.body.clientele,
             experience: req.body.experience,
+            domain: req.body.domain,
             // trainingName: {
             //     name: req.body.trainingName.name,
             //     project: req.body.trainingName._id
@@ -160,7 +161,7 @@ const resumeCopy = asyncHandler(async(req, res) => {
 
         // Save the Resume to the Trainer's resume Field in the Project
         await Project.findByIdAndUpdate(req.body.projects._id, {
-            $set: {
+            $addToSet: {
                 "trainers.resume": resume._id
             }
         }, { new: true })
@@ -275,6 +276,29 @@ const getAllTrainer = asyncHandler(async(req, res) => {
     }
 })
 
+// Get Resume By Id
+
+const getResumeById = asyncHandler(async(req, res) => {
+    const { id } = req.params;
+
+    try {
+        const resume = await Resume
+            .findById(id)
+        if (!resume) {
+            return res
+                .status(404)
+                .json({ message: "Resume not found" });
+        }
+        res
+            .status(200)
+            .json(resume);
+    } catch (err) {
+        return res
+            .status(404)
+            .json({ message: "Resume not found" });
+    }
+})
+
 // Get Trainer by the Emp who registered him
 const getTrainersByEmpID = asyncHandler(async(req, res) => {
 
@@ -292,5 +316,6 @@ export {
     getTrainerById,
     getAllTrainer,
     resumeCopy, // - Create a New Resume
-    changepassword
+    changepassword,
+    getResumeById
 }

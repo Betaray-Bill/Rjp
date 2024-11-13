@@ -20,7 +20,7 @@ function ViewResumeDetails({data, isNew}) {
     const {toast} = useToast()
     console.log(data._id)
     const {trainerDetails} = useSelector(state  => state.currentTrainer)
-    console.log(trainerDetails)
+    console.log(resume)
     useEffect(() => {
       if(data && !isNew){
         console.log(data[0])
@@ -183,7 +183,7 @@ function ViewResumeDetails({data, isNew}) {
             await axios.put(`http://localhost:5000/api/trainersourcer/updateResume/${params.id}/resume/${data._id}`, resume)
             toast({
                 title:"Resume is Updated",
-                description:`${data.trainingName} is Updated`
+                // description:`$ is Updated`
             })
         
         }catch(e){
@@ -231,27 +231,27 @@ function ViewResumeDetails({data, isNew}) {
           {/* Display the section for adding the resume to the project */}
         <div className='flex items-start flex-col'>
             <div>
-            {
-                trainerDetails.projects.length > 0 ? 
-                (
-                    <div className='flex items-center'>
-                        <select name="" id="" onChange={(e) => {
-                            addProjectToResume(e.target.value)
-                        }}>
-                            <option value="">Add to a Project</option>
-                            {
-                                trainerDetails?.projects?.map(project => (
-                                    <option value={project._id}>{project.projectName}</option>
-                                ))
-                            }
-                        </select>
-                    </div>
-                ) : (
-                    <div className='flex items-center'>
-                        <p className='text-sm text-gray-500'>No projects assigned yet.</p>
-                    </div>
-                )
-            }
+                {
+                    trainerDetails.projects.length > 0 ? 
+                    (
+                        <div className='flex items-center'>
+                            <select name="" id="" onChange={(e) => {
+                                addProjectToResume(e.target.value)
+                            }}>
+                                <option value="">Add to a Project</option>
+                                {
+                                    trainerDetails?.projects?.map(project => (
+                                        <option value={project._id}>{project.projectName}</option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                    ) : (
+                        <div className='flex items-center'>
+                            <p className='text-sm text-gray-500'>No projects assigned yet.</p>
+                        </div>
+                    )
+                }
             </div>
 
             <div className='my-5 flex items-center '>

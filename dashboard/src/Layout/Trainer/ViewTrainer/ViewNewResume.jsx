@@ -1,15 +1,26 @@
 import { Button } from '@/components/ui/button';
+// import { Command } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
 import { Textarea } from '@/components/ui/textarea';
 import { setResumeDetails } from '@/features/trainerSlice';
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList
+} from "@/components/ui/command"
 import { useToast } from '@/hooks/use-toast';
+import { domains } from '@/utils/constants';
 import axios from 'axios';
 import React, { useRef, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-function ViewNewResume({data, projects}) {
+function    ViewNewResume({data, projects}) {
     const [file, setFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
@@ -18,7 +29,11 @@ function ViewNewResume({data, projects}) {
     const [error, setError] = useState(null);
     const [resume, setResume] = useState()
     const {toast} = useToast()
+    const navigate = useNavigate()
     const params = useParams()
+
+    const [open,
+        setOpen] = useState(false)
     // console.log(resume)
     useEffect(() => {
         if(data){
@@ -32,6 +47,7 @@ function ViewNewResume({data, projects}) {
               clientele: data ? data.clientele : [],
               experience: data ? data.experience : [],
               projects: data ? data.projects : [],
+              domain:data ? data.domain : ""
             })
           // setExtractedData(data)
           // setIsEdit(false)
@@ -41,25 +57,6 @@ function ViewNewResume({data, projects}) {
     
   
     const dispatch = useDispatch()
-
-    console.log("Clicked on New Resume")
-
-    // const handleTrainingNameChange = (e) => {
-    //     // setResume({...resume, trainingName:e.target.value})
-    //     console.log(e)
-    //     let trainingDetails = {}
-    //     for(let i=0; i<projects.length; i++){
-    //         if(projects[i]._id === e){
-    //             console.log(projects[i])
-    //             trainingDetails._id = projects[i]._id
-    //             trainingDetails.name = projects[i].projectName
-    //             break;
-    //         }
-    //     }
-
-    //     setResume({...resume, projects:trainingDetails})
-    // }
-
   
     // -----------------------Render the Resume Details Sections -------------------------------
     
@@ -203,7 +200,20 @@ function ViewNewResume({data, projects}) {
                 status: "success",
                 duration: 5000
             })
-        
+
+            setResume({
+                professionalSummary: [],
+                technicalSkills: [],
+                careerHistory: [],
+                certifications: [],
+                education: [],
+                trainingsDelivered: [],
+                clientele: [],
+                experience: [],
+                projects: [],
+                domain:""
+              })
+            
         }catch(e){
             console.error(e)
             setError('Failed to submit the resume')
@@ -211,80 +221,169 @@ function ViewNewResume({data, projects}) {
 
     }
      // Select Project to the Resume
-     const addProjectToResume = async(projectId) => {
+    const addProjectToResume = async(projectId) => {
         console.log(projectId)
         if(projectId == ""){
             alert("Please select a project")
             return
         }
-
-        // console.log(e)
-        let trainingDetails = {}
-
-
         setResume({...resume, projects:projectId})
-
-        // try{
-        //     console.log(`http://localhost:5000/api/project/add-resume/${projectId}/trainer/${trainerDetails._id}/resume`)
-        //     await axios.put(`http://localhost:5000/api/project/add-resume/${projectId}/trainer/${trainerDetails._id}/resume`, {resumeId:data._id})
-        //     toast({
-        //         title:"Resume is Added",
-        //         description:`${data.trainingName} is Updated`
-        //     })
-        
-        // }catch(e){
-        //     console.error(e)
-        //     setError('Failed to add project to resume')
-        // }
     }
     const {trainerDetails} = useSelector(state  => state.currentTrainer)
 
     console.log(resume)
+    const [filteredResults, setFilterResults] = useState(domains);
+    const [value,
+        setValue] = useState("")
+
+    
+    const getFilteredResults = (searchTerm) => {
+        setValue(searchTerm)
+        console.log(searchTerm)
+        if (!searchTerm) return [];
+        console.log("searchTerm", searchTerm)
+        const lowercasedTerm = searchTerm.toLowerCase();
+
+        const a = domains
+            .map((domain) => {
+                const filteredSubtopics = domain.subtopics
+                    .map((subtopic) => {
+                        // Include subtopic if its name or topic matches, or any of its points match
+                        const matchesSubtopic = subtopic.subtopic.toLowerCase().includes(lowercasedTerm);
+                        const matchesTopic = domain.topic.toLowerCase().includes(lowercasedTerm);
+
+                        // Filter points that match the search term
+                        const filteredPoints = subtopic.points.filter((point) =>
+                            point.toLowerCase().includes(lowercasedTerm)
+                        );
+
+                        // If subtopic or topic matches, include all points; otherwise, include only filtered points
+                        if (matchesSubtopic || matchesTopic || filteredPoints.length > 0) {
+                            return { ...subtopic, points: matchesSubtopic || matchesTopic ? subtopic.points : filteredPoints };
+                        }
+
+                        return null;
+                    })
+                    .filter((subtopic) => subtopic !== null);
+
+                // Include the domain if it has any matching subtopics
+                if (filteredSubtopics.length > 0) {
+                    return { ...domain, subtopics: filteredSubtopics };
+                }
+
+                return null;
+            })
+            .filter((domain) => domain !== null);
+
+        console.log("A ", a)
+        setFilterResults(a);
+    };
+
+    const handleSearchTerm = (e) => {
+        console.log(e)
+        setValue(e)
+        setResume({...resume, domain:e})
+    }
+
   
     return ( 
         <div className='mt-8'> 
 
           
          <form onSubmit={submitResumeHandler}>
-            {/* <div>
-                <Label>Training Name</Label>
 
-                <select 
-                    className='ml-4'  
-                    onChange={(e) => handleTrainingNameChange(e.target.value)}
-                >
-                    <option value="Select Training">Select Training</option>
+            <div className='flex items-center justify-between my-9'>
+                <div>
                     {
-                        projects && projects?.map((e, _i) => (
-                            <option key={_i} value={e._id}>{e.projectName}</option>
-                        ))
+                        trainerDetails.projects.length > 0 ? 
+                        (
+                            <div className='flex items-center'>
+                                <select name="" id="" onChange={(e) => {
+                                    addProjectToResume(e.target.value)
+                                }}>
+                                    <option value="">Add to a Project</option>
+                                    {
+                                        trainerDetails?.projects?.map(project => (
+                                            <option key={project._id} value={project._id}>{project.projectName}</option>
+                                        ))
+                                    }
+                                </select>
+                            </div>
+                        ) : (
+                            <div className='flex items-center'>
+                                <p className='text-sm text-gray-500'>No projects assigned yet.</p>
+                            </div>
+                        )
                     }
-                </select>
-            </div> */}
+                </div>
+                <Popover open={open} onOpenChange={setOpen} className="justify-start p-2">
+                            <PopoverTrigger asChild className='p-6 rounded-md'>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={open}
+                                    className="justify-between"
+                                >
+                                    {!value ? (
+                                        <span className="flex items-center justify-between">
+                                            <ion-icon
+                                                name="search-outline"
+                                                style={{ fontSize: "18px", marginRight: "12px" }}
+                                            ></ion-icon>
+                                            Select Domain
+                                        </span>
+                                    ) : (
+                                        <span className='flex items-center align-middle'>
 
-            <div>
-                {
-                    trainerDetails.projects.length > 0 ? 
-                    (
-                        <div className='flex items-center'>
-                            <select name="" id="" onChange={(e) => {
-                                addProjectToResume(e.target.value)
-                            }}>
-                                <option value="">Add to a Project</option>
-                                {
-                                    trainerDetails?.projects?.map(project => (
-                                        <option value={project._id}>{project.projectName}</option>
-                                    ))
-                                }
-                            </select>
-                        </div>
-                    ) : (
-                        <div className='flex items-center'>
-                            <p className='text-sm text-gray-500'>No projects assigned yet.</p>
-                        </div>
-                    )
-                }
+                                            <div className='flex items-center justify-between  align-middle ml-10 text-slate-700'>
+                                                <span>{value}</span>
+                                                {/* <ion-icon name="close-outline" style={{ fontSize: "18px", marginLeft: "12px" }} onClick={
+                                                    () => {
+                                                        setOpen(false);
+                                                        setValue('');
+                                                        setFilterResults(domains);
+                                                    }
+                                                }></ion-icon> */}
+                                            </div>
+                                        </span>
+                                    )}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className=" p-0">
+                                <Command>
+                                    <Input  className="w-max m-2 focus:ring-0 focus:ring-offset-0"    
+                                        placeholder="Search Domain by..... "
+                                        onChange={(e) =>{
+                                            getFilteredResults(e.target.value)
+                                            console.log(e)
+                                        }}
+                                        // value={value}
+                                    />
+                                    <CommandList>
+                                        {/* <CommandEmpty>No results found.</CommandEmpty> */}
+                                        {filteredResults?.map((domain) => (
+                                            <CommandGroup key={domain.topic} heading={domain.topic}>
+                                                {domain.subtopics.map((subtopic) => (
+                                                    <CommandGroup key={subtopic.subtopic} heading={subtopic.subtopic}>
+                                                        {subtopic.points.map((point) => (
+                                                            <CommandItem
+                                                                key={point}
+                                                                value={point}
+                                                                onSelect={() => handleSearchTerm(point)}
+                                                            >
+                                                                {point}
+                                                            </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                ))}
+                                            </CommandGroup>
+                                        ))}
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                </Popover>
             </div>
+
             <div className='grid grid-cols-1 md:grid-cols-2 items-start '>
                   <div className='mt-4 rounded-sm p-2'>
                       <h3 className='font-semibold flex justify-between items-center'>

@@ -49,6 +49,9 @@ const resumeSchema = mongoose.Schema({
     isMainResume: {
         type: Boolean,
         default: false
+    },
+    domain: {
+        type: String
     }
 }, {
     timestamps: true

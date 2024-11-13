@@ -20,9 +20,6 @@ function Trainer() {
 
   return (
     <div className=''>
-        <div className='mt-10'>
-            <h2 className='text-xl mt-10 font-semibold my-4'>Trainer</h2>
-        </div>
         <div className=''>
             <Outlet />
         </div>

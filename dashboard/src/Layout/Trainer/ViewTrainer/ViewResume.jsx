@@ -28,14 +28,15 @@ function ViewResume({data, projects}) {
     // const {trainerDetails} = useSelector(state => state.trainer)
     const [resumeDetails, setResumeDetails] = useState([])  
     const params = useParams()
-    const navigate = useNavigate()
     console.log(data)
+    const navigate = useNavigate()
+    console.log(projects)
     const { toast } = useToast()
- 
+    console.log(value)
     useEffect(() => {
         // console.log("Changed to " + value.trainingName)
-        let res = data?.filter(element => {
-            return element.trainingName === value.trainingName
+        let res = projects?.filter(element => {
+            return element.domain === value.projects
         });
         // console.log(res)
         setResumeDetails(res)
@@ -55,7 +56,8 @@ function ViewResume({data, projects}) {
                     className="w-[200px] justify-between flex items-center"
                     >
                         <span>{
-                            value ?  value.trainingName.name ? value.trainingName.name : value.trainingName  : "Select Resume"
+                            value ? value : "Search Resume"
+                            //  value ?  value.trainingName.name ? value.trainingName.name : value.trainingName  : "Select Resume"
                         }</span>
                         <ion-icon style={{fontSize:"18px"}} name="chevron-collapse-outline"></ion-icon>
                     </Button>
@@ -66,21 +68,21 @@ function ViewResume({data, projects}) {
                     <CommandList>
                         <CommandEmpty>No Resume found.</CommandEmpty>
                         <CommandGroup>
-                        {data?.map((framework, index) => (
-                            <CommandItem
-                                key={index}
-                                value={framework.trainingName.name ? framework.trainingName.name : framework.trainingName}
-                                onSelect={(currentValue) => {
-                                    setValue(currentValue === value.name ? "" : (framework))
-                                    setOpen(false)
-                                    console.log(params)
-                                    // navigate(`/home/trainer/view/${params.id}/resume/${framework}`)
-                                }}
-                            >
-                        
-                            {framework.trainingName.name ? framework.trainingName.name : framework.trainingName}
-                            </CommandItem>
-                        ))}
+                            {data?.map((framework, index) => (
+                                <CommandItem
+                                    key={index}
+                                    value={framework.domain ? framework.domain : framework.domain}
+                                    onSelect={(currentValue) => {
+                                        setValue(currentValue === value ? "" : framework.domain)
+                                        setOpen(false)
+                                        console.log(params)
+                                        // navigate(`/home/trainer/view/${params.id}/resume/${framework}`)
+                                    }}
+                                >
+                            
+                                {framework.domain ? framework.domain : "Main Resume"}
+                                </CommandItem>
+                            ))}
                         </CommandGroup>
                     </CommandList>
                     </Command>
@@ -114,7 +116,7 @@ function ViewResume({data, projects}) {
             
             { 
                 value? (
-                    !isNew ? <ViewResumeDetails data={value} isNew={isNew}/> : <ViewNewResume/>
+                    !isNew ? <ViewResumeDetails data={data[0]} isNew={isNew}/> : <ViewNewResume  data={data[0]} />
                 ) :
                 (
                     isNew ? <ViewNewResume data={data[0]}/> : null

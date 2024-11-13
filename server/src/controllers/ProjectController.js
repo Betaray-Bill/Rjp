@@ -206,6 +206,11 @@ const getProjectDetails = asyncHandler(async(req, res) => {
             },
             select: 'generalDetails.name generalDetails.email trainingDetails.trainerType ', // Only fetch the 'name' and 'role' fields
         })
+        .populate({
+            path: 'trainers.resume',
+            // select: 'domain'
+        })
+
 
     // .populate('company.Company_id') .populate('employees')
 
@@ -315,9 +320,10 @@ const addResumeToProject = asyncHandler(async(req, res) => {
     try {
         // Update the Project's trainer section
         const project = await Project.findById(projectId)
-        console.log(project)
+            // console.log(project)
 
         for (let i = 0; i < project.trainers.length; i++) {
+            console.log(project.trainers[i])
             if (project.trainers[i].trainer.toString() === trainerId) {
                 console.log("Trainer found", project.trainers[i].trainer)
                 project.trainers[i].resume = resumeId
@@ -327,10 +333,10 @@ const addResumeToProject = asyncHandler(async(req, res) => {
                 break
             }
         }
-
+        console.log(project.trainers)
         await Resume.findByIdAndUpdate(resumeId, {
             $addToSet: {
-                projects: projectId
+                projects: project._id
             }
         }, { new: true })
 

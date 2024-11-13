@@ -1,7 +1,7 @@
 import express from 'express';
 import { authEmployeeMiddleware, authMiddleware } from '../middleware/authMiddleware.js';
 import { signOut } from '../controllers/AuthController.js';
-import { acceptNDA, addTrainingDates, getAllTrainer, getTrainerById, resumeCopy, trainerLogin, updateTrainerProfile } from '../controllers/TrainerController.js';
+import { acceptNDA, addTrainingDates, getAllTrainer, getResumeById, getTrainerById, resumeCopy, trainerLogin, updateTrainerProfile } from '../controllers/TrainerController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { searchTrainer } from '../controllers/SearchController.js';
 import { changepassword } from '../controllers/TrainerController.js';
@@ -20,6 +20,7 @@ router.post('/trainingDates/:id', authMiddleware, addTrainingDates)
 router.get("/details/:id", authMiddleware, getTrainerById)
 router.get("/getAll", authMiddleware, authorizeRole(['ADMIN', 'KeyAccounts']), getAllTrainer)
 router.post("/:id/copy-resume", authMiddleware, resumeCopy)
+router.get("/resume/:id", authEmployeeMiddleware, getResumeById)
 router.get("/signout", authMiddleware, signOut)
 router.put("/updateResume/:trainer_id/resume/:resume_id", authMiddleware, updateResume)
 

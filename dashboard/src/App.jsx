@@ -27,6 +27,7 @@ import AddProject from './Layout/Project/AddProject'
 import ViewProjects from './Layout/Project/ViewProjects'
 import ProjectSearchTrainer from './Layout/Project/Components/ProjectSearchTrainer'
 import ViewSingleProject from './Layout/Project/SingleProject/ViewSingleProject'
+import Resume from './Layout/Resume/Resume'
 
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
                   <Route path='add' element={<AddTrainer />} />
                   <Route path='' index element={<GetTrainer />} />
                   {/* <Route path='edit/:id' element={<AddTrainer />} /> */}
+                  <Route path='resume/:id' element={<Resume />} />
                   <Route path='view/:id' element={<ViewTrainer />}>
                     <Route path='add' element={<ViewNewResume />} />
                     {/* <Route path='resume' element={<ViewResumeDetails />} /> */}

@@ -98,8 +98,10 @@ function ViewTrainers({trainers}) {
                                             <TableCell>{trainer.trainer.generalDetails.email}</TableCell>
                                             <TableCell>{trainer.trainer.trainingDetails.trainerType}</TableCell>
                                             <TableCell>
-                                                <Button
-                                                    className="bg-transparent text-black border border-black rounded-none hover:bg-blue-100">Resume</Button>
+                                                <Link to={`/home/trainer/resume/${trainer.resume._id}`} target='_blank'
+                                                    className="bg-transparent px-3 py-2 text-black border border-black rounded-none hover:bg-blue-100">
+                                                        Resume
+                                                </Link>
                                             </TableCell>
                                             <TableCell>
                                                 <Link to={`/home/trainer/view/${trainer.trainer._id}`} target="_blank">
