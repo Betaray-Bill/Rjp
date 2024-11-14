@@ -144,6 +144,7 @@ const resumeCopy = asyncHandler(async(req, res) => {
             clientele: req.body.clientele,
             experience: req.body.experience,
             domain: req.body.domain,
+            trainer_id: id,
             // trainingName: {
             //     name: req.body.trainingName.name,
             //     project: req.body.trainingName._id
@@ -312,6 +313,13 @@ const getTrainersByEmpID = asyncHandler(async(req, res) => {
 
 // Update
 
+const signOut = asyncHandler(async(req, res) => {
+    res
+        .clearCookie('jwt')
+        .status(200)
+        .json('Signout success!');
+})
+
 export {
     trainerLogin,
     acceptNDA,
@@ -321,5 +329,6 @@ export {
     getAllTrainer,
     resumeCopy, // - Create a New Resume
     changepassword,
+    signOut,
     getResumeById
 }

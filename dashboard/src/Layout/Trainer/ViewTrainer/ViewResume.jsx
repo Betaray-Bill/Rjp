@@ -26,7 +26,7 @@ function ViewResume({data, projects}) {
     const [value, setValue] = useState("")
     const [isNew, setIsNew] = useState(false)
     // const {trainerDetails} = useSelector(state => state.trainer)
-    const [resumeDetails, setResumeDetails] = useState([])  
+    const [resumeDetails, setResumeDetails] = useState(data[0])  
     const params = useParams()
     console.log(value)
     const navigate = useNavigate()
@@ -100,10 +100,10 @@ function ViewResume({data, projects}) {
             </Popover>
 
             <div className='flex items-center justify-between'>
-                <Button className="bg-white text-gray-800 border-2 border-black">
+                <Link to={`/home/trainer/resume/${resumeDetails?._id}`} target='_blank' className="bg-white py-2 px-3 flex items-center text-gray-800 border border-black">
                     <ion-icon name="download-outline" style={{fontSize:"18px"}}></ion-icon>
-                    <span>Download</span>
-                </Button>
+                    <span className='ml-1'>Download</span>
+                </Link>
 
                 {
                     !isNew ?

@@ -49,6 +49,7 @@ function SearchBar({domainSearch}) {
     const [rating,
         setRating] = useState('asc');
     const [trainingTyp, setTrainingType] = useState('');
+    const [type, setType] = useState('');
         // onValueChange={field.onChange} defaultValue={field.value}
     const dispatch = useDispatch()
     const {searchDomain} = useSelector(state => state.searchTrainer)
@@ -61,6 +62,7 @@ function SearchBar({domainSearch}) {
         setStartPrice('')
         setEndPrice('')
         setTrainingType('')
+        setType('')
         setQuery('')
     }
 
@@ -98,7 +100,9 @@ function SearchBar({domainSearch}) {
         
         if (startPrice) req_query += `&price[gte]=${Number(startPrice)}`;
         if (endPrice) req_query += `&price[lte]=${Number(endPrice)}`;
-        if (trainingTyp) req_query += `&type=${trainingTyp}`;
+        if (trainingTyp) req_query += `&mode=${trainingTyp}`;
+        if (type) req_query += `&type=${type}`;
+
     
         console.log(req_query);
         
@@ -253,7 +257,7 @@ function SearchBar({domainSearch}) {
                                 <div className='mx-4'>
                                             <Select onValueChange={(e) => {
                                                 console.log(e)
-                                                setTrainingType(e)
+                                                setType(e)
                                             }} className="rounded-full border-none">
                                                 <SelectTrigger className="w-max rounded-full">
                                                     <SelectValue placeholder="Select Type" />
@@ -263,11 +267,6 @@ function SearchBar({domainSearch}) {
                                                     <SelectItem value="Lateral">Lateral</SelectItem>
                                                     <SelectItem value="Induction">Induction</SelectItem>
                                                     <SelectItem value="Both">Both</SelectItem>
-                                                    {/* <SelectItem value="Select Mode">Select Mode</SelectItem> */}
-                                                    {/* <SelectItem value="Online Hourly">Online Hourly</SelectItem>
-                                                    <SelectItem value="Online Per-day">Online Per-day</SelectItem>
-                                                    <SelectItem value="Offline Hourly">Offline Hourly</SelectItem>
-                                                    <SelectItem value="Offline Per Day">Offline Per Day</SelectItem> */}
                                                 </SelectContent>
                                             </Select>
                                 </div>

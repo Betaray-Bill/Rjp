@@ -24,6 +24,10 @@ const buildProjectStage = (domain, minPrice, maxPrice, mode, type) => {
         conditions.push({ $eq: ["$$td.paymentSession", mode] });
     }
 
+    if (type) {
+        conditions.push({ $eq: ["$$td.type", type] });
+    }
+
     return {
         $project: {
             trainingDomain: {
@@ -42,7 +46,7 @@ const buildProjectStage = (domain, minPrice, maxPrice, mode, type) => {
 
 // Search Function
 const searchTrainer = asyncHandler(async(req, res) => {
-    const { domain, price, mode } = req.query;
+    const { domain, price, mode, type } = req.query;
     console.log("QUERY ", req.query)
     try {
         let minPrice
@@ -67,7 +71,7 @@ const searchTrainer = asyncHandler(async(req, res) => {
             })
         }
         // Add $project stage based on filters
-        pipeline.push(buildProjectStage(domain, minPrice, maxPrice, mode));
+        pipeline.push(buildProjectStage(domain, minPrice, maxPrice, mode, type));
 
         // Filter out documents with empty trainingDomain array
         pipeline.push({

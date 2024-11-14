@@ -19,6 +19,7 @@ import axios from 'axios';
 import React, { useRef, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
 
 function    ViewNewResume({data, projects}) {
     const [file, setFile] = useState(null);
@@ -31,6 +32,8 @@ function    ViewNewResume({data, projects}) {
     const {toast} = useToast()
     const navigate = useNavigate()
     const params = useParams()
+    const queryClient = useQueryClient();
+
 
     const [open,
         setOpen] = useState(false)
@@ -188,12 +191,13 @@ function    ViewNewResume({data, projects}) {
         e.preventDefault()
         // http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/671f1f348706010ba634eb8f
         // console.log(`http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/${data._id}`)
+        // console.log(resume)
         try{
-            console.log("object")
+            // console.log("object")
             console.log(resume)
-            await axios.post(`http://localhost:5000/api/trainersourcer/${params.id}/copy-resume`, resume)
-            console.log(`http://localhost:5000/api/trainersourcer/${params.id}/copy-resume`)
-            // navigate
+            let res = {...resume, domain:value}
+            await axios.post(`http://localhost:5000/api/trainersourcer/${params.id}/copy-resume`, res)
+
             toast({
                 title:"New Resume Is Created",
                 description: "New Resume Has Been Created Successfully",
@@ -201,18 +205,7 @@ function    ViewNewResume({data, projects}) {
                 duration: 5000
             })
 
-            setResume({
-                professionalSummary: [],
-                technicalSkills: [],
-                careerHistory: [],
-                certifications: [],
-                education: [],
-                trainingsDelivered: [],
-                clientele: [],
-                experience: [],
-                projects: [],
-                domain:""
-              })
+             queryClient.invalidateQueries(['getTrainerById', params.id]);
             
         }catch(e){
             console.error(e)
@@ -235,7 +228,7 @@ function    ViewNewResume({data, projects}) {
     const [filteredResults, setFilterResults] = useState(domains);
     const [value,
         setValue] = useState("")
-
+        console.log(value)
     
     const getFilteredResults = (searchTerm) => {
         setValue(searchTerm)
@@ -279,229 +272,274 @@ function    ViewNewResume({data, projects}) {
         setFilterResults(a);
     };
 
+    const [resLoading, setResLoading] = useState(false)
+    const sortDataByDomain = (domain) => {
+        // Helper function to sort a single array based on the domain
+        const sortArray = (array, domain) => {
+            return [...array].sort((a, b) => {  // Spread operator to create a new array
+                const aContainsDomain = a.toLowerCase().includes(domain.toLowerCase());
+                const bContainsDomain = b.toLowerCase().includes(domain.toLowerCase());
+                return bContainsDomain - aContainsDomain;
+            });
+        };
+        let data = resume
+        // console.log(data)
+        // Iterate over each key in the data object and sort if it's an array
+        for (let key in data) {
+        //   if (Array.isArray(data[key])) {
+        //     data[key] = sortArray(data[key], domain);
+        //   }
+        // console.log(key, " -- ", data[key])
+            if(Array.isArray(data[key]) && data[key].length>0){
+                data[key] = sortArray(data[key], domain)
+            }
+        }
+        // console.log(data)
+        setResume(data)
+        // return data;
+      }
+    // console.log(resume)
     const handleSearchTerm = (e) => {
         console.log(e)
         setValue(e)
-        setResume({...resume, domain:e})
+        
+            setResume({...resume, domain:e})
+            setResLoading(true)   // True
+
+            // Sort the Result
+            sortDataByDomain(e)
+            
+            setTimeout(() => {
+                setResLoading(false)
+            }, 1000)
+
+
     }
 
   
     return ( 
         <div className='mt-8'> 
 
-          
-         <form onSubmit={submitResumeHandler}>
+        {
+            !resLoading ?
+        
+            <form onSubmit={submitResumeHandler}>
 
-            <div className='flex items-center justify-between my-9'>
-                <div>
-                    {
-                        trainerDetails.projects.length > 0 ? 
-                        (
-                            <div className='flex items-center'>
-                                <select name="" id="" onChange={(e) => {
-                                    addProjectToResume(e.target.value)
-                                }}>
-                                    <option value="">Add to a Project</option>
-                                    {
-                                        trainerDetails?.projects?.map(project => (
-                                            <option key={project._id} value={project._id}>{project.projectName}</option>
-                                        ))
-                                    }
-                                </select>
-                            </div>
-                        ) : (
-                            <div className='flex items-center'>
-                                <p className='text-sm text-gray-500'>No projects assigned yet.</p>
-                            </div>
-                        )
-                    }
+                <div className='flex items-center justify-between my-9'>
+                    <div>
+                        {
+                            trainerDetails.projects.length > 0 ? 
+                            (
+                                <div className='flex items-center'>
+                                    <select name="" id="" onChange={(e) => {
+                                        addProjectToResume(e.target.value)
+                                    }}>
+                                        <option value="">Add to a Project</option>
+                                        {
+                                            trainerDetails?.projects?.map(project => (
+                                                <option key={project._id} value={project._id}>{project.projectName}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                            ) : (
+                                <div className='flex items-center'>
+                                    <p className='text-sm text-gray-500'>No projects assigned yet.</p>
+                                </div>
+                            )
+                        }
+                    </div>
+                    <Popover open={open} onOpenChange={setOpen} className="justify-start p-2">
+                                <PopoverTrigger asChild className='p-6 rounded-md'>
+                                    <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={open}
+                                        className="justify-between"
+                                    >
+                                        {!value ? (
+                                            <span className="flex items-center justify-between">
+                                                <ion-icon
+                                                    name="search-outline"
+                                                    style={{ fontSize: "18px", marginRight: "12px" }}
+                                                ></ion-icon>
+                                                Select Domain
+                                            </span>
+                                        ) : (
+                                            <span className='flex items-center align-middle'>
+
+                                                <div className='flex items-center justify-between  align-middle ml-10 text-slate-700'>
+                                                    <span>{value}</span>
+                                                    {/* <ion-icon name="close-outline" style={{ fontSize: "18px", marginLeft: "12px" }} onClick={
+                                                        () => {
+                                                            setOpen(false);
+                                                            setValue('');
+                                                            setFilterResults(domains);
+                                                        }
+                                                    }></ion-icon> */}
+                                                </div>
+                                            </span>
+                                        )}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className=" p-0">
+                                    <Command>
+                                        <Input  className="w-max m-2 focus:ring-0 focus:ring-offset-0"    
+                                            placeholder="Search Domain by..... "
+                                            onChange={(e) =>{
+                                                getFilteredResults(e.target.value)
+                                                console.log(e)
+                                            }}
+                                            // value={value}
+                                        />
+                                        <CommandList>
+                                            {/* <CommandEmpty>No results found.</CommandEmpty> */}
+                                            {filteredResults?.map((domain) => (
+                                                <CommandGroup key={domain.topic} heading={domain.topic}>
+                                                    {domain.subtopics.map((subtopic) => (
+                                                        <CommandGroup key={subtopic.subtopic} heading={subtopic.subtopic}>
+                                                            {subtopic.points.map((point) => (
+                                                                <CommandItem
+                                                                    key={point}
+                                                                    value={point}
+                                                                    onSelect={() => handleSearchTerm(point)}
+                                                                >
+                                                                    {point}
+                                                                </CommandItem>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    ))}
+                                                </CommandGroup>
+                                            ))}
+                                        </CommandList>
+                                    </Command>
+                                </PopoverContent>
+                    </Popover>
                 </div>
-                <Popover open={open} onOpenChange={setOpen} className="justify-start p-2">
-                            <PopoverTrigger asChild className='p-6 rounded-md'>
-                                <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    aria-expanded={open}
-                                    className="justify-between"
-                                >
-                                    {!value ? (
-                                        <span className="flex items-center justify-between">
-                                            <ion-icon
-                                                name="search-outline"
-                                                style={{ fontSize: "18px", marginRight: "12px" }}
-                                            ></ion-icon>
-                                            Select Domain
-                                        </span>
-                                    ) : (
-                                        <span className='flex items-center align-middle'>
 
-                                            <div className='flex items-center justify-between  align-middle ml-10 text-slate-700'>
-                                                <span>{value}</span>
-                                                {/* <ion-icon name="close-outline" style={{ fontSize: "18px", marginLeft: "12px" }} onClick={
-                                                    () => {
-                                                        setOpen(false);
-                                                        setValue('');
-                                                        setFilterResults(domains);
-                                                    }
-                                                }></ion-icon> */}
-                                            </div>
-                                        </span>
-                                    )}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className=" p-0">
-                                <Command>
-                                    <Input  className="w-max m-2 focus:ring-0 focus:ring-offset-0"    
-                                        placeholder="Search Domain by..... "
-                                        onChange={(e) =>{
-                                            getFilteredResults(e.target.value)
-                                            console.log(e)
-                                        }}
-                                        // value={value}
-                                    />
-                                    <CommandList>
-                                        {/* <CommandEmpty>No results found.</CommandEmpty> */}
-                                        {filteredResults?.map((domain) => (
-                                            <CommandGroup key={domain.topic} heading={domain.topic}>
-                                                {domain.subtopics.map((subtopic) => (
-                                                    <CommandGroup key={subtopic.subtopic} heading={subtopic.subtopic}>
-                                                        {subtopic.points.map((point) => (
-                                                            <CommandItem
-                                                                key={point}
-                                                                value={point}
-                                                                onSelect={() => handleSearchTerm(point)}
-                                                            >
-                                                                {point}
-                                                            </CommandItem>
-                                                        ))}
-                                                    </CommandGroup>
-                                                ))}
-                                            </CommandGroup>
-                                        ))}
-                                    </CommandList>
-                                </Command>
-                            </PopoverContent>
-                </Popover>
+                <div className='grid grid-cols-1 md:grid-cols-2 items-start '>
+                    <div className='mt-4 rounded-sm p-2'>
+                        <h3 className='font-semibold flex justify-between items-center'>
+                            <span>Professional Summary:</span>
+                            <ion-icon
+                                name="add-outline"
+                                style={{
+                                fontSize: "18px"
+                            }}
+                                onClick={() => handleAdd('professionalSummary')}></ion-icon>
+                        </h3>
+                        {renderTextareas(resume?.professionalSummary, 'professionalSummary')}
+                    </div>
+    
+                    {/* Technical Skills */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold flex justify-between items-center'>
+                            <span>Technical Skills:</span>
+                            <ion-icon
+                                name="add-outline"
+                                style={{
+                                fontSize: "18px"
+                            }}
+                                onClick={() => handleAdd('technicalSkills')}></ion-icon>
+                        </h3>
+                        {renderTextareas(resume?.technicalSkills, 'technicalSkills')}
+                    </div>
+    
+                    {/* Career History */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold flex justify-between items-center'>
+                            <span>Career History:</span>
+                            <ion-icon
+                                name="add-outline"
+                                style={{
+                                fontSize: "18px"
+                            }}
+                                onClick={() => handleAdd('careerHistory')}></ion-icon>
+                        </h3>
+                        {renderTextareas(resume?.careerHistory, 'careerHistory')}
+                    </div>
+    
+                    {/* Certifications */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold flex justify-between items-center'>
+                            <span>Certifications:</span>
+                            <ion-icon
+                                name="add-outline"
+                                style={{
+                                fontSize: "18px"
+                            }}
+                                onClick={() => handleAdd('certifications')}></ion-icon>
+                        </h3>
+                        {renderTextareas(resume?.certifications, 'certifications')}
+                    </div>
+    
+                    {/* Education */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold flex justify-between items-center'>
+                            <span>Education:</span>
+                            <ion-icon
+                                name="add-outline"
+                                style={{
+                                fontSize: "18px"
+                            }}
+                                onClick={() => handleAdd('education')}></ion-icon>
+                        </h3>
+                        {renderTextareas(resume?.education, 'education')}
+                    </div>
+    
+                    {/* Trainings Delivered */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold flex justify-between items-center'>
+                            <span>Training Delivered:</span>
+                            <ion-icon
+                                name="add-outline"
+                                style={{
+                                fontSize: "18px"
+                            }}
+                                onClick={() => handleAdd('trainingsDelivered')}></ion-icon>
+                        </h3>
+                        {renderTextareas(resume?.trainingsDelivered, 'trainingsDelivered')}
+                    </div>
+    
+                    {/* Clientele */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold flex justify-between items-center'>
+                            <span>Clientele:</span>
+                            <ion-icon
+                                name="add-outline"
+                                style={{
+                                fontSize: "18px"
+                            }}
+                                onClick={() => handleAdd('clientele')}></ion-icon>
+                        </h3>
+                        {renderTextareas(resume?.clientele, 'clientele')}
+                    </div>
+    
+                    {/* Experience */}
+                    <div className='mt-4 p-3'>
+                        <h3 className='font-semibold flex justify-between items-center'>
+                            <span>Experience:</span>
+                            <ion-icon
+                                name="add-outline"
+                                style={{
+                                fontSize: "18px"
+                            }}
+                                onClick={() => handleAdd('experience')}></ion-icon>
+                        </h3>
+                        {renderTextareas(resume?.experience, 'experience')}
+                    </div>
+    
+                </div>
+                <div className='justify-center flex mt-8'>
+                <Button type="submit">Submit</Button>
+                </div>
+            </form> 
+            : 
+            <div className='w-max grid place-content-center'>
+                <img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" alt="" />
             </div>
-
-            <div className='grid grid-cols-1 md:grid-cols-2 items-start '>
-                  <div className='mt-4 rounded-sm p-2'>
-                      <h3 className='font-semibold flex justify-between items-center'>
-                          <span>Professional Summary:</span>
-                          <ion-icon
-                              name="add-outline"
-                              style={{
-                              fontSize: "18px"
-                          }}
-                              onClick={() => handleAdd('professionalSummary')}></ion-icon>
-                      </h3>
-                      {renderTextareas(resume?.professionalSummary, 'professionalSummary')}
-                  </div>
-  
-                  {/* Technical Skills */}
-                  <div className='mt-4 p-3'>
-                      <h3 className='font-semibold flex justify-between items-center'>
-                          <span>Technical Skills:</span>
-                          <ion-icon
-                              name="add-outline"
-                              style={{
-                              fontSize: "18px"
-                          }}
-                              onClick={() => handleAdd('technicalSkills')}></ion-icon>
-                      </h3>
-                      {renderTextareas(resume?.technicalSkills, 'technicalSkills')}
-                  </div>
-  
-                  {/* Career History */}
-                  <div className='mt-4 p-3'>
-                      <h3 className='font-semibold flex justify-between items-center'>
-                          <span>Career History:</span>
-                          <ion-icon
-                              name="add-outline"
-                              style={{
-                              fontSize: "18px"
-                          }}
-                              onClick={() => handleAdd('careerHistory')}></ion-icon>
-                      </h3>
-                      {renderTextareas(resume?.careerHistory, 'careerHistory')}
-                  </div>
-  
-                  {/* Certifications */}
-                  <div className='mt-4 p-3'>
-                      <h3 className='font-semibold flex justify-between items-center'>
-                          <span>Certifications:</span>
-                          <ion-icon
-                              name="add-outline"
-                              style={{
-                              fontSize: "18px"
-                          }}
-                              onClick={() => handleAdd('certifications')}></ion-icon>
-                      </h3>
-                      {renderTextareas(resume?.certifications, 'certifications')}
-                  </div>
-  
-                  {/* Education */}
-                  <div className='mt-4 p-3'>
-                      <h3 className='font-semibold flex justify-between items-center'>
-                          <span>Education:</span>
-                          <ion-icon
-                              name="add-outline"
-                              style={{
-                              fontSize: "18px"
-                          }}
-                              onClick={() => handleAdd('education')}></ion-icon>
-                      </h3>
-                      {renderTextareas(resume?.education, 'education')}
-                  </div>
-  
-                  {/* Trainings Delivered */}
-                  <div className='mt-4 p-3'>
-                      <h3 className='font-semibold flex justify-between items-center'>
-                          <span>Training Delivered:</span>
-                          <ion-icon
-                              name="add-outline"
-                              style={{
-                              fontSize: "18px"
-                          }}
-                              onClick={() => handleAdd('trainingsDelivered')}></ion-icon>
-                      </h3>
-                      {renderTextareas(resume?.trainingsDelivered, 'trainingsDelivered')}
-                  </div>
-  
-                  {/* Clientele */}
-                  <div className='mt-4 p-3'>
-                      <h3 className='font-semibold flex justify-between items-center'>
-                          <span>Clientele:</span>
-                          <ion-icon
-                              name="add-outline"
-                              style={{
-                              fontSize: "18px"
-                          }}
-                              onClick={() => handleAdd('clientele')}></ion-icon>
-                      </h3>
-                      {renderTextareas(resume?.clientele, 'clientele')}
-                  </div>
-  
-                  {/* Experience */}
-                  <div className='mt-4 p-3'>
-                      <h3 className='font-semibold flex justify-between items-center'>
-                          <span>Experience:</span>
-                          <ion-icon
-                              name="add-outline"
-                              style={{
-                              fontSize: "18px"
-                          }}
-                              onClick={() => handleAdd('experience')}></ion-icon>
-                      </h3>
-                      {renderTextareas(resume?.experience, 'experience')}
-                  </div>
-  
-            </div>
-            <div className='justify-center flex mt-8'>
-            <Button type="submit">Submit</Button>
-            </div>
-         </form>
-
+        
+        }
         </div>
     )
   }

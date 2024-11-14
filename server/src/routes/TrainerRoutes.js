@@ -1,7 +1,7 @@
 import express from 'express';
 import { authEmployeeMiddleware, authMiddleware } from '../middleware/authMiddleware.js';
-import { signOut } from '../controllers/AuthController.js';
-import { acceptNDA, addTrainingDates, getAllTrainer, getResumeById, getTrainerById, resumeCopy, trainerLogin, updateTrainerProfile } from '../controllers/TrainerController.js';
+
+import { acceptNDA, addTrainingDates, getAllTrainer, getResumeById, getTrainerById, resumeCopy, signOut, trainerLogin, updateTrainerProfile } from '../controllers/TrainerController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { searchTrainer } from '../controllers/SearchController.js';
 import { changepassword } from '../controllers/TrainerController.js';

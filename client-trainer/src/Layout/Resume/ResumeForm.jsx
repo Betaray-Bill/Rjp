@@ -332,10 +332,10 @@ function ResumeForm() {
                     className='flex justify-between m-8 border-b-1 border-gray-500 items-center'>
                     {currentResumeName !== 'Main Resume'
                         ? <div className=''>
-                                <label htmlFor="">Training Name</label>
+                                <label htmlFor="">Domain Name</label>
                                 <Input
                                     placeholder="Training Name"
-                                    value={currentResumeDetails.trainingName}
+                                    value={currentResumeDetails.domain}
                                     readOnly/>
                             </div>
                         : <div className='text-gray-700 font-medium px-3 py-1 bg-slate-200 rounded-full'>Main Resume</div>

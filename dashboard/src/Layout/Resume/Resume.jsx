@@ -9,6 +9,7 @@ import generatePDF, {Margin, Resolution, usePDF} from 'react-to-pdf';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { Button } from '@/components/ui/button';
 
 
 function Resume() {
@@ -18,7 +19,7 @@ function Resume() {
     const fetchResume = async(id) => {
         return axios.get(`http://localhost:5000/api/trainer/resume/${id}`).then(res => res.data);
     }
-
+    const resumeRef = useRef();
     const { data, isLoading, isError, error } = useQuery(
         ['resume', params.id], // Query key (unique per query)
         () => fetchResume(params.id), // Query function
@@ -35,7 +36,7 @@ function Resume() {
         return <div>Error: {error.message}</div>;
       }
 
-    console.log()
+    console.log(data)
     // const {currentResumeDetails, currentResumeName, downloadResume, downloadResumeName} = useSelector(state => state.resume)
     // const resumeRef = useRef();
 
@@ -46,7 +47,9 @@ function Resume() {
         const getTargetElement = () => document.getElementById("resumeRef");
         console.log(getTargetElement)
             generatePDF(getTargetElement, {
-                filename: `${user.generalDetails.name}-${currentResumeName}`,
+                filename: `${data.trainer_id
+                                    .generalDetails
+                                    .name}-${data.domain}`,
                 overrides: {
                     // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
                     pdf: {
@@ -78,26 +81,26 @@ function Resume() {
     ].filter(item => item.content.length > 0);  // Filter out empty sections
     
     // Shuffle the content for randomness
-    const shuffledContent = allContent;
+    // const shuffledContent = allContent;
     
-    // Split content evenly between two columns
-    const half = Math.ceil(shuffledContent.length / 2);
-    const leftColumnContent = shuffledContent.slice(0, half);
-    const rightColumnContent = shuffledContent.slice(half);
+    // // Split content evenly between two columns
+    // const half = Math.ceil(shuffledContent.length / 2);
+    // const leftColumnContent = shuffledContent.slice(0, half);
+    // const rightColumnContent = shuffledContent.slice(half);
 
 
 
   return (
   <Fragment>
-            {/* <div className="flex justify-end m-4">
+            <div className="flex justify-end m-4">
                 <Button onClick={handleDownload}>Download</Button>
-            </div> */}
+            </div>
             <hr className='pb-8'/>
             <div className='h-full'>
                 {/* New template */}
                 <div
                     className="bg-white w-[80vw] h-max relative"
-                    // ref={resumeRef}
+                    ref={resumeRef}
                     id="resumeRef">
                       
                     {/* Blue strip on the left */}
@@ -120,12 +123,12 @@ function Resume() {
                         </div>
                         
                         {/* Resume content */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-4">
+                        <div className="grid grid-cols-1 md:grid-cols-1 gap-10 mt-4">
                             {/* Left Column */}
                             <div className="space-y-10">
-                            {leftColumnContent.map((section, index) => (
+                            {allContent.map((section, index) => (
                                 <div key={index}>   
-                                <h2 className="text-resumeText text-2xl font-semibold mb-2 border-y border-resumeLine py-1 px-4">
+                                <h2 className="text-resumeText text-2xl font-semibold mb-2  py-1 px-4">
                                     {section.title}
                                 </h2>
                                 <ul className="list-disc pl-5 space-y-2">
@@ -140,7 +143,7 @@ function Resume() {
                             </div>
 
                             {/* Right Column */}
-                            <div className="space-y-10">
+                            {/* <div className="space-y-10">
                             {rightColumnContent.map((section, index) => (
                                 <div key={index}>
                                 <h2 className="text-resumeText text-2xl font-semibold mb-2 border-y border-resumeLine py-1 px-4">
@@ -155,7 +158,7 @@ function Resume() {
                                 </ul>
                                 </div>
                             ))}
-                            </div>
+                            </div> */}
                         </div>
 
                     </div>

@@ -115,7 +115,7 @@ function ResumeNav() {
                                 value={resume}
                                 disabled={resume === position ? true : false}
                                 onSelect={(currentValue) => {
-                                    setPosition(currentValue === position ? "" : currentValue)
+                                    setPosition(currentValue === position ? "Main Resume" : currentValue)
                                     setOpen(false)
                                 }}
                             >
