@@ -284,6 +284,10 @@ const getResumeById = asyncHandler(async(req, res) => {
     try {
         const resume = await Resume
             .findById(id)
+            .populate({
+                path: 'trainer_id',
+                select: 'generalDetails.name'
+            })
         if (!resume) {
             return res
                 .status(404)

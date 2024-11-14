@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 // import {setIsDownload} from '@/features/resumeSlice';
 import React, {Fragment, useEffect, useRef} from 'react'
 // import {useDispatch, useSelector} from 'react-redux';
-// import ResumeLogo from '../../assets/ResumeLogo.png'
+import ResumeLogo from '../../assets/ResumeLogo.png'
 import generatePDF, {Margin, Resolution, usePDF} from 'react-to-pdf';
 import { useQuery } from 'react-query';
 import axios from 'axios';
@@ -109,14 +109,14 @@ function Resume() {
                         {/* Header with logo space */}
                         <div className="flex flex-col items-center mb-6 relative">
                             <div className="flex justify-center w-[40vw]">
-                                {/* <img src={ResumeLogo} alt="Logo" className="mb-8  w-[40vw]"/> */}
+                                <img src={ResumeLogo} alt="Logo" className="mb-8  w-[40vw]"/>
                             </div>
                         </div>
                         <div className="">
-                            {/* <h1 className="text-3xl font-bold text-resumeText mb-10">{user && user
+                            <h1 className="text-3xl font-bold text-resumeText mb-10">{data && data.trainer_id
                                     .generalDetails
                                     .name
-                                    .toUpperCase()}</h1> */}
+                                    .toUpperCase()}</h1>
                         </div>
                         
                         {/* Resume content */}
@@ -124,7 +124,7 @@ function Resume() {
                             {/* Left Column */}
                             <div className="space-y-10">
                             {leftColumnContent.map((section, index) => (
-                                <div key={index}>
+                                <div key={index}>   
                                 <h2 className="text-resumeText text-2xl font-semibold mb-2 border-y border-resumeLine py-1 px-4">
                                     {section.title}
                                 </h2>

@@ -22,20 +22,11 @@ function SearchResult() {
     }
 
     return (
-        <div className='mt-8 p-3'>
+        <div className='mt-4 p-3'>
             {
                     domainResults.length > 0 ?
 
                     <Fragment>
-                        <div className='flex justify-between '>
-                        <h1 className='font-medium text-black-600'>Search Results for - {searchDomain}</h1>
-                        <p
-                            onClick={() => handleReset()}
-                            className='bg-blue-100 border  border-blue-700 hover:bg-blue-300 rounded-full py-[4px] px-3 flex items-center cursor-pointer'>
-                            <ion-icon name="close-outline"></ion-icon>
-                            <span className='ml-1'>Reset</span>
-                        </p>
-                        </div>
                         <div className='mt-6 grid gap-[25px] place-content-center items-start'>
                              { domainResults &&  domainResults?.map((res, _i) => (
                                     <div key={_i} className='border flex  items-start justify-between border-gray-200 rounded-md p-3 h-max w-[70vw]'>

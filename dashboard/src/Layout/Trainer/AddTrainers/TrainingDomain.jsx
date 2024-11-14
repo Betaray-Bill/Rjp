@@ -316,10 +316,12 @@ function TrainingDomain({}) {
                                     <Label className="text-md font-medium text-slate-700">Enter Mode</Label>
                                     <select name="paymentSession" id="" className='w-max' value={item.paymentSession}  onChange={(e) =>  handleChange(e, index)}>
                                         <option value="Select Mode">Select Mode</option>
-                                        <option value="Online Hourly">Online Hourly</option>
-                                        <option value="Online Per-day">Online Per-day</option>
-                                        <option value="Offline Hourly">Offline Hourly</option>
-                                        <option value="Offline Per Day">Offline Per Day</option>
+                                        <option value="OnlineHourly">Online Hourly</option>
+                                        <option value="OnlinePer-day">Online Per-day</option>
+                                        <option value="OfflineHourly">Offline Hourly</option>
+                                        <option value="OfflinePer-Day">Offline Per Day</option>
+
+                                      
                                     </select>
                                 </div>
                             </div>

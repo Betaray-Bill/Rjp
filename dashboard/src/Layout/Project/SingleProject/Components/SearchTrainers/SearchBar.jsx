@@ -197,6 +197,24 @@ function SearchBar({domain, id}) {
                                 <p className='ml-3'>Filter</p>
                             </div>
                             <div className=" flex items-center">
+                                {/* Type of Training Mode */}
+                                 <div className='mx-2'>
+                                            <Select onValueChange={(e) => {
+                                                // console.log(e)
+                                                setTrainingType(e)
+                                            }} className="rounded-full border-none">
+                                                <SelectTrigger className="w-max rounded-full">
+                                                    <SelectValue placeholder="Select Training Mode" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {/* <SelectItem value="Select Mode">Select Mode</SelectItem> */}
+                                                    <SelectItem value="Online Hourly">Online Hourly</SelectItem>
+                                                    <SelectItem value="Online Per-day">Online Per-day</SelectItem>
+                                                    <SelectItem value="Offline Hourly">Offline Hourly</SelectItem>
+                                                    <SelectItem value="Offline Per Day">Offline Per Day</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                </div>
                                 {/* PRice Filter */}
                                 <div className='border w-max px-4 py-[3px]  rounded-full'>
                                     <Popover>
@@ -234,24 +252,29 @@ function SearchBar({domain, id}) {
                                         </PopoverContent>
                                     </Popover>
                                 </div>
-                                {/* Type of Training Mode */}
-                                <div className='ml-4'>
+                                {/* Type Of Students */}
+                                <div className='mx-4'>
                                             <Select onValueChange={(e) => {
-                                                // console.log(e)
+                                                console.log(e)
                                                 setTrainingType(e)
                                             }} className="rounded-full border-none">
                                                 <SelectTrigger className="w-max rounded-full">
-                                                    <SelectValue placeholder="Select Training Mode" />
+                                                    <SelectValue placeholder="Select Type" />
                                                 </SelectTrigger>
                                                 <SelectContent>
+                                                    <SelectItem value="Select Type">Select Type</SelectItem>
+                                                    <SelectItem value="Lateral">Lateral</SelectItem>
+                                                    <SelectItem value="Induction">Induction</SelectItem>
+                                                    <SelectItem value="Both">Both</SelectItem>
                                                     {/* <SelectItem value="Select Mode">Select Mode</SelectItem> */}
-                                                    <SelectItem value="Online Hourly">Online Hourly</SelectItem>
+                                                    {/* <SelectItem value="Online Hourly">Online Hourly</SelectItem>
                                                     <SelectItem value="Online Per-day">Online Per-day</SelectItem>
                                                     <SelectItem value="Offline Hourly">Offline Hourly</SelectItem>
-                                                    <SelectItem value="Offline Per Day">Offline Per Day</SelectItem>
+                                                    <SelectItem value="Offline Per Day">Offline Per Day</SelectItem> */}
                                                 </SelectContent>
                                             </Select>
                                 </div>
+
                             </div>
                         </div>
                     {/* ) : null

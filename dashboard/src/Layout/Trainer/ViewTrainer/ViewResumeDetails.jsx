@@ -18,7 +18,7 @@ function ViewResumeDetails({data, isNew}) {
     const params = useParams()
     const [resume, setResume] = useState()
     const {toast} = useToast()
-    console.log(data._id)
+    // console.log(data._id)
     const {trainerDetails} = useSelector(state  => state.currentTrainer)
     console.log(resume)
     useEffect(() => {
@@ -41,7 +41,7 @@ function ViewResumeDetails({data, isNew}) {
       if(isNew){
         // New Resume is getting created    
       }
-    }, [data.domain, isNew])
+    }, [data?.domain])
   
     const dispatch = useDispatch()
 
@@ -257,7 +257,7 @@ function ViewResumeDetails({data, isNew}) {
             <div className='my-5 flex items-center '>
                 {
                     data?.projects?.map((e, _i) => (
-                        <p className='font-medium border rounded-full px-3' key={_i}>{e.projectName}</p>
+                        <p className='font-medium border rounded-full px-3 mx-1' key={_i}>{e.projectName}</p>
                     ))
                 }
             </div>

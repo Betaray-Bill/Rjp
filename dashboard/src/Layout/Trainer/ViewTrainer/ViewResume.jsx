@@ -121,10 +121,10 @@ function ViewResume({data, projects}) {
 
 
         </div>
-        
+
         <div>
             { 
-                value ? (
+                value && resumeDetails ? (
                     !isNew ? <ViewResumeDetails data={resumeDetails && resumeDetails} isNew={isNew}/> : <ViewNewResume  data={data[0]} />
                 ) :
                 (

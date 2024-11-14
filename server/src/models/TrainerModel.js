@@ -134,7 +134,7 @@ const trainerSchema = mongoose.Schema({
         paymentSession: {
             type: String,
             enum: [
-                'Online Hourly', 'Online Per-day', 'Offline Hourly', 'Offline Per Day'
+                'OnlineHourly', 'OnlinePer-day', 'OfflineHourly', 'OfflinePer-Day'
             ],
             required: true
         },
@@ -143,67 +143,6 @@ const trainerSchema = mongoose.Schema({
             // required: true
         }
     }],
-    // mainResume: {
-    //     professionalSummary: [{
-    //         type: String
-    //     }],
-    //     technicalSkills: [{
-    //         type: String
-    //     }],
-    //     careerHistory: [{
-    //         type: String
-    //     }],
-    //     certifications: [{
-    //         type: String
-    //     }],
-    //     education: [{
-    //         type: String
-    //     }],
-    //     trainingsDelivered: [{
-    //         type: String
-    //     }],
-    //     clientele: [{
-    //         type: String
-    //     }],
-    //     experience: [{
-    //         type: String
-    //     }]
-    // },
-    // resumeVersions: [{
-    //     professionalSummary: {
-    //         type: [String]
-    //     },
-    //     technicalSkills: {
-    //         type: [String]
-    //     },
-    //     careerHistory: {
-    //         type: [String]
-    //     },
-    //     certifications: {
-    //         type: [String]
-    //     },
-    //     education: {
-    //         type: [String]
-    //     },
-    //     trainingsDelivered: {
-    //         type: [String]
-    //     },
-    //     clientele: {
-    //         type: [String]
-    //     },
-    //     experience: {
-    //         type: [String]
-    //     },
-    //     createdAt: {
-    //         type: Date,
-    //         default: Date.now
-    //     },
-    //     trainingName: {
-    //         type: String
-    //     }, // Training name for version
-    // }],
-    // Other information like NDA, Trainer Who added him
-
     resumeVersion: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Resume'

@@ -68,7 +68,8 @@ const registerTrainer = asyncHandler(async(req, res) => {
                 .map(domain => ({
                     domain: domain.domain,
                     price: Number(domain.price),
-                    paymentSession: domain.paymentSession
+                    paymentSession: domain.paymentSession,
+                    type: domain.type
                 })),
             resumeVersion: [mainResume._id],
             trainer_sourcer: trainerId,
