@@ -45,7 +45,7 @@ function ResumeNav() {
             setResumeName([])
             // setResumeName(prev => [...prev, "Main Resume"])
             user.resumeVersion.forEach(element => {
-                setResumeName(prevState => [...prevState, element.trainingName])
+                setResumeName(prevState => [...prevState, element.domain])
             });
         }
     }, [])
@@ -62,12 +62,12 @@ function ResumeNav() {
                     navigate('/home/resume/main')
                 }   
             }else{
-                let resumeVersionId = user.resumeVersion.find(element => element.trainingName === position)
-                dispatch(setCurrentResumeName(resumeVersionId.trainingName))
-                // console.log(resumeVersionId.trainingName)
+                let resumeVersionId = user.resumeVersion.find(element => element.domain === position)
+                dispatch(setCurrentResumeName(resumeVersionId.domain))
+                // console.log(resumeVersionId.domain)
                 dispatch(setCurrentResumeDetails(resumeVersionId))
                 // console.log(currentResumeDetails)
-                navigate(`/home/resume/copy/${resumeVersionId.trainingName}`)
+                navigate(`/home/resume/copy/${resumeVersionId.domain}`)
             }
         }
 

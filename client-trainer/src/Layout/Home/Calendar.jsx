@@ -171,8 +171,8 @@ const CalendarComp = () => {
         for(let i = 0; i <user.projects.length; i++) {
             let obj = {}
             obj.title = user.projects[i].projectName
-            obj.start = new Date(user.projects[i].trainingDates.startDate)
-            obj.end = new Date(user.projects[i].trainingDates.endDate)
+            obj.start = new Date(user.projects[i].trainingDates?.startDate)
+            obj.end = new Date(user.projects[i].trainingDates?.endDate)
             a.push(obj)
         }
 

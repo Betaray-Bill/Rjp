@@ -23,7 +23,7 @@ function ViewResumeDetails({data, isNew}) {
     console.log(resume)
     useEffect(() => {
       if(data && !isNew){
-        console.log(data[0])
+        // console.log(data[0])
         setResume({
             professionalSummary: data ? data.professionalSummary : [],
             technicalSkills: data ? data.technicalSkills : [],
@@ -41,7 +41,7 @@ function ViewResumeDetails({data, isNew}) {
       if(isNew){
         // New Resume is getting created    
       }
-    }, [data.trainingName, isNew])
+    }, [data.domain, isNew])
   
     const dispatch = useDispatch()
 
@@ -206,7 +206,7 @@ function ViewResumeDetails({data, isNew}) {
             await axios.put(`http://localhost:5000/api/project/add-resume/${projectId}/trainer/${trainerDetails._id}/resume`, {resumeId:data._id})
             toast({
                 title:"Resume is Added",
-                description:`${data.trainingName} is Updated`
+                // description:`${data.project} is Updated`
             })
         
         }catch(e){

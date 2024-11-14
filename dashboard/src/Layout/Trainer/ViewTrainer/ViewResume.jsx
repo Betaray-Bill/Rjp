@@ -28,20 +28,30 @@ function ViewResume({data, projects}) {
     // const {trainerDetails} = useSelector(state => state.trainer)
     const [resumeDetails, setResumeDetails] = useState([])  
     const params = useParams()
-    console.log(data)
+    console.log(value)
     const navigate = useNavigate()
-    console.log(projects)
+    console.log(resumeDetails)
     const { toast } = useToast()
     console.log(value)
     useEffect(() => {
         // console.log("Changed to " + value.trainingName)
-        let res = projects?.filter(element => {
-            return element.domain === value.projects
-        });
-        // console.log(res)
-        setResumeDetails(res)
+
+        // if(value)
+        if(value === "Main Resume"){
+            console.log("Main res")
+            setResumeDetails(data[0])
+        }else{
+            console.log("not Main res")
+
+            let res = data?.filter(element => {
+                return element.domain === value
+            });
+            console.log(res)
+            setResumeDetails(res[0])
+        }
+
         // setResumeDetails()
-    }, [])
+    }, [value])
     
     console.log(params.id)
   return (
@@ -71,9 +81,9 @@ function ViewResume({data, projects}) {
                             {data?.map((framework, index) => (
                                 <CommandItem
                                     key={index}
-                                    value={framework.domain ? framework.domain : framework.domain}
+                                    value={framework.domain ? framework.domain : "Main Resume"}
                                     onSelect={(currentValue) => {
-                                        setValue(currentValue === value ? "" : framework.domain)
+                                        setValue(currentValue)
                                         setOpen(false)
                                         console.log(params)
                                         // navigate(`/home/trainer/view/${params.id}/resume/${framework}`)
@@ -111,12 +121,11 @@ function ViewResume({data, projects}) {
 
 
         </div>
-
+        
         <div>
-            
             { 
-                value? (
-                    !isNew ? <ViewResumeDetails data={data[0]} isNew={isNew}/> : <ViewNewResume  data={data[0]} />
+                value ? (
+                    !isNew ? <ViewResumeDetails data={resumeDetails && resumeDetails} isNew={isNew}/> : <ViewNewResume  data={data[0]} />
                 ) :
                 (
                     isNew ? <ViewNewResume data={data[0]}/> : null

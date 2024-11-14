@@ -19,7 +19,7 @@ function PipeLine() {
     const { currentUser } = useSelector(state => state.auth)
     const fetchProjects = async () => {
         const response = await axios.get(`http://localhost:5000/api/project/projects-employees/${currentUser.employee._id}`)
-        return response.data.projects.Projects
+        return response.data.projects
       }
     
       const { data: projects, isLoading, error } = useQuery(

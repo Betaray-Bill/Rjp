@@ -152,33 +152,53 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
                 projects = await KeyAccounts
                     .findById(employee.role[i].roleId)
                     .select('Projects')
-                    .populate({ path: "projectOwner", select: 'name' })
                     .populate({
                         path: 'Projects',
-                        // populate: { path: 'employees', // Path of employee IDs within each Project
                         select: 'projectName domain company.name  projectOwner contactDetails.name contactDetails' +
                             '.email trainingDates', // Only fetch the 'name' field from each employee
                         // },
-                    });
-                // await trainer.save()
+                    })
+                    .populate({
+                        path: 'Projects',
+                        populate: {
+                            path: "projectOwner",
+                            select: 'name'
+                        },
+                        // select: 'name', // Only fetch the 'name' and 'role' fields
+                    })
+
+                console.log(projects)
+                projects = projects.Projects
+                    // await trainer.save()
                 break;
             }
 
             if (employee.role[i].name == 'ADMIN') {
                 console.log('Admin is present')
-                projects = await Admin
-                    .findById(employee.role[i].roleId)
-                    .select('Projects')
-                    // .populate({     path: "projectOwner",     select: 'name' })
+                projects = await Project.find()
+                    // console.log(projects)
                     .populate({
-                        path: 'Projects',
-                        // populate: {     path: 'employees', // Path of employee IDs within each
-                        // Project
-                        select: 'projectName domain company.name  projectOwner contactDetails.name contactDetails' +
-                            '.email trainingDates', // Only fetch the 'name' field from each employee
-                        // },
-                    });
-                // await trainer.save() await trainer.save()
+                        path: 'projectOwner',
+                        select: 'name'
+                    })
+                    // projects = await Admin
+                    //     .findById(employee.role[i].roleId)
+                    //     .select('Projects')
+                    //     .populate({
+                    //         path: 'Projects',
+                    //         select: 'projectName domain company.name  projectOwner contactDetails.name contactDetails' +
+                    //             '.email trainingDates', // Only fetch the 'name' field from each employee
+                    //         // },
+                    //     })
+                    //     .populate({
+                    //         path: 'Projects',
+                    //         populate: {
+                    //             path: "projectOwner",
+                    //             select: 'name'
+                    //         },
+                    //         // select: 'name', // Only fetch the 'name' and 'role' fields
+                    //     })
+                res.json({ projects });
                 break;
             }
         }
@@ -211,7 +231,6 @@ const getProjectDetails = asyncHandler(async(req, res) => {
             // select: 'domain'
         })
 
-
     // .populate('company.Company_id') .populate('employees')
 
     if (!project) {
@@ -238,9 +257,9 @@ const addTrainer = asyncHandler(async(req, res) => {
     const trainersList = req.body.trainers;
 
     // Check if the trainers exist in the project
-    const existingTrainers = project.trainers.filter(trainer =>
-        trainersList.includes(trainer.trainer.toString())
-    );
+    const existingTrainers = project
+        .trainers
+        .filter(trainer => trainersList.includes(trainer.trainer.toString()));
     if (existingTrainers.length > 0) {
         return res
             .status(400)
