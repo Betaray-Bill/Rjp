@@ -1,5 +1,5 @@
 import {Input} from '@/components/ui/input'
-import React, {useEffect, useState} from 'react'
+import React, {Fragment, useEffect, useState} from 'react'
 import {
     Command,
     CommandEmpty,
@@ -12,11 +12,12 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
 import {Label} from '@/components/ui/label'
 import {Button} from '@/components/ui//button'
 import { domains } from '@/utils/constants'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setResumeDetails } from '@/features/trainerSlice'
 
 function TrainingDomain({}) {
     const dispatch = useDispatch();
+    const { trainerDetails } = useSelector(state => state.trainer)
 
 
     // Domain Search States
@@ -308,22 +309,28 @@ function TrainingDomain({}) {
                                         <option value="Both">Both</option>
                                     </select>
                                 </div>
-                                <div>
-                                    <Label className="text-md font-medium text-slate-700">Enter Price (₹)</Label>
-                                    <Input type="number" placeholder="Enter Price(Rupees)"  name="price" className="w-[200px]" onChange={(e) =>  handleChange(e, index)}/>
-                                </div>
-                                <div className='flex flex-col items-start justify-between ml-10'>
-                                    <Label className="text-md font-medium text-slate-700">Enter Mode</Label>
-                                    <select name="paymentSession" id="" className='w-max' value={item.paymentSession}  onChange={(e) =>  handleChange(e, index)}>
-                                        <option value="Select Mode">Select Mode</option>
-                                        <option value="OnlineHourly">Online Hourly</option>
-                                        <option value="OnlinePer-day">Online Per-day</option>
-                                        <option value="OfflineHourly">Offline Hourly</option>
-                                        <option value="OfflinePer-Day">Offline Per Day</option>
+                                {
+                                    trainerDetails && trainerDetails.trainingDetails.trainerType !== "Internal" ? 
+                                
+                                <Fragment>
+                                    <div>
+                                        <Label className="text-md font-medium text-slate-700">Enter Price (₹)</Label>
+                                        <Input type="number" placeholder="Enter Price(Rupees)"  name="price" className="w-[200px]" onChange={(e) =>  handleChange(e, index)}/>
+                                    </div>
+                                    <div className='flex flex-col items-start justify-between ml-10'>
+                                        <Label className="text-md font-medium text-slate-700">Enter Mode</Label>
+                                        <select name="paymentSession" id="" className='w-max' value={item.paymentSession}  onChange={(e) =>  handleChange(e, index)}>
+                                            <option value="Select Mode">Select Mode</option>
+                                            <option value="OnlineHourly">Online Hourly</option>
+                                            <option value="OnlinePer-day">Online Per-day</option>
+                                            <option value="OfflineHourly">Offline Hourly</option>
+                                            <option value="OfflinePer-Day">Offline Per Day</option>
 
-                                      
-                                    </select>
-                                </div>
+                                        
+                                        </select>
+                                    </div>
+                                </Fragment>
+                                : null }
                             </div>
                         </div>
                         ))
