@@ -39,8 +39,8 @@ function SearchBar({domain, id}) {
         setEndDate] = useState('');
     const [rating,
         setRating] = useState('asc');
-    const [trainingTyp, setTrainingType] = useState('');
-
+    const [mode, setMode] = useState('');
+    const [type, setType] = useState('');
     const [filter, setFilter] = useState(false)
 
     const handleDomainChange = (event) => {
@@ -61,11 +61,13 @@ function SearchBar({domain, id}) {
 
     // Search Query
     const fetchSearchResults = async () => {
-        let req_query = `http://localhost:5000/api/trainer/search?domain=${domain.trim()}`;
+        let encodedDomain = encodeURIComponent(domain)
+        let req_query = `http://localhost:5000/api/trainer/search?domain=${encodedDomain.trim()}`;
         if (startPrice) req_query += `&price[gte]=${Number(startPrice)}`;
         if (endPrice) req_query += `&price[lte]=${Number(endPrice)}`;
-        if (trainingTyp) req_query += `&type=${trainingTyp}`;
-        // console.log(req_query);
+        if (mode) req_query += `&mode=${encodeURIComponent(mode)}`;
+        if (type) req_query += `&type=${encodeURIComponent(type)}`;
+        console.log(req_query);
         
         const response = await axios.get(req_query);
         // console.log(response.data)
@@ -165,32 +167,44 @@ function SearchBar({domain, id}) {
             console.log(error);
         }
     }
-    
+    const handleReset = () => {
+        // dispatch(resetDomainResultsAndSearch())
+        setRating('asc')
+        setStartPrice('')
+        setEndPrice('')
+        setMode('')
+        setType('')
+        // setQuery('')
+    }
+
+
     return (
         <div className=''>
             <form onSubmit={searchHandler} className='bg-orange p-3'>
 
                     <div
                         className='flex items-center  shadow-sm justify-between w-[70vw] lg:w-[60wv] rounded-full py-2 px-5 border border-slate-400'>
-                        <div className='flex items-center'>
-                            <ion-icon
-                                name="search-outline"
-                                style={{
-                                fontSize: "22px",
-                                color: "black"
-                            }}></ion-icon>
-                            <Input
-                                id="outlined-basic"
-                                onChange={(e) => handleDomainChange(e)}
-                                placeholder="Search Trainers by domain"
-                                value={query ? query : domain}
-                                className="min-w-[50vw] ml-4 border-none bg-none"></Input>
+                        
+                        <div className='flex items-center justify-between w-[70vw] lg:w-[60wv] '>
+                            <div className='flex items-center'>
+                                <ion-icon
+                                    name="search-outline"
+                                    style={{
+                                    fontSize: "22px",
+                                    color: "black"
+                                }}></ion-icon>
+                                <Input
+                                    id="outlined-basic"
+                                    onChange={(e) => handleDomainChange(e)}
+                                    placeholder="Search Trainers by domain"
+                                    value={query ? query : domain}
+                                    readOnly={true}
+                                    className="min-w-[50vw] ml-4 border-none bg-none"></Input>
+                            </div>
+                            <Button onClick={searchHandler} className="rounded-3xl">Search</Button>
                         </div>
                     </div>
-                    <Button type="submit" className="hidden">Search</Button>
-                {/* {
-                    filter ?
-                    ( */}
+
                         <div className='mt-4 py-2 px-4 flex items-start justify-between'>
                             <div className="flex items-center justify-between cursor-pointer border-gray-200 border px-3 py-[3px] rounded-full"  onClick={() => setFilter(false)}> 
                                 <ion-icon name="filter-outline" style={{fontSize:"20px", color:"black"}}></ion-icon>
@@ -201,7 +215,7 @@ function SearchBar({domain, id}) {
                                  <div className='mx-2'>
                                             <Select onValueChange={(e) => {
                                                 // console.log(e)
-                                                setTrainingType(e)
+                                                setMode(e)
                                             }} className="rounded-full border-none">
                                                 <SelectTrigger className="w-max rounded-full">
                                                     <SelectValue placeholder="Select Training Mode" />
@@ -211,7 +225,7 @@ function SearchBar({domain, id}) {
                                                     <SelectItem value="Online Hourly">Online Hourly</SelectItem>
                                                     <SelectItem value="Online Per-day">Online Per-day</SelectItem>
                                                     <SelectItem value="Offline Hourly">Offline Hourly</SelectItem>
-                                                    <SelectItem value="Offline Per Day">Offline Per Day</SelectItem>
+                                                    <SelectItem value="Offline Per-Day">Offline Per Day</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                 </div>
@@ -256,7 +270,7 @@ function SearchBar({domain, id}) {
                                 <div className='mx-4'>
                                             <Select onValueChange={(e) => {
                                                 console.log(e)
-                                                setTrainingType(e)
+                                                setType(e)
                                             }} className="rounded-full border-none">
                                                 <SelectTrigger className="w-max rounded-full">
                                                     <SelectValue placeholder="Select Type" />
@@ -281,6 +295,16 @@ function SearchBar({domain, id}) {
                 } */}
 
             </form>
+
+            <div className='flex justify-between '>
+                <h1 className='font-medium text-gray-600'>Search Results for - {query}</h1>
+                <p
+                    onClick={() => handleReset()}
+                    className='bg-blue-100 border  border-blue-700 hover:bg-blue-300 rounded-full py-[4px] px-3 flex items-center cursor-pointer'>
+                        <ion-icon name="close-outline"></ion-icon>
+                        <span className='ml-1'>Reset</span>
+                </p>
+            </div>
             {
                 selectedTrainers.length > 0 ?
                 <div className='text-right'>

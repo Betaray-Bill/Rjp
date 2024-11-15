@@ -198,7 +198,7 @@ function ResumeForm() {
                     className='py-2 h- flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
                     <Textarea
                         value=""
-                        // readOnly={isEdit}
+                        readOnly={currentResumeDetails.isLocked}
                         onChange={(e) => handleChange(e, fieldName, 0)}
                         placeholder={`Type your ${fieldName}`}
                         className="w-[30vw] text-gray-800 text-sm outline-none border-collapse border-none"/>
@@ -219,7 +219,7 @@ function ResumeForm() {
                 className='py-2 h- flex align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
                 <Textarea
                     value={value}
-                    // readOnly={isEdit}
+                    readOnly={currentResumeDetails.isLocked}
                     onChange={(e) => handleChange(e, fieldName, index)}
                     placeholder={`Type your ${fieldName}`}
                     className="w-[30vw] text-gray-800 text-sm outline-none border-collapse border-none h-max"/>
@@ -486,7 +486,7 @@ function ResumeForm() {
 
                     </form>
                     <div className='grid place-content-center w-full my-8'>
-                        <Button onClick={handleSubmit} disabled={isSubmit}>{isSubmit
+                        <Button onClick={handleSubmit} disabled={currentResumeDetails.isLocked}>{isSubmit
                                 ? "Saving "
                                 : "Submit"}</Button>
                     </div>

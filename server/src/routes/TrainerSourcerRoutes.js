@@ -3,7 +3,7 @@ import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { getTrainerByEmpId, registerTrainer, updateResume } from '../controllers/TrainerSourcerController.js';
 import { signOut } from '../controllers/AuthController.js';
-import { resumeCopy, updateTrainerProfile } from '../controllers/TrainerController.js';
+import { lockResume, resumeCopy, updateTrainerProfile } from '../controllers/TrainerController.js';
 // import multer from 'multer';
 // const upload = multer({ dest: "uploads/" });
 
@@ -31,6 +31,6 @@ router.put("/updateResume/:trainer_id/resume/:resume_id", authEmployeeMiddleware
 router.put("/update-profile/:id", authEmployeeMiddleware, updateTrainerProfile)
 router.post("/:id/copy-resume", authEmployeeMiddleware, resumeCopy)
 router.get("/getTrainer/:emp_id", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), getTrainerByEmpId)
-
+router.put('/updateLockStatus/:id', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer sourcer"]), lockResume)
 
 export default router

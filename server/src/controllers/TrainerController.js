@@ -320,6 +320,41 @@ const signOut = asyncHandler(async(req, res) => {
         .json('Signout success!');
 })
 
+// Lock or UnLock the Resume
+const lockResume = asyncHandler(async(req, res) => {
+    const { id } = req.params;
+    const { isLock } = req.body;
+    console.log(isLock)
+    console.log(req.body)
+
+    // Check if the Resume Exists
+    const resumeExists = await Resume.findById(id);
+    if (!resumeExists) {
+        return res
+            .status(404)
+            .json({ message: "Resume not found" });
+    }
+
+    // Update the Resume Field
+    try {
+        await Resume.findByIdAndUpdate(id, {
+            $set: {
+                isLocked: isLock
+            }
+        }, { new: true })
+
+        res
+            .status(200)
+            .json({ message: "Resume Lock status updated successfully", resume: resumeExists });
+
+    } catch (err) {
+        console.error("Error updating resume lock status:", err);
+        res
+            .status(500)
+            .json({ error: "Internal server error" });
+    }
+})
+
 export {
     trainerLogin,
     acceptNDA,
@@ -330,5 +365,6 @@ export {
     resumeCopy, // - Create a New Resume
     changepassword,
     signOut,
-    getResumeById
+    getResumeById,
+    lockResume
 }

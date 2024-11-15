@@ -28,32 +28,32 @@ function ViewResume({data, projects}) {
     // const {trainerDetails} = useSelector(state => state.trainer)
     const [resumeDetails, setResumeDetails] = useState(data[0])  
     const params = useParams()
-    console.log(value)
+    // console.log(value)
     const navigate = useNavigate()
-    console.log(resumeDetails)
+    // console.log(resumeDetails)
     const { toast } = useToast()
-    console.log(value)
+    // console.log(value)
     useEffect(() => {
         // console.log("Changed to " + value.trainingName)
 
         // if(value)
         if(value === "Main Resume"){
-            console.log("Main res")
+            // console.log("Main res")
             setResumeDetails(data[0])
         }else{
-            console.log("not Main res")
+            // console.log("not Main res")
 
             let res = data?.filter(element => {
                 return element.domain === value
             });
-            console.log(res)
+            // console.log(res)
             setResumeDetails(res[0])
         }
 
         // setResumeDetails()
     }, [value])
     
-    console.log(params.id)
+    // console.log(params.id)
   return (
     <div className=''>
         <div className='flex items-center justify-between'>
@@ -85,7 +85,7 @@ function ViewResume({data, projects}) {
                                     onSelect={(currentValue) => {
                                         setValue(currentValue)
                                         setOpen(false)
-                                        console.log(params)
+                                        // console.log(params)
                                         // navigate(`/home/trainer/view/${params.id}/resume/${framework}`)
                                     }}
                                 >

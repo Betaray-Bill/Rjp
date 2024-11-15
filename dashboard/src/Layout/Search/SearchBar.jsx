@@ -48,7 +48,7 @@ function SearchBar({domainSearch}) {
         setEndDate] = useState('');
     const [rating,
         setRating] = useState('asc');
-    const [trainingTyp, setTrainingType] = useState('');
+    const [mode, setMode] = useState('');
     const [type, setType] = useState('');
         // onValueChange={field.onChange} defaultValue={field.value}
     const dispatch = useDispatch()
@@ -61,7 +61,7 @@ function SearchBar({domainSearch}) {
         setRating('asc')
         setStartPrice('')
         setEndPrice('')
-        setTrainingType('')
+        setMode('')
         setType('')
         setQuery('')
     }
@@ -72,7 +72,7 @@ function SearchBar({domainSearch}) {
         if(query === ""){
             setStartPrice('')
             setEndPrice('')
-            setTrainingType('')
+            setMode('')
         }
     }, [query])
 
@@ -96,12 +96,13 @@ function SearchBar({domainSearch}) {
     // Search Query
     const fetchSearchResults = async () => {
         const q = {};
-        let req_query = `http://localhost:5000/api/trainer/search?domain=${query.trim()}`;
+        
+        let req_query = `http://localhost:5000/api/trainer/search?domain=${encodeURIComponent(query)}`;
         
         if (startPrice) req_query += `&price[gte]=${Number(startPrice)}`;
         if (endPrice) req_query += `&price[lte]=${Number(endPrice)}`;
-        if (trainingTyp) req_query += `&mode=${trainingTyp}`;
-        if (type) req_query += `&type=${type}`;
+        if (mode) req_query += `&mode=${encodeURIComponent(mode)}`;
+        if (type) req_query += `&type=${encodeURIComponent(type)}`;
 
     
         console.log(req_query);
@@ -200,17 +201,17 @@ function SearchBar({domainSearch}) {
                                 <div className='mx-4'>
                                             <Select onValueChange={(e) => {
                                                 console.log(e)
-                                                setTrainingType(e)
+                                                setMode(e)
                                             }} className="rounded-full border-none">
                                                 <SelectTrigger className="w-max rounded-full">
                                                     <SelectValue placeholder="Select Training Mode" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {/* <SelectItem value="Select Mode">Select Mode</SelectItem> */}
-                                                    <SelectItem value="OnlineHourly">Online Hourly</SelectItem>
-                                                    <SelectItem value="OnlinePer-day">Online Per-day</SelectItem>
-                                                    <SelectItem value="OfflineHourly">Offline Hourly</SelectItem>
-                                                    <SelectItem value="OfflinePer-Day">Offline Per Day</SelectItem>
+                                                    <SelectItem value="Online Hourly">Online Hourly</SelectItem>
+                                                    <SelectItem value="Online Per-day">Online Per-day</SelectItem>
+                                                    <SelectItem value="Offline Hourly">Offline Hourly</SelectItem>
+                                                    <SelectItem value="Offline Per-Day">Offline Per Day</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                 </div>

@@ -80,7 +80,8 @@ const createProject = asyncHandler(async(req, res) => {
 
         await newProject.save();
         console.log("Company ---------------------------- ", companyExists[0]._id)
-            // Save the new Prj to the Company
+
+        // Save the new Prj to the Company
         await Company.findByIdAndUpdate(companyExists[0]._id, {
             $push: {
                 Projects: newProject._id

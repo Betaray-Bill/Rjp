@@ -286,15 +286,12 @@ function    ViewNewResume({data, projects}) {
         // console.log(data)
         // Iterate over each key in the data object and sort if it's an array
         for (let key in data) {
-        //   if (Array.isArray(data[key])) {
-        //     data[key] = sortArray(data[key], domain);
-        //   }
-        // console.log(key, " -- ", data[key])
+    
             if(Array.isArray(data[key]) && data[key].length>0){
                 data[key] = sortArray(data[key], domain)
             }
         }
-        // console.log(data)
+        console.log(data)
         setResume(data)
         // return data;
       }

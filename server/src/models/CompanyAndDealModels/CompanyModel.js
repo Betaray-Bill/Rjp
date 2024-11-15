@@ -17,7 +17,10 @@ const companyContactSchema = new mongoose.Schema({
     Projects: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Project"
-    }]
+    }],
+    department: {
+        type: String
+    }
 })
 
 const companySchema = new mongoose.Schema({

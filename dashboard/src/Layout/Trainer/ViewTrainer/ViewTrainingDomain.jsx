@@ -313,14 +313,19 @@ function ViewTrainingDomain({data}) {
                                 <Label className="text-lg font-semibold">{index + 1}. {item.domain}</Label>
                                 <span className='mt-2 py-2' onClick={() => handleDelete(index)}><ion-icon name="trash-outline" style={{color:"red", cursor:"pointer"}}></ion-icon></span>
                             </div>
-                            <div className='flex items-start justify-between ml-10'>
+                            <div className='flex items-start justify-between w-max'>
+                                <div className='mx-10'>
+                                    <Label className="text-md font-medium text-slate-700">Trainer Type</Label>
+                                    <Input type="text" placeholder="Type" value={item.type ? item.type : ""} name="price" className="w-[200px]" onChange={(e) =>  handleChange(e, index)}/>
+                                </div>
                                 <div>
                                     <Label className="text-md font-medium text-slate-700">Enter Price (₹)</Label>
                                     <Input type="number" placeholder="Enter Price(Rupees)" value={item.price ? item.price : ""} name="price" className="w-[200px]" onChange={(e) =>  handleChange(e, index)}/>
                                 </div>
                                 <div className='flex flex-col items-start justify-between ml-10'>
+
                                     <Label className="text-md font-medium text-slate-700">Enter Mode</Label>
-                                    <select name="paymentSession" id="" className='w-max'  onChange={(e) =>  handleChange(e, index)} value={item.paymentSession}>
+                                    <select name="paymentSession" id="" className='w-max'  onChange={(e) =>  handleChange(e, index)} value={item.paymentSession && item.paymentSession}>
                                         <option value="Select Mode">Select Mode</option>
                                         <option value="Online Hourly">Online Hourly</option>
                                         <option value="Online Per-day">Online Per-day</option>

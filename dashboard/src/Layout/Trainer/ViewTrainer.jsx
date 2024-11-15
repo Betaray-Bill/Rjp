@@ -25,7 +25,7 @@ function ViewTrainer() {
     // console.log(data)
 
     const getTrainerById = async() => {
-        const response = await axios.get(`http://localhost:5000/api/trainer/details/${params.id}`); // Replace with your API endpoint
+        const response = await axios.get(`http://localhost:5000/api/trainer/details/emp/${params.id}`); // Replace with your API endpoint
         dispatch(setCurrentTrainerDetails(response.data))
         return response.data
     }
@@ -39,7 +39,7 @@ function ViewTrainer() {
             "getTrainerById", params.id
         ],
         queryFn: getTrainerById,
-
+        // enabled:true,
         staleTime: 1000 * 60 * 5, // data stays    fresh for 5 minutes
         cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
 

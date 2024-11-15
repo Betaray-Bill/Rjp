@@ -52,6 +52,10 @@ const resumeSchema = mongoose.Schema({
     },
     domain: {
         type: String
+    },
+    isLocked: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true
@@ -125,18 +129,18 @@ const trainerSchema = mongoose.Schema({
     trainingDomain: [{
         domain: {
             type: String,
-            required: true
+            // required: true
         },
         price: {
             type: Number,
-            required: true
+            // required: true
         },
         paymentSession: {
             type: String,
             enum: [
-                'OnlineHourly', 'OnlinePer-day', 'OfflineHourly', 'OfflinePer-Day'
+                'Online Hourly', 'Online Per-day', 'Offline Hourly', 'Offline Per-Day'
             ],
-            required: true
+            // required: true
         },
         type: {
             type: String,
