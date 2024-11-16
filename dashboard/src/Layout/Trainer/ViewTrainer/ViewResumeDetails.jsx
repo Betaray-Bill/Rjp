@@ -247,7 +247,7 @@ function ViewResumeDetails({data, isNew}) {
 
         queryClient.invalidateQueries(['getTrainerById', params.id]);
         // setIsLock(data.isLocked)
-        window.location.reload();
+        // window.location.reload();
 // 
     }
     // console.log(data.isLocked)

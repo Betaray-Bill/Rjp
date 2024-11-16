@@ -22,6 +22,7 @@ function ViewTrainer() {
         setIsEdit] = useState(false)
     const [viewData,
         setViewData] = useState("Resumes")
+    const [isF, setFet] = useState(false)
     // console.log(data)
 
     const getTrainerById = async() => {
@@ -39,7 +40,7 @@ function ViewTrainer() {
             "getTrainerById", params.id
         ],
         queryFn: getTrainerById,
-        // enabled:true,
+        enabled:true,
         staleTime: 1000 * 60 * 5, // data stays    fresh for 5 minutes
         cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
 

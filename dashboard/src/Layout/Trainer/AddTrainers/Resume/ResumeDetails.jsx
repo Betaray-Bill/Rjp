@@ -16,6 +16,26 @@ function ResumeDetails({data}) {
   const [extractedData, setExtractedData] = useState(null);
   const [error, setError] = useState(null);
 
+  
+  useEffect(() => {
+    checkConnection();
+  }, []);
+  
+  const [connectionStatus, setConnectionStatus] = useState("");
+  const [modelStatus, setModelStatus] = useState("");
+  // const [isModelLoaded, setIsModelLoaded] = useState(false);
+
+  const checkConnection = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/resumeextractor/upload  /check-connection");
+      setConnectionStatus(response.data.message);
+      setModelStatus(response.data.modelStatus);
+    } catch (error) {
+      setConnectionStatus("Failed to connect to Azure");
+      setError(error.response ? error.response.data : error.message);
+    }
+  };
+
   const [resume, setResume] = useState({
     professionalSummary: [],
     technicalSkills: [],
@@ -63,7 +83,7 @@ function ResumeDetails({data}) {
       setExtractedData(null);
 
       await uploadToAzure(file)
-      fileInputRef.current.files = null
+      fileInputRef.current  = null
     }
   };
 
@@ -73,11 +93,7 @@ function ResumeDetails({data}) {
     formData.append("resume", file);
     setIsUploading(true)
     try {
-      const response = await axios.post("http://localhost:4000/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post("http://localhost:5000/api/resumeextractor/upload ", formData);
       setExtractedData(response.data);
       console.log(response.data)
       const newResume = {
