@@ -329,10 +329,10 @@ function ResumeForm() {
         <div className="my-6 mb-6 w-[70vw] rounded-md ">
             <div className='flex justify-between items-center'>
                 <div
-                    className='flex justify-between m-8 border-b-1 border-gray-500 items-center'>
+                    className='flex justify-between border-b-1 border-gray-500 items-center'>
                     {currentResumeName !== 'Main Resume'
                         ? <div className=''>
-                                <label htmlFor="">Domain Name</label>
+                                <label htmlFor="" className='font-semibold my-1'>Domain Name</label>
                                 <Input
                                     placeholder="Training Name"
                                     value={currentResumeDetails.domain}
@@ -341,6 +341,13 @@ function ResumeForm() {
                         : <div className='text-gray-700 font-medium px-3 py-1 bg-slate-200 rounded-full'>Main Resume</div>
                     }
                 </div>
+
+                <div>
+                        {
+                            currentResumeDetails && currentResumeDetails.isLocked ? 
+                            <ion-icon name="lock-closed-outline" style={{fontSize:"20px"}}></ion-icon> : <ion-icon name="lock-open-outline" style={{fontSize:"20px"}}></ion-icon>
+                        }
+                    </div>
 
                 {
                     location.pathname.split("/").includes('main') &&
