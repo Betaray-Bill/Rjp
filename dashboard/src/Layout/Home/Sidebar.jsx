@@ -60,7 +60,7 @@ function Sidebar() {
         <div className='h-screen fixed w-[250px] border-r-[1px]'>
             <div className='p-4 flex items-center h-[80px]'>
                 <img src={logo} alt="RJP logo" className='w-20 h-10'/>
-                <p className='font-semibold text-lg pl-2 text-gray-700'>RJP Infotek</p>
+                <p className='font-semibold text-md pl-2 text-gray-700'>RJP Infotek</p>
             </div>
             {/* sidebar content */}
             <div className='mt-10 m-4 py-2'>

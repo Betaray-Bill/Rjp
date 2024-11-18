@@ -17,6 +17,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import ViewEmployee from './Components/ViewEmployee'
 import ViewCompanyContact from './Components/ViewCompanyContact'
+import ViewProjectData from './Components/ViewProjectData'
+import Notes from './Components/Notes'
 
 function ViewSingleProject() {
   const projectId = useParams()
@@ -57,9 +59,20 @@ function ViewSingleProject() {
   console.log(projects)
   const {_id,  company, contactDetails,amount,employees, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
 
+
+  const fileUpload = async(e) => {
+    console.log(e)
+    // const upload = axios.post("http://localhost:5000/api/filestorage/upload-to-blob", {folderName:`${projectName}`})
+    const upload = await axios.get("http://localhost:5000/api/filestorage/check-blob-connection")
+    console.log(upload)
+    const res = upload.data
+    console.log(res)
+  }
+
   return (
     <div className=''>
       <div className='flex items-center justify-between mb-3'>
+        {/* <input type="file" name="" multiple={false} id="" onChange={(e) => fileUpload(e.target.files[0])}/> */}
         <button onClick={() => navigate(-1)} className='flex items-center mt-[-10] mb-4'>
           <ion-icon name="arrow-back-outline"></ion-icon>
           <span className='ml-2'>Go Back</span>
@@ -69,34 +82,7 @@ function ViewSingleProject() {
         </div>
       </div>
       {/* PRoject Data */}
-      <div className='border rounded-md shadow-md py-4 px-4'>
-        <div className="grid grid-cols-3 gap-8 place-content-between">
-          <div className='flex flex-col justify-between'>
-            <h2 className="text-left text-gray-700 mb-[3px]">Project Name</h2>
-            <Input type="text" className="text-gray-900 font-medium" readOnly value={projectName} />
-          </div>
-          <div className='flex flex-col justify-between'>
-            <h2 className="text-left text-gray-700 mb-[3px]">Domain</h2>
-            <Input type="text" className="text-gray-900 font-medium" readOnly value={domain} />
-          </div>
-          <div className='flex flex-col justify-between'>
-            <h2 className="text-left text-gray-700 mb-[3px]">Company</h2>
-            <Input type="text" className="text-gray-900 font-medium" readOnly value={company.name} />
-          </div>
-          <div className='flex flex-col justify-between'>
-            <h2 className="text-left text-gray-700 mb-[3px]">Mode of Training</h2>
-            <Input type="text" className="text-gray-900 font-medium" readOnly value={modeOfTraining} />
-          </div>
-          <div className='flex flex-col justify-between'>
-            <h2 className="text-left text-gray-700 mb-[3px]">Amount</h2>
-            <Input type="number" className="text-gray-900 font-medium" value={amount} />
-          </div>
-          <div className='flex flex-col justify-between'>
-            <h2 className="text-left text-gray-700 mb-[3px]">Training Dates</h2>
-            <Input type="date" className="text-gray-900 font-medium" readOnly value={new Date(trainingDates.startDate).toISOString().split('T')[0]} />
-          </div>
-        </div>
-      </div>
+      <ViewProjectData projects={projects}/>
 
       {/* Company Contact Person - default Hidden */}
       <ViewCompanyContact data={company} contact={contactDetails}/>  
@@ -137,6 +123,7 @@ function ViewSingleProject() {
 
       {/* Employees */}
       {/* <ViewEmployee employees={employees}/>  */}
+      <Notes />
     </div>
   )
 }

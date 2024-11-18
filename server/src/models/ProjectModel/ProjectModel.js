@@ -62,7 +62,11 @@ const projectSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Resume'
         }
-    }]
+    }],
+    stages: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Stages'
+    }
 }, { timestamps: true });
 
 const Project = mongoose.model('Project', projectSchema);

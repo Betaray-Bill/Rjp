@@ -166,6 +166,7 @@ function SearchBar({domain, id}) {
         } catch (error) {
             console.log(error);
         }
+        setSelectedTrainers([])
     }
     const handleReset = () => {
         // dispatch(resetDomainResultsAndSearch())

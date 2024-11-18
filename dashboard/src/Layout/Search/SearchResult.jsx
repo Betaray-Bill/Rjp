@@ -21,6 +21,8 @@ function SearchResult() {
         )
     }
 
+    console.log(domainResults)
+
     return (
         <div className='mt-4 p-3'>
             {
@@ -96,7 +98,7 @@ function SearchResult() {
                                 ))
                             }
                         </div> 
-                    </Fragment> : null
+                    </Fragment> : "null"
         
                 
             }

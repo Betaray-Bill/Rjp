@@ -71,7 +71,7 @@ function Home() {
                 </DropdownMenu>
               </div>  */}
 
-              <div className='mt-10'>
+              <div className=''>
                 <Outlet/>
               </div>
           </div>

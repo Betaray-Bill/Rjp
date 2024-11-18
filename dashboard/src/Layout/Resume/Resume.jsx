@@ -46,21 +46,23 @@ function Resume() {
         console.log(element)
         const getTargetElement = () => document.getElementById("resumeRef");
         console.log(getTargetElement)
-            generatePDF(getTargetElement, {
-                filename: `${data.trainer_id
-                                    .generalDetails
-                                    .name}-${data.domain}`,
-                overrides: {
-                    // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
-                    pdf: {
-                        compress: true
-                    },
-                    // see https://html2canvas.hertzen.com/configuration for more options
-                    canvas: {
-                        useCORS: true
-                    }
-                }
-            })
+        // const res = axios.get('http://localhost:5000/generatePDF', "element")
+        // console.log(res.data)
+            // generatePDF(getTargetElement, {
+            //     filename: `${data.trainer_id
+            //                         .generalDetails
+            //                         .name}-${data.domain}`,
+            //     overrides: {
+            //         // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
+            //         pdf: {
+            //             compress: true
+            //         },
+            //         // see https://html2canvas.hertzen.com/configuration for more options
+            //         canvas: {
+            //             useCORS: true
+            //         }
+            //     }
+            // })
   
     };
 

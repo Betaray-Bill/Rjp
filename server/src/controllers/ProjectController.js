@@ -1,5 +1,6 @@
 import { Company } from "../models/CompanyAndDealModels/CompanyModel.js";
 import Employee from "../models/EmployeeModel.js";
+import Stages from "../models/Pipeline/StagesModel.js";
 import Project from "../models/ProjectModel/ProjectModel.js";
 import Admin from "../models/RoleModels/AdminModel.js";
 import KeyAccounts from "../models/RoleModels/KeyAccountsModel.js";
@@ -33,9 +34,11 @@ const createProject = asyncHandler(async(req, res) => {
         amount,
         trainingDates,
         modeOfTraining,
-        employees
+        employees,
+        // stage:"Training Requirement"
     } = req.body;
     console.log(req.body)
+    const stage = "Training Requirement"
 
     // Validate required fields
     if (!projectName || !domain || !company || !trainingDates || !modeOfTraining) {
@@ -52,6 +55,13 @@ const createProject = asyncHandler(async(req, res) => {
             .status(404)
             .json({ message: "Company not found." });
     }
+
+    // Add the Project to the Stage
+    const stagePipelineExists = await Stages.find({
+        name: stage
+    })
+
+
 
     // Save the Project
     try {
@@ -75,10 +85,18 @@ const createProject = asyncHandler(async(req, res) => {
                 endDate: trainingDates.endDate,
                 timing: trainingDates.timing
             },
-            modeOfTraining
+            modeOfTraining,
+            // 
         });
 
         await newProject.save();
+        if(stagePipelineExists){
+            await Stages.findByIdAndUpdate(stagePipelineExists[0]._id, {
+                $push: {
+                    projects: newProject._id
+                }
+            }, { new: true });
+        }
         console.log("Company ---------------------------- ", companyExists[0]._id)
 
         // Save the new Prj to the Company

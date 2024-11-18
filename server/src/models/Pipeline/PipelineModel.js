@@ -1,11 +1,17 @@
 import mongoose from "mongoose";
 
 const pipelineSchema = new mongoose.Schema({
-    projects: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Project',
-        required: true,
-    },
+    Stages: [{
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Project',
+            required: true
+        },
+        name: {
+            type: String,
+            required: true
+        }
+    }]
 
 });
 

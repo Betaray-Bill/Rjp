@@ -50,6 +50,7 @@ function SearchBar({domainSearch}) {
         setRating] = useState('asc');
     const [mode, setMode] = useState('');
     const [type, setType] = useState('');
+    const [isNot, setIsNot] = useState(false);
         // onValueChange={field.onChange} defaultValue={field.value}
     const dispatch = useDispatch()
     const {searchDomain} = useSelector(state => state.searchTrainer)
@@ -79,6 +80,7 @@ function SearchBar({domainSearch}) {
     const handleDomainChange = (event) => {
         dispatch(setSearchDomain(event.target.value))
         setQuery(event.target.value)
+        // setIsNot(false)
     }
 
     useEffect(() => {
@@ -118,7 +120,7 @@ function SearchBar({domainSearch}) {
     };
 
       
-    const { data, refetch, isError } = useQuery(
+    const { data, refetch, isError, is } = useQuery(
         ['searchResults', query],
         fetchSearchResults,
         {
@@ -128,12 +130,20 @@ function SearchBar({domainSearch}) {
             dispatch(setDomainResults(data));
             dispatch(setIsSearching(false));
             console.log(data);
+
+            if(data?.length < 0 || data === undefined ){
+                setIsNot(true)
+            }else{
+                setIsNot(false)
+            }
           },
           onError: (error) => {
             console.log(error);
           },
           onSettled: () => {
             console.log("Settled");
+            setIsNot(false)
+
           }
         }
     );
@@ -288,6 +298,16 @@ function SearchBar({domainSearch}) {
                         <span className='ml-1'>Reset</span>
                 </p>
             </div>
+                        
+            {
+                isNot ?
+                <div className='w-full grid text-center place-content-center mt-10'>
+                    <img 
+                        className='w-[20vw]'
+                        src="https://cdni.iconscout.com/illustration/premium/thumb/no-results-found-illustration-download-in-svg-png-gif-file-formats--document-not-data-delete-folder-result-empty-state-pack-website-development-illustrations-4503302.png?f=webp" alt="" />
+                    <p className='font-semibold'>No Result Found</p>
+                </div> : null
+            }
 
         </div>
     )
