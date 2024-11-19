@@ -1,5 +1,6 @@
 import { Company } from "../models/CompanyAndDealModels/CompanyModel.js";
 import Employee from "../models/EmployeeModel.js";
+import Pipeline from "../models/Pipeline/PipelineModel.js";
 import Stages from "../models/Pipeline/StagesModel.js";
 import Project from "../models/ProjectModel/ProjectModel.js";
 import Admin from "../models/RoleModels/AdminModel.js";
@@ -56,14 +57,7 @@ const createProject = asyncHandler(async(req, res) => {
             .json({ message: "Company not found." });
     }
 
-    // Add the Project to the Stage
-    const stagePipelineExists = await Stages.find({
-        name: stage
-    })
-
-
-
-    // Save the Project
+    // await stagePipelineExists Save the Project
     try {
         const newProject = new Project({
             projectName,
@@ -86,17 +80,27 @@ const createProject = asyncHandler(async(req, res) => {
                 timing: trainingDates.timing
             },
             modeOfTraining,
-            // 
+            //
         });
 
         await newProject.save();
-        if(stagePipelineExists){
-            await Stages.findByIdAndUpdate(stagePipelineExists[0]._id, {
-                $push: {
-                    projects: newProject._id
-                }
-            }, { new: true });
+        // Save it in the Pipeline Add the Project to the Stage
+        const pipeline = await Pipeline.getSingletonPipeline();
+
+        const updatedPipeline = await Pipeline.findOneAndUpdate({
+            _id: pipeline._id,
+            "stages.name": "Training Requirement"
+        }, {
+            $set: {
+                "stages.$.projects": newProject._id
+            }
+        }, { new: true });
+
+        if (!updatedPipeline) {
+            throw new Error('Stage not found');
         }
+        console.log("PipelIne ", updatedPipeline)
+
         console.log("Company ---------------------------- ", companyExists[0]._id)
 
         // Save the new Prj to the Company
@@ -196,27 +200,8 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
                 console.log('Admin is present')
                 projects = await Project.find()
                     // console.log(projects)
-                    .populate({
-                        path: 'projectOwner',
-                        select: 'name'
-                    })
-                    // projects = await Admin
-                    //     .findById(employee.role[i].roleId)
-                    //     .select('Projects')
-                    //     .populate({
-                    //         path: 'Projects',
-                    //         select: 'projectName domain company.name  projectOwner contactDetails.name contactDetails' +
-                    //             '.email trainingDates', // Only fetch the 'name' field from each employee
-                    //         // },
-                    //     })
-                    //     .populate({
-                    //         path: 'Projects',
-                    //         populate: {
-                    //             path: "projectOwner",
-                    //             select: 'name'
-                    //         },
-                    //         // select: 'name', // Only fetch the 'name' and 'role' fields
-                    //     })
+                    .populate({ path: 'projectOwner', select: 'name' })
+
                 res.json({ projects });
                 break;
             }
@@ -229,6 +214,29 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
     }
 
     res.json({ projects });
+})
+
+// Get All Projects from pipeline
+const getProject = asyncHandler(async(req, res) => {
+    try {
+        const projects = await Pipeline
+            .find()
+            .populate({
+                path: 'stages.projects', // Populate 'projects' within each stage
+                select: 'projectName domain company.name trainingDates', // Select specific fields from 'Project'
+                populate: {
+                    path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
+                    select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
+                },
+            });
+
+        res.json({ projects });
+    } catch (err) {
+        console.log(err.message);
+        return res
+            .status(404)
+            .json({ message: err });
+    }
 })
 
 // Get Projects By Id
@@ -409,6 +417,7 @@ export {
     getProjectDetails,
     getProjectsByEmp,
     addTrainer,
+    getProject,
     deleteTrainer,
     addResumeToProject
 }

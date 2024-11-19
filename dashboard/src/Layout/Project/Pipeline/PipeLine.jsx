@@ -18,8 +18,9 @@ function PipeLine() {
 
     const { currentUser } = useSelector(state => state.auth)
     const fetchProjects = async () => {
-        const response = await axios.get(`http://localhost:5000/api/project/projects-employees/${currentUser.employee._id}`)
-        return response.data.projects
+        const response = await axios.get('http://localhost:5000/api/project/projects-employees')
+        console.log(response.data.projects[0].stages)
+        return response.data.projects[0].stages
       }
     
       const { data: projects, isLoading, error } = useQuery(
@@ -40,12 +41,12 @@ function PipeLine() {
     <div className='overflow-x-auto overflow-y-hidden'>
         <div className='flex space-x-6 w-[max]'>
             {
-                stages.map((stage, index) => (
+              projects && projects.map((e, index) => (
                     <Column 
                       key={index} 
                       index={index} 
-                      stage={stage} 
-                      projects={projects}
+                      stage={e.name} 
+                      projects={e.projects}
                     />
                 ))
             }

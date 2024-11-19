@@ -3,6 +3,7 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 
 function Column({index, stage, projects}) {
+    console.log(projects, stage)
     return (
         <div>
             <div
