@@ -2,8 +2,17 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import React, {Fragment, useState} from 'react'
 import {Skeleton} from "@/components/ui/skeleton"
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
+import { useSelector } from 'react-redux';
+import { useToast } from '@/hooks/use-toast';
 
 function ViewProjectData({projects}) {
+  const projectId = useParams()
+  const queryClient = useQueryClient();
+  const { toast } = useToast()
+ 
     const {
         _id,
         company,
@@ -18,25 +27,31 @@ function ViewProjectData({projects}) {
         description,
         modeOfTraining
     } = projects;
-
+    const { currentUser } = useSelector(state => state.auth)
+    console.log()
     // Change Stage API CALL
     const [isChanging,
         setIsChanging] = useState(false)
     const changeStage = async(e) => {
         try {
-            setTimeout(() => {
-                setIsChanging(true)
-            }, 100)
+           console.log(e.target.value)
+           const res = await axios.put(`http://localhost:5000/api/project/updateStage/${projectId.projectId}`, {stageName:e.target.value})
+           const data = await res.data
+           console.log(data)
+            setIsChanging(false)
+            queryClient.invalidateQueries(['projects',currentUser.employee._id]);
+            queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
 
-            // setIsChanging(false)
+
         } catch (error) {
             console.error(error)
         }
-
-        setTimeout(() => {
-            setIsChanging(false)
-        }, 1500)
+        toast({
+            title: "Pipeline Stage Updated",
+            description: `${projectName} updated to ${e.target.value}`,
+        })
     }
+    
 
     return (
 
@@ -50,9 +65,8 @@ function ViewProjectData({projects}) {
                     changeStage(e)
                 }}>
                     <Label>Stage</Label>
-                    <select name="pipeline" id="" className='ml-3 font-semibold'>
-                        <option value="Training Requirement">Training Requirement
-                        </option>
+                    <select name="pipeline" id="" className='ml-3 font-semibold' value={projects.stages || ''}>
+                        <option value="Training Requirement">Training Requirement</option>
                         <option value="Reply">Reply</option>
                         <option value="Proposal Sent">Proposal Sent</option>
                         <option value="PO received / Invoice Raised">PO received / Invoice Raised</option>
@@ -138,8 +152,3 @@ function ViewProjectData({projects}) {
 
 export default ViewProjectData
 
-// <Fragment>     {         !isChanging ?         :         <div className="flex
-// flex-col space-y-3">             <Skeleton className="h-[125px] w-[250px]
-// rounded-xl" />             <div className="space-y-2">             <Skeleton
-// className="h-4 w-[250px]" />             <Skeleton className="h-4 w-[200px]"
-// />             </div>         </div>     } </Fragment>

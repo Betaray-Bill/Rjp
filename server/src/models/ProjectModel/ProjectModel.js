@@ -64,8 +64,8 @@ const projectSchema = new mongoose.Schema({
         }
     }],
     stages: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Stages'
+        type: String,
+
     }
 }, { timestamps: true });
 

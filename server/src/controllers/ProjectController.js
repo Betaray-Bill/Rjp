@@ -269,6 +269,52 @@ const getProjectDetails = asyncHandler(async(req, res) => {
     res.json({ project });
 })
 
+// Update Project Stage
+const updateStage = asyncHandler(async(req, res) => {
+    const { projectId } = req.params;
+    const { stageName } = req.body;
+    console.log("StageName ", stageName)
+    const session = await Project.startSession(); // Use a session for transaction
+    session.startTransaction();
+
+    const project = await Project.findById(projectId).session(session);
+    if (!project) {
+        throw new Error("Project not found");
+    }
+
+    try {
+        // remove the project from prev stage
+        const stage = await Pipeline.findOneAndUpdate({ "stages.name": project.stages }, { $pull: { "stages.$.projects": project._id } }, { new: true, session });
+        if (!stage) {
+            throw new Error("Previous stage not found");
+        }
+        console.log("Stage is ", stage)
+
+        // add it to new stage
+        const newStage = await Pipeline.findOneAndUpdate({ "stages.name": stageName }, { $push: { "stages.$.projects": project._id } }, { new: true, session });
+        if (!newStage) {
+            throw new Error("New stage not found");
+        }
+
+        // Update the stage in project
+        const updatedProject = await Project.findByIdAndUpdate(
+            projectId, { $set: { stages: stageName } }, { new: true, session }
+        );
+
+        await session.commitTransaction();
+        session.endSession();
+
+        res.status(200).json({ message: "Stage updated successfully", project });
+
+    } catch (err) {
+        await session.abortTransaction();
+        session.endSession();
+        res.status(500).json({ message: 'Error Updating Stage', error: err.message });
+
+    }
+
+})
+
 // Append the trainers list in the Project
 const addTrainer = asyncHandler(async(req, res) => {
     const { projectId } = req.params;
@@ -419,5 +465,6 @@ export {
     addTrainer,
     getProject,
     deleteTrainer,
-    addResumeToProject
+    addResumeToProject,
+    updateStage
 }
