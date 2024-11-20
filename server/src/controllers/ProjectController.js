@@ -198,12 +198,26 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
 
             if (employee.role[i].name == 'ADMIN') {
                 console.log('Admin is present')
-                projects = await Project.find()
-                    // console.log(projects)
-                    .populate({ path: 'projectOwner', select: 'name' })
+                try {
+                    const projects = await Pipeline
+                        .find()
+                        .populate({
+                            path: 'stages.projects', // Populate 'projects' within each stage
+                            select: 'projectName domain company.name trainingDates', // Select specific fields from 'Project'
+                            populate: {
+                                path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
+                                select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
+                            },
+                        });
 
-                res.json({ projects });
-                break;
+                    res.json({ projects });
+                } catch (err) {
+                    console.log(err.message);
+                    return res
+                        .status(404)
+                        .json({ message: err });
+                }
+                // break;
             }
         }
     }
@@ -218,6 +232,42 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
 
 // Get All Projects from pipeline
 const getProject = asyncHandler(async(req, res) => {
+    const empId = req.params.empId
+
+    const employee = await Employee.findById(empId).populate('role.roleId')
+    console.log("EMP", employee.role[0].roleId)
+
+    // Extract the projects assigned to the employee
+    let assignedProjects
+    for (let i = 0; i < employee.role.length; i++) {
+        console.log(employee.role[i].name)
+        if (employee.role[i].name === 'KeyAccounts') {
+            // console.log("Key acc", employee.role.populate('roleId'))
+            assignedProjects = employee.role[i].roleId.Projects.map((project) => project.toString());
+            console.log(assignedProjects)
+
+            break;
+        }
+
+        if (employee.role[i].name == 'ADMIN') {
+            console.log('Admin is present')
+            const projects = await Pipeline
+                .find()
+                .populate({
+                    path: 'stages.projects', // Populate 'projects' within each stage
+                    select: 'projectName domain company.name trainingDates', // Select specific fields from 'Project'
+                    populate: {
+                        path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
+                        select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
+                    },
+                });
+
+            console.log(projects)
+            res.json({ projects: projects[0].stages });
+
+            break;
+        }
+    }
     try {
         const projects = await Pipeline
             .find()
@@ -229,8 +279,22 @@ const getProject = asyncHandler(async(req, res) => {
                     select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
                 },
             });
+        // console.log("PRojectss ", projects[0].stages)
+        // Filter out projects not assigned to the employee
+        const filteredPipeline = projects[0].stages.map((stage) => {
+            // console.log(stage)
+            const filteredProjects = stage.projects.filter((project) =>
+                assignedProjects.includes(project._id.toString())
+            );
+            return {
+                ...stage.toObject(),
+                projects: filteredProjects, // Replace with filtered projects
+            };
+        });
 
-        res.json({ projects });
+        console.log("FINAL ------------", filteredPipeline)
+
+        res.json({ projects: filteredPipeline });
     } catch (err) {
         console.log(err.message);
         return res

@@ -4,10 +4,15 @@ import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 import {Input} from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import {io} from "socket.io-client"
+// const socket = io("http://localhost:6000");
+
 
 function Notes() {
     const [file, setFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    
+// const socket = io("ws://localhost:6000");
     const [message, setMessage] = useState({
         text:{
             content: ''
@@ -87,6 +92,9 @@ function Notes() {
                 photo_url: "https://example.com/photos/alice.jpg"
             });
 
+            // Emitting the message to the server
+            
+            // socket.emit('message', message);
 
 
         }
