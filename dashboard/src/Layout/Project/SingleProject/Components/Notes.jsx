@@ -5,10 +5,11 @@ import {Input} from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import {io} from "socket.io-client"
+import axios from 'axios'
 // const socket = io("http://localhost:6000");
 
 
-function Notes() {
+function Notes({projectName}) {
     const [file, setFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     
@@ -78,24 +79,58 @@ function Notes() {
     const submitMessage = async() => {
         console.log(message)
         if (message) {
-            setData([...data, {...message}]);
-            setMessage({
-                text:{
-                    content: ''
-                },
-                file:{
-                    url:"",
-                    name:""
-                },
-                sent: "",
-                timestamps: new Date(),
-                photo_url: "https://example.com/photos/alice.jpg"
-            });
-
-            // Emitting the message to the server
             
-            // socket.emit('message', message);
 
+            try {
+                // Check the blob connection
+                console.log("Checking blob connection...");
+                const result = await axios.get('http://localhost:5000/api/filestorage/check-blob-connection');
+                const response = result.data;
+                console.log("Connection check result:", response);
+    
+                // If the connection is successful and a file is present, call the POST API
+                if (fileInputRef.current.value && result.status == 200) {
+                    console.log("File is present. Sending data to another API...");
+    
+                    // Call another POST API
+                   
+                    // Create a FormData object to handle file upload
+                    const formData = new FormData();
+                    formData.append("file", file); // Attach the file
+                    formData.append("projectName", projectName); // Attach the file
+
+                    formData.append("fileName", message.file.name || file.name); // Include file name
+                    formData.append("sentBy", "Alice"); // Additional data (optional)
+                    formData.append("timestamps", new Date().toISOString()); // Additional metadata
+
+                    // Call the POST API to upload the file
+                    const uploadResult = await axios.post(
+                        'http://localhost:5000/api/filestorage/upload-to-blob',
+                        formData,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data"
+                            }
+                        }
+                    );
+
+                    console.log("File upload response:", uploadResult.data);
+                    const url = uploadResult.data.url
+
+                    setData([...data, {...message, file:{
+                        url: url,
+                        name: message.file.name 
+                    }}]);
+                    
+                }
+    
+            } catch (error) {
+                console.error("Error during connection or file upload:", error.message);
+            }
+    
+            // Emit the message to the socket
+            console.log("Message sent successfully!");
+    
 
         }
     }

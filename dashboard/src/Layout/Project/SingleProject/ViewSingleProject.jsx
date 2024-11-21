@@ -123,7 +123,7 @@ function ViewSingleProject() {
 
       {/* Employees */}
       {/* <ViewEmployee employees={employees}/>  */}
-      <Notes />
+      <Notes projectName={projectName} />
     </div>
   )
 }
