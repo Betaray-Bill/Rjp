@@ -11,7 +11,6 @@ import projectRoutes from "./routes/ProjectRoutes.js"
 import azureRoutes from "./routes/azureRoutes.js";
 import http from "http";
 import azureBlobRoutes from "./routes/azureBlobRoutes.js";
-import puppeteer from 'puppeteer';
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
@@ -32,37 +31,6 @@ app.use(cookieParser());
 
 // Connect to MongoDB
 connectDB();
-
-// to pdf
-
-
-const generatePDF = async(req, res) => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    // const element = req.body
-    // console.log(element)
-
-    // Load the HTML content (you can replace this with a URL or a local file)
-    await page.setContent('<html><body><h1>Resume</h1></body></html>', {
-        waitUntil: "domcontentloaded",
-    });
-
-    // Generate PDF
-    const a = await page.pdf({
-        path: "resume.pdf", // Output path
-        format: "A4", // Paper size
-        printBackground: true, // Include background colors and images
-    });
-    console.log(a)
-
-    await browser.close();
-
-    // retrures.status(200).json({
-    //     message: "Successfully Download PDF",
-    //     pdfPath: "resume.pdf", // Path to the generated PDF file
-    // });
-    // console.log(object)
-};
 
 // app.get("/generatePDF", generatePDF);
 

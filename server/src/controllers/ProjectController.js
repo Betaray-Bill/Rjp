@@ -89,7 +89,7 @@ const createProject = asyncHandler(async(req, res) => {
 
         const updatedPipeline = await Pipeline.findOneAndUpdate({
             _id: pipeline._id,
-            "stages.name": "Training Requirement"
+            "stages": "Training Requirement"
         }, {
             $set: {
                 "stages.$.projects": newProject._id
@@ -361,7 +361,7 @@ const updateStage = asyncHandler(async(req, res) => {
         }
 
         // Update the stage in project
-        const updatedProject = await Project.findByIdAndUpdate(
+        await Project.findByIdAndUpdate(
             projectId, { $set: { stages: stageName } }, { new: true, session }
         );
 
@@ -518,6 +518,46 @@ const addResumeToProject = asyncHandler(async(req, res) => {
     // console.log(req.body) console.log(resume)
 })
 
+// Add Chat to the Project
+const addChatToProject = asyncHandler(async(req, res) => {
+    const { projectId } = req.params;
+    console.log(req.body)
+
+    try {
+        await Project.findByIdAndUpdate(projectId, {
+            $push: {
+                'notes': req.body
+            }
+        }, {
+            new: true,
+        })
+
+        res.json({ message: "Successfully Added" });
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: 'Error adding note.', error: err.message });
+    }
+    // console.log("Add chat", req.body, req.params)
+})
+
+// Get All notes
+const getAllNotes = asyncHandler(async(req, res) => {
+    const { projectId } = req.params;
+    try {
+        const project = await Project.findById(projectId)
+        if (!project) {
+            return res.status(404).json({ message: "Project not found" });
+        }
+        console.log(project.notes)
+        res.json({ notes: project.notes });
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ message: "Error getting notes." });
+    }
+})
+
 // update a project - ADMIN delete a project - ADMIN Add a trainer - KA, Admin
 // delete a trainer - KA, Admin Add a Emp with role - Admin Delete a Emp with
 // role - Admin
@@ -530,5 +570,7 @@ export {
     getProject,
     deleteTrainer,
     addResumeToProject,
-    updateStage
+    updateStage,
+    addChatToProject,
+    getAllNotes
 }

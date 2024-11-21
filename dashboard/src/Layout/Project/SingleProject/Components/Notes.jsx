@@ -1,39 +1,64 @@
-import React, { useRef, useState } from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 import {Input} from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
+import {Button} from '@/components/ui/button'
+import {Textarea} from '@/components/ui/textarea'
 import {io} from "socket.io-client"
 import axios from 'axios'
+import {useQuery, useQueryClient} from 'react-query'
+import {useSelector} from 'react-redux'
 // const socket = io("http://localhost:6000");
 
+function Notes({projectName, projectId}) {
+    const [file,
+        setFile] = useState(null);
+    const [isLoading,
+        setIsLoading] = useState(false);
+    const queryClient = useQueryClient();
+    const {currentUser} = useSelector(state => state.auth)
 
-function Notes({projectName}) {
-    const [file, setFile] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    
-// const socket = io("ws://localhost:6000");
-    const [message, setMessage] = useState({
-        text:{
+    useEffect(() => {
+        fetchNotes()
+    }, [projectId, projectName])
+
+    // const socket = io("ws://localhost:6000");
+    const [message,
+        setMessage] = useState({
+        text: {
             content: ''
         },
-        file:{
-            url:"",
-            name:""
+        file: {
+            url: "",
+            name: ""
         },
-        sent: "",
+        sent: currentUser.employee.name,
         timestamps: new Date(),
         photo_url: "https://example.com/photos/alice.jpg"
     })
 
-    const [data, setData] = useState([
-        
-    ])
+    const [data,
+        setData] = useState([])
 
     const changeChatOrder = async(e) => {
         console.log(e)
     }
+
+    const fetchNotes= async () => {
+        const response = await axios.get(`http://localhost:5000/api/project/getChat/${projectId}`); // Replace with your API endpoint
+        setData(response.data.notes)
+        return response.data;
+    };
+
+    const { data: notes  } = useQuery(
+        ['notes', projectId], // Unique key for this query
+        fetchNotes,
+        {
+            enabled:true,
+            staleTime: 1000 * 60 * 5, // data stays fresh for 5 minutes
+            cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
+        }
+    );
 
     // UPloading the Resume and Extracting the Resume
     const fileInputRef = useRef(null);
@@ -45,30 +70,35 @@ function Notes({projectName}) {
         if (file) {
             setFile(file)
             console.log('File uploaded:', file.name);
-            setMessage({...message, file:{
-                url: URL.createObjectURL(file),
-                // name: file.name
-            }})
+            setMessage({
+                ...message,
+                file: {
+                    url: URL.createObjectURL(file),
+                    // name: file.name
+                }
+            })
         }
     };
     // Function to handle the button click and trigger the file input click
     const handleButtonClick = (e) => {
         e.preventDefault()
         console.log("1")
-        fileInputRef.current.click();
+        fileInputRef
+            .current
+            .click();
         console.log("2")
     };
 
     const handleCancelButtonClick = () => {
         setFile(null);
-        fileInputRef.current.value  = null;
+        fileInputRef.current.value = null;
         setMessage({
-            text:{
+            text: {
                 content: ''
             },
-            file:{
-                url:"",
-                name:""
+            file: {
+                url: "",
+                name: ""
             },
             sent: "",
             timestamps: new Date(),
@@ -79,7 +109,6 @@ function Notes({projectName}) {
     const submitMessage = async() => {
         console.log(message)
         if (message) {
-            
 
             try {
                 // Check the blob connection
@@ -87,54 +116,80 @@ function Notes({projectName}) {
                 const result = await axios.get('http://localhost:5000/api/filestorage/check-blob-connection');
                 const response = result.data;
                 console.log("Connection check result:", response);
-    
+
                 // If the connection is successful and a file is present, call the POST API
                 if (fileInputRef.current.value && result.status == 200) {
                     console.log("File is present. Sending data to another API...");
-    
-                    // Call another POST API
-                   
-                    // Create a FormData object to handle file upload
+
+                    // Call another POST API Create a FormData object to handle file upload
                     const formData = new FormData();
                     formData.append("file", file); // Attach the file
                     formData.append("projectName", projectName); // Attach the file
 
                     formData.append("fileName", message.file.name || file.name); // Include file name
-                    formData.append("sentBy", "Alice"); // Additional data (optional)
+                    formData.append("sent", currentUser.employee.name); // Additional data (optional)
                     formData.append("timestamps", new Date().toISOString()); // Additional metadata
 
                     // Call the POST API to upload the file
-                    const uploadResult = await axios.post(
-                        'http://localhost:5000/api/filestorage/upload-to-blob',
-                        formData,
-                        {
-                            headers: {
-                                "Content-Type": "multipart/form-data"
-                            }
+                    const uploadResult = await axios.post('http://localhost:5000/api/filestorage/upload-to-blob', formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data"
                         }
-                    );
+                    });
 
-                    console.log("File upload response:", uploadResult.data);
-                    const url = uploadResult.data.url
+                    if (uploadResult.status == 200) {
+                        console.log("File upload response:", uploadResult.data);
+                        const url = uploadResult.data.url
 
-                    setData([...data, {...message, file:{
-                        url: url,
-                        name: message.file.name 
-                    }}]);
-                    
+                        // Update the message with the uploaded file URL
+                        message.file.url = url;
+                        message.file.name = message.file.name || file.name; // Update file name if it's not provided in the message object
+
+                        // Post the Chat in the Chat in Backend
+                        const sendMessage = await axios.post(`http://localhost:5000/api/project/addChat/${projectId}`, message);
+                        const chatResp = await sendMessage.data
+
+                        console.log(chatResp)
+
+                        // Add the message to the data array
+                        setData([
+                            ...data, {
+                                ...message
+                            }
+                        ]);
+                        console.log("Message added successfully!");
+                    }
+
+                } else {
+                    // Post the Chat in the Chat in Backend
+                    const sendMessage = await axios.post(`http://localhost:5000/api/project/addChat/${projectId}`, message);
+                    const chatResp = await sendMessage.data
+
+                    console.log(chatResp)
                 }
-    
+                // queryClient.invalidateQueries(['notes', projectId]);
+                fetchNotes()
+                setMessage({
+                    text: {
+                        content: ''
+                    },
+                    file: {
+                        url: "",
+                        name: ""
+                    },
+                    sent: "",
+                    timestamps: new Date(),
+                    photo_url: "https://example.com/photos/alice.jpg"
+                });
             } catch (error) {
                 console.error("Error during connection or file upload:", error.message);
             }
-    
+
             // Emit the message to the socket
             console.log("Message sent successfully!");
-    
 
         }
     }
-
 
     return (
         <div className='border rounded-md shadow-sm mt-8 py-4 px-4'>
@@ -154,13 +209,11 @@ function Notes({projectName}) {
             </div>
             <div className='mt-4'>
                 {/* Chat Wrapper */}
-                <div
-                    className='relative'>
-                        {
-                        data.length > 0 ?
-                            <div className='min-h-[100px] max-h-[80vh] h-max relative scroll-m-1 overflow-y-scroll  rounded-t-md shadow-sm border p-3'>            
-                                {
-                                    data && data.map((item, index) => (
+                <div className='relative'>
+                    {data.length > 0
+                        ? <div
+                                className='min-h-[100px] max-h-[80vh] h-max relative scroll-m-1 overflow-y-scroll  rounded-t-md shadow-sm border p-3'>
+                                {data && data.map((item, index) => (
                                     <div key={index} className="flex items-start justify-start mt-[20px]">
                                         <Avatar>
                                             <AvatarImage src={item.photo_url || "https://via.placeholder.com/150"}/>
@@ -171,76 +224,111 @@ function Notes({projectName}) {
                                         </Avatar>
                                         <div className="ml-2">
                                             <div className="flex items-center justify-between">
-                                                <p className="font-normal text-slate-700">{item.sent}</p>
-                                                <span className='text-slate-700'> {new Date(item.timestamps).toLocaleDateString()}</span>
+                                                <p className="font-normal text-md text-slate-700">{item.sent}</p>
+                                                {/* <span className='text-slate-700'>
+                                                    {new Date(item.timestamps).toLocaleDateString()}</span> */}
                                             </div>
-                                            {item.text.content ? (
-                                                <div className="w-max bg-blue-50 rounded-md px-3 py-2 mt-[4px]">
-                                                    <p>{item.text.content}</p>
-                                                </div>
-                                            ) : null }
-                                            {item.file.name ? (
-                                                <div className="mt-2 flex items-center">
-                                                    <ion-icon name="document-outline"></ion-icon>
-                                                    <a
-                                                        href={item.file.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-blue-500 underline ml-2">
-                                                        {item.file.name}
-                                                    </a>
-                                                </div> 
-                                            ):null}
+                                            {item.text.content
+                                                ? (
+                                                    <div className='flex items-end'>
+                                                        <div className="w-max bg-blue-50 rounded-md px-3 py-2 mt-[4px]">
+                                                            <p>{item.text.content}</p>
+                                                        </div>
+                                                        <span className='text-slate-700 ml-2'>
+                                                            {new Date(item.timestamps).toLocaleDateString()}</span>
+                                                    </div>
+                                                )
+                                                : null}
+                                            {item.file.name
+                                                ? (
+                                                    <div className="mt-2 flex items-center">
+                                                        <ion-icon name="document-outline"></ion-icon>
+                                                        <a
+                                                            href={item.file.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-blue-500 underline ml-2">
+                                                            {item.file.name}
+                                                        </a>
+                                                    </div>
+                                                )
+                                                : null}
                                         </div>
                                     </div>
-                                    )) 
-                                }
-                            </div>: <div className='text-italic text-gray-600 italic text-center'>No Notes yet</div>
-                        }
+                                ))
+}
+                            </div>
+                        : <div className='text-italic text-gray-600 italic text-center'>No Notes yet</div>
+}
 
                     <div className=' p-2 bg-white rounded-md my-2 border bottom-1 w-full'>
                         <div className='border-b-2 pb-2'>
-                            <Textarea 
-                                type="text" 
+                            <Textarea
+                                type="text"
                                 placeholder="Add a Note"
                                 className="w-full border-none h-[70px] focus:border-blue-200"
-                                value={message?.text.content || ""}
-                                onChange={(e) =>  setMessage({...message, text:{content: e.target.value}})}
-                            />
+                                value={message
+                                ?.text.content || ""}
+                                onChange={(e) => setMessage({
+                                ...message,
+                                text: {
+                                    content: e.target.value
+                                }
+                            })}/>
                         </div>
                         <div className='mt-2'>
                             <div className="w-full max-w-sm items-center gap-1.5 hidden">
-                                <Input  ref={fileInputRef} id="resume" type="file" onChange={handleFileChange} accept=".pdf,.docx,.xlsx" />
+                                <Input
+                                    ref={fileInputRef}
+                                    id="resume"
+                                    type="file"
+                                    onChange={handleFileChange}
+                                    accept=".pdf,.docx,.xlsx"/>
                             </div>
-                            <div className='flex items-center justify-between'>  
+                            <div className='flex items-center justify-between'>
                                 <div className='flex items-center justify-start ml-2'>
-                                    <ion-icon name="document-outline" className=""
-                                        style={{fontSize:"20px"}}
-                                        onClick={handleButtonClick} disabled={isLoading}>
-                                        {isLoading ? "Processing..." : "Upload File"}
+                                    <ion-icon
+                                        name="document-outline"
+                                        className=""
+                                        style={{
+                                        fontSize: "20px"
+                                    }}
+                                        onClick={handleButtonClick}
+                                        disabled={isLoading}>
+                                        {isLoading
+                                            ? "Processing..."
+                                            : "Upload File"}
                                     </ion-icon>
                                     <div className='border-l-2 mx-1 px-1'>
-                                        {
-                                            fileInputRef.current?.value && file?.name && file?.name 
-                                        }
+                                        {fileInputRef.current
+                                            ?.value && file
+                                                ?.name && file
+                                                    ?.name
+}
                                     </div>
-                                    <Input className="border-none" placeholder="File name" 
-                                    value={message.file.name || ""}
-                                        onChange={(e) =>  setMessage({...message, file:{name: e.target.value}})}
-                                    />
+                                    <Input
+                                        className="border-none"
+                                        placeholder="File name"
+                                        value={message.file.name || ""}
+                                        onChange={(e) => setMessage({
+                                        ...message,
+                                        file: {
+                                            name: e.target.value
+                                        }
+                                    })}/>
                                 </div>
                                 <div className='flex items-center justify-end my-2'>
-                                    <Button 
+                                    <Button
                                         onClick={handleCancelButtonClick}
                                         className="py-2 rounded-md bg-white border text-black hover:bg-red-800 hover:text-white">Cancel</Button>
 
                                     <Button
-                                    onClick={submitMessage} 
+                                        onClick={submitMessage}
                                         className="py-2 rounded-md bg-black text-white ml-3">Send</Button>
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
 
                 </div>

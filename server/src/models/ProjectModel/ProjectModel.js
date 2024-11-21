@@ -1,5 +1,38 @@
 import mongoose from "mongoose";
 
+// Notes Schema
+const notesSchema = new mongoose.Schema({
+    text: {
+        content: {
+            type: String,
+            default: ''
+        }
+    },
+    file: {
+        url: {
+            type: String,
+            default: ''
+        },
+        name: {
+            type: String,
+            default: ''
+        }
+    },
+    sent: {
+        type: String,
+        default: '' // Adjust based on expected data type, e.g., Boolean or Date, if applicable.
+    },
+    timestamps: {
+        type: Date,
+        default: Date.now
+    },
+    photo_url: {
+        type: String,
+        default: 'https://example.com/photos/alice.jpg'
+    }
+})
+
+// Project Schema
 const projectSchema = new mongoose.Schema({
     projectName: {
         type: String
@@ -63,6 +96,7 @@ const projectSchema = new mongoose.Schema({
             ref: 'Resume'
         }
     }],
+    notes: [notesSchema],
     stages: {
         type: String,
 

@@ -13,7 +13,7 @@ router.post("/upload-to-blob", upload.single("file"), async(req, res) => {
     const file = req.file; // Access the uploaded file
     const { fileName, sentBy, projectName, timestamps } = req.body; // Access other fields
 
-    console.log("File re,ceived:", file);
+    console.log("File received:", file);
     console.log("File name:", fileName);
     console.log("Sent by:", sentBy);
     console.log("Timestamp:", timestamps);
