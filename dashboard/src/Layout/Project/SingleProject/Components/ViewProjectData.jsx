@@ -25,7 +25,8 @@ function ViewProjectData({projects}) {
         projectName,
         domain,
         description,
-        modeOfTraining
+        modeOfTraining,
+        stages
     } = projects;
     const { currentUser } = useSelector(state => state.auth)
     console.log()
@@ -47,8 +48,8 @@ function ViewProjectData({projects}) {
             console.error(error)
         }
         toast({
-            title: "Pipeline Stage Updated",
-            description: `${projectName} updated to ${e.target.value}`,
+            title: `${projectName} Pipeline Stage Updated`,
+            // description: `${projectName} S`,
         })
     }
     
@@ -65,7 +66,7 @@ function ViewProjectData({projects}) {
                     changeStage(e)
                 }}>
                     <Label>Stage</Label>
-                    <select name="pipeline" id="" className='ml-3 font-semibold' value={projects.stages || ''}>
+                    <select name="pipeline" id="" className='ml-3 font-semibold' value={stages || ''}>
                         <option value="Training Requirement">Training Requirement</option>
                         <option value="Reply">Reply</option>
                         <option value="Proposal Sent">Proposal Sent</option>

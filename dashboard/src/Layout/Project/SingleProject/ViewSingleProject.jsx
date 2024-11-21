@@ -1,10 +1,5 @@
-import React, { useRef, useState } from 'react'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
+import React, { Fragment, useRef, useState } from 'react'
+import { Checkbox } from "@/components/ui/checkbox"
 import axios from 'axios'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
@@ -24,6 +19,39 @@ function ViewSingleProject() {
   const projectId = useParams()
   const navigate = useNavigate();
   const [collapse, setCollapse] = useState(false)
+
+  // Training Delivered
+  const [formData, setFormData] = useState({
+    FaxList: "No",
+    Hotel: "No",
+    venue: "No",
+    Travel_On_Return: "No",
+    FB_MTM: "No",
+    All_Reports_Mailed: "No",
+    certificate_Issued: "No",
+    venue: "No",
+    Online_Inperson: "No"
+  });
+
+
+  const handleCheckboxChange = (field) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: prevData[field] === "Yes" ? "No" : "Yes",
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("https://api.example.com/submit", formData);
+      console.log("Response:", response.data);
+      alert("Form submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Failed to submit form.");
+    }
+  };
 
   // Scroll to a Section
   const sectionRef = useRef(null);
@@ -57,7 +85,7 @@ function ViewSingleProject() {
   if (isLoading) return <div><Loading /></div>
   if (error) return <div>Error: {error.message}</div>
   console.log(projects)
-  const {_id, notes, company, contactDetails,amount,employees, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
+  const {_id, notes, company, stages, contactDetails,amount,employees, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
 
 
   const fileUpload = async(e) => {
@@ -71,6 +99,7 @@ function ViewSingleProject() {
 
   return (
     <div className=''>
+
       <div className='flex items-center justify-between mb-3'>
         {/* <input type="file" name="" multiple={false} id="" onChange={(e) => fileUpload(e.target.files[0])}/> */}
         <button onClick={() => navigate(-1)} className='flex items-center mt-[-10] mb-4'>
@@ -90,7 +119,6 @@ function ViewSingleProject() {
       {/* Trainer Section - Search Bar [FIlters, Search Result, seach Result with add function to add them in the projects] */}
 
       {/* Show the Trainers Added to the  */}
-
       <div className='border rounded-md mt-8 py-4 px-3 shadow-sm'>
         <div className='flex items-center justify-between'>
           <div className='font-semibold'>Trainers</div>
@@ -120,6 +148,39 @@ function ViewSingleProject() {
           }
         </div>
       </div>
+
+      {/* Training Delivery Section - showcase all the conditions */}
+      <Fragment>
+          {
+            stages === "Training Delivery" 
+            && 
+            <div className='border rounded-md shadow-sm mt-8 py-4 px-4'>
+              <h2 className='font-semibold my-4'>Training Delivered - CheckList</h2>
+              {
+                // JSON.stringify(formData)
+              }
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {Object.keys(formData).map((field) => (
+                  <div key={field} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={field}
+                      checked={formData[field] === "Yes"}
+                      onCheckedChange={() => handleCheckboxChange(field)}
+                    />
+                    <label htmlFor={field} className="capitalize">
+                      {field.replace(/_/g, " ")}
+                    </label>
+                  </div>
+                ))}
+
+                <Button type="submit" className="mt-4">
+                  Submit
+                </Button>
+              </form>
+            </div>
+          }
+
+      </Fragment>
 
       {/* Employees */}
       {/* <ViewEmployee employees={employees}/>  */}

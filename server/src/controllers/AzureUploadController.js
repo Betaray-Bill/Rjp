@@ -16,6 +16,7 @@ const blobServiceClient = new BlobServiceClient(
 // Function to check Azure Blob Storage connection
 export const checkBlobConnection = async(req, res) => {
     try {
+        console.log("blob connection ", blobServiceClient.url)
         const containerClient = blobServiceClient.getContainerClient(containerName);
 
         // Check connection by fetching container properties
