@@ -558,6 +558,29 @@ const getAllNotes = asyncHandler(async(req, res) => {
     }
 })
 
+// CHecklist in training Delivery
+const checkListUpdate = asyncHandler(async(req, res) => {
+    const { projectId } = req.params;
+    console.log(req.body)
+        // cpnsnt 
+    try {
+        await Project.findByIdAndUpdate(projectId, {
+            $set: {
+                'trainingDelivery': req.body
+            }
+        }, {
+            new: true,
+        })
+
+        res.status(200).json({ message: "Checklist Updated." });
+
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ message: "Error updating checklist." });
+    }
+
+})
+
 // update a project - ADMIN delete a project - ADMIN Add a trainer - KA, Admin
 // delete a trainer - KA, Admin Add a Emp with role - Admin Delete a Emp with
 // role - Admin
@@ -572,5 +595,6 @@ export {
     addResumeToProject,
     updateStage,
     addChatToProject,
+    checkListUpdate,
     getAllNotes
 }

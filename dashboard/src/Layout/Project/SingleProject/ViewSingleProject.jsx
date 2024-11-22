@@ -1,7 +1,7 @@
 import React, { Fragment, useRef, useState } from 'react'
 import { Checkbox } from "@/components/ui/checkbox"
 import axios from 'axios'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import Loading from '@/utils/Loading'
@@ -14,42 +14,50 @@ import ViewEmployee from './Components/ViewEmployee'
 import ViewCompanyContact from './Components/ViewCompanyContact'
 import ViewProjectData from './Components/ViewProjectData'
 import Notes from './Components/Notes'
+import { useToast } from '@/hooks/use-toast'
 
 function ViewSingleProject() {
   const projectId = useParams()
   const navigate = useNavigate();
   const [collapse, setCollapse] = useState(false)
+  const queryClient = useQueryClient();
+  const toast = useToast()
 
   // Training Delivered
   const [formData, setFormData] = useState({
-    FaxList: "No",
-    Hotel: "No",
-    venue: "No",
-    Travel_On_Return: "No",
-    FB_MTM: "No",
-    All_Reports_Mailed: "No",
-    certificate_Issued: "No",
-    venue: "No",
-    Online_Inperson: "No"
+    FaxList: false,
+    Hotel: false,
+    venue: false,
+    Travel_On_Return: false,
+    FB_MTM: false,
+    All_Reports_Mailed: false,
+    certificate_Issued: false,
+    venue: false,
+    Online_Inperson: false
   });
 
 
   const handleCheckboxChange = (field) => {
     setFormData((prevData) => ({
       ...prevData,
-      [field]: prevData[field] === "Yes" ? "No" : "Yes",
+      [field]: prevData[field] === true ? false : true,
     }));
   };
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("https://api.example.com/submit", formData);
+      // console.log(object)
+      const response = await axios.put(`http://localhost:5000/api/project/updateCheckList/${projectId.projectId}`, formData);
       console.log("Response:", response.data);
-      alert("Form submitted successfully!");
+      // alert("Form submitted successfully!");
+      queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
+      toast({
+          title: "Check List updated"
+        })
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Failed to submit form.");
+      // alert("Failed to submit form.");
     }
   };
 
@@ -68,6 +76,17 @@ function ViewSingleProject() {
   const fetchProjects = async () => {
     const response = await axios.get(`http://localhost:5000/api/project/get-project/${projectId.projectId}`)
     console.log(response.data)
+    setFormData({
+      FaxList: response.data.project.trainingDelivery.FaxList,
+      Hotel: response.data.project.trainingDelivery.Hotel,
+      venue: response.data.project.trainingDelivery.venue,
+      Travel_On_Return: response.data.project.trainingDelivery.Travel_On_Return,
+      FB_MTM: response.data.project.trainingDelivery.FB_MTM,
+      All_Reports_Mailed: response.data.project.trainingDelivery.All_Reports_Mailed,
+      certificate_Issued: response.data.project.trainingDelivery.certificate_Issued,
+      venue: response.data.project.trainingDelivery.venue,
+      Online_Inperson: response.data.project.trainingDelivery.Online_Inperson
+    })
     return response.data.project
   }
 //  console.log(projectId.projectId)
@@ -101,7 +120,6 @@ function ViewSingleProject() {
     <div className=''>
 
       <div className='flex items-center justify-between mb-3'>
-        {/* <input type="file" name="" multiple={false} id="" onChange={(e) => fileUpload(e.target.files[0])}/> */}
         <button onClick={() => navigate(-1)} className='flex items-center mt-[-10] mb-4'>
           <ion-icon name="arrow-back-outline"></ion-icon>
           <span className='ml-2'>Go Back</span>
@@ -116,8 +134,6 @@ function ViewSingleProject() {
       {/* Company Contact Person - default Hidden */}
       <ViewCompanyContact data={company} contact={contactDetails}/>  
 
-      {/* Trainer Section - Search Bar [FIlters, Search Result, seach Result with add function to add them in the projects] */}
-
       {/* Show the Trainers Added to the  */}
       <div className='border rounded-md mt-8 py-4 px-3 shadow-sm'>
         <div className='flex items-center justify-between'>
@@ -130,9 +146,7 @@ function ViewSingleProject() {
         <div>
           {/* Search Bar */}
           <ViewTrainers trainers={trainers}/>
-          {/* <SearchBar domainSearch={domain}/> */}
-
-          {/* <div ref={sectionRef}></div> */}
+      
           {
             isAdd &&(
               <div className='mt-10 border-t pt-5' ref={sectionRef}>
@@ -148,7 +162,7 @@ function ViewSingleProject() {
           }
         </div>
       </div>
-
+  
       {/* Training Delivery Section - showcase all the conditions */}
       <Fragment>
           {
@@ -164,7 +178,7 @@ function ViewSingleProject() {
                   <div key={field} className="flex items-center space-x-2">
                     <Checkbox
                       id={field}
-                      checked={formData[field] === "Yes"}
+                      checked={formData[field]}
                       onCheckedChange={() => handleCheckboxChange(field)}
                     />
                     <label htmlFor={field} className="capitalize">
@@ -182,8 +196,6 @@ function ViewSingleProject() {
 
       </Fragment>
 
-      {/* Employees */}
-      {/* <ViewEmployee employees={employees}/>  */}
       <Notes projectName={projectName} projectId={_id} notes={notes}/>
     </div>
   )

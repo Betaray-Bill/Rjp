@@ -84,8 +84,7 @@ const projectSchema = new mongoose.Schema({
     // trainers: [{
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: 'Trainer'
-    // }]
-
+    // }],
     trainers: [{
         trainer: {
             type: mongoose.Schema.Types.ObjectId,
@@ -99,8 +98,44 @@ const projectSchema = new mongoose.Schema({
     notes: [notesSchema],
     stages: {
         type: String,
-
-    }
+    },
+    trainingDelivery: {
+        FaxList: {
+            type: Boolean,
+            default: false, // Default to `false`
+        },
+        Hotel: {
+            type: Boolean,
+            default: false,
+        },
+        venue: {
+            type: Boolean,
+            default: false,
+        },
+        Travel_On_Return: {
+            type: Boolean,
+            default: false,
+        },
+        FB_MTM: {
+            type: Boolean,
+            default: false,
+        },
+        All_Reports_Mailed: {
+            type: Boolean,
+            default: false,
+        },
+        certificate_Issued: {
+            type: Boolean,
+            default: false,
+        },
+        Online_Inperson: {
+            type: Boolean,
+            default: false,
+        },
+    },
+    // required: function() {
+    //     return this.stages === "Training Delivery"
+    // }
 }, { timestamps: true });
 
 const Project = mongoose.model('Project', projectSchema);

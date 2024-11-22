@@ -68,7 +68,7 @@ const createContact = asyncHandler(async(req, res) => {
     try {
         const companyContact = new CompanyContact({
             contactName: contact_name,
-            contactEmail: contact_name,
+            contactEmail: contact_email,
             contactPhoneNumber: contact_phone_number
         })
 

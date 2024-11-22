@@ -19,7 +19,7 @@ function Notes({projectName, projectId}) {
     const {currentUser} = useSelector(state => state.auth)
 
     useEffect(() => {
-        fetchNotes()
+        // fetchNotes()
     }, [projectId])
 
     // const socket = io("ws://localhost:6000");
@@ -111,54 +111,56 @@ function Notes({projectName, projectId}) {
 
             try {
                 // Check the blob connection
-                console.log("Checking blob connection...");
-                const result = await axios.get('http://localhost:5000/api/filestorage/check-blob-connection');
-                const response = result.data;
-                console.log("Connection check result:", response);
+                if (fileInputRef.current.value) {
+                    console.log("Checking blob connection...");
+                    const result = await axios.get('http://localhost:5000/api/filestorage/check-blob-connection');
+                    const response = result.data;
+                    console.log("Connection check result:", response);
 
-                // If the connection is successful and a file is present, call the POST API
-                if (fileInputRef.current.value && result.status == 200) {
-                    console.log("File is present. Sending data to another API...");
+                    // If the connection is successful and a file is present, call the POST API
+                    if (fileInputRef.current.value && result.status == 200) {
+                        console.log("File is present. Sending data to another API...");
 
-                    // Call another POST API Create a FormData object to handle file upload
-                    const formData = new FormData();
-                    formData.append("file", file); // Attach the file
-                    formData.append("projectName", projectName); // Attach the file
+                        // Call another POST API Create a FormData object to handle file upload
+                        const formData = new FormData();
+                        formData.append("file", file); // Attach the file
+                        formData.append("projectName", projectName); // Attach the file
 
-                    formData.append("fileName", message.file.name || file.name); // Include file name
-                    formData.append("sent", currentUser.employee.name); // Additional data (optional)
-                    formData.append("timestamps", new Date().toISOString()); // Additional metadata
+                        formData.append("fileName", message.file.name || file.name); // Include file name
+                        formData.append("sent", currentUser.employee.name); // Additional data (optional)
+                        formData.append("timestamps", new Date().toISOString()); // Additional metadata
 
-                    // Call the POST API to upload the file
-                    const uploadResult = await axios.post('http://localhost:5000/api/filestorage/upload-to-blob', formData, {
-                        headers: {
-                            "Content-Type": "multipart/form-data"
-                        }
-                    });
-
-                    if (uploadResult.status == 200) {
-                        console.log("File upload response:", uploadResult.data);
-                        const url = uploadResult.data.url
-
-                        // Update the message with the uploaded file URL
-                        message.file.url = url;
-                        message.file.name = message.file.name || file.name; // Update file name if it's not provided in the message object
-
-                        // Post the Chat in the Chat in Backend
-                        const sendMessage = await axios.post(`http://localhost:5000/api/project/addChat/${projectId}`, message);
-                        const chatResp = await sendMessage.data
-
-                        console.log(chatResp)
-
-                        // Add the message to the data array
-                        setData([
-                            ...data, {
-                                ...message
+                        // Call the POST API to upload the file
+                        const uploadResult = await axios.post('http://localhost:5000/api/filestorage/upload-to-blob', formData, {
+                            headers: {
+                                "Content-Type": "multipart/form-data"
                             }
-                        ]);
-                        console.log("Message added successfully!");
-                    }
+                        });
 
+                        if (uploadResult.status == 200) {
+                            console.log("File upload response:", uploadResult.data);
+                            const url = uploadResult.data.url
+
+                            // Update the message with the uploaded file URL
+                            message.file.url = url;
+                            message.file.name = message.file.name || file.name; // Update file name if it's not provided in the message object
+
+                            // Post the Chat in the Chat in Backend
+                            const sendMessage = await axios.post(`http://localhost:5000/api/project/addChat/${projectId}`, message);
+                            const chatResp = await sendMessage.data
+
+                            console.log(chatResp)
+
+                            // Add the message to the data array
+                            setData([
+                                ...data, {
+                                    ...message
+                                }
+                            ]);
+                            console.log("Message added successfully!");
+                        }
+
+                    }
                 } else {
                     // Post the Chat in the Chat in Backend
                     const sendMessage = await axios.post(`http://localhost:5000/api/project/addChat/${projectId}`, message);
@@ -166,8 +168,8 @@ function Notes({projectName, projectId}) {
 
                     console.log(chatResp)
                 }
-                // queryClient.invalidateQueries(['notes', projectId]);
-                fetchNotes()
+                queryClient.invalidateQueries(['notes', projectId]);
+                // fetchNotes()
                 setMessage({
                     text: {
                         content: ''
