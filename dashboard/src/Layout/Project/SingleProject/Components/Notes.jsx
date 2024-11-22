@@ -40,6 +40,11 @@ function Notes({projectName, projectId}) {
     const [data,
         setData] = useState([])
 
+    useEffect(() => {
+        fetchNotes()
+
+    }, [projectId])
+
     const changeChatOrder = async(e) => {
         console.log(e)
     }

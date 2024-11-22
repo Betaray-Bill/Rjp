@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { Checkbox } from "@/components/ui/checkbox"
 import axios from 'axios'
 import { useQuery, useQueryClient } from 'react-query'
@@ -21,20 +21,56 @@ function ViewSingleProject() {
   const navigate = useNavigate();
   const [collapse, setCollapse] = useState(false)
   const queryClient = useQueryClient();
-  const toast = useToast()
-
+  const {toast} = useToast()
+  const state = {
+    ParticipantList: "Participant List",
+    Hotel: "Hotel",
+    venue: "Venue",
+    Travel: "Travel",
+    FB_MTM: "FB/MTM",
+    All_Reports_Mailed: "All Reports Mailed",
+    certificate_Issued: "Certificate Issued",
+    Online: "Online",
+    InPerson: "In Person",
+    Hybrid: "Hybrid",
+    FullTime: "Full Time",
+    PartTime: "Part Time",
+  };
+  
   // Training Delivered
   const [formData, setFormData] = useState({
-    FaxList: false,
+    ParticipantList: false,
     Hotel: false,
     venue: false,
-    Travel_On_Return: false,
+    Travel: false,
     FB_MTM: false,
     All_Reports_Mailed: false,
     certificate_Issued: false,
-    venue: false,
-    Online_Inperson: false
+    Online: false,
+    InPerson: false,
+    Hybrid: false,
+    FullTime: false,
+    PartTime: false,
   });
+
+  useEffect(() => {
+    if( projects && projects.stages === "Training Delivery"){
+      setFormData({
+        ParticipantList: projects.trainingDelivery.ParticipantList,
+        Hotel: projects.trainingDelivery.Hotel,
+        venue: projects.trainingDelivery.venue,
+        Travel: projects.trainingDelivery.Travel,
+        FB_MTM: projects.trainingDelivery.FB_MTM,
+        All_Reports_Mailed: projects.trainingDelivery.All_Reports_Mailed,
+        certificate_Issued: projects.trainingDelivery.certificate_Issued,
+        Online: projects.trainingDelivery.Online,
+        InPerson: projects.trainingDelivery.InPerson,
+        Hybrid: projects.trainingDelivery.Hybrid,
+        FullTime: projects.trainingDelivery.FullTime,
+        PartTime: projects.trainingDelivery.PartTime
+      })
+    }
+  }, [projectId.projectId])
 
 
   const handleCheckboxChange = (field) => {
@@ -53,6 +89,7 @@ function ViewSingleProject() {
       // alert("Form submitted successfully!");
       queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
       toast({
+        variant: "success",
           title: "Check List updated"
         })
     } catch (error) {
@@ -77,15 +114,18 @@ function ViewSingleProject() {
     const response = await axios.get(`http://localhost:5000/api/project/get-project/${projectId.projectId}`)
     console.log(response.data)
     setFormData({
-      FaxList: response.data.project.trainingDelivery.FaxList,
+      ParticipantList: response.data.project.trainingDelivery.ParticipantList,
       Hotel: response.data.project.trainingDelivery.Hotel,
       venue: response.data.project.trainingDelivery.venue,
-      Travel_On_Return: response.data.project.trainingDelivery.Travel_On_Return,
+      Travel: response.data.project.trainingDelivery.Travel,
       FB_MTM: response.data.project.trainingDelivery.FB_MTM,
       All_Reports_Mailed: response.data.project.trainingDelivery.All_Reports_Mailed,
       certificate_Issued: response.data.project.trainingDelivery.certificate_Issued,
-      venue: response.data.project.trainingDelivery.venue,
-      Online_Inperson: response.data.project.trainingDelivery.Online_Inperson
+      Online: response.data.project.trainingDelivery.Online,
+      InPerson: response.data.project.trainingDelivery.InPerson,
+      Hybrid: response.data.project.trainingDelivery.Hybrid,
+      FullTime: response.data.project.trainingDelivery.FullTime,
+      PartTime: response.data.project.trainingDelivery.PartTime
     })
     return response.data.project
   }
@@ -169,25 +209,27 @@ function ViewSingleProject() {
             stages === "Training Delivery" 
             && 
             <div className='border rounded-md shadow-sm mt-8 py-4 px-4'>
-              <h2 className='font-semibold my-4'>Training Delivered - CheckList</h2>
+              <h2 className='font-semibold my-4'>Training Delivery - CheckList</h2>
               {
                 // JSON.stringify(formData)
               }
               <form onSubmit={handleSubmit} className="space-y-4">
-                {Object.keys(formData).map((field) => (
-                  <div key={field} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={field}
-                      checked={formData[field]}
-                      onCheckedChange={() => handleCheckboxChange(field)}
-                    />
-                    <label htmlFor={field} className="capitalize">
-                      {field.replace(/_/g, " ")}
-                    </label>
+                  <div className='grid grid-cols-3 gap-2'>
+                    {Object.keys(formData).map((field) => (
+                      <div key={field} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={field}
+                          checked={formData[field]}
+                          onCheckedChange={() => handleCheckboxChange(field)}
+                        />
+                        <label htmlFor={field} className="capitalize">
+                          {state[field]}
+                        </label>
+                      </div>
+                    ))}
                   </div>
-                ))}
 
-                <Button type="submit" className="mt-4">
+                <Button type="submit" className="mt-4 inline-block">
                   Submit
                 </Button>
               </form>

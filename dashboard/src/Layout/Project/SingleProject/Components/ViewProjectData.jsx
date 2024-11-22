@@ -51,6 +51,8 @@ function ViewProjectData({projects}) {
             title: `${projectName} Pipeline Stage Updated`,
             // description: `${projectName} S`,
         })
+
+        // window.location.reload()
     }
     
 

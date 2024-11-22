@@ -207,7 +207,7 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
                             populate: {
                                 path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
                                 select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
-                            },
+                            }
                         });
 
                     res.json({ projects });
@@ -234,7 +234,9 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
 const getProject = asyncHandler(async(req, res) => {
     const empId = req.params.empId
 
-    const employee = await Employee.findById(empId).populate('role.roleId')
+    const employee = await Employee
+        .findById(empId)
+        .populate('role.roleId')
     console.log("EMP", employee.role[0].roleId)
 
     // Extract the projects assigned to the employee
@@ -243,7 +245,11 @@ const getProject = asyncHandler(async(req, res) => {
         console.log(employee.role[i].name)
         if (employee.role[i].name === 'KeyAccounts') {
             // console.log("Key acc", employee.role.populate('roleId'))
-            assignedProjects = employee.role[i].roleId.Projects.map((project) => project.toString());
+            assignedProjects = employee
+                .role[i]
+                .roleId
+                .Projects
+                .map((project) => project.toString());
             console.log(assignedProjects)
 
             break;
@@ -259,7 +265,7 @@ const getProject = asyncHandler(async(req, res) => {
                     populate: {
                         path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
                         select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
-                    },
+                    }
                 });
 
             console.log(projects)
@@ -277,20 +283,22 @@ const getProject = asyncHandler(async(req, res) => {
                 populate: {
                     path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
                     select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
-                },
+                }
             });
-        // console.log("PRojectss ", projects[0].stages)
-        // Filter out projects not assigned to the employee
-        const filteredPipeline = projects[0].stages.map((stage) => {
-            // console.log(stage)
-            const filteredProjects = stage.projects.filter((project) =>
-                assignedProjects.includes(project._id.toString())
-            );
-            return {
-                ...stage.toObject(),
-                projects: filteredProjects, // Replace with filtered projects
-            };
-        });
+        // console.log("PRojectss ", projects[0].stages) Filter out projects not
+        // assigned to the employee
+        const filteredPipeline = projects[0]
+            .stages
+            .map((stage) => {
+                // console.log(stage)
+                const filteredProjects = stage
+                    .projects
+                    .filter((project) => assignedProjects.includes(project._id.toString()));
+                return {
+                    ...stage.toObject(),
+                    projects: filteredProjects, // Replace with filtered projects
+                };
+            });
 
         console.log("FINAL ------------", filteredPipeline)
 
@@ -341,39 +349,68 @@ const updateStage = asyncHandler(async(req, res) => {
     const session = await Project.startSession(); // Use a session for transaction
     session.startTransaction();
 
-    const project = await Project.findById(projectId).session(session);
+    const project = await Project
+        .findById(projectId)
+        .session(session);
     if (!project) {
         throw new Error("Project not found");
     }
 
     try {
         // remove the project from prev stage
-        const stage = await Pipeline.findOneAndUpdate({ "stages.name": project.stages }, { $pull: { "stages.$.projects": project._id } }, { new: true, session });
+        const stage = await Pipeline.findOneAndUpdate({
+            "stages.name": project.stages
+        }, {
+            $pull: {
+                "stages.$.projects": project._id
+            }
+        }, {
+            new: true,
+            session
+        });
         if (!stage) {
             throw new Error("Previous stage not found");
         }
         console.log("Stage is ", stage)
 
         // add it to new stage
-        const newStage = await Pipeline.findOneAndUpdate({ "stages.name": stageName }, { $push: { "stages.$.projects": project._id } }, { new: true, session });
+        const newStage = await Pipeline.findOneAndUpdate({
+            "stages.name": stageName
+        }, {
+            $push: {
+                "stages.$.projects": project._id
+            }
+        }, {
+            new: true,
+            session
+        });
         if (!newStage) {
             throw new Error("New stage not found");
         }
 
         // Update the stage in project
-        await Project.findByIdAndUpdate(
-            projectId, { $set: { stages: stageName } }, { new: true, session }
-        );
+        await Project.findByIdAndUpdate(projectId, {
+            $set: {
+                stages: stageName
+            }
+        }, {
+            new: true,
+            session
+        });
 
         await session.commitTransaction();
         session.endSession();
 
-        res.status(200).json({ message: "Stage updated successfully", project });
+        res
+            .status(200)
+            .json({ message: "Stage updated successfully", project });
 
     } catch (err) {
         await session.abortTransaction();
         session.endSession();
-        res.status(500).json({ message: 'Error Updating Stage', error: err.message });
+        res
+            .status(500)
+            .json({ message: 'Error Updating Stage', error: err.message });
 
     }
 
@@ -518,6 +555,37 @@ const addResumeToProject = asyncHandler(async(req, res) => {
     // console.log(req.body) console.log(resume)
 })
 
+// Is Client Call Done
+const isClientCallDone = asyncHandler(async(req, res) => {
+    const { projectId } = req.params;
+    console.log(req.body)
+    const { trainerId } = req.body
+    try {
+        const project = await Project.findById(projectId)
+            // console.log(project)
+
+        for (let i = 0; i < project.trainers.length; i++) {
+            console.log(project.trainers[i])
+            if (project.trainers[i].trainer.toString() === trainerId) {
+                console.log("Trainer found", project.trainers[i].trainer)
+                project.trainers[i].isClientCallDone = true
+                    // console.log(project.trainers[i].resume)
+                await project.save()
+
+                break
+            }
+        }
+        res.json({ message: " Done" });
+
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: 'Error adding resume.', error: err.message });
+    }
+
+})
+
 // Add Chat to the Project
 const addChatToProject = asyncHandler(async(req, res) => {
     const { projectId } = req.params;
@@ -528,9 +596,7 @@ const addChatToProject = asyncHandler(async(req, res) => {
             $push: {
                 'notes': req.body
             }
-        }, {
-            new: true,
-        })
+        }, { new: true })
 
         res.json({ message: "Successfully Added" });
     } catch (err) {
@@ -548,13 +614,17 @@ const getAllNotes = asyncHandler(async(req, res) => {
     try {
         const project = await Project.findById(projectId)
         if (!project) {
-            return res.status(404).json({ message: "Project not found" });
+            return res
+                .status(404)
+                .json({ message: "Project not found" });
         }
         console.log(project.notes)
         res.json({ notes: project.notes });
     } catch (err) {
         console.log(err)
-        return res.status(500).json({ message: "Error getting notes." });
+        return res
+            .status(500)
+            .json({ message: "Error getting notes." });
     }
 })
 
@@ -562,21 +632,23 @@ const getAllNotes = asyncHandler(async(req, res) => {
 const checkListUpdate = asyncHandler(async(req, res) => {
     const { projectId } = req.params;
     console.log(req.body)
-        // cpnsnt 
+
     try {
         await Project.findByIdAndUpdate(projectId, {
             $set: {
                 'trainingDelivery': req.body
             }
-        }, {
-            new: true,
-        })
+        }, { new: true })
 
-        res.status(200).json({ message: "Checklist Updated." });
+        res
+            .status(200)
+            .json({ message: "Checklist Updated." });
 
     } catch (err) {
         console.log(err)
-        return res.status(500).json({ message: "Error updating checklist." });
+        return res
+            .status(500)
+            .json({ message: "Error updating checklist." });
     }
 
 })
@@ -596,5 +668,6 @@ export {
     updateStage,
     addChatToProject,
     checkListUpdate,
-    getAllNotes
+    getAllNotes,
+    isClientCallDone
 }

@@ -93,6 +93,10 @@ const projectSchema = new mongoose.Schema({
         resume: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Resume'
+        },
+        isClientCallDone: {
+            type: Boolean,
+            default: false, // Default to `false`
         }
     }],
     notes: [notesSchema],
@@ -100,7 +104,7 @@ const projectSchema = new mongoose.Schema({
         type: String,
     },
     trainingDelivery: {
-        FaxList: {
+        ParticipantList: {
             type: Boolean,
             default: false, // Default to `false`
         },
@@ -112,7 +116,7 @@ const projectSchema = new mongoose.Schema({
             type: Boolean,
             default: false,
         },
-        Travel_On_Return: {
+        Travel: {
             type: Boolean,
             default: false,
         },
@@ -128,10 +132,27 @@ const projectSchema = new mongoose.Schema({
             type: Boolean,
             default: false,
         },
-        Online_Inperson: {
+        Online: {
             type: Boolean,
             default: false,
         },
+        InPerson: {
+            type: Boolean,
+            default: false,
+        },
+        Hybrid: {
+            type: Boolean,
+            default: false,
+        },
+        FullTime: {
+            type: Boolean,
+            default: false,
+
+        },
+        PartTime: {
+            type: Boolean,
+            default: false,
+        }
     },
     // required: function() {
     //     return this.stages === "Training Delivery"

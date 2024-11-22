@@ -23,6 +23,7 @@ import {Button} from '@/components/ui/button'
 import {useMutation, useQueryClient} from 'react-query'
 import {useToast} from '@/hooks/use-toast'
 import axios from 'axios'
+import { Checkbox } from '@/components/ui/checkbox'
 
 function ViewTrainers({trainers}) {
     const projectId = useParams()
@@ -56,7 +57,7 @@ function ViewTrainers({trainers}) {
       );
       
 
-    const handelTrainerDelete = async(id) => {
+    const handleTrainerDelete = async(id) => {
         console.log(id, projectId.projectId)
         console.log(id)
         deleteTrainer(id)
@@ -64,6 +65,21 @@ function ViewTrainers({trainers}) {
     }
 
     console.log(trainers[0])
+
+    const isChecked = true
+
+    const handleCheckboxChange = async(id) => {
+        const response = await axios.put(
+            `http://localhost:5000/api/project//updateClientCall/${projectId.projectId}`,
+            { trainerId: id }
+        );
+        console.log(response.data)
+        queryClient.invalidateQueries(['ViewProject', projectId.projectId]); // Refetch updated project data
+        toast({
+            variant: "success",
+            title: "Client Call status updated successfully",
+        });
+    }
 
     return (
         <div>
@@ -74,11 +90,12 @@ function ViewTrainers({trainers}) {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>S.no</TableHead>
+                                <TableHead>Client Call</TableHead>
                                 <TableHead className="">Name</TableHead>
                                 <TableHead>Email</TableHead>
                                 <TableHead>Type</TableHead>
                                 <TableHead className="text-left">Resume</TableHead>
-                                <TableHead></TableHead>
+                                <TableHead>View</TableHead>
                                 <TableHead className="text-left"></TableHead>
                             </TableRow>
                         </TableHeader>
@@ -88,6 +105,15 @@ function ViewTrainers({trainers}) {
                                     ?.map((trainer, index) => (
                                         <TableRow key={index} className="cursor-pointer rounded-md">
                                             <TableCell className="font-medium">{index + 1}</TableCell>
+                                            <TableCell className="text-start items-center">
+                                                {
+                                                    trainer.isClientCallDone ? 
+                                                    <ion-icon name="checkmark-done-outline" style={{color:"green", fontSize:"20px"}}></ion-icon>
+                                                    :   <Checkbox                           
+                                                            onCheckedChange={() => handleCheckboxChange(trainer.trainer._id)}
+                                                        />
+                                                }
+                                            </TableCell>
                                             <TableCell className="font-medium flex items-center">
                                                 <Avatar>
                                                     <AvatarImage src="https://github.com/shadcn.png"/>
@@ -97,6 +123,8 @@ function ViewTrainers({trainers}) {
                                             </TableCell>
                                             <TableCell>{trainer.trainer.generalDetails.email}</TableCell>
                                             <TableCell>{trainer.trainer.trainingDetails.trainerType}</TableCell>
+
+
                                             <TableCell>
                                                
                                                 {
@@ -141,7 +169,7 @@ function ViewTrainers({trainers}) {
                                                                 <Button
                                                                     type="submit"
                                                                     className="bg-red-700"
-                                                                    onClick={() => handelTrainerDelete(trainer.trainer._id)}>Delete</Button>
+                                                                    onClick={() => handleTrainerDelete(trainer.trainer._id)}>Delete</Button>
                                                             </DialogClose>
                                                         </DialogFooter>
                                                     </DialogContent>
