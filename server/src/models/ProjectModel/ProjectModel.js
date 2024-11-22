@@ -104,55 +104,97 @@ const projectSchema = new mongoose.Schema({
         type: String,
     },
     trainingDelivery: {
-        ParticipantList: {
+        Travel: {
             type: Boolean,
-            default: false, // Default to `false`
+            default: false, // Default to
         },
         Hotel: {
             type: Boolean,
-            default: false,
-        },
-        venue: {
-            type: Boolean,
-            default: false,
-        },
-        Travel: {
-            type: Boolean,
-            default: false,
-        },
-        FB_MTM: {
-            type: Boolean,
-            default: false,
-        },
-        All_Reports_Mailed: {
-            type: Boolean,
-            default: false,
-        },
-        certificate_Issued: {
-            type: Boolean,
-            default: false,
+            default: false, // Default to
         },
         Online: {
             type: Boolean,
-            default: false,
+            default: false, // Default to
         },
         InPerson: {
             type: Boolean,
-            default: false,
+            default: false, // Default to
         },
         Hybrid: {
             type: Boolean,
-            default: false,
+            default: false, // Default to
         },
         FullTime: {
             type: Boolean,
-            default: false,
-
+            default: false, // Default to
         },
         PartTime: {
             type: Boolean,
-            default: false,
+            default: false, // Default to
+        },
+        venue: {
+            type: Boolean,
+            default: false, // Default to
+        },
+        PO_Payment_terms: {
+            type: Boolean,
+            default: false, // Default to
+        },
+        NDA_SignedCollection: {
+            type: Boolean,
+            default: false, // Default to
+        },
+        Pre_Req_Test: {
+            type: Boolean,
+            default: false, // Default to
+        },
+        Ref_Material_links__Training_content__Lab_testing__Azure_pass: {
+            type: Boolean,
+            default: false, // Default to
+        },
+        Day_wise_Training_Content: {
+            type: Boolean,
+            default: false, // Default to
+        },
+        ParticipantList: {
+            type: Boolean,
+            default: false, // Default to
+        },
+        whitelisting: {
+            type: Boolean,
+            default: false, // Default to
+        },
+        WhatsAppGroupCreation: {
+            type: Boolean,
+            default: false, // Default to
+        },
+
+        MeetingInvite: {
+            type: Boolean,
+            default: false, // Default to
+        },
+        LMSInvite: {
+            type: Boolean,
+            default: false, // Default to
+        },
+        LabDetails: {
+            type: Boolean,
+            default: false, // Default to
+        },
+        All_Reports_Mailed: {
+            type: Boolean,
+            default: false, // Default to
+        },
+
+        FB_MTM: {
+            type: Boolean,
+            default: false, // Default to
+        },
+        certificate_Issued: {
+            type: Boolean,
+            default: false, // Default to
         }
+
     },
     // required: function() {
     //     return this.stages === "Training Delivery"

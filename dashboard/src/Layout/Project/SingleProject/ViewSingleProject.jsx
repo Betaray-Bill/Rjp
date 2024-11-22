@@ -35,39 +35,77 @@ function ViewSingleProject() {
     Hybrid: "Hybrid",
     FullTime: "Full Time",
     PartTime: "Part Time",
+    PO_Payment_terms:"PO & Payment terms",
+    NDA_SignedCollection:"NDA - signed copy collection",
+    Pre_Req_Test :"Pre -Req -Test ",
+    Ref_Material_links__Training_content__Lab_testing__Azure_pass:"Ref Material links / Training content / Lab testing / Azure pass",
+    Day_wise_Training_Content:"Day-wise Training Content",
+    whitelisting:"whitelisting",
+    WhatsAppGroupCreation:"WhatsApp Group Creation",
+    MeetingInvite:"Meeting invite",
+    LMSInvite:"LMS invite",
+    LabDetails:"Lab details",
+    All_Reports_Mailed: "All reports mailed",
   };
   
   // Training Delivered
   const [formData, setFormData] = useState({
-    ParticipantList: false,
-    Hotel: false,
-    venue: false,
     Travel: false,
-    FB_MTM: false,
-    All_Reports_Mailed: false,
-    certificate_Issued: false,
+    Hotel: false,
     Online: false,
     InPerson: false,
     Hybrid: false,
     FullTime: false,
     PartTime: false,
+    venue: false,
+    PO_Payment_terms:false,
+    NDA_SignedCollection:false,
+    Pre_Req_Test :false,
+    Ref_Material_links__Training_content__Lab_testing__Azure_pass:false,
+    Day_wise_Training_Content:false,
+    ParticipantList:false,
+    whitelisting:false,
+    WhatsAppGroupCreation:false,
+
+    //
+    MeetingInvite:false,
+    LMSInvite:false,
+    LabDetails:false,
+    All_Reports_Mailed: false,
+
+    // 
+    FB_MTM: false,
+    certificate_Issued: false
   });
 
   useEffect(() => {
     if( projects && projects.stages === "Training Delivery"){
       setFormData({
-        ParticipantList: projects.trainingDelivery.ParticipantList,
-        Hotel: projects.trainingDelivery.Hotel,
-        venue: projects.trainingDelivery.venue,
         Travel: projects.trainingDelivery.Travel,
-        FB_MTM: projects.trainingDelivery.FB_MTM,
-        All_Reports_Mailed: projects.trainingDelivery.All_Reports_Mailed,
-        certificate_Issued: projects.trainingDelivery.certificate_Issued,
+        Hotel: projects.trainingDelivery.Hotel,
         Online: projects.trainingDelivery.Online,
         InPerson: projects.trainingDelivery.InPerson,
         Hybrid: projects.trainingDelivery.Hybrid,
         FullTime: projects.trainingDelivery.FullTime,
-        PartTime: projects.trainingDelivery.PartTime
+        PartTime: projects.trainingDelivery.PartTime,
+        venue: projects.trainingDelivery.venue,
+        PO_Payment_terms: projects.trainingDelivery.PO_Payment_terms,
+        NDA_SignedCollection: projects.trainingDelivery.NDA_SignedCollection,
+        Pre_Req_Test: projects.trainingDelivery.Pre_Req_Test,
+        Ref_Material_links__Training_content__Lab_testing__Azure_pass: projects.trainingDelivery.Ref_Material_links__Training_content__Lab_testing__Azure_pass,
+        Day_wise_Training_Content: projects.trainingDelivery.Day_wise_Training_Content,
+        ParticipantList: projects.trainingDelivery.ParticipantList,
+        whitelisting: projects.trainingDelivery.whitelisting,
+        WhatsAppGroupCreation: projects.trainingDelivery.WhatsAppGroupCreation,
+
+        MeetingInvite: projects.trainingDelivery.MeetingInvite,
+        LMSInvite: projects.trainingDelivery.LMSInvite,
+        LabDetails: projects.trainingDelivery.LabDetails,
+        All_Reports_Mailed: projects.trainingDelivery.All_Reports_Mailed,
+
+        FB_MTM: projects.trainingDelivery.FB_MTM,
+        certificate_Issued: projects.trainingDelivery.certificate_Issued
+
       })
     }
   }, [projectId.projectId])
@@ -114,18 +152,29 @@ function ViewSingleProject() {
     const response = await axios.get(`http://localhost:5000/api/project/get-project/${projectId.projectId}`)
     console.log(response.data)
     setFormData({
-      ParticipantList: response.data.project.trainingDelivery.ParticipantList,
-      Hotel: response.data.project.trainingDelivery.Hotel,
-      venue: response.data.project.trainingDelivery.venue,
-      Travel: response.data.project.trainingDelivery.Travel,
-      FB_MTM: response.data.project.trainingDelivery.FB_MTM,
-      All_Reports_Mailed: response.data.project.trainingDelivery.All_Reports_Mailed,
-      certificate_Issued: response.data.project.trainingDelivery.certificate_Issued,
-      Online: response.data.project.trainingDelivery.Online,
-      InPerson: response.data.project.trainingDelivery.InPerson,
-      Hybrid: response.data.project.trainingDelivery.Hybrid,
-      FullTime: response.data.project.trainingDelivery.FullTime,
-      PartTime: response.data.project.trainingDelivery.PartTime
+        Hotel:  response.data.project.trainingDelivery.Hotel,
+        Online:  response.data.project.trainingDelivery.Online,
+        InPerson:  response.data.project.trainingDelivery.InPerson,
+        Hybrid:  response.data.project.trainingDelivery.Hybrid,
+        FullTime:  response.data.project.trainingDelivery.FullTime,
+        PartTime:  response.data.project.trainingDelivery.PartTime,
+        venue:  response.data.project.trainingDelivery.venue,
+        PO_Payment_terms:  response.data.project.trainingDelivery.PO_Payment_terms,
+        NDA_SignedCollection:  response.data.project.trainingDelivery.NDA_SignedCollection,
+        Pre_Req_Test:  response.data.project.trainingDelivery.Pre_Req_Test,
+        Ref_Material_links__Training_content__Lab_testing__Azure_pass:  response.data.project.trainingDelivery.Ref_Material_links__Training_content__Lab_testing__Azure_pass,
+        Day_wise_Training_Content:  response.data.project.trainingDelivery.Day_wise_Training_Content,
+        ParticipantList:  response.data.project.trainingDelivery.ParticipantList,
+        whitelisting:  response.data.project.trainingDelivery.whitelisting,
+        WhatsAppGroupCreation:  response.data.project.trainingDelivery.WhatsAppGroupCreation,
+
+        MeetingInvite:  response.data.project.trainingDelivery.MeetingInvite,
+        LMSInvite:  response.data.project.trainingDelivery.LMSInvite,
+        LabDetails:  response.data.project.trainingDelivery.LabDetails,
+        All_Reports_Mailed:  response.data.project.trainingDelivery.All_Reports_Mailed,
+
+        FB_MTM:  response.data.project.trainingDelivery.FB_MTM,
+        certificate_Issued:  response.data.project.trainingDelivery.certificate_Issued
     })
     return response.data.project
   }
@@ -140,6 +189,7 @@ function ViewSingleProject() {
       cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
     }
   )
+  console.log(formData)
 
   if (isLoading) return <div><Loading /></div>
   if (error) return <div>Error: {error.message}</div>
@@ -214,19 +264,267 @@ function ViewSingleProject() {
                 // JSON.stringify(formData)
               }
               <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className='grid grid-cols-3 gap-2'>
-                    {Object.keys(formData).map((field) => (
+                  <div className='grid grid-cols-3 gap-4 items-start'>
+                    {/* {Object.keys(formData).map((field) => (
                       <div key={field} className="flex items-center space-x-2">
                         <Checkbox
                           id={field}
                           checked={formData[field]}
                           onCheckedChange={() => handleCheckboxChange(field)}
                         />
-                        <label htmlFor={field} className="capitalize">
+                        <label htmlFor={field} className="capitalize font-normal text-[14px]">
                           {state[field]}
                         </label>
                       </div>
-                    ))}
+                    ))} */}
+                    {/* Pre Training Delivery */}
+                    <div className='grid grid-cols-1 gap-2'>
+                      <div key="Travel" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="Travel"
+                          checked={formData.Travel}
+                          onCheckedChange={() => handleCheckboxChange('Travel')}
+                        />
+                        <label htmlFor="Travel" className="capitalize font-normal text-[14px]">
+                          Travel
+                        </label>
+                      </div>
+                      <div key="Hotel" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="Hotel"
+                          checked={formData.Hotel}
+                          onCheckedChange={() => handleCheckboxChange('Hotel')}
+                        />
+                        <label htmlFor="Hotel" className="capitalize font-normal text-[14px]">
+                          Hotel
+                        </label>
+                      </div>
+                      <div key="Online" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="Online"
+                          checked={formData.Online}
+                          onCheckedChange={() => handleCheckboxChange('Online')}
+                        />
+                        <label htmlFor="Online" className="capitalize font-normal text-[14px]">
+                          Online
+                        </label>
+                      </div>
+                      <div key="InPerson" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="InPerson"
+                          checked={formData.InPerson}
+                          onCheckedChange={() => handleCheckboxChange('InPerson')}
+                        />
+                        <label htmlFor="InPerson" className="capitalize font-normal text-[14px]">
+                          In-Person
+                        </label>
+                      </div>
+                      <div key="Hybrid" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="Hybrid"
+                          checked={formData.Hybrid}
+                          onCheckedChange={() => handleCheckboxChange('Hybrid')}
+                        />
+                        <label htmlFor="Hybrid" className="capitalize font-normal text-[14px]">
+                          Hybrid
+                        </label>
+                      </div>
+                      <div key="FullTime" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="FullTime"
+                          checked={formData.FullTime}
+                          onCheckedChange={() => handleCheckboxChange('FullTime')}
+                        />
+                        <label htmlFor="FullTime" className="capitalize font-normal text-[14px]">
+                          Full-Time
+                        </label>
+                      </div>
+                      <div key="PartTime" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="PartTime"
+                          checked={formData.PartTime}
+                          onCheckedChange={() => handleCheckboxChange('PartTime')}
+                        />
+                        <label htmlFor="PartTime" className="capitalize font-normal text-[14px]">
+                          Part-Time
+                        </label>
+                      </div>
+                      <div key="venue" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="venue"
+                          checked={formData.venue}
+                          onCheckedChange={() => handleCheckboxChange('venue')}
+                        />
+                        <label htmlFor="venue" className="capitalize font-normal text-[14px]">
+                          Venue
+                        </label>
+                      </div>
+                      <div key="PO_Payment_terms" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="PO_Payment_terms"
+                          checked={formData.PO_Payment_terms}
+                          onCheckedChange={() => handleCheckboxChange('PO_Payment_terms')}
+                        />
+                        <label htmlFor="PO_Payment_terms" className="capitalize font-normal text-[14px]">
+                          PO Payment Terms
+                        </label>
+                      </div>
+                      <div key="NDA_SignedCollection" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="NDA_SignedCollection"
+                          checked={formData.NDA_SignedCollection}
+                          onCheckedChange={() => handleCheckboxChange('NDA_SignedCollection')}
+                        />
+                        <label htmlFor="NDA_SignedCollection" className="capitalize font-normal text-[14px]">
+                          NDA Signed Collection
+                        </label>
+                      </div>
+                      <div key="Pre_Req_Test" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="Pre_Req_Test"
+                          checked={formData.Pre_Req_Test}
+                          onCheckedChange={() => handleCheckboxChange('Pre_Req_Test')}
+                        />
+                        <label htmlFor="Pre_Req_Test" className="capitalize font-normal text-[14px]">
+                          Pre-Req Test
+                        </label>
+                      </div>
+                      <div
+                        key="Ref_Material_links__Training_content__Lab_testing__Azure_pass"
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id="Ref_Material_links__Training_content__Lab_testing__Azure_pass"
+                          checked={
+                            formData.Ref_Material_links__Training_content__Lab_testing__Azure_pass
+                          }
+                          onCheckedChange={() =>
+                            handleCheckboxChange(
+                              'Ref_Material_links__Training_content__Lab_testing__Azure_pass'
+                            )
+                          }
+                        />
+                        <label
+                          htmlFor="Ref_Material_links__Training_content__Lab_testing__Azure_pass"
+                          className="capitalize font-normal text-[14px]"
+                        >
+                          Reference Material Links, Training Content, Lab Testing, Azure Pass
+                        </label>
+                      </div>
+                      <div key="Day_wise_Training_Content" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="Day_wise_Training_Content"
+                          checked={formData.Day_wise_Training_Content}
+                          onCheckedChange={() =>
+                            handleCheckboxChange('Day_wise_Training_Content')
+                          }
+                        />
+                        <label htmlFor="Day_wise_Training_Content" className="capitalize font-normal text-[14px]">
+                          Day-wise Training Content
+                        </label>
+                      </div>
+                      <div key="ParticipantList" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="ParticipantList"
+                          checked={formData.ParticipantList}
+                          onCheckedChange={() => handleCheckboxChange('ParticipantList')}
+                        />
+                        <label htmlFor="ParticipantList" className="capitalize font-normal text-[14px]">
+                          Participant List
+                        </label>
+                      </div>
+                      <div key="whitelisting" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="whitelisting"
+                          checked={formData.whitelisting}
+                          onCheckedChange={() => handleCheckboxChange('whitelisting')}
+                        />
+                        <label htmlFor="whitelisting" className="capitalize font-normal text-[14px]">
+                          Whitelisting
+                        </label>
+                      </div>
+                      <div key="WhatsAppGroupCreation" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="WhatsAppGroupCreation"
+                          checked={formData.WhatsAppGroupCreation}
+                          onCheckedChange={() => handleCheckboxChange('WhatsAppGroupCreation')}
+                        />
+                        <label htmlFor="WhatsAppGroupCreation" className="capitalize font-normal text-[14px]">
+                          WhatsApp Group Creation
+                        </label>
+                      </div>
+                    </div>
+
+
+                    {/* Training */}
+                    <div className='grid grid-cols-1 gap-2'>
+                      <div key="Travel" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="Travel"
+                          checked={formData.MeetingInvite}
+                          onCheckedChange={() => handleCheckboxChange('Meeting invite')}
+                        />
+                        <label htmlFor="Meeting invite" className="capitalize font-normal text-[14px]">
+                          Meeting invite
+                        </label>
+                      </div>
+                      <div key="Travel" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="LMS invite"
+                          checked={formData.LMSInvite}
+                          onCheckedChange={() => handleCheckboxChange('LMS invite')}
+                        />
+                        <label htmlFor="LMS invite" className="capitalize font-normal text-[14px]">
+                          LMS invite
+                        </label>
+                      </div>
+                      <div key="Lab details" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="Lab details"
+                          checked={formData.LabDetails}
+                          onCheckedChange={() => handleCheckboxChange('Lab details')}
+                        />
+                        <label htmlFor="Lab details" className="capitalize font-normal text-[14px]">
+                          Lab details
+                        </label>
+                      </div>
+                      <div key="All reports mailed" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="All reports mailed"
+                          checked={formData.All_Reports_Mailed}
+                          onCheckedChange={() => handleCheckboxChange('All reports mailed')}
+                        />
+                        <label htmlFor="All reports mailed" className="capitalize font-normal text-[14px]">
+                          All reports mailed
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* POst Training */}
+                    <div className='grid grid-cols-1 gap-2'>
+                      <div key="FB/MTM" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="FB/MTM"
+                          checked={formData.FB_MTM}
+                          onCheckedChange={() => handleCheckboxChange('FB/MTM')}
+                        />
+                        <label htmlFor="FB/MTM')}" className="capitalize font-normal text-[14px]">
+                          FB/MTM
+                        </label>
+                      </div>
+                      <div key="Certificates Issued" className="flex items-center space-x-2">
+                        <Checkbox
+                          id="Certificates Issued"
+                          checked={formData.certificate_Issued}
+                          onCheckedChange={() => handleCheckboxChange('Certificates Issued')}
+                        />
+                        <label htmlFor="Certificates Issued" className="capitalize font-normal text-[14px]">
+                          Certificates Issued
+                        </label>
+                      </div>
+                    </div>
+
+
                   </div>
 
                 <Button type="submit" className="mt-4 inline-block">
@@ -237,6 +535,10 @@ function ViewSingleProject() {
           }
 
       </Fragment>
+{/* 
+      {
+        JSON.stringify(formData)
+      } */}
 
       <Notes projectName={projectName} projectId={_id} notes={notes}/>
     </div>
