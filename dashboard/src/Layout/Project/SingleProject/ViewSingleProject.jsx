@@ -57,6 +57,7 @@ function ViewSingleProject() {
     Hybrid: false,
     FullTime: false,
     PartTime: false,
+    // PartTime_timi
     venue: false,
     PO_Payment_terms:false,
     NDA_SignedCollection:false,
@@ -206,6 +207,13 @@ function ViewSingleProject() {
     console.log(res)
   }
 
+  // Check if the part time or full time is checked
+  // useEffect(() => {
+  //   if(formData.PartTime){
+
+  //   }
+  // }, [formData.PartTime])
+
   return (
     <div className=''>
 
@@ -265,20 +273,9 @@ function ViewSingleProject() {
               }
               <form onSubmit={handleSubmit} className="space-y-4">
                   <div className='grid grid-cols-3 gap-4 items-start'>
-                    {/* {Object.keys(formData).map((field) => (
-                      <div key={field} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={field}
-                          checked={formData[field]}
-                          onCheckedChange={() => handleCheckboxChange(field)}
-                        />
-                        <label htmlFor={field} className="capitalize font-normal text-[14px]">
-                          {state[field]}
-                        </label>
-                      </div>
-                    ))} */}
+
                     {/* Pre Training Delivery */}
-                    <div className='grid grid-cols-1 gap-2'>
+                    <div className='grid grid-cols-1 gap-3'>
                       <div key="Travel" className="flex items-center space-x-2">
                         <Checkbox
                           id="Travel"
@@ -339,15 +336,23 @@ function ViewSingleProject() {
                           Full-Time
                         </label>
                       </div>
-                      <div key="PartTime" className="flex items-center space-x-2">
-                        <Checkbox
-                          id="PartTime"
-                          checked={formData.PartTime}
-                          onCheckedChange={() => handleCheckboxChange('PartTime')}
-                        />
-                        <label htmlFor="PartTime" className="capitalize font-normal text-[14px]">
-                          Part-Time
-                        </label>
+                      <div key="PartTime" className="flex  items-center space-x-2">
+                        <div>
+                          <Checkbox
+                            id="PartTime"
+                            checked={formData.PartTime}
+                            onCheckedChange={() => handleCheckboxChange('PartTime')}
+                          />
+                          <label htmlFor="PartTime" className="capitalize font-normal ml-2 text-[14px]">
+                            Part-Time
+                          </label>
+                        </div>
+                        {
+                          formData.PartTime && 
+                          <div className='block'>
+                            <Input type="time"/>
+                          </div>
+                        }
                       </div>
                       <div key="venue" className="flex items-center space-x-2">
                         <Checkbox
@@ -457,7 +462,7 @@ function ViewSingleProject() {
 
 
                     {/* Training */}
-                    <div className='grid grid-cols-1 gap-2'>
+                    <div className='grid grid-cols-1 gap-3'>
                       <div key="Travel" className="flex items-center space-x-2">
                         <Checkbox
                           id="Travel"
@@ -501,7 +506,7 @@ function ViewSingleProject() {
                     </div>
 
                     {/* POst Training */}
-                    <div className='grid grid-cols-1 gap-2'>
+                    <div className='grid grid-cols-1 gap-3'>
                       <div key="FB/MTM" className="flex items-center space-x-2">
                         <Checkbox
                           id="FB/MTM"
@@ -535,10 +540,6 @@ function ViewSingleProject() {
           }
 
       </Fragment>
-{/* 
-      {
-        JSON.stringify(formData)
-      } */}
 
       <Notes projectName={projectName} projectId={_id} notes={notes}/>
     </div>
