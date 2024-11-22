@@ -44,7 +44,7 @@ export const uploadFileToBlob = async(file, folderName, projectName) => {
         await containerClient.createIfNotExists();
 
         // Generate a unique blob name with the folder path (e.g., folderName/fileName)
-        const blobName = `Training/${projectName}/${file.originalname}`;
+        const blobName = `${projectName}/${file.originalname}`;
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
         // Upload file buffer to Azure Blob Storage

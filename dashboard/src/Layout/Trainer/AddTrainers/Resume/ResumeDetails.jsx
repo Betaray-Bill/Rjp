@@ -27,7 +27,7 @@ function ResumeDetails({data}) {
 
   const checkConnection = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/resumeextractor/upload  /check-connection");
+      const response = await axios.get("http://localhost:5000/api/resumeextractor/check-connection");
       setConnectionStatus(response.data.message);
       setModelStatus(response.data.modelStatus);
     } catch (error) {

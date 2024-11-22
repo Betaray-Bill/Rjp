@@ -20,7 +20,7 @@ function Notes({projectName, projectId}) {
 
     useEffect(() => {
         fetchNotes()
-    }, [projectId, projectName])
+    }, [projectId])
 
     // const socket = io("ws://localhost:6000");
     const [message,
@@ -44,21 +44,20 @@ function Notes({projectName, projectId}) {
         console.log(e)
     }
 
-    const fetchNotes= async () => {
+    const fetchNotes = async() => {
         const response = await axios.get(`http://localhost:5000/api/project/getChat/${projectId}`); // Replace with your API endpoint
         setData(response.data.notes)
         return response.data;
     };
 
-    const { data: notes  } = useQuery(
-        ['notes', projectId], // Unique key for this query
-        fetchNotes,
-        {
-            enabled:true,
-            staleTime: 1000 * 60 * 5, // data stays fresh for 5 minutes
-            cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
-        }
-    );
+    const {data: notes} = useQuery([
+        'notes', projectId
+    ], // Unique key for this query
+            fetchNotes, {
+        enabled: true,
+        staleTime: 1000 * 60 * 5, // data stays fresh for 5 minutes
+        cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
+    });
 
     // UPloading the Resume and Extracting the Resume
     const fileInputRef = useRef(null);
@@ -184,6 +183,7 @@ function Notes({projectName, projectId}) {
             } catch (error) {
                 console.error("Error during connection or file upload:", error.message);
             }
+            fileInputRef.current.value = null;
 
             // Emit the message to the socket
             console.log("Message sent successfully!");
@@ -212,7 +212,7 @@ function Notes({projectName, projectId}) {
                 <div className='relative'>
                     {data.length > 0
                         ? <div
-                                className='min-h-[100px] max-h-[80vh] h-max relative scroll-m-1 overflow-y-scroll  rounded-t-md shadow-sm border p-3'>
+                                className='min-h-[100px]     max-h-[80vh] h-max relative scroll-m-1 overflow-y-scroll  rounded-t-md shadow-sm border p-3'>
                                 {data && data.map((item, index) => (
                                     <div key={index} className="flex items-start justify-start mt-[20px]">
                                         <Avatar>
@@ -225,34 +225,41 @@ function Notes({projectName, projectId}) {
                                         <div className="ml-2">
                                             <div className="flex items-center justify-between">
                                                 <p className="font-normal text-md text-slate-700">{item.sent}</p>
-                                                {/* <span className='text-slate-700'>
-                                                    {new Date(item.timestamps).toLocaleDateString()}</span> */}
+                                                {/* <span className='text-slate-700 text-sm'> */}
                                             </div>
-                                            {item.text.content
-                                                ? (
-                                                    <div className='flex items-end'>
-                                                        <div className="w-max bg-blue-50 rounded-md px-3 py-2 mt-[4px]">
-                                                            <p>{item.text.content}</p>
-                                                        </div>
-                                                        <span className='text-slate-700 ml-2'>
-                                                            {new Date(item.timestamps).toLocaleDateString()}</span>
-                                                    </div>
-                                                )
-                                                : null}
-                                            {item.file.name
-                                                ? (
-                                                    <div className="mt-2 flex items-center">
-                                                        <ion-icon name="document-outline"></ion-icon>
-                                                        <a
-                                                            href={item.file.url}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="text-blue-500 underline ml-2">
-                                                            {item.file.name}
-                                                        </a>
-                                                    </div>
-                                                )
-                                                : null}
+                                            <div className='flex items-end'>
+                                                <div>
+                                                    {item.text.content
+                                                        ? (
+                                                            <div className='flex items-end'>
+                                                                <div className="w-max bg-blue-50 font-medium rounded-md px-3 py-2 mt-[4px]">
+                                                                    <p>{item.text.content}</p>
+                                                                </div>
+                                                                {/* <span className='text-slate-700 ml-2'>
+                                                                {new Date(item.timestamps).toLocaleDateString()}</span> */}
+                                                            </div>
+                                                        )
+                                                        : null}
+                                                    {item.file.name
+                                                        ? (
+                                                            <div className="mt-2 flex items-center">
+                                                                <ion-icon name="document-outline"></ion-icon>
+                                                                <a
+                                                                    href={item.file.url}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="text-blue-500 underline ml-2">
+                                                                    {item.file.name}
+                                                                </a>
+                                                            </div>
+                                                        )
+                                                        : null}
+                                                </div>
+                                                <span className='text-slate-700 ml-4 text-[14px]'>
+                                                    {new Date(item.timestamps).toLocaleDateString()}
+                                                </span>
+                                            </div>
+
                                         </div>
                                     </div>
                                 ))
