@@ -15,69 +15,112 @@ import ViewCompanyContact from './Components/ViewCompanyContact'
 import ViewProjectData from './Components/ViewProjectData'
 import Notes from './Components/Notes'
 import { useToast } from '@/hooks/use-toast'
+const state = {
+  ParticipantList: "Participant List",
+  Hotel: "Hotel",
+  venue: "Venue",
+  Travel: "Travel",
+  FB_MTM: "FB/MTM",
+  All_Reports_Mailed: "All Reports Mailed",
+  certificate_Issued: "Certificate Issued",
+  Online: "Online",
+  InPerson: "In Person",
+  Hybrid: "Hybrid",
+  FullTime: "Full Time",
+  PartTime: "Part Time",
+  PO_Payment_terms:"PO & Payment terms",
+  NDA_SignedCollection:"NDA - signed copy collection",
+  Pre_Req_Test :"Pre -Req -Test ",
+  Ref_Material_links__Training_content__Lab_testing__Azure_pass:"Ref Material links / Training content / Lab testing / Azure pass",
+  Day_wise_Training_Content:"Day-wise Training Content",
+  whitelisting:"whitelisting",
+  WhatsAppGroupCreation:"WhatsApp Group Creation",
+  MeetingInvite:"Meeting invite",
+  LMSInvite:"LMS invite",
+  LabDetails:"Lab details",
+  certificate_Issued:"Certificates Issued",
+  All_Reports_Mailed: "All reports mailed",
+};
 
 function ViewSingleProject() {
   const projectId = useParams()
   const navigate = useNavigate();
-  const [collapse, setCollapse] = useState(false)
+  // const [collapse, setCollapse] = useState(false)
   const queryClient = useQueryClient();
   const {toast} = useToast()
-  const state = {
-    ParticipantList: "Participant List",
-    Hotel: "Hotel",
-    venue: "Venue",
-    Travel: "Travel",
-    FB_MTM: "FB/MTM",
-    All_Reports_Mailed: "All Reports Mailed",
-    certificate_Issued: "Certificate Issued",
-    Online: "Online",
-    InPerson: "In Person",
-    Hybrid: "Hybrid",
-    FullTime: "Full Time",
-    PartTime: "Part Time",
-    PO_Payment_terms:"PO & Payment terms",
-    NDA_SignedCollection:"NDA - signed copy collection",
-    Pre_Req_Test :"Pre -Req -Test ",
-    Ref_Material_links__Training_content__Lab_testing__Azure_pass:"Ref Material links / Training content / Lab testing / Azure pass",
-    Day_wise_Training_Content:"Day-wise Training Content",
-    whitelisting:"whitelisting",
-    WhatsAppGroupCreation:"WhatsApp Group Creation",
-    MeetingInvite:"Meeting invite",
-    LMSInvite:"LMS invite",
-    LabDetails:"Lab details",
-    All_Reports_Mailed: "All reports mailed",
-  };
-  
+
+  const [formData, setFormData] = useState({});
+  // const [isLoading, setIsLoading] = useState(true);
+
+  const { currentUser } = useSelector(state => state.auth)
+  const fetchProjects = async () => {
+    const response = await axios.get(`http://localhost:5000/api/project/get-project/${projectId.projectId}`)
+    console.log(response.data)
+    setFormData({
+        Hotel:  response.data.project.trainingDelivery.Hotel,
+        Online:  response.data.project.trainingDelivery.Online,
+        InPerson:  response.data.project.trainingDelivery.InPerson,
+        Hybrid:  response.data.project.trainingDelivery.Hybrid,
+        FullTime:  response.data.project.trainingDelivery.FullTime,
+        PartTime:  response.data.project.trainingDelivery.PartTime,
+        venue:  response.data.project.trainingDelivery.venue,
+        PO_Payment_terms:  response.data.project.trainingDelivery.PO_Payment_terms,
+        NDA_SignedCollection:  response.data.project.trainingDelivery.NDA_SignedCollection,
+        Pre_Req_Test:  response.data.project.trainingDelivery.Pre_Req_Test,
+        Ref_Material_links__Training_content__Lab_testing__Azure_pass:  response.data.project.trainingDelivery.Ref_Material_links__Training_content__Lab_testing__Azure_pass,
+        Day_wise_Training_Content:  response.data.project.trainingDelivery.Day_wise_Training_Content,
+        ParticipantList:  response.data.project.trainingDelivery.ParticipantList,
+        whitelisting:  response.data.project.trainingDelivery.whitelisting,
+        WhatsAppGroupCreation:  response.data.project.trainingDelivery.WhatsAppGroupCreation,
+        MeetingInvite:  response.data.project.trainingDelivery.MeetingInvite,
+        LMSInvite:  response.data.project.trainingDelivery.LMSInvite,
+        LabDetails:  response.data.project.trainingDelivery.LabDetails,
+        All_Reports_Mailed:  response.data.project.trainingDelivery.All_Reports_Mailed,
+        FB_MTM:  response.data.project.trainingDelivery.FB_MTM,
+        certificate_Issued:  response.data.project.trainingDelivery.certificate_Issued
+    })
+    return response.data.project
+  }
+//  console.log(projectId.projectId)
+  const { data: projects, isLoading, error } = useQuery(
+    ['ViewProject', projectId.projectId], 
+    
+    fetchProjects,
+    {
+      enabled: !!projectId.projectId,
+      staleTime: 1000 * 60 * 5, // data stays fresh for 5 minutes
+      cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
+    }
+  )
+  // console.log(formData)
+
+
   // Training Delivered
-  const [formData, setFormData] = useState({
-    Travel: false,
-    Hotel: false,
-    Online: false,
-    InPerson: false,
-    Hybrid: false,
-    FullTime: false,
-    PartTime: false,
-    // PartTime_timi
-    venue: false,
-    PO_Payment_terms:false,
-    NDA_SignedCollection:false,
-    Pre_Req_Test :false,
-    Ref_Material_links__Training_content__Lab_testing__Azure_pass:false,
-    Day_wise_Training_Content:false,
-    ParticipantList:false,
-    whitelisting:false,
-    WhatsAppGroupCreation:false,
+  // const [formData, setFormData] = useState({
+  //   Travel: projects.trainingDelivery.Travel,
+  //   Hotel: projects.trainingDelivery.Hotel,
+  //   Online: projects.trainingDelivery.Online,
+  //   InPerson: projects.trainingDelivery.InPerson,
+  //   Hybrid: projects.trainingDelivery.Hybrid,
+  //   FullTime: projects.trainingDelivery.FullTime,
+  //   PartTime: projects.trainingDelivery.PartTime,
+  //   venue: projects.trainingDelivery.venue,
+  //   PO_Payment_terms: projects.trainingDelivery.PO_Payment_terms,
+  //   NDA_SignedCollection: projects.trainingDelivery.NDA_SignedCollection,
+  //   Pre_Req_Test: projects.trainingDelivery.Pre_Req_Test,
+  //   Ref_Material_links__Training_content__Lab_testing__Azure_pass: projects.trainingDelivery.Ref_Material_links__Training_content__Lab_testing__Azure_pass,
+  //   Day_wise_Training_Content: projects.trainingDelivery.Day_wise_Training_Content,
+  //   ParticipantList: projects.trainingDelivery.ParticipantList,
+  //   whitelisting: projects.trainingDelivery.whitelisting,
+  //   WhatsAppGroupCreation: projects.trainingDelivery.WhatsAppGroupCreation,
+  //   MeetingInvite: projects.trainingDelivery.MeetingInvite,
+  //   LMSInvite: projects.trainingDelivery.LMSInvite,
+  //   LabDetails: projects.trainingDelivery.LabDetails,
+  //   All_Reports_Mailed: projects.trainingDelivery.All_Reports_Mailed,
+  //   FB_MTM: projects.trainingDelivery.FB_MTM,
+  //   certificate_Issued: projects.trainingDelivery.certificate_Issued
 
-    //
-    MeetingInvite:false,
-    LMSInvite:false,
-    LabDetails:false,
-    All_Reports_Mailed: false,
-
-    // 
-    FB_MTM: false,
-    certificate_Issued: false
-  });
+  // });
 
   useEffect(() => {
     if( projects && projects.stages === "Training Delivery"){
@@ -98,12 +141,10 @@ function ViewSingleProject() {
         ParticipantList: projects.trainingDelivery.ParticipantList,
         whitelisting: projects.trainingDelivery.whitelisting,
         WhatsAppGroupCreation: projects.trainingDelivery.WhatsAppGroupCreation,
-
         MeetingInvite: projects.trainingDelivery.MeetingInvite,
         LMSInvite: projects.trainingDelivery.LMSInvite,
         LabDetails: projects.trainingDelivery.LabDetails,
         All_Reports_Mailed: projects.trainingDelivery.All_Reports_Mailed,
-
         FB_MTM: projects.trainingDelivery.FB_MTM,
         certificate_Issued: projects.trainingDelivery.certificate_Issued
 
@@ -148,50 +189,7 @@ function ViewSingleProject() {
     
   };
 
-  const { currentUser } = useSelector(state => state.auth)
-  const fetchProjects = async () => {
-    const response = await axios.get(`http://localhost:5000/api/project/get-project/${projectId.projectId}`)
-    console.log(response.data)
-    setFormData({
-        Hotel:  response.data.project.trainingDelivery.Hotel,
-        Online:  response.data.project.trainingDelivery.Online,
-        InPerson:  response.data.project.trainingDelivery.InPerson,
-        Hybrid:  response.data.project.trainingDelivery.Hybrid,
-        FullTime:  response.data.project.trainingDelivery.FullTime,
-        PartTime:  response.data.project.trainingDelivery.PartTime,
-        venue:  response.data.project.trainingDelivery.venue,
-        PO_Payment_terms:  response.data.project.trainingDelivery.PO_Payment_terms,
-        NDA_SignedCollection:  response.data.project.trainingDelivery.NDA_SignedCollection,
-        Pre_Req_Test:  response.data.project.trainingDelivery.Pre_Req_Test,
-        Ref_Material_links__Training_content__Lab_testing__Azure_pass:  response.data.project.trainingDelivery.Ref_Material_links__Training_content__Lab_testing__Azure_pass,
-        Day_wise_Training_Content:  response.data.project.trainingDelivery.Day_wise_Training_Content,
-        ParticipantList:  response.data.project.trainingDelivery.ParticipantList,
-        whitelisting:  response.data.project.trainingDelivery.whitelisting,
-        WhatsAppGroupCreation:  response.data.project.trainingDelivery.WhatsAppGroupCreation,
-
-        MeetingInvite:  response.data.project.trainingDelivery.MeetingInvite,
-        LMSInvite:  response.data.project.trainingDelivery.LMSInvite,
-        LabDetails:  response.data.project.trainingDelivery.LabDetails,
-        All_Reports_Mailed:  response.data.project.trainingDelivery.All_Reports_Mailed,
-
-        FB_MTM:  response.data.project.trainingDelivery.FB_MTM,
-        certificate_Issued:  response.data.project.trainingDelivery.certificate_Issued
-    })
-    return response.data.project
-  }
-//  console.log(projectId.projectId)
-  const { data: projects, isLoading, error } = useQuery(
-    ['ViewProject', projectId.projectId], 
-    
-    fetchProjects,
-    {
-      enabled: !!projectId.projectId,
-      staleTime: 1000 * 60 * 5, // data stays fresh for 5 minutes
-      cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
-    }
-  )
-  console.log(formData)
-
+ 
   if (isLoading) return <div><Loading /></div>
   if (error) return <div>Error: {error.message}</div>
   console.log(projects)
@@ -463,21 +461,21 @@ function ViewSingleProject() {
 
                     {/* Training */}
                     <div className='grid grid-cols-1 gap-3'>
-                      <div key="Travel" className="flex items-center space-x-2">
+                      <div key="Meeting invite" className="flex items-center space-x-2">
                         <Checkbox
-                          id="Travel"
+                          id="Meeting invite"
                           checked={formData.MeetingInvite}
-                          onCheckedChange={() => handleCheckboxChange('Meeting invite')}
+                          onCheckedChange={() => handleCheckboxChange('MeetingInvite')}
                         />
                         <label htmlFor="Meeting invite" className="capitalize font-normal text-[14px]">
                           Meeting invite
                         </label>
                       </div>
-                      <div key="Travel" className="flex items-center space-x-2">
+                      <div key="LMS invite" className="flex items-center space-x-2">
                         <Checkbox
                           id="LMS invite"
                           checked={formData.LMSInvite}
-                          onCheckedChange={() => handleCheckboxChange('LMS invite')}
+                          onCheckedChange={() => handleCheckboxChange('LMSInvite')}
                         />
                         <label htmlFor="LMS invite" className="capitalize font-normal text-[14px]">
                           LMS invite
@@ -487,7 +485,7 @@ function ViewSingleProject() {
                         <Checkbox
                           id="Lab details"
                           checked={formData.LabDetails}
-                          onCheckedChange={() => handleCheckboxChange('Lab details')}
+                          onCheckedChange={() => handleCheckboxChange('LabDetails')}
                         />
                         <label htmlFor="Lab details" className="capitalize font-normal text-[14px]">
                           Lab details
@@ -497,7 +495,7 @@ function ViewSingleProject() {
                         <Checkbox
                           id="All reports mailed"
                           checked={formData.All_Reports_Mailed}
-                          onCheckedChange={() => handleCheckboxChange('All reports mailed')}
+                          onCheckedChange={() => handleCheckboxChange('All_Reports_Mailed')}
                         />
                         <label htmlFor="All reports mailed" className="capitalize font-normal text-[14px]">
                           All reports mailed
@@ -511,7 +509,7 @@ function ViewSingleProject() {
                         <Checkbox
                           id="FB/MTM"
                           checked={formData.FB_MTM}
-                          onCheckedChange={() => handleCheckboxChange('FB/MTM')}
+                          onCheckedChange={() => handleCheckboxChange('FB_MTM')}
                         />
                         <label htmlFor="FB/MTM')}" className="capitalize font-normal text-[14px]">
                           FB/MTM
@@ -521,7 +519,7 @@ function ViewSingleProject() {
                         <Checkbox
                           id="Certificates Issued"
                           checked={formData.certificate_Issued}
-                          onCheckedChange={() => handleCheckboxChange('Certificates Issued')}
+                          onCheckedChange={() => handleCheckboxChange('certificate_Issued')}
                         />
                         <label htmlFor="Certificates Issued" className="capitalize font-normal text-[14px]">
                           Certificates Issued
@@ -540,6 +538,7 @@ function ViewSingleProject() {
           }
 
       </Fragment>
+
 
       <Notes projectName={projectName} projectId={_id} notes={notes}/>
     </div>
