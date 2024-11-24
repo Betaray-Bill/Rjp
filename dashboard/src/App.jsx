@@ -28,6 +28,8 @@ import ViewProjects from './Layout/Project/ViewProjects'
 import ProjectSearchTrainer from './Layout/Project/Components/ProjectSearchTrainer'
 import ViewSingleProject from './Layout/Project/SingleProject/ViewSingleProject'
 import Resume from './Layout/Resume/Resume'
+import ViewCompany from './Layout/Company/ViewCompany'
+import AddContact from './Layout/Company/AddContact'
 
 
 function App() {
@@ -80,6 +82,8 @@ function App() {
                <Route path='company' element={<Company />}>
                 {/* add-company */}
                 <Route path='add-company' element={<AddCompany />} />
+                <Route path='add-contact' element={<AddContact />} />
+                <Route path="" index element={<ViewCompany />} />
                </Route>
             }
 

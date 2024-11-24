@@ -92,36 +92,6 @@ function ViewSingleProject() {
       cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
     }
   )
-  // console.log(formData)
-
-
-  // Training Delivered
-  // const [formData, setFormData] = useState({
-  //   Travel: projects.trainingDelivery.Travel,
-  //   Hotel: projects.trainingDelivery.Hotel,
-  //   Online: projects.trainingDelivery.Online,
-  //   InPerson: projects.trainingDelivery.InPerson,
-  //   Hybrid: projects.trainingDelivery.Hybrid,
-  //   FullTime: projects.trainingDelivery.FullTime,
-  //   PartTime: projects.trainingDelivery.PartTime,
-  //   venue: projects.trainingDelivery.venue,
-  //   PO_Payment_terms: projects.trainingDelivery.PO_Payment_terms,
-  //   NDA_SignedCollection: projects.trainingDelivery.NDA_SignedCollection,
-  //   Pre_Req_Test: projects.trainingDelivery.Pre_Req_Test,
-  //   Ref_Material_links__Training_content__Lab_testing__Azure_pass: projects.trainingDelivery.Ref_Material_links__Training_content__Lab_testing__Azure_pass,
-  //   Day_wise_Training_Content: projects.trainingDelivery.Day_wise_Training_Content,
-  //   ParticipantList: projects.trainingDelivery.ParticipantList,
-  //   whitelisting: projects.trainingDelivery.whitelisting,
-  //   WhatsAppGroupCreation: projects.trainingDelivery.WhatsAppGroupCreation,
-  //   MeetingInvite: projects.trainingDelivery.MeetingInvite,
-  //   LMSInvite: projects.trainingDelivery.LMSInvite,
-  //   LabDetails: projects.trainingDelivery.LabDetails,
-  //   All_Reports_Mailed: projects.trainingDelivery.All_Reports_Mailed,
-  //   FB_MTM: projects.trainingDelivery.FB_MTM,
-  //   certificate_Issued: projects.trainingDelivery.certificate_Issued
-
-  // });
-
   useEffect(() => {
     if( projects && projects.stages === "Training Delivery"){
       setFormData({
