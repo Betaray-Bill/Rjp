@@ -22,7 +22,7 @@ function Notes({projectName, projectId}) {
         // fetchNotes()
     }, [projectId])
 
-    // const socket = io("ws://localhost:6000");
+    // use const socket = io("ws://localhost:6000");
     const [message,
         setMessage] = useState({
         text: {
@@ -52,6 +52,28 @@ function Notes({projectName, projectId}) {
     const fetchNotes = async() => {
         const response = await axios.get(`http://localhost:5000/api/project/getChat/${projectId}`); // Replace with your API endpoint
         setData(response.data.notes)
+
+        let final = [];
+
+        for (let i = 0; i < response.data.notes.length; i++) {
+            // console.log(notes[i].timestamps)
+            let noteDate = new Date(response.data.notes[i].timestamps).toDateString(); // Extract date as a string
+
+            // Check if a group for this date already exists
+            let existingGroup = final.find((group) => group.date === noteDate);
+
+            if (existingGroup) {
+                existingGroup
+                    .chats
+                    .push(response.data.notes[i]);
+            } else {
+                final.push({
+                    date: noteDate,
+                    chats: [response.data.notes[i]]
+                });
+            }
+        }
+        setData(final)
         return response.data;
     };
 
@@ -63,7 +85,7 @@ function Notes({projectName, projectId}) {
         staleTime: 1000 * 60 * 5, // data stays fresh for 5 minutes
         cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
     });
-
+    console.log(data)
     // UPloading the Resume and Extracting the Resume
     const fileInputRef = useRef(null);
 
@@ -198,6 +220,8 @@ function Notes({projectName, projectId}) {
         }
     }
 
+    console.log(notes)
+
     return (
         <div className='border rounded-md shadow-sm mt-8 py-4 px-4'>
             <div className='flex items-center justify-between pb-2 border-b'>
@@ -220,54 +244,64 @@ function Notes({projectName, projectId}) {
                     {data.length > 0
                         ? <div
                                 className='min-h-[100px]     max-h-[80vh] h-max relative scroll-m-1 overflow-y-scroll  rounded-t-md shadow-sm border p-3'>
-                                {data && data.map((item, index) => (
-                                    <div key={index} className="flex items-start justify-start mt-[20px]">
-                                        <Avatar>
-                                            <AvatarImage src={item.photo_url || "https://via.placeholder.com/150"}/>
-                                            <AvatarFallback>{item
-                                                    .sent
-                                                    .charAt(0)
-                                                    .toUpperCase()}</AvatarFallback>
-                                        </Avatar>
-                                        <div className="ml-2">
-                                            <div className="flex items-center justify-between">
-                                                <p className="font-normal text-md text-slate-700">{item.sent}</p>
-                                                {/* <span className='text-slate-700 text-sm'> */}
-                                            </div>
-                                            <div className='flex items-end'>
-                                                <div>
-                                                    {item.text.content
-                                                        ? (
-                                                            <div className='flex items-end'>
-                                                                <div className="w-max bg-blue-50 font-medium rounded-md px-3 py-2 mt-[4px]">
-                                                                    <p>{item.text.content}</p>
-                                                                </div>
-                                                                {/* <span className='text-slate-700 ml-2'>
-                                                                {new Date(item.timestamps).toLocaleDateString()}</span> */}
-                                                            </div>
-                                                        )
-                                                        : null}
-                                                    {item.file.name
-                                                        ? (
-                                                            <div className="mt-2 flex items-center">
-                                                                <ion-icon name="document-outline"></ion-icon>
-                                                                <a
-                                                                    href={item.file.url}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-blue-500 underline ml-2">
-                                                                    {item.file.name}
-                                                                </a>
-                                                            </div>
-                                                        )
-                                                        : null}
-                                                </div>
-                                                <span className='text-slate-700 ml-4 text-[14px]'>
-                                                    {new Date(item.timestamps).toLocaleDateString()}
-                                                </span>
-                                            </div>
-
+                                {data && data.map((e, index) => (
+                                    <div>
+                                        <div className='text-center my-2'>
+                                            <h2 className='font-semibold'>{e.date}</h2>
                                         </div>
+                                        {e
+                                            .chats
+                                            .map((item, i) => (
+                                                <div key={i} className="flex items-start justify-start mt-[20px]">
+                                                    <Avatar>
+                                                        <AvatarImage src={item.photo_url || "https://via.placeholder.com/150"}/>
+                                                        <AvatarFallback>{item
+                                                                .sent
+                                                                .charAt(0)
+                                                                .toUpperCase()}</AvatarFallback>
+                                                    </Avatar>
+                                                    <div className="ml-2">
+                                                        <div className="flex items-center justify-between">
+                                                            <p className="font-normal text-md text-slate-700">{item.sent}</p>
+                                                            {/* <span className='text-slate-700 text-sm'> */}
+                                                        </div>
+                                                        <div className='flex items-end'>
+                                                            <div>
+                                                                {item.text.content
+                                                                    ? (
+                                                                        <div className='flex items-end'>
+                                                                            <div className="w-max bg-blue-50 font-normal rounded-md px-3 py-2 mt-[4px]">
+                                                                                <p>{item.text.content}</p>
+                                                                            </div>
+                                                                            {/* <span className='text-slate-700 ml-2'>
+                                                                {new Date(item.timestamps).toLocaleDateString()}</span> */}
+                                                                        </div>
+                                                                    )
+                                                                    : null}
+                                                                {item.file.name
+                                                                    ? (
+                                                                        <div className="mt-2 flex items-center">
+                                                                            <ion-icon name="document-outline"></ion-icon>
+                                                                            <a
+                                                                                href={item.file.url}
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                className="text-blue-500 underline ml-2">
+                                                                                {item.file.name}
+                                                                            </a>
+                                                                        </div>
+                                                                    )
+                                                                    : null}
+                                                            </div>
+                                                            <span className='text-slate-700 ml-4 text-[14px]'>
+                                                                {new Date(item.timestamps).toLocaleTimeString()}
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            ))
+}
                                     </div>
                                 ))
 }
@@ -275,7 +309,8 @@ function Notes({projectName, projectId}) {
                         : <div className='text-italic text-gray-600 italic text-center'>No Notes yet</div>
 }
 
-                    <div className=' p-2 bg-white rounded-md my-2 border border-black bottom-1 w-full'>
+                    <div
+                        className=' p-2 bg-white rounded-md my-2 border border-black bottom-1 w-full'>
                         {/* <div clas>Notes</div> */}
                         <div className='border-b-2 pb-2'>
                             <Textarea

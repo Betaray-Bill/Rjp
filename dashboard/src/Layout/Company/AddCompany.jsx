@@ -37,12 +37,12 @@ function AddCompany() {
     axios.defaults.withCredentials = true;
     const handleSubmit = async(event) => {
         event.preventDefault();
-        if(formData.companyName === undefined || formData.contact_email === undefined || formData.contact_phone_number === undefined || formData.contact_name){
-          toast({
-                title: "Please Fill All Required Fields",
-            })
-            return;
-        }
+        // if(formData.companyName === undefined || formData.contact_email === undefined || formData.contact_phone_number === undefined || formData.contact_name){
+        //   toast({
+        //         title: "Please Fill All Required Fields",
+        //     })
+        //     return;
+        // }
         try {
             const response = await axios.post('http://localhost:5000/api/company/create-company', formData); // Replace with your API endpoint
             console.log('Registration successful:', response.data);
