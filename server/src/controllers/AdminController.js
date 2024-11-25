@@ -1,6 +1,7 @@
 // import Company from "../models/CompanyAndDealModels/CompanyModel.js";
 import Employee from "../models/EmployeeModel.js";
 import Admin from "../models/RoleModels/AdminModel.js";
+import Finance from "../models/RoleModels/FinanceModel.js";
 import KeyAccounts from "../models/RoleModels/KeyAccountsModel.js";
 import Manager from "../models/RoleModels/ManagerModel.js";
 import TrainerSourcer from "../models/RoleModels/TrainerSourcerModel.js";
@@ -47,13 +48,13 @@ const addEmployee = asyncHandler(async(req, res) => {
                     Employee
                         .role
                         .push({ roleId: adminRole._id, name: 'ADMIN' });
-                } else if (role === 'Manager') {
+                } else if (role === 'Finance') {
                     console.log(roles)
-                    const managerRole = new Manager({ employeeId: employee._id });
-                    await managerRole.save();
+                    const financeRole = new Finance({ employeeId: employee._id });
+                    await financeRole.save();
                     employee
                         .role
-                        .push({ roleId: managerRole._id, name: 'Manager' });
+                        .push({ roleId: financeRole._id, name: 'Finance' });
                 } else if (role === 'Trainer Sourcer') {
                     const trainerSourcerRole = new TrainerSourcer({ employeeId: employee._id });
                     await trainerSourcerRole.save();

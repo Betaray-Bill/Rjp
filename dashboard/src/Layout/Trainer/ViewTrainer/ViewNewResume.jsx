@@ -276,11 +276,16 @@ function    ViewNewResume({data, projects}) {
     const sortDataByDomain = (domain) => {
         // Helper function to sort a single array based on the domain
         const sortArray = (array, domain) => {
-            return [...array].sort((a, b) => {  // Spread operator to create a new array
-                const aContainsDomain = a.toLowerCase().includes(domain.toLowerCase());
-                const bContainsDomain = b.toLowerCase().includes(domain.toLowerCase());
+            return array.sort((a, b) => {
+                console.log(domain.split(" "));
+                const aContainsDomain = a
+                  .toLowerCase()
+                  .includes(domain.toLowerCase().split(" "));
+                const bContainsDomain = b
+                  .toLowerCase()
+                  .includes(domain.toLowerCase().split(" "));
                 return bContainsDomain - aContainsDomain;
-            });
+              });
         };
         let data = resume
         // console.log(data)
@@ -293,7 +298,7 @@ function    ViewNewResume({data, projects}) {
         }
         console.log(data)
         setResume(data)
-        // return data;
+        return data;    
       }
     // console.log(resume)
     const handleSearchTerm = (e) => {
@@ -317,8 +322,8 @@ function    ViewNewResume({data, projects}) {
     return ( 
         <div className='mt-8'> 
 
-        {
-            !resLoading ?
+        {/* {
+            !resLoading ? */}
         
             <form onSubmit={submitResumeHandler}>
 
@@ -531,12 +536,12 @@ function    ViewNewResume({data, projects}) {
                 <Button type="submit">Submit</Button>
                 </div>
             </form> 
-            : 
+            {/* : 
             <div className='w-max grid place-content-center'>
                 <img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" alt="" />
             </div>
         
-        }
+        } */}
         </div>
     )
   }

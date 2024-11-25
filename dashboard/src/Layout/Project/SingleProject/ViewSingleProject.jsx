@@ -194,6 +194,16 @@ function ViewSingleProject() {
           <Button className="rounded-none">Edit</Button>
         </div>
       </div>
+
+      {/* <div className='flex items-center justify-start mb-3 border-b'>
+        <div className='bg-blue-200 p-2 px-3 hover:cursor-pointer'>
+          Overview
+        </div>
+        <div className=' bg-blue-200 p-2 px-3  hover:cursor-pointer'>
+          Notes
+        </div>
+      </div> */}
+
       {/* PRoject Data */}
       <ViewProjectData projects={projects}/>
 

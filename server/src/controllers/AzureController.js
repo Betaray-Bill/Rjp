@@ -13,18 +13,13 @@ const modelId = process.env.MODEL_ID;
 export const checkAzureConnection = async(req, res) => {
     console.log("0")
     try {
-        console.log("1")
         const url = `${endpoint}formrecognizer/documentModels/${modelId}?api-version=2023-07-31`;
-        console.log("2")
-        console.log(url)
-        console.log("3")
+
 
         const response = await axios.get(url, {
             headers: { "Ocp-Apim-Subscription-Key": apiKey },
         });
-        console.log("5")
 
-        console.log(url)
 
         res.status(200).json({
             message: "Successfully connected to Azure",

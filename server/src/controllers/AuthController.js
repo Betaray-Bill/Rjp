@@ -1,5 +1,6 @@
 import Employee from "../models/EmployeeModel.js";
 import Admin from "../models/RoleModels/AdminModel.js";
+import Finance from "../models/RoleModels/FinanceModel.js";
 import KeyAccounts from "../models/RoleModels/KeyAccountsModel.js";
 import Manager from "../models/RoleModels/ManagerModel.js";
 import TrainerSourcer from "../models/RoleModels/TrainerSourcerModel.js";
@@ -31,8 +32,8 @@ const login = asyncHandler(async(req, res) => {
             console.log("EMp ROle specs : ", roleData)
             rolesDetails.push(roleData)
         }
-        if (rolesExtract[i].name === "Manager") {
-            let roleData = await Manager.findById(rolesExtract[i].roleId)
+        if (rolesExtract[i].name === "Finance") {
+            let roleData = await Finance.findById(rolesExtract[i].roleId)
             console.log("EMp ROle specs : ", roleData)
             rolesDetails.push(roleData)
         }

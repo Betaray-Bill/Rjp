@@ -89,7 +89,7 @@ function App() {
 
 
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) &&
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT, RolesEnum.Finance], currentUser?.employee.role) &&
                <Route path='projects' element={<Project />}>
                 {/* add-company */}
                 <Route path=''  index element={<ViewProjects />} />

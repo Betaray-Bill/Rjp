@@ -23,15 +23,15 @@ function ViewResumeDetails({data, isNew}) {
 
     const [isLock, setIsLock]  = useState(false)
     const {trainerDetails} = useSelector(state  => state.currentTrainer)
-    // console.log(resume)
+    console.log(resume)
     useEffect(() => {
         // if()
-        console.log("data.isLocked ", data.isLocked)
+        // console.log("data.isLocked ", data.isLocked)
           setIsLock(data.isLocked)
     }, [])
     useEffect(() => {
       if(data && !isNew){
-        // console.log(data[0])
+        console.log(data[0])
         setResume({
             professionalSummary: data ? data.professionalSummary : [],
             technicalSkills: data ? data.technicalSkills : [],
@@ -42,7 +42,7 @@ function ViewResumeDetails({data, isNew}) {
             clientele: data ? data.clientele : [],
             experience: data ? data.experience : [],
           })
-          console.log(data)
+        //   console.log(data)
           setIsLock(data.isLocked)
         // setExtractedData(data)
         // setIsEdit(false)
@@ -76,37 +76,38 @@ function ViewResumeDetails({data, isNew}) {
               [field]: value
           };
       }
-    }
+        }
   
-    console.log("Resume Details ", updateResume())
-    setResume((prevState) => {
-          // Update array fields based on the index
-          if (Array.isArray(prevState[field])) {
-              const updatedArray = [...prevState[field]];
-              updatedArray[index] = value;
+    // console.log("Resume Details ", updateResume())
+        setResume((prevState) => {
+            // Update array fields based on the index
+            if (Array.isArray(prevState[field])) {
+                const updatedArray = [...prevState[field]];
+                updatedArray[index] = value;
+    
+                return {
+                    ...prevState,
+                    [field]: updatedArray
+                };
+            }
+    
+            // For non-array fields
+            return {
+                ...prevState,
+                [field]: value
+            };
+        });
   
-              return {
-                  ...prevState,
-                  [field]: updatedArray
-              };
-          }
-  
-          // For non-array fields
-          return {
-              ...prevState,
-              [field]: value
-          };
-      });
-  
-      console.log("Resume is ", resume)
+    //   console.log("Resume is ", resume)
       dispatch(setResumeDetails({name: "mainResume", data: updateResume()}))
   
     };
+    console.log(params)
   
     // Handler to add a new empty textarea for a specific field
     const handleAdd = (field) => {
             setResume((prevState) => {
-              console.log(prevState)
+            //   console.log(prevState)
                 return {
                     ...prevState,
                     [field]: [
@@ -186,18 +187,18 @@ function ViewResumeDetails({data, isNew}) {
     const submitResumeHandler = async(e) => {
         e.preventDefault()
         // http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/671f1f348706010ba634eb8f
-        console.log(`http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/${data._id}`)
+        // console.log(`http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/${data._id}`)
         try{
-            // console.log("object")
-            // console.log(resume)
+            console.log("object")
+            console.log(resume)
             await axios.put(`http://localhost:5000/api/trainersourcer/updateResume/${params.id}/resume/${data._id}`, resume)
             toast({
                 title:"Resume is Updated",
                 // description:`$ is Updated`
             })
-        
+            queryClient.invalidateQueries(['getTrainerById', params.id]);
         }catch(e){
-            // console.error(e)
+            console.error(e)
             setError('Failed to submit the resume')
         }
 
@@ -205,40 +206,41 @@ function ViewResumeDetails({data, isNew}) {
 
     // Select Project to the Resume
     const addProjectToResume = async(projectId) => {
-        // console.log(projectId)
+        console.log(projectId)
         if(projectId == ""){
             alert("Please select a project")
             return
         }
 
         try{
-            // console.log(`http://localhost:5000/api/project/add-resume/${projectId}/trainer/${trainerDetails._id}/resume`)
+            console.log(`http://localhost:5000/api/project/add-resume/${projectId}/trainer/${trainerDetails._id}/resume`)
             await axios.put(`http://localhost:5000/api/project/add-resume/${projectId}/trainer/${trainerDetails._id}/resume`, {resumeId:data._id})
             toast({
                 title:"Resume is Added",
                 // description:`${data.project} is Updated`
             })
-        
+            queryClient.invalidateQueries(['getTrainerById', params.id]);
+            
         }catch(e){
-            // console.error(e)
+            console.error(e)
             setError('Failed to add project to resume')
         }
     }
     
-    console.log(resume?.projects)
-    console.log(data?.isLocked)
+    // console.log(resume?.projects)
+    // console.log(data?.isLocked)
     const changeIsLock = async(e) => {
         // setIsLock(!isLock)
-        console.log(isLock)
+        // console.log(isLock)
         if(data.isLocked){
             setIsLock(false)
 
-            console.log("unlock it")
+            // console.log("unlock it")
             await axios.put(`http://localhost:5000/api/trainersourcer/updateLockStatus/${data._id}`, {isLock: false})
-         
+            
             // queryClient.invalidateQueries(['getTrainerById', params.id]);
         }else{
-            console.log("lock it")
+            // console.log("lock it")
             setIsLock(true)
             await axios.put(`http://localhost:5000/api/trainersourcer/updateLockStatus/${data._id}`, {isLock: true})
            
@@ -250,7 +252,7 @@ function ViewResumeDetails({data, isNew}) {
         // window.location.reload();
 // 
     }
-    // console.log(data.isLocked)
+    console.log(data.isLocked)
     return ( 
         <div>
 
@@ -283,22 +285,15 @@ function ViewResumeDetails({data, isNew}) {
 
                 <div className='my-5 flex items-center '>
                     {
-                        data?.projects?.map((e, _i) => (
+                        data && data?.projects?.map((e, _i) => (
                             <p className='font-medium border rounded-full px-3 mx-1' key={_i}>{e.projectName}</p>
                         ))
                     }
                 </div>
             </div>
 
-            <div onClick={() => changeIsLock()}>
-                {/* <Button onClick={() => changeIsLock()}>click</Button> */}
-                {/* {
-                    isLock ? 
-                        <ion-icon style={{fontSize:"20px"}} name="lock-closed-outline" onClick={() => changeIsLock(true)}></ion-icon>
-                        :
-                        <ion-icon style={{fontSize:"20px"}} name="lock-open-outline" onClick={() => changeIsLock(false)}></ion-icon> 
-                        
-                } */}
+            <div onClick={() => changeIsLock()} className='hover:cursor-pointer'>
+
                 {
                     data.isLocked ?  
                     <ion-icon style={{fontSize:"20px"}} name="lock-closed-outline"></ion-icon>

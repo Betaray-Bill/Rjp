@@ -95,9 +95,9 @@ function ResumeNav() {
                                 className="w-max justify-between"
                             >
                                 <span className='mr-2'>
-                                    {resumeName !== undefined
+                                    {resumeName.find((resume) => resume === position) 
                                     ? resumeName.find((resume) => resume === position)
-                                    : "Select Resume..."}
+                                    : "Main Resume..."}
                                 </span>
                                 <ion-icon name="swap-vertical-outline" style={{fontSize:"20px"}} className="ml-2 h-4 w-4 shrink-0 opacity-50"></ion-icon>
                           
@@ -119,7 +119,7 @@ function ResumeNav() {
                                     setOpen(false)
                                 }}
                             >
-                            {resume}
+                            {resume ? resume : "Main Resume"}
                             </CommandItem>
                         ))}
                         </CommandGroup>

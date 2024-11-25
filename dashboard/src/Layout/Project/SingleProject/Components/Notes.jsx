@@ -275,7 +275,8 @@ function Notes({projectName, projectId}) {
                         : <div className='text-italic text-gray-600 italic text-center'>No Notes yet</div>
 }
 
-                    <div className=' p-2 bg-white rounded-md my-2 border bottom-1 w-full'>
+                    <div className=' p-2 bg-white rounded-md my-2 border border-black bottom-1 w-full'>
+                        {/* <div clas>Notes</div> */}
                         <div className='border-b-2 pb-2'>
                             <Textarea
                                 type="text"
@@ -300,12 +301,12 @@ function Notes({projectName, projectId}) {
                                     accept=".pdf,.docx,.xlsx"/>
                             </div>
                             <div className='flex items-center justify-between'>
-                                <div className='flex items-center justify-start ml-2'>
+                                <div className='flex items-center justify-start ml-2 hover:cursor-pointer'>
                                     <ion-icon
                                         name="document-outline"
-                                        className=""
+                                        className="hover:cursor-pointer"
                                         style={{
-                                        fontSize: "20px"
+                                        fontSize: "28px"
                                     }}
                                         onClick={handleButtonClick}
                                         disabled={isLoading}>

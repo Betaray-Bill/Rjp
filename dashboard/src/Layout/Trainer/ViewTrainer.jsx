@@ -40,22 +40,22 @@ function ViewTrainer() {
             "getTrainerById", params.id
         ],
         queryFn: getTrainerById,
-        enabled:true,
+        enabled:!!params.id,
         staleTime: 1000 * 60 * 5, // data stays    fresh for 5 minutes
         cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
 
     });
-    console.log(data)
+    // console.log(data)
 
     const submitHandler = async() => {
         try {
             // trainerDetails.id = params.id await
             // axios.put('http://localhost:5000/api/trainer/update', trainerDetails)
-            console.log("Trainer updated successfully")
+            // console.log("Trainer updated successfully")
             refetch()
             setIsEdit(false)
         } catch (e) {
-            console.error("Error updating trainer", e)
+            // console.error("Error updating trainer", e)
         }
     }
 
@@ -66,6 +66,11 @@ function ViewTrainer() {
                     Trainer {data && data.generalDetails.name}
                 </h2>
             </div>
+            {/* {
+                data && data.resumeVersion.map((e) => (
+                    <p>{e.isLocked ? "Locked" : "not locked"}</p>
+                ))
+            } */}
             <div>
                 {(data && !isLoading)
                     ? (
@@ -92,9 +97,9 @@ function ViewTrainer() {
 
                             <div className='mt-5'>
                                 <div action="" className='border-t pt-4'>
-                                    {viewData === "Details" && <ViewGeneralDetails id={data._id} data={data.generalDetails}/>
+                                    {viewData === "Details" && <ViewGeneralDetails id={data._id} data={data && data.generalDetails}/>
     }
-                                    {viewData === "Training Domains" && <ViewTrainingDomain id={data._id} data={data.trainingDomain}/>
+                                    {viewData === "Training Domains" && <ViewTrainingDomain id={data._id} data={data && data.trainingDomain}/>
     }
                                     {viewData === "Resumes" && <ViewResume data={data.resumeVersion} projects={data.projects}/>
     }

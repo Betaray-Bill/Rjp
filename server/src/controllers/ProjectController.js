@@ -240,9 +240,43 @@ const getProject = asyncHandler(async(req, res) => {
     console.log("EMP", employee.role[0].roleId)
 
     // Extract the projects assigned to the employee
-    let assignedProjects
+    let assignedProjects = []
     for (let i = 0; i < employee.role.length; i++) {
         console.log(employee.role[i].name)
+
+        if (employee.role[i].name === 'Finance') {
+            // console.log("Key acc", employee.role.populate('roleId'))
+            const projects = await Pipeline.aggregate([{
+                $project: {
+                    stages: {
+                        $map: {
+                            input: "$stages",
+                            as: "stage",
+                            in: {
+                                $cond: [{
+                                        $in: ["$$stage.name", ["Payment", "PO received / Invoice Raised", "Invoice Sent"]]
+                                    },
+                                    "$$stage",
+                                    { name: "$$stage.name", projects: [] }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }])
+            console.log(projects)
+            res.json({ projects: projects.stages });
+            // assignedProjects = employee
+            //     .role[i]
+            //     .roleId
+            //     .Projects
+            //     .map((project) => project.toString());
+            // console.log(assignedProjects)
+
+            break;
+        }
+
+
         if (employee.role[i].name === 'KeyAccounts') {
             // console.log("Key acc", employee.role.populate('roleId'))
             assignedProjects = employee
