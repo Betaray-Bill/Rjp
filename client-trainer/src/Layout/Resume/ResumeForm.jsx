@@ -349,7 +349,7 @@ function ResumeForm() {
                         }
                     </div>
 
-                {
+                {/* {
                     location.pathname.split("/").includes('main') &&
                     <div className='px-2'>
                         <div className="w-full max-w-sm items-center gap-1.5 hidden">
@@ -370,7 +370,7 @@ function ResumeForm() {
                         </div>
                     </div>
                      
-                }
+                } */}
             </div>
             {
                 isLoading ? 

@@ -2,8 +2,8 @@ import express from 'express';
 import { addEmployee, getEmployeeById, getAllEmployees, updateEmployeeRole, getAllTrainers } from '../controllers/AdminController.js';
 import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
-import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
-import { addChatToProject, addResumeToProject, addTrainer, checkListUpdate, createProject, deleteTrainer, getAllNotes, getProject, getProjectDetails, getProjectsByEmp, isClientCallDone, updateStage } from '../controllers/ProjectController.js';
+import { authEmployeeMiddleware, authMiddleware } from '../middleware/authMiddleware.js';
+import { addChatToProject, addResumeToProject, addTrainer, checkListUpdate, createProject, deleteTrainer, getAllNotes, getProject, getProjectDetails, getProjectForTrainer, getProjectsByEmp, isClientCallDone, updateStage } from '../controllers/ProjectController.js';
 
 const router = express.Router();
 
@@ -21,5 +21,7 @@ router.get("/getChat/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN"
 
 router.put("/updateCheckList/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), checkListUpdate)
 router.put("/updateClientCall/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), isClientCallDone)
+
+router.get("/:projectId/trainer/:trainerId", authEmployeeMiddleware, getProjectForTrainer)
 
 export default router

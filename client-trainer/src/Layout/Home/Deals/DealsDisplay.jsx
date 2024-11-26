@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import DealCard from './DealCard'
+import { Link, Navigate } from 'react-router-dom'
 
 function DealsDisplay() {
   const {user}  = useSelector(state => state.auth)
@@ -72,7 +73,9 @@ function DealsDisplay() {
             {
               user && user.projects
               .map((deal, index) => (
-                <DealCard deal={deal} key={index}/>
+                <Link to={`/home/project/${deal._id}`} key={index}>
+                  <DealCard deal={deal} />
+                </Link>
               ))}
           </div>
         {/* </div>

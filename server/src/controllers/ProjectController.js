@@ -254,10 +254,14 @@ const getProject = asyncHandler(async(req, res) => {
                             as: "stage",
                             in: {
                                 $cond: [{
-                                        $in: ["$$stage.name", ["Payment", "PO received / Invoice Raised", "Invoice Sent"]]
+                                        $in: [
+                                            "$$stage.name", ["Payment", "PO received / Invoice Raised", "Invoice Sent"]
+                                        ]
                                     },
-                                    "$$stage",
-                                    { name: "$$stage.name", projects: [] }
+                                    "$$stage", {
+                                        name: "$$stage.name",
+                                        projects: []
+                                    }
                                 ]
                             }
                         }
@@ -266,16 +270,11 @@ const getProject = asyncHandler(async(req, res) => {
             }])
             console.log(projects)
             res.json({ projects: projects.stages });
-            // assignedProjects = employee
-            //     .role[i]
-            //     .roleId
-            //     .Projects
-            //     .map((project) => project.toString());
-            // console.log(assignedProjects)
+            // assignedProjects = employee     .role[i]     .roleId     .Projects
+            // .map((project) => project.toString()); console.log(assignedProjects)
 
             break;
         }
-
 
         if (employee.role[i].name === 'KeyAccounts') {
             // console.log("Key acc", employee.role.populate('roleId'))
@@ -687,6 +686,50 @@ const checkListUpdate = asyncHandler(async(req, res) => {
 
 })
 
+// Get Project By Id for a Trainer
+const getProjectForTrainer = asyncHandler(async(req, res) => {
+    const { trainerId } = req.params;
+    const { projectId } = req.params;
+
+    try {
+
+        // Fetch the projects where the trainer is in the trainers array.
+        const trainer = await Trainer.findById(trainerId)
+        if (!trainer) {
+            return res
+                .status(404)
+                .json({ message: "Trainer not found" });
+        }
+
+        const projectExists = trainer
+            .projects
+            .includes(projectId)
+
+        if (!projectExists) {
+            return res
+                .status(404)
+                .json({ message: "Project not found for the trainer" });
+        }
+
+        const projects = await Project
+            .findById(projectId)
+            .select('projectName company.name domain modeOfTraining trainingDates')
+            .populate({
+                path: 'projectOwner',
+                select: 'name email'
+            })
+
+        res.status(200).json({
+            project: projects
+        })
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: "Error getting projects." });
+    }
+})
+
 // update a project - ADMIN delete a project - ADMIN Add a trainer - KA, Admin
 // delete a trainer - KA, Admin Add a Emp with role - Admin Delete a Emp with
 // role - Admin
@@ -703,5 +746,6 @@ export {
     addChatToProject,
     checkListUpdate,
     getAllNotes,
+    getProjectForTrainer,
     isClientCallDone
 }

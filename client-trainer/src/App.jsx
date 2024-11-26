@@ -16,6 +16,7 @@ import ResumeNew from './Layout/Resume/ResumeNew'
 import ResumeDownload from './Layout/Resume/ResumeDownload'
 import ResumeExtractor from './Pages/ResumeExtractor'
 import AzureBlobUploader from './Pages/AzureBlobUploader'
+import SingleProject from './Layout/Home/Deals/Project/SingleProject'
 
 
 function App() {
@@ -37,6 +38,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path='/' index element={<Navigate to="/home/dashboard" replace />}></Route>
+        <Route path='/home' index element={<Navigate to="/home/dashboard" replace />}></Route>
+
         <Route path='/home/resume' index element={<Navigate to="/home/resume/main" replace />}></Route>
         {/* <Route path="/resume" element={<ResumeExtractor />} /> */}
         {/* <Route path="/fileupload" element={<AzureBlobUploader />} /> */}
@@ -53,7 +56,10 @@ function App() {
               <Route path='main' element={<ResumeForm/>} />
             </Route>
             <Route path="account" element={<Account />}/>
+
+            <Route path='project/:projectId' element={<SingleProject /> }></Route>
           </Route>
+
         </Route>
       </Routes>
 

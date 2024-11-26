@@ -97,9 +97,9 @@ function Home() {
           <div className='flex flex-col justify-between'>
             <ul className='flex flex-col justify-between'>
               <Link to="/home/dashboard"
-              className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md text-gray-800 ${
-                  isActive('dashboard') ? 'bg-primaryBgActive font-medium text-md ' : 'bg-white'
-                }`}
+                className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md text-gray-800 ${
+                    isActive('dashboard') ? 'bg-primaryBgActive font-medium text-md ' : 'bg-white'
+                  }`}
               >
                <ion-icon name="home-outline"></ion-icon> <span className='ml-3'>Home</span>
               </Link>
@@ -110,6 +110,13 @@ function Home() {
               >
                 <ion-icon name="newspaper-outline"></ion-icon><span className='ml-3'>Resume</span>   
               </Link>
+              {/* <Link to="/home/project"
+                className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md ${
+                  location.pathname.split("/").includes('project') ? 'bg-primaryBgActive font-medium text-md' : 'bg-white'
+                }`}
+              >
+                <ion-icon name="file-tray-stacked-outline"></ion-icon><span className='ml-3'>Training</span>   
+              </Link> */}
               <Link to="/home/account"
                 className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md ${
                   isActive('account') ? 'bg-primaryBgActive font-medium text-md' : 'bg-white'

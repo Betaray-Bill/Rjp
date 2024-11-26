@@ -19,22 +19,22 @@
     return (
       <div className='mx-auto grid place-content-center'>
         <p className='text-md text-gray-700 mt-4 pb-[-2] font-semibold'>Dashboard</p>
-      {/* Calendar Only for the Internal Trainers */}
-        {   
-            user?.trainingDetails.trainerType === 'Internal' ? 
-              <Fragment>
-                <div className='w-[80vw] bg-white rounded-md border mt-6 border-generalBorderColor'>
-                  <div className="border-b mt-4 pb-4">
-                    <span className="text-slate-800 font-semibold flex items-center ml-10">
-                      <ion-icon name="calendar-outline" style={{fontSize:"34px", color:"#3e4093"}}></ion-icon>
-                      <span className='ml-4 text-xl'>Training dates</span>
-                    </span>
+        {/* Calendar Only for the Internal Trainers */}
+          {   
+              user?.trainingDetails.trainerType === 'Internal' ? 
+                <Fragment>
+                  <div className='w-[80vw] bg-white rounded-md border mt-6 border-generalBorderColor'>
+                    <div className="border-b mt-4 pb-4">
+                      <span className="text-slate-800 font-semibold flex items-center ml-10">
+                        <ion-icon name="calendar-outline" style={{fontSize:"34px", color:"#3e4093"}}></ion-icon>
+                        <span className='ml-4 text-xl'>Training dates</span>
+                      </span>
+                    </div>
+                    <CalendarComp  eventsDate={data?.availableDate} /> 
                   </div>
-                  <CalendarComp  eventsDate={data?.availableDate} /> 
-                </div>
-              </Fragment>
-              : null
-        }
+                </Fragment>
+                : null
+          }
         
         <div className='my-10'>
           <div className='w-[80vw] bg-white rounded-md border border-generalBorderColor'>
