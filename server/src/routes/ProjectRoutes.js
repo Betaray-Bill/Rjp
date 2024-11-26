@@ -22,6 +22,6 @@ router.get("/getChat/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN"
 router.put("/updateCheckList/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), checkListUpdate)
 router.put("/updateClientCall/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), isClientCallDone)
 
-router.get("/:projectId/trainer/:trainerId", authEmployeeMiddleware, getProjectForTrainer)
+router.get("/:projectId/trainer/:trainerId", authMiddleware, getProjectForTrainer)
 
 export default router

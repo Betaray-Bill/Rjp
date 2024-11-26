@@ -51,3 +51,42 @@ app.use("/api/project", projectRoutes)
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+
+
+
+
+
+
+
+
+
+// const { EmailClient } = require("@azure/communication-email");
+
+// const connectionString = "endpoint=https://rjpemail.india.communication.azure.com/;accesskey=Epn13P4r80FdmTyMCdha57HeLnn9K4qHPvJknNVZ0Uiw1uaIjrSyJQQJ99AKACULyCpYBCSUAAAAAZCSZ9oX";
+// const client = new EmailClient(connectionString);
+
+// async function main() {
+//     const emailMessage = {
+//         senderAddress: "DoNotReply@<from_domain>",
+//         content: {
+//             subject: "Test Email",
+//             plainText: "Hello world via email.",
+//             html: `
+// 			<html>
+// 				<body>
+// 					<h1>Hello world via email.</h1>
+// 				</body>
+// 			</html>`,
+//         },
+//         recipients: {
+//             to: [{ address: "<to_email>" }],
+//         },
+
+//     };
+
+//     const poller = await client.beginSend(emailMessage);
+//     const result = await poller.pollUntilDone();
+// }
+
+// main();
