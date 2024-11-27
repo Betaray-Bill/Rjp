@@ -1,4 +1,4 @@
-import React, {Fragment, useRef} from 'react'
+import React, {Fragment, useRef, useState} from 'react'
 import logo from "../../../../../assets/logo.png"
 import sign from "../../../../../assets/sign.png"
 import seal from "../../../../../assets/seal.jpg"
@@ -6,17 +6,25 @@ import generatePDF, {Margin, Resolution, usePDF} from 'react-to-pdf';
 import {Button} from '@/components/ui/button';
 
 
-function PurchaseOrderFile({tableRows, terms ,type}) {
+function PurchaseOrderFile({name,tableRows, address, terms ,type, trainerGST, trainerPAN}) {
+    const [isDownloading, setIsDownloading] = useState(false)
+    const [isUploading, setisUploading] = useState(false)
+
+    // check if thr GST is TN or NOT
+    const [isTNGST, setisTNGST] = useState  (trainerGST.startsWith("33"))
+    
 
     const poRef = useRef();
 
     const handleDownload = () => {
+        setIsDownloading(p => !p);
+        // Download The PO
         const element = poRef.current;
         console.log(element)
         const getTargetElement = () => document.getElementById("poRef");
         console.log(getTargetElement)
         generatePDF(getTargetElement, {
-            filename: "po",
+            filename: `Purchase Order - ${name}`,
             overrides: {
                 // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
                 pdf: {
@@ -28,13 +36,22 @@ function PurchaseOrderFile({tableRows, terms ,type}) {
                 }
             }
         })
+        setTimeout(() => {
+            setIsDownloading(p => !p);
+            // setisUploading(true)
+        }, 2000)
+        // Upload the File to the Azure
+        setisUploading(true)
+
+
 
     };
     return (
         <Fragment>
             <div className="flex justify-end m-4">
-                <Button onClick={handleDownload}>Download</Button>
+                <Button onClick={handleDownload}>{isDownloading ? isUploading ? "UPloading....":"Downloading":"Download"}</Button>
             </div>
+ 
             {/* Add form here */}
 
             {/* display Data */}
@@ -52,9 +69,9 @@ function PurchaseOrderFile({tableRows, terms ,type}) {
                         <p className='text-sm'>First Avenue, Jawaharlal Nehru Road,</p>
                         <p className='text-sm'>Ashok Nagar, Chennai, Tamil Nadu - 600083</p>
                         <p className='text-sm mt-4'>
-                            <span className='font-semibold mt-3'>PAN</span>: AAFCAB8917Q</p>
-                        <p className='text-sm'>
-                            <span className='font-semibold'>GSTIN</span>: 33AAFCA8917Q1Z5</p>
+                            <span className='font-semibold mt-3'>CIN</span>: U72300TN2000PTC046181</p>
+                        {/* <p className='text-sm'>
+                            <span className='font-semibold'>GSTIN</span>: 33AAFCA8917Q1Z5</p> */}
                     </div>
                     <div className='border-t border-r border-b border-black p-3'>
                         <h1 className="text-xl text-center mb-3 font-bold">Purchase Order</h1>
@@ -68,16 +85,18 @@ function PurchaseOrderFile({tableRows, terms ,type}) {
                                         </tr>
                                         <tr>
                                             <td className="px-2 font-medium">Date:</td>
-                                            <td className="px-2">28-10-2024</td>
+                                            <td className="px-2">{new Date().toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                                         </tr>
                                         <tr>
                                             <td className="px-2 font-medium">RJP GSTIN:</td>
                                             <td className="px-2">33AABCR8275Q1ZP</td>
                                         </tr>
-                                        <tr>
+                                        {
+                                            trainerGST && <tr>
                                             <td className="px-2 font-medium">Code:</td>
-                                            <td className="px-2">33</td>
+                                            <td className="px-2">{isTNGST ? 33 : `${trainerGST[0]}${trainerGST[0]}` }</td>
                                         </tr>
+                                        }
                                         <tr>
                                             <td className="px-2 font-medium">Place of Supply:</td>
                                             <td className="px-2">Chennai, India</td>
@@ -93,11 +112,21 @@ function PurchaseOrderFile({tableRows, terms ,type}) {
                     </div>
                     <div className=' border-black p-3 border-l border-bs'>
                         <p className="font-semibold mt-4">To:</p>
-                        <p className='text-sm'>ANMOL TECHNOLOGIES PRIVATE LIMITED</p>
-                        <p className='text-sm'>12, ELCOT SEZ, JAGIR AMMAPALAYAM</p>
-                        <p className='text-sm'>VELLAKALPATTI, Salem, Tamil Nadu, 636302</p>
-                        <p className='text-sm'>PAN: AAFCAB8917Q</p>
-                        <p className='text-sm'>GSTIN: 33AAFCA8917Q1Z5</p>
+                        <p className='text-sm'>{address.flat_doorNo_street}</p>
+                        <p className='text-sm'>{address.area}</p>
+                        <p className='text-sm'>{address.townOrCity}, {address.state}, {address.pincode}</p>
+                        {
+                            trainerPAN && 
+                            <p className='text-sm font-medium'>PAN: {trainerPAN}</p>
+
+                        }
+                        {
+                            trainerGST && 
+                            <p className='text-sm font-medium'>GSTIN: {trainerGST}</p>
+
+                        }
+                        {/* <p className='text-sm'>PAN: AAFCAB8917Q</p> */}
+                        {/* <p className='text-sm'>GSTIN: 33AAFCA8917Q1Z5</p> */}
                     </div>
                     {/* Right Address */}
                     <div className='border-l border-r  border-black p-3'>
@@ -158,20 +187,38 @@ function PurchaseOrderFile({tableRows, terms ,type}) {
                                     INR{" "} {tableRows.reduce((total, row) => total + row.amount, 0).toLocaleString()}
                                 </td>
                             </tr>
-                            <tr>
-                                <td colSpan="4" className="border border-gray-300 px-4 py-2"></td>
-                                <td className="border border-gray-300 px-4 py-2">CGST 9%</td>
-                                <td className="border border-gray-300 px-4 py-2 text-right">
-                                    INR{" "} {(tableRows.reduce((total, row) => total + row.amount, 0) * 0.09).toLocaleString()}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan="4" className="border border-gray-300 px-4 py-2"></td>
-                                <td className="border border-gray-300 px-4 py-2">SGST 9%</td>
-                                <td className="border border-gray-300 px-4 py-2 text-right">
-                                    INR{" "} {(tableRows.reduce((total, row) => total + row.amount, 0) * 0.09).toLocaleString()}
-                                </td>
-                            </tr>
+
+                            {
+                                trainerGST && 
+                                    isTNGST ?
+                                (
+                                    <Fragment>
+                                        <tr>
+                                            <td colSpan="4" className="border border-gray-300 px-4 py-2"></td>
+                                            <td className="border border-gray-300 px-4 py-2">CGST 9%</td>
+                                            <td className="border border-gray-300 px-4 py-2 text-right">
+                                                INR{" "} {(tableRows.reduce((total, row) => total + row.amount, 0) * 0.09).toLocaleString()}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan="4" className="border border-gray-300 px-4 py-2"></td>
+                                            <td className="border border-gray-300 px-4 py-2">SGST 9%</td>
+                                            <td className="border border-gray-300 px-4 py-2 text-right">
+                                                INR{" "} {(tableRows.reduce((total, row) => total + row.amount, 0) * 0.09).toLocaleString()}
+                                            </td>
+                                        </tr>
+                                    </Fragment>
+                                ) :
+                                <tr>
+                                    <td colSpan="4" className="border border-gray-300 px-4 py-2"></td>
+                                    <td className="border border-gray-300 px-4 py-2">IGST 18%</td>
+                                    <td className="border border-gray-300 px-4 py-2 text-right">
+                                        INR{" "} {(tableRows.reduce((total, row) => total + row.amount, 0) * 1.18).toLocaleString()}
+                                    </td>
+                                </tr>
+                                
+                            }
+                            
                             <tr className="font-bold">
                                 <td colSpan="4" className="border border-gray-300 px-4 py-2">
                                     INR{" "} {(tableRows.reduce((total, row) => total + row.amount, 0) * 1.18).toLocaleString()}{" "}

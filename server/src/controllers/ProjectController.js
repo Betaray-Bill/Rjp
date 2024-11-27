@@ -356,7 +356,7 @@ const getProjectDetails = asyncHandler(async(req, res) => {
             populate: {
                 path: "resumeVersion"
             },
-            select: 'generalDetails.name generalDetails.email trainingDetails.trainerType ', // Only fetch the 'name' and 'role' fields
+            select: 'generalDetails.name generalDetails.address generalDetails.email trainingDetails.trainerType bankDetails.gstNumber bankDetails.pancardNumber', // Only fetch the 'name' and 'role' fields
         })
         .populate({
             path: 'trainers.resume',

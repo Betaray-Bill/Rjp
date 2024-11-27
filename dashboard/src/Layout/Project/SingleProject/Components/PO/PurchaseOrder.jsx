@@ -19,7 +19,7 @@ import {
     SelectValue
 } from "@/components/ui/select"
 
-function PurchaseOrder() {
+function PurchaseOrder({trainerGST,name, trainerPAN, address}) {
     const poRef = useRef();
 
     const handleDownload = () => {
@@ -104,6 +104,7 @@ function PurchaseOrder() {
                 Purchase Order for trainers
             </div>
 
+        {/* FORM */}
             <div>
                 <div className="my-5">
                     <div className='flex items-center justify-between'>
@@ -132,6 +133,7 @@ function PurchaseOrder() {
                             type="number"
                             name="typeQty"
                             value={formInput.typeQty}
+                            min={1}
                             onChange={handleChange}
                             placeholder={type
                             ? `Enter ${type}`
@@ -140,6 +142,7 @@ function PurchaseOrder() {
                         <Input
                             type="number"
                             name="rate"
+                            min={1}
                             value={formInput.rate}
                             onChange={handleChange}
                             placeholder="Enter Rate"
@@ -147,6 +150,7 @@ function PurchaseOrder() {
                         <Input
                             type="number"
                             name="amount"
+                            min={1}
                             value={formInput.rate * formInput.typeQty}
                             onChange={handleChange}
                             placeholder="Enter Amount"
@@ -178,7 +182,7 @@ function PurchaseOrder() {
 
             </div>
 
-            {preview && <PurchaseOrderFile terms={terms} type={type} tableRows={tableRows}/>
+            {preview && <PurchaseOrderFile name ={name}address={address} terms={terms} type={type} tableRows={tableRows} trainerGST={trainerGST} trainerPAN={trainerPAN}/>
 }
         </div>
     )

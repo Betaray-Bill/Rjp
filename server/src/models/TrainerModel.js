@@ -80,6 +80,39 @@ const trainerSchema = mongoose.Schema({
         },
         alternateNumber: {
             type: String
+        },
+        address: {
+            flat_doorNo_street: {
+                type: String,
+                // required: true,
+                trim: true,
+            },
+            area: {
+                type: String,
+                // required: true,
+                trim: true,
+            },
+            townOrCity: {
+                type: String,
+                // required: true,
+                trim: true,
+            },
+            state: {
+                type: String,
+                // required: true,
+                trim: true,
+            },
+            pincode: {
+                type: String,
+                // required: true,
+                trim: true,
+                validate: {
+                    validator: function(v) {
+                        return /^[1-9][0-9]{5}$/.test(v); // Validate Indian pincode format
+                    },
+                    message: (props) => `${props.value} is not a valid pincode!`,
+                },
+            },
         }
     },
     bankDetails: {

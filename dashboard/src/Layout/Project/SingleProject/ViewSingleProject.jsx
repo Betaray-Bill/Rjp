@@ -16,6 +16,7 @@ import ViewProjectData from './Components/ViewProjectData'
 import Notes from './Components/Notes'
 import { useToast } from '@/hooks/use-toast'
 import PurchaseOrder from './Components/PO/PurchaseOrder'
+import TrainerPurchaseList from './Components/PO/TrainerPurchaseList'
 const state = {
   ParticipantList: "Participant List",
   Hotel: "Hotel",
@@ -242,7 +243,8 @@ function ViewSingleProject() {
       </div>
 
       {/* PO */}
-      <PurchaseOrder />
+      <TrainerPurchaseList trainers={trainers}/>
+      {/* <PurchaseOrder /> */}
 
 
       {/* Training Delivery Section - showcase all the conditions */}
