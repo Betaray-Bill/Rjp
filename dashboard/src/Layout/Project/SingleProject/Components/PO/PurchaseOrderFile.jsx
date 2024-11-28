@@ -7,6 +7,7 @@ import {Button} from '@/components/ui/button';
 import axios from 'axios';
 import {useParams} from 'react-router-dom';
 import jsPDF from 'jspdf';
+import {useQuery, useQueryClient} from 'react-query'
 
 function PurchaseOrderFile({
     name,
@@ -20,6 +21,9 @@ function PurchaseOrderFile({
     trainerGST,
     trainerPAN
 }) {
+    const queryClient = useQueryClient();
+    // const projectId = useParams()
+
     const [isDownloading,
         setIsDownloading] = useState(false)
     const [isUploading,
@@ -52,19 +56,7 @@ function PurchaseOrderFile({
             }
         })
 
-        // const myFile = new File([element], `Purchase Order - ${name}.pdf`, {type: myBlob.type});
 
-        // console.log(myFile);
-
-        // const options = {     margin: 1,     filename: `Purchase Order - ${name}`,
-        // image: { type: 'jpeg', quality: 0.98 },     html2canvas: { scale: 2 }, jsPDF:
-        // { unit: 'in', format: 'letter', orientation: 'portrait' },   };
-        // html2pdf().set(options).from(element).save();
-
-        setTimeout(() => {
-            setIsDownloading(p => !p);
-            // setisUploading(true)
-        }, 2000)
         // Upload the File to the Azure
         setisUploading(true)
 
@@ -104,6 +96,7 @@ function PurchaseOrderFile({
                     ...data
                 });
                 console.log(response.data)
+                queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
 
                 // const sendDataToBackend = await axios.put const res console.log("FOrm Data",
                 // tableRows, terms) }
@@ -143,7 +136,7 @@ function PurchaseOrderFile({
 
     return (
         <Fragment>
-            {isPurchased
+            {!isPurchased
                 ? <div className="flex justify-end m-4">
                         <Button onClick={handleOnlyDownload}>{isDownloading
                                 ? "Downloading"
