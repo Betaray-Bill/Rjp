@@ -27,6 +27,7 @@
         "client-trainer": "file:",
         "clsx": "^2.1.1",
         "cmdk": "^1.0.0",
+        "cross-spawn": "^7.0.6",
         "date-fns": "^3.6.0",
         "html2canvas": "^1.4.1",
         "jspdf": "^2.5.2",
