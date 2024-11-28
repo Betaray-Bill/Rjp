@@ -69,7 +69,8 @@ const trainerSchema = mongoose.Schema({
         },
         email: {
             type: String,
-            required: true
+            required: true,
+            unique: true
         },
         phoneNumber: {
             type: String,
@@ -170,9 +171,9 @@ const trainerSchema = mongoose.Schema({
         },
         paymentSession: {
             type: String,
-            enum: [
-                'Online Hourly', 'Online Per-day', 'Offline Hourly', 'Offline Per-Day'
-            ],
+            // enum: [
+            //     'Online Hourly', 'Online Per-day', 'Offline Hourly', 'Offline Per-Day'
+            // ],
             // required: true
         },
         type: {

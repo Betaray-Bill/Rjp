@@ -70,7 +70,7 @@ function ViewTrainers({trainers}) {
 
     const handleCheckboxChange = async(id) => {
         const response = await axios.put(
-            `http://localhost:5000/api/project//updateClientCall/${projectId.projectId}`,
+            `http://localhost:5000/api/project/updateClientCall/${projectId.projectId}`,
             { trainerId: id }
         );
         console.log(response.data)

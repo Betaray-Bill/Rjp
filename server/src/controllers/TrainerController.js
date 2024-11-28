@@ -231,7 +231,8 @@ const getTrainerById = asyncHandler(async(req, res) => {
                 },
 
             })
-            .select('-bankDetails -password -nda_Accepted -is_FirstLogin')
+
+        .select(' -password -nda_Accepted -is_FirstLogin')
             .populate({
                 path: 'projects',
                 // populate: { path: 'employees', // Path of employee IDs within each Project

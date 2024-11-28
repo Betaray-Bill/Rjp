@@ -31,6 +31,7 @@ const registerTrainer = asyncHandler(async(req, res) => {
             trainingsDelivered: req.body.mainResume.trainingsDelivered,
             clientele: req.body.mainResume.clientele,
             experience: req.body.mainResume.experience,
+
             trainingName: req.body.mainResume.trainingName ?
                 req.body.mainResume.trainingName : "Main Resume",
             isMainResume: true
@@ -45,7 +46,14 @@ const registerTrainer = asyncHandler(async(req, res) => {
                 phoneNumber: req.body.generalDetails.phoneNumber,
                 whatsappNumber: req.body.generalDetails.whatsappNumber,
                 alternateNumber: req.body.generalDetails.alternateNumber,
-                dateOfBirth: req.body.generalDetails.dateOfBirth
+                dateOfBirth: req.body.generalDetails.dateOfBirth,
+                address: {
+                    flat_doorNo_street: req.body.generalDetails.address.flat_doorNo_street,
+                    area: req.body.generalDetails.address.area,
+                    townOrCity: req.body.generalDetails.address.townOrCity,
+                    state: req.body.generalDetails.address.state,
+                    pincode: req.body.generalDetails.address.pincode
+                }
             },
             bankDetails: {
                 accountName: req.body.bankDetails.accountName,
@@ -67,8 +75,8 @@ const registerTrainer = asyncHandler(async(req, res) => {
                 .trainingDomain
                 .map(domain => ({
                     domain: domain.domain,
-                    price: Number(domain.price),
-                    paymentSession: domain.paymentSession,
+                    price: Number(domain.price) ? Number(domain.price) : Number(),
+                    paymentSession: domain.paymentSession !== "" ? domain.paymentSession : "",
                     type: domain.type
                 })),
             resumeVersion: [mainResume._id],

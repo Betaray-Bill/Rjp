@@ -4,19 +4,34 @@ import sign from "../../../../../assets/sign.png"
 import seal from "../../../../../assets/seal.jpg"
 import generatePDF, {Margin, Resolution, usePDF} from 'react-to-pdf';
 import {Button} from '@/components/ui/button';
+import axios from 'axios';
+import {useParams} from 'react-router-dom';
+import jsPDF from 'jspdf';
 
-
-function PurchaseOrderFile({name,tableRows, address, terms ,type, trainerGST, trainerPAN}) {
-    const [isDownloading, setIsDownloading] = useState(false)
-    const [isUploading, setisUploading] = useState(false)
-
+function PurchaseOrderFile({
+    name,
+    isPurchased,
+    tableRows,
+    id,
+    projectName,
+    address,
+    terms,
+    type,
+    trainerGST,
+    trainerPAN
+}) {
+    const [isDownloading,
+        setIsDownloading] = useState(false)
+    const [isUploading,
+        setisUploading] = useState(false)
+    const projectId = useParams()
     // check if thr GST is TN or NOT
-    const [isTNGST, setisTNGST] = useState  (trainerGST.startsWith("33"))
-    
+    const [isTNGST,
+        setisTNGST] = useState(trainerGST.startsWith("33"))
 
     const poRef = useRef();
 
-    const handleDownload = () => {
+    const handleDownload = async() => {
         setIsDownloading(p => !p);
         // Download The PO
         const element = poRef.current;
@@ -36,6 +51,16 @@ function PurchaseOrderFile({name,tableRows, address, terms ,type, trainerGST, tr
                 }
             }
         })
+
+        // const myFile = new File([element], `Purchase Order - ${name}.pdf`, {type: myBlob.type});
+
+        // console.log(myFile);
+
+        // const options = {     margin: 1,     filename: `Purchase Order - ${name}`,
+        // image: { type: 'jpeg', quality: 0.98 },     html2canvas: { scale: 2 }, jsPDF:
+        // { unit: 'in', format: 'letter', orientation: 'portrait' },   };
+        // html2pdf().set(options).from(element).save();
+
         setTimeout(() => {
             setIsDownloading(p => !p);
             // setisUploading(true)
@@ -43,15 +68,96 @@ function PurchaseOrderFile({name,tableRows, address, terms ,type, trainerGST, tr
         // Upload the File to the Azure
         setisUploading(true)
 
+        // if (!isPurchased) {
+            try {
+                // console.log(a)
+                const content = poRef.current.outerHTML;
+                console.log(content)
+                // Create a blob from the content
+                const blob = new Blob([content], {type: "pdf"});
+                console.log(blob)
+                // Create a FormData object to send to the backend
+                const formData = new FormData();
+                formData.append("file", blob);
+                formData.append("projectName", projectName);
+                formData.append("fileName", `${name} - Purchase Order`); // Include file name
 
+                console.log(formData.file)
+
+                //  // Call the POST API to upload the file  const uploadResult = await
+                // axios.post('http://localhost:5000/api/filestorage/upload-to-blob/training/po'
+                // , formData, {     headers: {         "Content-Type": "multipart/form-data" }
+                // }); const res = await uploadResult.data console.log(res) get the URL and save
+                // it in the Backend of the Trainer as well in the Project DOCS if
+                // (uploadResult.status == 200) {
+                console.log("URL got success");
+                // Update the message with the uploaded file URL
+                const data = {
+                    // url:res.url,
+                    name: `${name} - Purchase Order`,
+                    description: tableRows,
+                    type: type,
+                    terms:terms
+                }
+                console.log(data)
+                const response = await axios.put(`http://localhost:5000/api/project/purchaseOrder/${projectId.projectId}/trainer/${id}`, {
+                    ...data
+                });
+                console.log(response.data)
+
+                // const sendDataToBackend = await axios.put const res console.log("FOrm Data",
+                // tableRows, terms) }
+            } catch (err) {
+                console.log(err)
+                alert("Error Uploading File")
+            }
+        // }
+
+        console.log("FOrm Data", tableRows, terms)
 
     };
+
+    const handleOnlyDownload = async() => {
+        setIsDownloading(p => !p);
+        // Download The PO
+        const element = poRef.current;
+        console.log(element)
+        const getTargetElement = () => document.getElementById("poRef");
+        console.log(getTargetElement)
+        generatePDF(getTargetElement, {
+            filename: `Purchase Order - ${name}`,
+            overrides: {
+                // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
+                pdf: {
+                    compress: true
+                },
+                // see https://html2canvas.hertzen.com/configuration for more options
+                canvas: {
+                    useCORS: true
+                }
+            }
+        })
+    }
+
+    console.log("FOrm Data", tableRows, terms, type)
+
     return (
         <Fragment>
-            <div className="flex justify-end m-4">
-                <Button onClick={handleDownload}>{isDownloading ? isUploading ? "UPloading....":"Downloading":"Download"}</Button>
-            </div>
- 
+            {isPurchased
+                ? <div className="flex justify-end m-4">
+                        <Button onClick={handleOnlyDownload}>{isDownloading
+                                ? "Downloading"
+                                : "Download "}</Button>
+                    </div>
+                : <div className="flex justify-end m-4">
+                    <Button onClick={handleDownload}>{isDownloading
+                            ? isUploading
+                                ? "UPloading...."
+                                : "Downloading"
+                            : "Download And Send"}</Button>
+                </div>
+}
+
             {/* Add form here */}
 
             {/* display Data */}
@@ -85,18 +191,24 @@ function PurchaseOrderFile({name,tableRows, address, terms ,type, trainerGST, tr
                                         </tr>
                                         <tr>
                                             <td className="px-2 font-medium">Date:</td>
-                                            <td className="px-2">{new Date().toISOString().split('T')[0].split('-').reverse().join('-')}</td>
+                                            <td className="px-2">{new Date()
+                                                    .toISOString()
+                                                    .split('T')[0]
+                                                    .split('-')
+                                                    .reverse()
+                                                    .join('-')}</td>
                                         </tr>
                                         <tr>
                                             <td className="px-2 font-medium">RJP GSTIN:</td>
                                             <td className="px-2">33AABCR8275Q1ZP</td>
                                         </tr>
-                                        {
-                                            trainerGST && <tr>
+                                        {trainerGST && <tr>
                                             <td className="px-2 font-medium">Code:</td>
-                                            <td className="px-2">{isTNGST ? 33 : `${trainerGST[0]}${trainerGST[0]}` }</td>
+                                            <td className="px-2">{isTNGST
+                                                    ? 33
+                                                    : `${trainerGST[0]}${trainerGST[0]}`}</td>
                                         </tr>
-                                        }
+}
                                         <tr>
                                             <td className="px-2 font-medium">Place of Supply:</td>
                                             <td className="px-2">Chennai, India</td>
@@ -115,16 +227,10 @@ function PurchaseOrderFile({name,tableRows, address, terms ,type, trainerGST, tr
                         <p className='text-sm'>{address.flat_doorNo_street}</p>
                         <p className='text-sm'>{address.area}</p>
                         <p className='text-sm'>{address.townOrCity}, {address.state}, {address.pincode}</p>
-                        {
-                            trainerPAN && 
-                            <p className='text-sm font-medium'>PAN: {trainerPAN}</p>
-
-                        }
-                        {
-                            trainerGST && 
-                            <p className='text-sm font-medium'>GSTIN: {trainerGST}</p>
-
-                        }
+                        {trainerPAN && <p className='text-sm font-medium'>PAN: {trainerPAN}</p>
+}
+                        {trainerGST && <p className='text-sm font-medium'>GSTIN: {trainerGST}</p>
+}
                         {/* <p className='text-sm'>PAN: AAFCAB8917Q</p> */}
                         {/* <p className='text-sm'>GSTIN: 33AAFCA8917Q1Z5</p> */}
                     </div>
@@ -188,10 +294,8 @@ function PurchaseOrderFile({name,tableRows, address, terms ,type, trainerGST, tr
                                 </td>
                             </tr>
 
-                            {
-                                trainerGST && 
-                                    isTNGST ?
-                                (
+                            {trainerGST && isTNGST
+                                ? (
                                     <Fragment>
                                         <tr>
                                             <td colSpan="4" className="border border-gray-300 px-4 py-2"></td>
@@ -208,17 +312,16 @@ function PurchaseOrderFile({name,tableRows, address, terms ,type, trainerGST, tr
                                             </td>
                                         </tr>
                                     </Fragment>
-                                ) :
-                                <tr>
+                                )
+                                : <tr>
                                     <td colSpan="4" className="border border-gray-300 px-4 py-2"></td>
                                     <td className="border border-gray-300 px-4 py-2">IGST 18%</td>
                                     <td className="border border-gray-300 px-4 py-2 text-right">
                                         INR{" "} {(tableRows.reduce((total, row) => total + row.amount, 0) * 1.18).toLocaleString()}
                                     </td>
                                 </tr>
-                                
-                            }
-                            
+}
+
                             <tr className="font-bold">
                                 <td colSpan="4" className="border border-gray-300 px-4 py-2">
                                     INR{" "} {(tableRows.reduce((total, row) => total + row.amount, 0) * 1.18).toLocaleString()}{" "}
@@ -240,14 +343,13 @@ function PurchaseOrderFile({name,tableRows, address, terms ,type, trainerGST, tr
                         <p className="text-sm mt-2">
                             Terms of Payments: {/* <br/> */}
                         </p>
-                        {
-                            terms.map((term, i) => (
-                                <p className='text-sm' key={i}>
-                                    {i+1}.) {term}
-                                </p>
-                            ))
-                        }
-                       
+                        {terms.map((term, i) => (
+                            <p className='text-sm' key={i}>
+                                {i + 1}.) {term}
+                            </p>
+                        ))
+}
+
                     </div>
                     <div className="flex flex-col justify-start mt-8">
                         <div className='flex items-center'>

@@ -84,12 +84,13 @@ const createProject = asyncHandler(async(req, res) => {
         });
 
         await newProject.save();
-        // Save it in the Pipeline Add the Project to the Stage
-        const pipeline = await Pipeline.getSingletonPipeline();
-
+        console.log(newProject._id)
+            // Save it in the Pipeline Add the Project to the Stage
+            // const pipeline = await Pipeline.getSingletonPipeline();
+            // console.log(pipeline)
         const updatedPipeline = await Pipeline.findOneAndUpdate({
-            _id: pipeline._id,
-            "stages": "Training Requirement"
+            // _id: pipeline._id,
+            "stages.name": "Training Requirement"
         }, {
             $set: {
                 "stages.$.projects": newProject._id
@@ -99,6 +100,7 @@ const createProject = asyncHandler(async(req, res) => {
         if (!updatedPipeline) {
             throw new Error('Stage not found');
         }
+
         console.log("PipelIne ", updatedPipeline)
 
         console.log("Company ---------------------------- ", companyExists[0]._id)
@@ -690,7 +692,7 @@ const checkListUpdate = asyncHandler(async(req, res) => {
 const getProjectForTrainer = asyncHandler(async(req, res) => {
     const { trainerId } = req.params;
     const { projectId } = req.params;
-
+    console.log(trainerId)
     try {
 
         // Fetch the projects where the trainer is in the trainers array.
@@ -713,12 +715,17 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
 
         const projects = await Project
             .findById(projectId)
-            .select('projectName company.name domain modeOfTraining trainingDates')
+            .select('projectName company.name trainers domain modeOfTraining trainingDates')
             .populate({
                 path: 'projectOwner',
                 select: 'name email'
             })
-
+            .lean();
+        console.log(projects)
+        projects.trainers = projects.trainers.filter(trainer =>
+            trainer.trainer.equals(trainerId)
+        );
+        // console.log(object)
         res.status(200).json({
             project: projects
         })
@@ -730,9 +737,53 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
     }
 })
 
-// update a project - ADMIN delete a project - ADMIN Add a trainer - KA, Admin
-// delete a trainer - KA, Admin Add a Emp with role - Admin Delete a Emp with
-// role - Admin
+// PO Upload to the File URL to the 
+const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
+    const { trainerId } = req.params;
+    const { projectId } = req.params;
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+
+    console.log(req.body)
+
+    try {
+        const project = await Project.findById(projectId)
+            // console.log(project)
+
+        for (let i = 0; i < project.trainers.length; i++) {
+            console.log(project.trainers[i])
+            if (project.trainers[i].trainer.toString() === trainerId) {
+                console.log("Trainer found", project.trainers[i].trainer)
+                project.trainers[i].isClientCallDone = true
+                project.trainers[i].purchaseOrder.url = req.body.url
+                project.trainers[i].purchaseOrder.name = req.body.name
+                project.trainers[i].purchaseOrder.time = new Date()
+                project.trainers[i].purchaseOrder.details.description = req.body.description
+                project.trainers[i].purchaseOrder.details.type = req.body.type
+                project.trainers[i].purchaseOrder.details.terms = req.body.terms
+
+
+                await project.save()
+
+                break
+            }
+        }
+        res.json({ message: " Done" });
+
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: "Error uploading file URL." });
+    }
+
+
+
+})
+
+
 
 export {
     createProject,
@@ -747,5 +798,6 @@ export {
     checkListUpdate,
     getAllNotes,
     getProjectForTrainer,
-    isClientCallDone
+    isClientCallDone,
+    uploadPOUrl_Trainer
 }

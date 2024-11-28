@@ -94,6 +94,39 @@ const projectSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Resume'
         },
+        purchaseOrder: {
+            url: String,
+            name: String,
+            time: String,
+            details: {
+                description: [{
+                    description: {
+                        type: String,
+                        required: true,
+                    },
+                    hsnSac: {
+                        type: String,
+                        required: true,
+                    },
+                    typeQty: {
+                        type: Number,
+                        required: true,
+                    },
+                    rate: {
+                        type: Number,
+                        required: true,
+                    },
+                    amount: {
+                        type: Number,
+                        required: true,
+                    },
+                }],
+                type: { type: String },
+                terms: [{
+                    type: String,
+                }]
+            }
+        },
         isClientCallDone: {
             type: Boolean,
             default: false, // Default to `false`

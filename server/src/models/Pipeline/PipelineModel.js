@@ -61,6 +61,6 @@ async function getOrCreatePipeline() {
         console.error('Error accessing pipeline:', error);
     }
 }
-// getOrCreatePipeline();
+getOrCreatePipeline();
 
 export default Pipeline;

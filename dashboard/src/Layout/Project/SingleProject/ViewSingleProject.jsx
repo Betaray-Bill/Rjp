@@ -243,7 +243,7 @@ function ViewSingleProject() {
       </div>
 
       {/* PO */}
-      <TrainerPurchaseList trainers={trainers}/>
+      <TrainerPurchaseList trainers={trainers} projectName={projectName} />
       {/* <PurchaseOrder /> */}
 
 

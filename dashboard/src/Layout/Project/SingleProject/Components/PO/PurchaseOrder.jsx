@@ -1,4 +1,4 @@
-import React, {Fragment, useRef, useState} from 'react'
+import React, {Fragment, useEffect, useRef, useState} from 'react'
 // import logo from "../../../../../assets/logo.png"
 import logo from "../../../../../assets/logo.png"
 import sign from "../../../../../assets/sign.png"
@@ -19,29 +19,16 @@ import {
     SelectValue
 } from "@/components/ui/select"
 
-function PurchaseOrder({trainerGST,name, trainerPAN, address}) {
+function PurchaseOrder({
+    trainerGST,
+    isPurchased,
+    name,
+    id,
+    trainerPAN,
+    address,
+    projectName
+}) {
     const poRef = useRef();
-
-    const handleDownload = () => {
-        const element = poRef.current;
-        console.log(element)
-        const getTargetElement = () => document.getElementById("poRef");
-        console.log(getTargetElement)
-        generatePDF(getTargetElement, {
-            filename: "po",
-            overrides: {
-                // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
-                pdf: {
-                    compress: true
-                },
-                // see https://html2canvas.hertzen.com/configuration for more options
-                canvas: {
-                    useCORS: true
-                }
-            }
-        })
-
-    };
 
     const [tableRows,
         setTableRows] = useState([]);
@@ -55,6 +42,15 @@ function PurchaseOrder({trainerGST,name, trainerPAN, address}) {
         setTerms] = useState([])
     const [task,
         setTask] = useState([])
+
+    useEffect(() => {
+        if (isPurchased) {
+            // alert("meow")
+            setTableRows(isPurchased.description)
+            setType(isPurchased.type)
+            setTerms(isPurchased?.terms)
+        }
+    }, [])
 
     const addTerms = () => {
         setTerms([
@@ -104,86 +100,97 @@ function PurchaseOrder({trainerGST,name, trainerPAN, address}) {
                 Purchase Order for trainers
             </div>
 
-        {/* FORM */}
-            <div>
+            {/* FORM */}
+            {!isPurchased && <div>
                 <div className="my-5">
                     <div className='flex items-center justify-between'>
                         <h2 className="text-md font-semibold mb-3">Add New Row</h2>
-                        <div>
-                            <Button onClick={() => setPreview(!preview)}>Preview</Button>
+                        
+
+                    </div>
+                    <Fragment>
+                        <Select onValueChange={(e) => setType(e)}>
+                            <SelectTrigger className="w-max">
+                                <SelectValue placeholder="Select a Type"/>
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectItem value="Days">Days</SelectItem>
+                                    <SelectItem value="Hours">Hours</SelectItem>
+                                    <SelectItem value="No of PAX">No of PAX</SelectItem>
+                                    <SelectItem value="Quantity">Quantity</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <div className="grid grid-cols-1 my-4 sm:grid-cols-3 gap-4">
+
+                            <Input
+                                type="number"
+                                name="typeQty"
+                                value={formInput.typeQty}
+                                min={1}
+                                onChange={handleChange}
+                                placeholder={type
+                                ? `Enter ${type}`
+                                : ""}
+                                className="border p-2 rounded w-full"/>
+                            <Input
+                                type="number"
+                                name="rate"
+                                min={1}
+                                value={formInput.rate}
+                                onChange={handleChange}
+                                placeholder="Enter Rate"
+                                className="border p-2 rounded w-full"/>
+                            <Input
+                                type="number"
+                                name="amount"
+                                min={1}
+                                value={formInput.rate * formInput.typeQty}
+                                onChange={handleChange}
+                                placeholder="Enter Amount"
+                                className="border p-2 rounded w-full"/>
                         </div>
-
-                    </div>
-                    <Select onValueChange={(e) => setType(e)}>
-                        <SelectTrigger className="w-max">
-                            <SelectValue placeholder="Select a Type"/>
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectItem value="Days">Days</SelectItem>
-                                <SelectItem value="Hours">Hours</SelectItem>
-                                <SelectItem value="No of PAX">No of PAX</SelectItem>
-                                <SelectItem value="Quantity">Quantity</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    <div className="grid grid-cols-1 my-4 sm:grid-cols-3 gap-4">
-
-                        <Input
-                            type="number"
-                            name="typeQty"
-                            value={formInput.typeQty}
-                            min={1}
+                        <Textarea
+                            type="text"
+                            name="description"
+                            value={formInput.description}
                             onChange={handleChange}
-                            placeholder={type
-                            ? `Enter ${type}`
-                            : ""}
-                            className="border p-2 rounded w-full"/>
-                        <Input
-                            type="number"
-                            name="rate"
-                            min={1}
-                            value={formInput.rate}
-                            onChange={handleChange}
-                            placeholder="Enter Rate"
-                            className="border p-2 rounded w-full"/>
-                        <Input
-                            type="number"
-                            name="amount"
-                            min={1}
-                            value={formInput.rate * formInput.typeQty}
-                            onChange={handleChange}
-                            placeholder="Enter Amount"
-                            className="border p-2 rounded w-full"/>
-                    </div>
-                    <Textarea
-                        type="text"
-                        name="description"
-                        value={formInput.description}
-                        onChange={handleChange}
-                        placeholder="Enter Description"
-                        className="border p-2 rounded w-full mt-6"/>
-                    <Button onClick={addRow} className="my-3">
-                        Add Row
-                    </Button>
-                </div>
+                            placeholder="Enter Description"
+                            className="border p-2 rounded w-full mt-6"/>
+                        <Button onClick={addRow} className="my-3">
+                            Add Row
+                        </Button>
 
-                {/* Terms */}
-                <div>
-                    <Textarea
-                        type="text"
-                        placeholder="Add a new task..."
-                        value={task}
-                        onChange={(e) => setTask(e.target.value)}/>
-                    <Button onClick={addTerms} className="my-3">
-                        Add Terms
-                    </Button>
+                        {/* Terms */}
+                        <div>
+                            <Textarea
+                                type="text"
+                                placeholder="Add a new task..."
+                                value={task}
+                                onChange={(e) => setTask(e.target.value)}/>
+                            <Button onClick={addTerms} className="my-3">
+                                Add Terms
+                            </Button>
+                        </div>
+                    </Fragment>
+
                 </div>
 
             </div>
-
-            {preview && <PurchaseOrderFile name ={name}address={address} terms={terms} type={type} tableRows={tableRows} trainerGST={trainerGST} trainerPAN={trainerPAN}/>
 }
+            <PurchaseOrderFile
+                id={id}
+                projectName={projectName}
+                name
+                ={name}
+                isPurchased
+                terms={terms}
+                type={type}
+                tableRows={tableRows}
+                trainerGST={trainerGST}
+                trainerPAN={trainerPAN}address={address}/>
+
         </div>
     )
 }
