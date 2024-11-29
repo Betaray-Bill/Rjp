@@ -86,9 +86,10 @@ function AddEmployee() {
                             onChange={(e) => handleChange(e)}
                             className='w-[300px]'>
                             <option value="ADMIN">ADMIN</option>
-                            <option value="Manager">Manager</option>
+                            {/* <option value="Manager">Manager</option> */}
                             <option value="Trainer Sourcer">Trainer Sourcer</option>
                             <option value="KeyAccounts">KeyAccounts</option>
+                            <option value="Finance">Finance</option>
                         </select>
                     </div>
                     {/* <div>

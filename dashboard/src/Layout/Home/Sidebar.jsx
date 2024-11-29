@@ -99,7 +99,7 @@ function Sidebar() {
                     </Link>
 }
                 {userAccess([
-                    RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT
+                    RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT,RolesEnum.Finance
                 ], currentUser
                     ?.employee.role) && 
                     <Link

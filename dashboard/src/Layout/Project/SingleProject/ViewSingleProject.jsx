@@ -17,6 +17,8 @@ import Notes from './Components/Notes'
 import { useToast } from '@/hooks/use-toast'
 import PurchaseOrder from './Components/PO/PurchaseOrder'
 import TrainerPurchaseList from './Components/PO/TrainerPurchaseList'
+import { userAccess } from '@/utils/CheckUserAccess'
+import { RolesEnum } from '@/utils/constants'
 const state = {
   ParticipantList: "Participant List",
   Hotel: "Hotel",
@@ -44,6 +46,8 @@ const state = {
 };
 
 function ViewSingleProject() {
+  // const {currentUser} = useSelector(state => state.auth)
+
   const projectId = useParams()
   const navigate = useNavigate();
   // const [collapse, setCollapse] = useState(false)
@@ -527,8 +531,12 @@ function ViewSingleProject() {
 
       </Fragment>
 
-
+      {userAccess([
+                    RolesEnum.ADMIN,  RolesEnum.KEY_ACCOUNT
+                ], currentUser
+                    ?.employee.role) && 
       <Notes projectName={projectName} projectId={_id} notes={notes}/>
+              }
     </div>
   )
 }

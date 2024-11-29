@@ -12,8 +12,7 @@ function Column({index, stage, projects}) {
             </div>
 
             {/* Project Card */}
-            {projects && projects
-                ?.map((project) => (
+            {projects && projects?.map((project) => (
                     <Link to={`/home/projects/view/${project._id}`} key={project._id} >
                         <CardProject projects={project}/>
                     </Link>

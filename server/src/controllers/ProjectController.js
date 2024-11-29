@@ -69,7 +69,7 @@ const createProject = asyncHandler(async(req, res) => {
             },
             contactDetails: {
                 name: contactDetails.name,
-                email: contactDetails.contactEmail,
+                contactEmail: contactDetails.contactEmail,
                 contactNumber: contactDetails.contactPhoneNumber
             },
             domain,
@@ -85,9 +85,8 @@ const createProject = asyncHandler(async(req, res) => {
 
         await newProject.save();
         console.log(newProject._id)
-            // Save it in the Pipeline Add the Project to the Stage
-            // const pipeline = await Pipeline.getSingletonPipeline();
-            // console.log(pipeline)
+            // Save it in the Pipeline Add the Project to the Stage const pipeline = await
+            // Pipeline.getSingletonPipeline(); console.log(pipeline)
         const updatedPipeline = await Pipeline.findOneAndUpdate({
             // _id: pipeline._id,
             "stages.name": "Training Requirement"
@@ -160,6 +159,7 @@ const createProject = asyncHandler(async(req, res) => {
 // Get Projects from the Emp
 const getProjectsByEmp = asyncHandler(async(req, res) => {
     const { empId } = req.params;
+
     const employee = await Employee.findById(empId)
     if (!employee) {
         return res
@@ -221,6 +221,38 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
                 }
                 // break;
             }
+
+            if (employee.role[i].name == 'Finance') {
+                console.log("KFInanace da", employee.role.populate('roleId'))
+                const projects = await Pipeline.aggregate([{
+                    $project: {
+                        stages: {
+                            $map: {
+                                input: "$stages",
+                                as: "stage",
+                                in: {
+                                    $cond: [{
+                                            $in: [
+                                                "$$stage.name", ["Payment", "PO received / Invoice Raised", "Invoice Sent"]
+                                            ]
+                                        },
+                                        "$$stage", {
+                                            name: "$$stage.name",
+                                            projects: []
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }])
+                console.log(projects)
+                res.json({ projects: projects.stages });
+                // assignedProjects = employee     .role[i]     .roleId     .Projects
+                // .map((project) => project.toString()); console.log(assignedProjects)
+
+                break;
+            }
         }
     }
     if (!projects) {
@@ -235,7 +267,7 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
 // Get All Projects from pipeline
 const getProject = asyncHandler(async(req, res) => {
     const empId = req.params.empId
-
+    console.log("INsodee")
     const employee = await Employee
         .findById(empId)
         .populate('role.roleId')
@@ -245,38 +277,6 @@ const getProject = asyncHandler(async(req, res) => {
     let assignedProjects = []
     for (let i = 0; i < employee.role.length; i++) {
         console.log(employee.role[i].name)
-
-        if (employee.role[i].name === 'Finance') {
-            // console.log("Key acc", employee.role.populate('roleId'))
-            const projects = await Pipeline.aggregate([{
-                $project: {
-                    stages: {
-                        $map: {
-                            input: "$stages",
-                            as: "stage",
-                            in: {
-                                $cond: [{
-                                        $in: [
-                                            "$$stage.name", ["Payment", "PO received / Invoice Raised", "Invoice Sent"]
-                                        ]
-                                    },
-                                    "$$stage", {
-                                        name: "$$stage.name",
-                                        projects: []
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
-            }])
-            console.log(projects)
-            res.json({ projects: projects.stages });
-            // assignedProjects = employee     .role[i]     .roleId     .Projects
-            // .map((project) => project.toString()); console.log(assignedProjects)
-
-            break;
-        }
 
         if (employee.role[i].name === 'KeyAccounts') {
             // console.log("Key acc", employee.role.populate('roleId'))
@@ -305,6 +305,78 @@ const getProject = asyncHandler(async(req, res) => {
 
             console.log(projects)
             res.json({ projects: projects[0].stages });
+
+            break;
+        }
+
+        if (employee.role[i].name === 'Finance') {
+            // // console.log("Key acc", employee.role.populate('roleId'))
+            // const projects = await Pipeline.aggregate([{
+            //     $project: {
+            //         stages: {
+            //             $map: {
+            //                 input: "$stages",
+            //                 as: "stage",
+            //                 in: {
+            //                     name: "$$stage.name",
+            //                     projects: {
+            //                         $map: {
+            //                             input: "$$stage.projectDetails", // Map over the projectDetails array
+            //                             as: "project",
+            //                             in: {
+            //                                 projectName: "$$project.projectName",
+            //                                 domain: "$$project.domain",
+            //                                 company: "$$project.company.name",
+            //                                 trainingDates: "$$project.trainingDates",
+            //                                 projectOwner: {
+            //                                     name: {
+            //                                         $arrayElemAt: ["$$project.projectOwnerDetails.name", 0]
+            //                                     },
+            //                                     email: {
+            //                                         $arrayElemAt: ["$$project.projectOwnerDetails.contactDetails.email", 0]
+            //                                     },
+            //                                     phone: {
+            //                                         $arrayElemAt: ["$$project.projectOwnerDetails.contactDetails.phone", 0]
+            //                                     }
+            //                                 }
+            //                             }
+            // //                         }
+            // //                     }
+            // //                 }
+            // //             }
+            // //         }
+            // //     }
+            // // }]);
+            const pipelines = await Pipeline.find({}, "stages").populate({
+                path: 'stages.projects', // Populate 'projects' within each stage
+                select: 'projectName domain company.name trainingDates', // Select specific fields from 'Project'
+                populate: {
+                    path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
+                    select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
+                }
+            });;
+            const projects = pipelines.map((pipeline) => {
+                return {
+                    ...pipeline,
+                    stages: pipeline.stages.map((stage) => {
+                        if (["Payment", "PO received / Invoice Raised", "Invoice Sent"].includes(stage.name)) {
+                            return {
+                                name: stage.name,
+                                projects: stage.projects
+                            };
+                        }
+                        return {
+                            name: stage.name,
+                            projects: [] // Empty array for other stages
+                        };
+                    })
+                };
+            });
+
+            console.log("PRojects ", projects)
+            return res.json({ projects: projects[0].stages });
+            // assignedProjects = employee     .role[i]     .roleId     .Projects
+            // .map((project) => project.toString()); console.log(assignedProjects)
 
             break;
         }
@@ -358,7 +430,8 @@ const getProjectDetails = asyncHandler(async(req, res) => {
             populate: {
                 path: "resumeVersion"
             },
-            select: 'generalDetails.name generalDetails.address generalDetails.email trainingDetails.trainerType bankDetails.gstNumber bankDetails.pancardNumber', // Only fetch the 'name' and 'role' fields
+            select: 'generalDetails.name generalDetails.address generalDetails.email trainingDetails.' +
+                'trainerType bankDetails.gstNumber bankDetails.pancardNumber', // Only fetch the 'name' and 'role' fields
         })
         .populate({
             path: 'trainers.resume',
@@ -716,19 +789,16 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
         const projects = await Project
             .findById(projectId)
             .select('projectName company.name trainers domain modeOfTraining trainingDates')
-            .populate({
-                path: 'projectOwner',
-                select: 'name email'
-            })
+            .populate({ path: 'projectOwner', select: 'name email' })
             .lean();
         console.log(projects)
-        projects.trainers = projects.trainers.filter(trainer =>
-            trainer.trainer.equals(trainerId)
-        );
+        projects.trainers = projects
+            .trainers
+            .filter(trainer => trainer.trainer.equals(trainerId));
         // console.log(object)
-        res.status(200).json({
-            project: projects
-        })
+        res
+            .status(200)
+            .json({ project: projects })
     } catch (err) {
         console.log(err)
         return res
@@ -737,7 +807,7 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
     }
 })
 
-// PO Upload to the File URL to the 
+// PO Upload to the File URL to the
 const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
     const { trainerId } = req.params;
     const { projectId } = req.params;
@@ -764,7 +834,6 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
                 project.trainers[i].purchaseOrder.details.type = req.body.type
                 project.trainers[i].purchaseOrder.details.terms = req.body.terms
 
-
                 await project.save()
 
                 break
@@ -779,11 +848,7 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
             .json({ message: "Error uploading file URL." });
     }
 
-
-
 })
-
-
 
 export {
     createProject,

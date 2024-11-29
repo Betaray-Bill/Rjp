@@ -57,7 +57,7 @@ function SearchResult() {
                                                 <div className=' items-center'>
                                                     <h2 className='text-gray-600'>Training Domain</h2>
                                                     <p>
-                                                        <span className='text-black font-medium'> {res.trainingDomain[0].domain}</span>
+                                                        <span className='text-black font-medium'> {res.trainingDomain?.length > 0 ?  res.trainingDomain[0].domain : res.trainingDomain.domain}</span>
                                                     </p>
                                                 </div>
                                             </div>
@@ -99,7 +99,10 @@ function SearchResult() {
                             }
                         </div> 
                     </Fragment> : "null"
-        
+            // JSON.stringify(domainResults).split("_id").map((e) => {
+            //     // console.log(e)
+            //     return <p key={e}>{e}</p>
+            // })
                 
             }
     

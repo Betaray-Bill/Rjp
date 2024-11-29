@@ -41,7 +41,7 @@ function PipeLine() {
     <div className='overflow-x-auto overflow-y-hidden'>
         <div className='flex space-x-6 w-[max]'>
             {
-              projects && projects.map((e, index) => (
+              projects && projects?.map((e, index) => (
                     <Column 
                       key={index} 
                       index={index} 
