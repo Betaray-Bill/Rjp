@@ -63,7 +63,7 @@ function ViewTrainer() {
         <Fragment>
             <div className='mt-10'>
                 <h2 className='text-xl mt-10 font-semibold my-4'>
-                    Trainer {data && data.generalDetails.name}
+                    Trainer {data && data.generalDetails.name} - {data && data.trainerId}
                 </h2>
             </div>
             {/* {
@@ -99,7 +99,7 @@ function ViewTrainer() {
                                 <div action="" className='border-t pt-4'>
                                     {viewData === "Details" && <ViewGeneralDetails id={data._id} data={data && data.generalDetails}/>
     }
-                                    {viewData === "Training Domains" && <ViewTrainingDomain id={data._id} data={data && data.trainingDomain}/>
+                                    {viewData === "Training Domains" && <ViewTrainingDomain trainingType={data && data.trainingDetails.trainerType} id={data._id} data={data && data.trainingDomain}/>
     }
                                     {viewData === "Resumes" && <ViewResume data={data.resumeVersion} projects={data.projects}/>
     }

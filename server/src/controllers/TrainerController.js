@@ -61,7 +61,7 @@ const acceptNDA = asyncHandler(async(req, res) => {
 const updateTrainerProfile = asyncHandler(async(req, res) => {
     const { id } = req.params;
     const updateData = req.body;
-    console.log(req.body)
+    console.log("Updating Data ", req.body, id)
     try {
         // Find the trainer by ID and update their profile
         const updatedTrainer = await Trainer.findByIdAndUpdate(id, {
@@ -76,6 +76,8 @@ const updateTrainerProfile = asyncHandler(async(req, res) => {
                 .status(404)
                 .json({ message: "Trainer not found" });
         }
+
+        await updatedTrainer.save()
 
         res
             .status(200)
@@ -231,8 +233,7 @@ const getTrainerById = asyncHandler(async(req, res) => {
                 },
 
             })
-
-        .select(' -password -nda_Accepted -is_FirstLogin')
+            .select(' -password -nda_Accepted -is_FirstLogin')
             .populate({
                 path: 'projects',
                 // populate: { path: 'employees', // Path of employee IDs within each Project

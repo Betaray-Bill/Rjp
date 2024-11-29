@@ -49,6 +49,37 @@ const searchTrainer = asyncHandler(async(req, res) => {
     const { domain, price, mode, type } = req.query;
     console.log("QUERY ", req.query)
     try {
+
+        // Get The internal Trainers
+        // const internalTrainers = await Trainer.aggregate([{
+        //         $match: {
+        //             "trainingDomain.domain": {
+        //                 $regex: new RegExp(domain, "i"), // Case-insensitive match for domain
+        //             },
+        //             "trainingDetails.trainerType": "Internal" // Match trainer type as "Internal"
+        //         }
+        //     },
+        //     {
+        //         $project: {
+        //             generalDetails: 1,
+        //             trainerId: 1,
+        //             trainingDomain: {
+        //                 $filter: {
+        //                     input: "$trainingDomain",
+        //                     as: "td", // Alias for each item in the array
+        //                     cond: {
+        //                         $regexMatch: { input: "$$td.domain", regex: new RegExp(domain, "i") } // Filter condition
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // ]);
+
+
+
+        // console.log("Result da ", internalTrainers)
+
         let minPrice
         let maxPrice
         if (price) {
@@ -80,7 +111,18 @@ const searchTrainer = asyncHandler(async(req, res) => {
             },
         });
 
-        const result = await Trainer.aggregate(pipeline);
+        let result = await Trainer.aggregate(pipeline);
+        // result.push(internalTrainers.length > 1 ? [...internalTrainers] : [...internalTrainers])
+
+        // if (internalTrainers.length > 1) {
+        //     result = [...internalTrainers, ...result]
+        //     console.log("Result ", result)
+        //     result = result.filter((item, index) => result.indexOf(item) === index)
+        //     console.log("Result after filter ", result)
+
+        //     return res.status(200).json(result);
+        // }
+
 
         if (!result.length) {
             return res.status(200).json({ message: 'No trainers found matching the criteria' });

@@ -184,7 +184,7 @@ function PurchaseOrder({
                 projectName={projectName}
                 name
                 ={name}
-                isPurchased
+                isPurchased={isPurchased}
                 terms={terms}
                 type={type}
                 tableRows={tableRows}

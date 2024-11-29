@@ -30,7 +30,7 @@ function SearchResult() {
 
                     <Fragment>
                         <div className='mt-6 grid gap-[25px] place-content-center items-start'>
-                             { domainResults &&  domainResults?.map((res, _i) => (
+                        { domainResults.length > 0 &&  domainResults?.map((res, _i) => (
                                     <div key={_i} className='border flex  items-start justify-between border-gray-200 rounded-md p-3 h-max w-[70vw]'>
                                         {/* <h2>{res.generalDetails.name}</h2> */}
                                         {/* General Details */}

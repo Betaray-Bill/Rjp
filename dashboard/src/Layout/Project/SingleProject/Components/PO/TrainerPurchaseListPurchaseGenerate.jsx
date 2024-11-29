@@ -14,35 +14,32 @@ function TrainerPurchaseListPurchaseGenerate({trainer, index, projectName}) {
 
                 {trainer.purchaseOrder.details.type !== undefined
                         ? !showForm
-                            ? <Button className="bg-blue-800" onClick={() => setShowForm(true)}>View PO</Button>
+                            ? <Button className="rounded-none bg-blue-900" onClick={() => setShowForm(true)}>View PO</Button>
                             : <Button
-                                    className="bg-white border text-black hover:bg-gray-100 "
+                                    className="rounded-none bg-white border text-black hover:bg-gray-100 "
                                     onClick={() => setShowForm(false)}>Close</Button>
                     : !showForm
                         ? <Button onClick={() => setShowForm(true)}>Generate</Button>
                         : <Button
-                            className="bg-white border text-black hover:bg-gray-100 "
+                            className="rounded-none bg-white border text-black hover:bg-gray-100 "
                             onClick={() => setShowForm(false)}>Close</Button>
 }
             </div>
-            {/* {
-                trainer.trainer.bankDetails.gstNumber
-            } */}
+ 
             {/* Show the Form */}
             {showForm && <div className="flex flex-col space-y-4">
-                {/* Form */}
-                {/*... */}
+            
                 <PurchaseOrder
                     projectName={projectName}
                     isPurchased={trainer.purchaseOrder.details.type !== undefined
                     ? trainer.purchaseOrder.details
                     : false}
                     name={trainer.trainer.generalDetails.name}
-                    // purchaseOrder={trainer.purchaseOrder.details}
                     id={trainer.trainer._id}
                     address={trainer.trainer.generalDetails.address}
                     trainerGST={trainer.trainer.bankDetails.gstNumber}
-                    trainerPAN={trainer.trainer.bankDetails.pancardNumber}/>
+                    trainerPAN={trainer.trainer.bankDetails.pancardNumber}
+                />
             </div>
 }
         </div>

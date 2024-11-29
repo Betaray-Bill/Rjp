@@ -22,6 +22,98 @@ function PurchaseOrderFile({
     trainerPAN
 }) {
     const queryClient = useQueryClient();
+
+    // JavaScript program to convert number into words by breaking it into groups of
+    // three
+
+    function convertToWords(n) {
+        console.log(n)
+        if (n === 0) 
+            return "Zero";
+        
+        // Words for numbers 0 to 19
+        const units = [
+            "",
+            "One",
+            "Two",
+            "Three",
+            "Four",
+            "Five",
+            "Six",
+            "Seven",
+            "Eight",
+            "Nine",
+            "Ten",
+            "Eleven",
+            "Twelve",
+            "Thirteen",
+            "Fourteen",
+            "Fifteen",
+            "Sixteen",
+            "Seventeen",
+            "Eighteen",
+            "Nineteen"
+        ];
+
+        // Words for numbers multiple of 10
+        const tens = [
+            "",
+            "",
+            "Twenty",
+            "Thirty",
+            "Forty",
+            "Fifty",
+            "Sixty",
+            "Seventy",
+            "Eighty",
+            "Ninety"
+        ];
+
+        const multiplier = ["", "Thousand", "Million", "Billion"];
+
+        let res = "";
+        let group = 0;
+
+        // Process number in group of 1000s
+        while (n > 0) {
+            if (n % 1000 !== 0) {
+
+                let value = n % 1000;
+                let temp = "";
+
+                // Handle 3 digit number
+                if (value >= 100) {
+                    temp = units[Math.floor(value / 100)] + " Hundred ";
+                    value %= 100;
+                }
+
+                // Handle 2 digit number
+                if (value >= 20) {
+                    temp += tens[Math.floor(value / 10)] + " ";
+                    value %= 10;
+                }
+
+                // Handle unit number
+                if (value > 0) {
+                    temp += units[value] + " ";
+                }
+
+                // Add the multiplier according to the group
+                temp += multiplier[group] + " ";
+
+                // Add the result of this group to overall result
+                res = temp + res;
+            }
+            n = Math.floor(n / 1000);
+            group++;
+        }
+        console.log(res)
+        // Remove trailing space
+        return res.trim();
+    }
+
+    // const n = 2147483647;
+    // console.log(convertToWords(n));
     // const projectId = useParams()
 
     const [isDownloading,
@@ -56,54 +148,53 @@ function PurchaseOrderFile({
             }
         })
 
-
         // Upload the File to the Azure
         setisUploading(true)
 
         // if (!isPurchased) {
-            try {
-                // console.log(a)
-                const content = poRef.current.outerHTML;
-                console.log(content)
-                // Create a blob from the content
-                const blob = new Blob([content], {type: "pdf"});
-                console.log(blob)
-                // Create a FormData object to send to the backend
-                const formData = new FormData();
-                formData.append("file", blob);
-                formData.append("projectName", projectName);
-                formData.append("fileName", `${name} - Purchase Order`); // Include file name
+        try {
+            // console.log(a)
+            const content = poRef.current.outerHTML;
+            console.log(content)
+            // Create a blob from the content
+            const blob = new Blob([content], {type: "pdf"});
+            console.log(blob)
+            // Create a FormData object to send to the backend
+            const formData = new FormData();
+            formData.append("file", blob);
+            formData.append("projectName", projectName);
+            formData.append("fileName", `${name} - Purchase Order`); // Include file name
 
-                console.log(formData.file)
+            console.log(formData.file)
 
-                //  // Call the POST API to upload the file  const uploadResult = await
-                // axios.post('http://localhost:5000/api/filestorage/upload-to-blob/training/po'
-                // , formData, {     headers: {         "Content-Type": "multipart/form-data" }
-                // }); const res = await uploadResult.data console.log(res) get the URL and save
-                // it in the Backend of the Trainer as well in the Project DOCS if
-                // (uploadResult.status == 200) {
-                console.log("URL got success");
-                // Update the message with the uploaded file URL
-                const data = {
-                    // url:res.url,
-                    name: `${name} - Purchase Order`,
-                    description: tableRows,
-                    type: type,
-                    terms:terms
-                }
-                console.log(data)
-                const response = await axios.put(`http://localhost:5000/api/project/purchaseOrder/${projectId.projectId}/trainer/${id}`, {
-                    ...data
-                });
-                console.log(response.data)
-                queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
-
-                // const sendDataToBackend = await axios.put const res console.log("FOrm Data",
-                // tableRows, terms) }
-            } catch (err) {
-                console.log(err)
-                alert("Error Uploading File")
+            //  // Call the POST API to upload the file  const uploadResult = await
+            // axios.post('http://localhost:5000/api/filestorage/upload-to-blob/training/po'
+            // , formData, {     headers: {         "Content-Type": "multipart/form-data" }
+            // }); const res = await uploadResult.data console.log(res) get the URL and
+            // save it in the Backend of the Trainer as well in the Project DOCS if
+            // (uploadResult.status == 200) {
+            console.log("URL got success");
+            // Update the message with the uploaded file URL
+            const data = {
+                // url:res.url,
+                name: `${name} - Purchase Order`,
+                description: tableRows,
+                type: type,
+                terms: terms
             }
+            console.log(data)
+            const response = await axios.put(`http://localhost:5000/api/project/purchaseOrder/${projectId.projectId}/trainer/${id}`, {
+                ...data
+            });
+            console.log(response.data)
+            queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
+
+            // const sendDataToBackend = await axios.put const res console.log("FOrm Data",
+            // tableRows, terms) }
+        } catch (err) {
+            console.log(err)
+            alert("Error Uploading File")
+        }
         // }
 
         console.log("FOrm Data", tableRows, terms)
@@ -136,7 +227,7 @@ function PurchaseOrderFile({
 
     return (
         <Fragment>
-            {!isPurchased
+            {isPurchased
                 ? <div className="flex justify-end m-4">
                         <Button onClick={handleOnlyDownload}>{isDownloading
                                 ? "Downloading"
@@ -317,7 +408,7 @@ function PurchaseOrderFile({
 
                             <tr className="font-bold">
                                 <td colSpan="4" className="border border-gray-300 px-4 py-2">
-                                    INR{" "} {(tableRows.reduce((total, row) => total + row.amount, 0) * 1.18).toLocaleString()}{" "}
+                                    INR{" "} {convertToWords((tableRows.reduce((total, row) => total + row.amount, 0) * 1.18).toLocaleString())}{" "}
                                     Only
                                 </td>
                                 <td className="border border-gray-300 px-4 py-2">Total</td>
