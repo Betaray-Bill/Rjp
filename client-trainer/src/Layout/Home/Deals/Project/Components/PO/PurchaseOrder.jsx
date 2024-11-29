@@ -51,7 +51,7 @@ function PurchaseOrder({purchaseOrder}) {
         <div className='grid place-content-center'>
             <div className='w-[80vw] mt-8 p-6 bg-white rounded-md shadow-sm'>
                 {/* Accepted PO */}
-                <div className='font-semibold text-md pb-3 flex items-center justify-between'>
+                <div className='font-semibold text-md flex items-center justify-between'>
                     <div>
                         <ion-icon
                             name="file-tray-stacked-outline"
@@ -89,7 +89,7 @@ function PurchaseOrder({purchaseOrder}) {
                                 <div className="max-w-6xl mx-auto p-4" id="poRef" ref={poRef}>
                                 {/* Header Section */}
                                 <div className='grid place-content-center text-center my-5'>
-                                    <img src={logo} width="100px" alt=""/>
+                                    <img src={logo} width="100px" alt="" style={{marginLeft:"40px"}}/>
                                     <h1 className="text-xl font-semibold">RJP Infotek Pvt Ltd</h1>
                                 </div>
                 

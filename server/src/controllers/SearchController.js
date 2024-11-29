@@ -51,34 +51,34 @@ const searchTrainer = asyncHandler(async(req, res) => {
     try {
 
         // Get The internal Trainers
-        // const internalTrainers = await Trainer.aggregate([{
-        //         $match: {
-        //             "trainingDomain.domain": {
-        //                 $regex: new RegExp(domain, "i"), // Case-insensitive match for domain
-        //             },
-        //             "trainingDetails.trainerType": "Internal" // Match trainer type as "Internal"
-        //         }
-        //     },
-        //     {
-        //         $project: {
-        //             generalDetails: 1,
-        //             trainerId: 1,
-        //             trainingDomain: {
-        //                 $filter: {
-        //                     input: "$trainingDomain",
-        //                     as: "td", // Alias for each item in the array
-        //                     cond: {
-        //                         $regexMatch: { input: "$$td.domain", regex: new RegExp(domain, "i") } // Filter condition
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // ]);
+        const internalTrainers = await Trainer.aggregate([{
+                $match: {
+                    "trainingDomain.domain": {
+                        $regex: new RegExp(domain, "i"), // Case-insensitive match for domain
+                    },
+                    "trainingDetails.trainerType": "Internal" // Match trainer type as "Internal"
+                }
+            },
+            {
+                $project: {
+                    generalDetails: 1,
+                    trainerId: 1,
+                    trainingDomain: {
+                        $filter: {
+                            input: "$trainingDomain",
+                            as: "td", // Alias for each item in the array
+                            cond: {
+                                $regexMatch: { input: "$$td.domain", regex: new RegExp(domain, "i") } // Filter condition
+                            }
+                        }
+                    }
+                }
+            }
+        ]);
 
 
 
-        // console.log("Result da ", internalTrainers)
+        console.log("Result da ", internalTrainers)
 
         let minPrice
         let maxPrice
@@ -112,17 +112,7 @@ const searchTrainer = asyncHandler(async(req, res) => {
         });
 
         let result = await Trainer.aggregate(pipeline);
-        // result.push(internalTrainers.length > 1 ? [...internalTrainers] : [...internalTrainers])
-
-        // if (internalTrainers.length > 1) {
-        //     result = [...internalTrainers, ...result]
-        //     console.log("Result ", result)
-        //     result = result.filter((item, index) => result.indexOf(item) === index)
-        //     console.log("Result after filter ", result)
-
-        //     return res.status(200).json(result);
-        // }
-
+        // result.push(internalTrainers)
 
         if (!result.length) {
             return res.status(200).json({ message: 'No trainers found matching the criteria' });

@@ -5,6 +5,7 @@ import {useQuery} from 'react-query';
 import {useSelector} from 'react-redux';
 import {useParams} from 'react-router-dom';
 import PurchaseOrder from './Components/PO/PurchaseOrder';
+import Invoice from './Components/Invoice/Invoice';
 
 function SingleProject() {
     const params = useParams()
@@ -90,18 +91,7 @@ function SingleProject() {
 
             <PurchaseOrder purchaseOrder={data.trainers[0].purchaseOrder}/>
 
-            <div className='w-[80vw] mt-8 p-6 bg-white rounded-md shadow-sm'>
-                {/* Upload Invoice */}
-                <div className='font-semibold text-md pb-3 flex items-center justify-start'>
-                    <ion-icon
-                        name="newspaper-outline"
-                        style={{
-                        fontSize: "20px",
-                        color: "#3e4093"
-                    }}></ion-icon>
-                    <span className='ml-3'>Invoice</span>
-                </div>
-            </div>
+            <Invoice />
         </div>
     )
 }

@@ -10,8 +10,7 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
-
-
+// import { PDFViewer
 function Resume() {
     const params = useParams()
     console.log(params)
@@ -101,7 +100,7 @@ function Resume() {
             <div className='h-full'>
                 {/* New template */}
                 <div
-                    className="bg-white w-[80vw] h-max relative"
+                    className="bg-white w-[80vw]  relative"
                     ref={resumeRef}
                     id="resumeRef">
                       
