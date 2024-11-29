@@ -221,6 +221,8 @@ function PurchaseOrderFile({
                 }
             }
         })
+        setIsDownloading(p => !p);
+                                                                    
     }
 
     console.log("FOrm Data", tableRows, terms, type)

@@ -106,13 +106,8 @@ const trainerSchema = mongoose.Schema({
             pincode: {
                 type: String,
                 // required: true,
-                trim: true,
-                validate: {
-                    validator: function(v) {
-                        return /^[1-9][0-9]{5}$/.test(v); // Validate Indian pincode format
-                    },
-                    message: (props) => `${props.value} is not a valid pincode!`,
-                },
+                //     rim: true,
+                //    ?
             },
         }
     },

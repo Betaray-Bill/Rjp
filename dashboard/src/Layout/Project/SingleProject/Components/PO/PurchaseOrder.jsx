@@ -48,7 +48,8 @@ function PurchaseOrder({
             // alert("meow")
             setTableRows(isPurchased.description)
             setType(isPurchased.type)
-            setTerms(isPurchased?.terms)
+            setTerms(isPurchased
+                ?.terms)
         }
     }, [])
 
@@ -105,7 +106,6 @@ function PurchaseOrder({
                 <div className="my-5">
                     <div className='flex items-center justify-between'>
                         <h2 className="text-md font-semibold mb-3">Add New Row</h2>
-                        
 
                     </div>
                     <Fragment>
@@ -166,7 +166,7 @@ function PurchaseOrder({
                         <div>
                             <Textarea
                                 type="text"
-                                placeholder="Add a new task..."
+                                placeholder="Add a new term..."
                                 value={task}
                                 onChange={(e) => setTask(e.target.value)}/>
                             <Button onClick={addTerms} className="my-3">
