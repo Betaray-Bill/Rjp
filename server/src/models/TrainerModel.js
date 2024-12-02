@@ -139,6 +139,12 @@ const trainerSchema = mongoose.Schema({
         gstNumber: {
             type: String
         },
+        panCard: {
+            type: String
+        },
+        aadharCard: {
+            type: String
+        },
         vendorName: {
             type: String
         }

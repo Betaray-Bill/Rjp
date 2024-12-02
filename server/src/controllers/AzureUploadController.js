@@ -7,7 +7,7 @@ dotenv.config();
 const sasToken = process.env.SAS_TOKEN;
 const accountName = process.env.ACCOUNT_NAME; // Azure Storage account name
 const containerName = process.env.CONTAINER_NAME; // Default container name
-
+const TRAINER_CONTAINER_NAME = process.env.TRAINER_CONTAINER_NAME;
 // Initialize Blob Service Client
 const blobServiceClient = new BlobServiceClient(
     `https://${accountName}.blob.core.windows.net?${sasToken}`
@@ -73,6 +73,38 @@ export const uploadPOToBlob = async(file, fileName, projectName) => {
 
         // Generate a unique blob name with the folder path (e.g., folderName/fileName)
         const blobName = `${projectName}/Purchase Order/${fileName}`;
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+        // Upload file buffer to Azure Blob Storage
+        await blockBlobClient.uploadData(file.buffer);
+
+        // Get the blob URL
+        const blobUrl = blockBlobClient.url;
+        return { success: true, message: "File uploaded successfully", url: blobUrl };
+    } catch (error) {
+        console.error("Error uploading to Azure Blob Storage:", error.message);
+        throw new Error("File upload to Azure Blob Storage failed.");
+    }
+};
+
+
+
+
+
+
+
+
+
+// // Controller for - Storing Notes PDF in AZure and return the url
+export const uploadPanAndAadharToBlob = async(file, fileName, trainer) => {
+    try {
+        const containerClient = blobServiceClient.getContainerClient(TRAINER_CONTAINER_NAME);
+
+        // Create the container if it doesn't already exist
+        await containerClient.createIfNotExists();
+
+        // Generate a unique blob name with the folder path (e.g., folderName/fileName)
+        const blobName = `${trainer}/${fileName}`;
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
         // Upload file buffer to Azure Blob Storage

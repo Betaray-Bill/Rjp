@@ -64,7 +64,9 @@ const registerTrainer = asyncHandler(async(req, res) => {
                 pancardNumber: req.body.bankDetails.pancardNumber,
                 aadharCardNumber: req.body.bankDetails.aadharCardNumber,
                 gstNumber: req.body.bankDetails.gstNumber,
-                vendorName: req.body.bankDetails.vendorName
+                vendorName: req.body.bankDetails.vendorName,
+                panCard: req.body.bankDetails.panCard,
+                aadharCard: req.body.bankDetails.aadharCard
             },
             trainingDetails: {
                 trainerType: req.body.trainingDetails.trainerType,

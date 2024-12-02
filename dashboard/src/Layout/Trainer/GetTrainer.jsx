@@ -73,7 +73,7 @@ function GetTrainer() {
                     </Button>
                 </Link>
             </div>
-
+                        
             {/* Table */}
             <Table>
                 {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
@@ -136,7 +136,10 @@ function GetTrainer() {
                                 ?.trainersTotals / limit))].map((_, i) => (
                             <PaginationItem key={i} active={page === i + 1}>
                                 <PaginationLink onClick={() => setPage(i + 1)}>
-                                    {i + 1}
+                                    {
+                                        (i+1) == page ? 
+                                        <span className='bg-blue-300 px-3 py-2'>{i+1}</span> : <span>{i+1}</span>
+                                    }
                                 </PaginationLink>
                             </PaginationItem>
                         ))}

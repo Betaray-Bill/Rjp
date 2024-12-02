@@ -1,7 +1,7 @@
 // routes/azureBlobRoutes.js
 import express from "express";
 import multer from "multer";
-import { uploadFileToBlob, checkBlobConnection, uploadPOToBlob } from "../controllers/AzureUploadController.js";
+import { uploadFileToBlob, checkBlobConnection, uploadPOToBlob, uploadPanAndAadharToBlob } from "../controllers/AzureUploadController.js";
 
 const router = express.Router();
 const upload = multer(); // Use multer with buffer storage
@@ -68,5 +68,50 @@ router.post("/upload-to-blob/training/po", upload.single("file"), async(req, res
     }
 });
 
+
+
+// Endpoint to handle Aadhar and Pan Card file upload with Trainer name
+router.post("/upload-aadhar-pan/trainer/:trainer", upload.fields([
+    { name: "pancard", maxCount: 1 },
+    { name: "aadharCard", maxCount: 1 },
+]), async(req, res) => {
+    console.log(" uploaded ", req.params)
+        // const panCard = req.file.pancard; // Access the uploaded file
+        // const aadharCard = req.file.aadharCard; // Access the uploaded file4
+        // const { fileName, projectName } = req.body; // Access other fields
+    const trainer = req.params.trainer
+    console.log(" uploaded ", trainer)
+    const files = req.files;
+
+
+    const panCard = files.pancard[0]
+    const aadharCard = files.aadharCard[0]
+
+    console.log("Pancard file:", panCard); // Details of uploaded pancard
+    console.log("AadharCard file:", aadharCard); // Details of uploaded aadhar card
+
+    if (!req.files) {
+        return res
+            .status(400)
+            .json({ error: "No file uploaded." });
+    }
+
+    try {
+        const resultPan = await uploadPanAndAadharToBlob(panCard, "pancard", trainer);
+        const resultAadhar = await uploadPanAndAadharToBlob(aadharCard, "aadharCard", trainer);
+
+        res
+            .status(200)
+            .json({
+                message: "Files uploaded successfully",
+                panCard: resultPan.url,
+                aadharCard: resultAadhar.url
+            });
+    } catch (error) {
+        res
+            .status(500)
+            .json({ error: error.message });
+    }
+});
 
 export default router;
