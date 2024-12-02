@@ -61,7 +61,7 @@ function PurchaseOrder({purchaseOrder}) {
                         }}></ion-icon>
                         <span className='ml-3'>Purchase Order</span>
                     </div>
-                    <div>
+                    <div className=''>
                     {
                         purchaseOrder ?
                         !showForm
@@ -78,7 +78,7 @@ function PurchaseOrder({purchaseOrder}) {
                 {
                     showForm && (
                         <Fragment>
-                            <div className='grid place-content-end'>
+                            <div className='grid place-content-end mt-8'>
                                 <Button onClick={() => handleOnlyDownload()} className="flex items-center">
                                     <ion-icon name="arrow-down-outline" style={{fontSize:"20px"}}></ion-icon>
                                     <span className='ml-2'>Download</span>

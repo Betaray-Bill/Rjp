@@ -1,91 +1,161 @@
-import React, { useState } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import React, {useState} from 'react'
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 import {
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
-import { useQuery } from 'react-query';
-import { useDispatch, useSelector } from 'react-redux';
+    TableRow
+} from "@/components/ui/table"
+import {useQuery, useQueryClient} from 'react-query';
+import {useDispatch, useSelector} from 'react-redux';
 import {setAllEmp} from '@/features/employeeSlice';
 import axios from 'axios';
-import { Button } from '@/components/ui/button'
-import { Link } from 'react-router-dom'
-  
+import {Button} from '@/components/ui/button'
+import {Link} from 'react-router-dom'
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious
+} from "@/components/ui/pagination"
 
 function GetTrainer() {
-    const [trainer, setTrainer] = useState([])
+    const [trainer,
+        setTrainer] = useState([])
+
+    const [page,
+        setPage] = useState(1)
+    const [limit,
+        setLimit] = useState(2)
+
     const dispatch = useDispatch()
     const {currentUser} = useSelector(state => state.auth)
+    const queryClient = useQueryClient()
 
-    const getAll = async() => {
-        const response = await axios.get(`http://localhost:5000/api/trainersourcer/getTrainer/${currentUser.employee._id}`); // Replace with your API endpoint
+    const getAll = async(page, limit) => {
+        const response = await axios.get(`http://localhost:5000/api/trainersourcer/getTrainer/${currentUser.employee._id}?page=${page}&limit=${limit}`); // Replace with your API endpoint
         console.log(response.data.trainers)
         return response.data
     }
 
     const {data, refetch} = useQuery({
-        queryKey:["getAllTrainers"], 
-        queryFn:getAll,
+        queryKey: [
+            "getAllTrainers", page
+        ],
+        queryFn: () => getAll(page, limit),
         staleTime: 1000 * 60 * 5, // data stays    fresh for 5 minutes
         cacheTime: 1000 * 60 * 10
     });
 
-  return (
-    <div>
-        <div className='flex items-center justify-between'>
-            <p onClick={() => refetch()} className="flex items-center bg-blue-100 border border-black rounded-md cursor-pointer px-[10px] w-max py-[3px] mb-4">
-                <ion-icon name="sync-outline"></ion-icon>
-                <span>Sync</span>
-            </p>
-            <Link to="/home/trainer/add">
-                <Button>
-                    <ion-icon name="add-outline" style={{fontSize:"20px"}}></ion-icon>
-                    <span>Add Trainer</span>
-                </Button>
-            </Link>
-        </div>
-        <Table>
-            {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
-            <TableHeader>
-                <TableRow>
-                    <TableHead>S.no</TableHead>
-                    <TableHead className="">Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Type</TableHead>
+    return (
+        <div>
+            {/*  */}
+            <div className='flex items-center justify-between'>
+                <p
+                    onClick={() => refetch()}
+                    className="flex items-center bg-blue-100 border border-black rounded-md cursor-pointer px-[10px] w-max py-[3px] mb-4">
+                    <ion-icon name="sync-outline"></ion-icon>
+                    <span>Sync</span>
+                </p>
+                <Link to="/home/trainer/add">
+                    <Button>
+                        <ion-icon
+                            name="add-outline"
+                            style={{
+                            fontSize: "20px"
+                        }}></ion-icon>
+                        <span>Add Trainer</span>
+                    </Button>
+                </Link>
+            </div>
+
+            {/* Table */}
+            <Table>
+                {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>S.no</TableHead>
+                        <TableHead className="">Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Type</TableHead>
                     </TableRow>
-            </TableHeader>
-            <TableBody>
-                {data?.trainers?.length>0 && data?.trainers?. map((trainer, index) => (
-                <TableRow key={index} onClick={() => {
-                        console.log(`${index+1}.) ${trainer.email} `)
+                </TableHeader>
+                <TableBody>
+                    {data
+                        ?.trainers
+                            ?.length > 0 && data
+                                ?.trainers
+                                    ?.map((trainer, index) => (
+                                        <TableRow
+                                            key={index}
+                                            onClick={() => {
+                                            console.log(`${index + 1}.) ${trainer.email} `)
+                                        }}
+                                            className="cursor-pointer rounded-md">
+                                            <TableCell className="font-medium">{index + 1}</TableCell>
+                                            <TableCell className="font-medium flex items-center">
+                                                <Avatar>
+                                                    <AvatarImage src="https://github.com/shadcn.png"/>
+                                                    <AvatarFallback>CN</AvatarFallback>
+                                                </Avatar>
+                                                <span className='ml-2'>{trainer.generalDetails.name}</span>
+                                            </TableCell>
+                                            <TableCell>{trainer.generalDetails.email}</TableCell>
+                                            <TableCell>{trainer.trainingDetails.trainerType}</TableCell>
+                                            <TableCell>
+                                                <Link to={`/home/trainer/view/${trainer._id}`} target='_blank'>
+                                                    <Button
+                                                        className="bg-transparent border text-black rounded-none hover:bg-blue-200">View</Button>
+                                                </Link>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                </TableBody>
+            </Table>
+
+            {/* Pagination */}
+            <div className='grid place-content-center mt-10'>
+                <Pagination>
+                     <PaginationPrevious
+                        onClick={() => {
+                        setPage(page - 1);
+                        getAll(page - 1, limit);
+                        queryClient(["getAllTrainers", page])
                     }}
-                    className="cursor-pointer rounded-md"
-                >
-                    <TableCell className="font-medium">{index+1}</TableCell>
-                    <TableCell className="font-medium flex items-center">
-                        <Avatar>
-                            <AvatarImage src="https://github.com/shadcn.png" />
-                            <AvatarFallback>CN</AvatarFallback>
-                        </Avatar>
-                        <span className='ml-2'>{trainer.generalDetails.name}</span>
-                    </TableCell>
-                    <TableCell>{trainer.generalDetails.email}</TableCell>
-                    <TableCell>{trainer.trainingDetails.trainerType}</TableCell>
-                    <TableCell>
-                        <Link to={`/home/trainer/view/${trainer._id}`} target='_blank'>
-                            <Button className="bg-transparent border text-black rounded-none hover:bg-blue-200">View</Button>
-                        </Link>
-                    </TableCell>
-                </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    </div>
-  )
+                        disabled={page == 1
+                        ? true
+                        : false}/> 
+ 
+                    <PaginationContent>
+                        {data && data.trainersTotals && [...Array(Math.ceil(data
+                                ?.trainersTotals / limit))].map((_, i) => (
+                            <PaginationItem key={i} active={page === i + 1}>
+                                <PaginationLink onClick={() => setPage(i + 1)}>
+                                    {i + 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
+                    </PaginationContent>
+                    {data && data.trainersTotals > limit * page && <PaginationNext
+                        onClick={() => {
+                        setPage(page + 1);
+                        queryClient(["getAllTrainers", page]);
+                        getAll(page + 1, limit);
+                    }}
+                        disabled={page === Math.ceil(data
+                        ?.trainersTotals / limit)}/>
+}
+
+                </Pagination>
+            </div>
+
+        </div>
+    )
 }
 
 export default GetTrainer

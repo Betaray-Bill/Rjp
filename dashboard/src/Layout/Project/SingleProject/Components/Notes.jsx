@@ -195,7 +195,7 @@ function Notes({projectName, projectId}) {
 
                     console.log(chatResp)
                 }
-                queryClient.invalidateQueries(['notes', projectId]);
+                // queryClient.invalidateQueries(['notes', projectId]);
                 // fetchNotes()
                 setMessage({
                     text: {
@@ -218,6 +218,8 @@ function Notes({projectName, projectId}) {
             console.log("Message sent successfully!");
 
         }
+        await queryClient.invalidateQueries(['notes', projectId]);
+
     }
 
     console.log(notes)
@@ -249,9 +251,7 @@ function Notes({projectName, projectId}) {
                                         <div className='text-center my-2'>
                                             <h2 className='font-semibold'>{e.date}</h2>
                                         </div>
-                                        {e
-                                            .chats
-                                            .map((item, i) => (
+                                        {e.chats?.map((item, i) => (
                                                 <div key={i} className="flex items-start justify-start mt-[20px]">
                                                     <Avatar>
                                                         <AvatarImage src={item.photo_url || "https://via.placeholder.com/150"}/>

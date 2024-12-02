@@ -284,6 +284,13 @@ const getTrainerByEmpId = asyncHandler(async(req, res) => {
     const { emp_id } = req.params;
     // Check if the Employee exists
     const Emp = await Employee.findById(emp_id);
+    console.log(req.query)
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    console.log(page, limit, startIndex, endIndex)
 
     if (!Emp) {
         return res
@@ -302,7 +309,7 @@ const getTrainerByEmpId = asyncHandler(async(req, res) => {
                     // Return the Result
                 res
                     .status(201)
-                    .json({ message: 'Trainer Fetched successfully', trainers: trainers.registeredTrainers, success: true });
+                    .json({ message: 'Trainer Fetched successfully', trainers: trainers.registeredTrainers.slice(startIndex, endIndex), success: true, trainersTotals: trainers.registeredTrainers.length });
 
             }
 
@@ -311,7 +318,7 @@ const getTrainerByEmpId = asyncHandler(async(req, res) => {
                     // Return the Result
                 res
                     .status(201)
-                    .json({ message: 'Trainer Fetched successfully', trainers: trainers, success: true });
+                    .json({ message: 'Trainer Fetched successfully', trainers: trainers.slice(startIndex, endIndex), success: true, trainersTotals: trainers.length });
 
             }
         }

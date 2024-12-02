@@ -72,6 +72,17 @@ function ViewGeneralDetails({data, id}) {
 
     }
 
+    const handleAddressChange = (event) => {
+        const updatedGeneralDetails = {
+            ...generalDetails,
+            'address':{ ...generalDetails.address,
+            [event.target.name]: event.target.value
+            }
+        }
+        setGeneralDetails(updatedGeneralDetails);
+        dispatch(setResumeDetails({name: "generalDetails", data: updatedGeneralDetails}))
+    }
+
     return (
         <div className=''>
             <div className='flex justify-between'>
@@ -182,7 +193,7 @@ function ViewGeneralDetails({data, id}) {
                     <Input
                         readOnly={!isEdit}
                         type="text"
-                        value={generalDetails.address.flat_doorNo_street}
+                        value={generalDetails.address.flat_doorNo_street ? generalDetails.address.flat_doorNo_street : null}
                         id="flat_doorNo_street"
                         name="flat_doorNo_street"
                         onChange={(e) => handleAddressChange(e)}/>
@@ -192,7 +203,7 @@ function ViewGeneralDetails({data, id}) {
                     <Input
                         readOnly={!isEdit}
                         type="text"
-                        value={generalDetails.address.area}
+                        value={generalDetails.address.area ? generalDetails.address.area : null}
                         id="area"
                         name="area"
                         onChange={(e) => handleAddressChange(e)}/>
@@ -202,7 +213,7 @@ function ViewGeneralDetails({data, id}) {
                     <Input
                         readOnly={!isEdit}
                         type="text"
-                        value={generalDetails.address.townOrCity}
+                        value={generalDetails.address.townOrCity ? generalDetails.address.townOrCity : null}
                         id="townOrCity"
                         name="townOrCity"
                         onChange={(e) => handleAddressChange(e)}/>
@@ -212,7 +223,7 @@ function ViewGeneralDetails({data, id}) {
                     <Input
                         readOnly={!isEdit}
                         type="text"
-                        value={generalDetails.address.state}
+                        value={generalDetails.address.state ? generalDetails.address.state : null}
                         id="state"
                         name="state"
                         onChange={(e) => handleAddressChange(e)}/>
@@ -222,7 +233,7 @@ function ViewGeneralDetails({data, id}) {
                     <Input
                         readOnly={!isEdit}
                         type="text"
-                        value={generalDetails.address.pincode}
+                        value={generalDetails.address.pincode ? generalDetails.address.pincode : null}
                         id="pincode"
                         name="pincode"
                         onChange={(e) => handleAddressChange(e)}/>
