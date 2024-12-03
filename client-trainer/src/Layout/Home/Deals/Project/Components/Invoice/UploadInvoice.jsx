@@ -2,13 +2,15 @@ import {Button} from '@/components/ui/button'
 import {Input} from '@/components/ui/input';
 import axios from 'axios';
 import React, {useRef, useState} from 'react'
+import { useQueryClient } from 'react-query';
 import {useSelector} from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 function UploadInvoice({projectName}) {
     const [file,
         setFile] = useState(null);
-
+    
+        const queryClient = useQueryClient()
     const {user} = useSelector((state) => state.auth)
     const params = useParams()
     const fileInputRef = useRef(null);
@@ -68,6 +70,8 @@ function UploadInvoice({projectName}) {
                     // successfully!");
                 }
             }
+
+            queryClient.invalidateQueries(["projects",params.projectId])
 
         }
     };

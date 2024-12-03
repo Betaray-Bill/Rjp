@@ -867,6 +867,49 @@ const upload_Invoice_Url_Trainer = asyncHandler(async(req, res) => {
 
 })
 
+
+// Invoice Upload to the
+const upload_Invoice_Content_Trainer = asyncHandler(async(req, res) => {
+    const { trainerId } = req.params;
+    const { projectId } = req.params;
+    console.log(trainerId)
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+
+    console.log(req.body)
+
+    try {
+        const project = await Project.findById(projectId)
+            // console.log(project)
+
+        for (let i = 0; i < project.trainers.length; i++) {
+            console.log(project.trainers[i])
+            if (project.trainers[i].trainer.toString() === trainerId) {
+                console.log("Trainer found", project.trainers[i].trainer)
+                project.trainers[i].inVoice.isInvoice = true
+                project.trainers[i].inVoice.inVoiceNumber = req.body.inVoiceNumber
+                    // project.trainers[i].inVoice.name = req.body.name
+                project.trainers[i].inVoice.inVoiceDate = new Date()
+                    // project.trainers[i].inVoice.details./
+
+                await project.save()
+
+                break
+            }
+        }
+        res.json({ message: " Done", project: project });
+
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: "Error uploading file URL." });
+    }
+
+})
+
 export {
     createProject,
     getProjectDetails,
@@ -882,5 +925,6 @@ export {
     getProjectForTrainer,
     isClientCallDone,
     uploadPOUrl_Trainer,
-    upload_Invoice_Url_Trainer
+    upload_Invoice_Url_Trainer,
+    upload_Invoice_Content_Trainer
 }

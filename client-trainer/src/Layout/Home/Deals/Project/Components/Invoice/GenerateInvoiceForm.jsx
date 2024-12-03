@@ -1,38 +1,43 @@
-import React, {useState} from 'react'
+import React, {Fragment, useState} from 'react'
 import GenerateInvoice from './GenerateInvoice'
 import {Label} from '@/components/ui/label'
 import {Input} from '@/components/ui/input'
 
-function GenerateInvoiceForm({purchaseOrder}) {
+function GenerateInvoiceForm({purchaseOrder, inVoice}) {
 
     const [formData,
-        setFormData] = useState({invoiceNumber: '', placeOfSupply: '', state: ''})
+        setFormData] = useState({inVoiceNumber: '', placeOfSupply: '', state: ''})
 
     return (
         <div>
             {/* GenerateInvoiceForm */}
-            <h2 className='font-semibold text-xl mb-5'>Generate Invoice</h2>
+            {
+                !inVoice.isInvoice ?
+            
+            <Fragment>
+                <h2 className='font-semibold text-xl mb-5'>Generate Invoice</h2>
             <form className='border p-4 rounded-lg'>
                 <h4 className='font-semibold underline  '>Fill the Details</h4>
                 <div className='grid grid-cols-2 gap-4 my-4'>
                     <div className='flex items-center'>
-                        <Label htmlFor="invoiceNumber">Invoice Number:</Label>
+                        <Label htmlFor="inVoiceNumber">Invoice Number:</Label>
                         <Input
                             type="text"
-                            id="invoiceNumber"
-                            name="invoiceNumber"
+                            id="inVoiceNumber"
+                            name="inVoiceNumber"
                             className="ml-2"
-                            value={formData.invoiceNumber}
+                            value={formData.inVoiceNumber}
                             onChange={(e) => setFormData({
                             ...formData,
-                            invoiceNumber: e.target.value
+                            inVoiceNumber: e.target.value
                         })}/>
 
                     </div>
                 </div>
-            </form>
+            </form> 
+            </Fragment>: null}
 
-            <GenerateInvoice purchaseOrder={purchaseOrder} formData={formData}/>
+            <GenerateInvoice inVoice={inVoice} purchaseOrder={purchaseOrder} formData={formData}/>
         </div>
     )
 }

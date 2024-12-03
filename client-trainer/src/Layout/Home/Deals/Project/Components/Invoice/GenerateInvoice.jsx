@@ -3,21 +3,52 @@ import React, {Fragment, useRef, useState} from 'react'
 import logo from "../../../../../../assets/logo.png"
 import generatePDF, {Margin, Resolution, usePDF} from 'react-to-pdf';
 import {useSelector} from 'react-redux';
+import {useParams} from 'react-router-dom';
+import {useQueryClient} from 'react-query';
+import {useToast} from '@/hooks/use-toast';
+import axios from 'axios';
 
-function GenerateInvoice({purchaseOrder, formData}) {
-    const {user} = useSelector(state => state.auth)
+function GenerateInvoice({purchaseOrder, formData, inVoice}) {
+    const {user} = useSelector((state) => state.auth)
+    const params = useParams()
+    const {toast} = useToast()
+    const queryClient = useQueryClient()
+
     const invoiceRef = useRef();
     const [isTNGST,
         setisTNGST] = useState(user.bankDetails.gstNumber.startsWith("33"))
 
-    const handleOnlyDownload = async() => {
+    const handleSendToRJP = async() => {
         // setIsDownloading(p => !p); Download The PO
         const element = invoiceRef.current;
         console.log(element)
         const getTargetElement = () => document.getElementById("invoiceRef");
         console.log(getTargetElement)
+
+        if (!formData.inVoiceNumber) {
+            alert("Please enter Invoice Number")
+            return;
+        }
+
+        try {
+            const sendUrlToDB = await axios.put(`http://localhost:5000/api/trainer/sendInvoice/project/${params.projectId}/trainer/${user._id}`, {inVoiceNumber: formData.inVoiceNumber});
+            const resp = await sendUrlToDB.data
+            queryClient.invalidateQueries(["projects", params.projectId])
+            toast({title: "Invoice Sent Successfully", description: "Your invoice has been sent to RJP.", variant: "success"})
+            console.log(resp)
+        } catch (err) {
+            toast({title: "Failed to Send Invoice", description: "Failed to send invoice to RJP. Please try again later.", variant: "error"})
+            console.log(err)
+        }
+    }
+
+    const handleDownload = () => {
+        const element = invoiceRef.current;
+        console.log(element)
+        const getTargetElement = () => document.getElementById("invoiceRef");
+        console.log(getTargetElement)
         generatePDF(getTargetElement, {
-            filename: `Invoice Order - ${user.generalDetails.name}`,
+            filename: `Invoice  - ${user.generalDetails.name}`,
             overrides: {
                 // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
                 pdf: {
@@ -29,13 +60,19 @@ function GenerateInvoice({purchaseOrder, formData}) {
                 }
             }
         })
+
     }
 
     return (
         <Fragment>
-            <div className='flex items-end justify-end my-8'>
-                <Button onClick={handleOnlyDownload}>Save and Send</Button>
-            </div>
+            { !inVoice.isInvoice
+                ? <div className='flex items-end justify-end my-8'>
+                        <Button onClick={handleSendToRJP}>Save and Send</Button>
+                    </div>
+                : <div className='flex items-end justify-end my-8'>
+                    <Button onClick={handleDownload}>Download</Button>
+                </div>
+}
             <div
                 className="max-w-6xl mx-auto p-4 text-sm w-[80vw]"
                 id="invoiceRef"
@@ -85,7 +122,9 @@ function GenerateInvoice({purchaseOrder, formData}) {
                             <p>
                                 <span className="font-bold">Invoice No:
                                 </span>
-                                {formData.invoiceNumber}
+                                {inVoice.isInvoice
+                                    ? inVoice.inVoiceNumber
+                                    : formData.inVoiceNumber}
                             </p>
                         </div>
                         <div>
@@ -144,9 +183,10 @@ function GenerateInvoice({purchaseOrder, formData}) {
                             <br/>
                             Ashok Nagar, Chennai-600083
                         </p>
-                         <p>
+                        <p>
                             <span className="font-bold">GSTIN:
-                            </span> 33AACBR8275Q1ZP
+                            </span>
+                            33AACBR8275Q1ZP
                         </p>
 
                         <p>
@@ -167,29 +207,30 @@ function GenerateInvoice({purchaseOrder, formData}) {
 
                 {/* Place Details */}
                 {/* <div className='grid grid-cols-2 border border-t-0 border-black'>
-                    <div></div>
+                        <div></div>
 
-                    <div className='px-4 py-2 border-l border-black'>
-                        <p>
-                            <span className="font-bold">Place of Supply:</span>
-                            Chennai
-                        </p>
-                        <p>
-                            <span className="font-bold">State:</span>
-                            Tamil Nadu
-                        </p>
-                        <p>
-                            <span className="font-bold">Code:</span>
-                            {isTNGST
-                                ? 33
-                                : `${user.bankDetails.gstNumber[0]}${user.bankDetails.gstNumber[0]}`}
-                        </p>
-                    </div>
-                </div> */}
+                        <div className='px-4 py-2 border-l border-black'>
+                            <p>
+                                <span className="font-bold">Place of Supply:</span>
+                                Chennai
+                            </p>
+                            <p>
+                                <span className="font-bold">State:</span>
+                                Tamil Nadu
+                            </p>
+                            <p>
+                                <span className="font-bold">Code:</span>
+                                {isTNGST
+                                    ? 33
+                                    : `${user.bankDetails.gstNumber[0]}${user.bankDetails.gstNumber[0]}`}
+                            </p>
+                        </div>
+                    </div> */}
 
                 <div className='p-2 px-4 border border-black border-t-0'>
                     <p>
-                        <span className="font-bold">Attn: </span>
+                        <span className="font-bold">Attn:
+                        </span>
                         P Vijay
 
                     </p>
@@ -205,7 +246,8 @@ function GenerateInvoice({purchaseOrder, formData}) {
                                 <th className="border-r border-black px-2 py-1">Description of Service</th>
                                 <th className="border-r border-black px-2 py-1">HSN/SAC</th>
                                 <th className="border-r border-black px-2 py-1">GST Rate</th>
-                                <th className="border-r border-black px-2 py-1">{purchaseOrder.details.type}</th>
+                                <th className="border-r border-black px-2 py-1">{purchaseOrder
+                                        ?.details.type}</th>
                                 <th className="border-r border-black px-2 py-1">Rate/Day</th>
                                 <th className="px-2 py-1">Amount</th>
                             </tr>
