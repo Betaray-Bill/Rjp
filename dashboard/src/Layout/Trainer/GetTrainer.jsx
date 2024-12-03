@@ -97,7 +97,7 @@ function GetTrainer() {
                                             console.log(`${index + 1}.) ${trainer.email} `)
                                         }}
                                             className="cursor-pointer rounded-md">
-                                            <TableCell className="font-medium">{index + 1}</TableCell>
+                                            <TableCell className="font-medium">{(limit*(page - 1)) + 1 + index}</TableCell>
                                             <TableCell className="font-medium flex items-center">
                                                 <Avatar>
                                                     <AvatarImage src="https://github.com/shadcn.png"/>
@@ -121,15 +121,14 @@ function GetTrainer() {
             {/* Pagination */}
             <div className='grid place-content-center mt-10'>
                 <Pagination>
-                     <PaginationPrevious
+                {data && limit < limit * page && <PaginationPrevious
                         onClick={() => {
                         setPage(page - 1);
                         getAll(page - 1, limit);
                         queryClient(["getAllTrainers", page])
-                    }}
-                        disabled={page == 1
-                        ? true
-                        : false}/> 
+                    }} /> 
+}
+                     
  
                     <PaginationContent>
                         {data && data.trainersTotals && [...Array(Math.ceil(data
