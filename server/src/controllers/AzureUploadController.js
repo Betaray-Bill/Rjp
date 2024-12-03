@@ -72,7 +72,32 @@ export const uploadPOToBlob = async(file, fileName, projectName) => {
         await containerClient.createIfNotExists();
 
         // Generate a unique blob name with the folder path (e.g., folderName/fileName)
-        const blobName = `${projectName}/Purchase Order/${fileName}`;
+        const blobName = `${projectName}/Invoice/${fileName}`;
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+        // Upload file buffer to Azure Blob Storage
+        await blockBlobClient.uploadData(file.buffer);
+
+        // Get the blob URL
+        const blobUrl = blockBlobClient.url;
+        return { success: true, message: "File uploaded successfully", url: blobUrl };
+    } catch (error) {
+        console.error("Error uploading to Azure Blob Storage:", error.message);
+        throw new Error("File upload to Azure Blob Storage failed.");
+    }
+};
+
+
+
+export const uploadInvoiceToBlob = async(file, fileName, projectName) => {
+    try {
+        const containerClient = blobServiceClient.getContainerClient(containerName);
+
+        // Create the container if it doesn't already exist
+        await containerClient.createIfNotExists();
+
+        // Generate a unique blob name with the folder path (e.g., folderName/fileName)
+        const blobName = `${projectName}/Invoice/${fileName}`;
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
         // Upload file buffer to Azure Blob Storage

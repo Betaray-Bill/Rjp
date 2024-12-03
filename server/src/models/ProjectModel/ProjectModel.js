@@ -130,6 +130,21 @@ const projectSchema = new mongoose.Schema({
         isClientCallDone: {
             type: Boolean,
             default: false, // Default to `false`
+        },
+        inVoice: {
+            isInvoice: {
+                type: Boolean,
+                default: false,
+            },
+            InvoiceUrl: {
+                type: String,
+            },
+            inVoiceNumber: {
+                type: String,
+            },
+            inVoiceDate: {
+                type: String
+            }
         }
     }],
     notes: [notesSchema],

@@ -1,16 +1,18 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import UploadInvoice from './UploadInvoice';
 import GenerateInvoice from './GenerateInvoice';
-import { Button } from '@/components/ui/button';
+import {Button} from '@/components/ui/button';
+import GenerateInvoiceForm from './GenerateInvoiceForm';
 
-function Invoice({purchaseOrder}) {
+function Invoice({purchaseOrder, projectName, inVoice}) {
 
-    const [showInvoice, setShowInvoice] = useState(false)
+    const [showInvoice,
+        setShowInvoice] = useState(false)
 
     const z = () => {
         setShowInvoice(!showInvoice)
     }
-   
+
     return (
         <div className='w-[80vw] mt-8 p-6 bg-white rounded-md shadow-sm'>
             {/* Upload Invoice */}
@@ -25,22 +27,34 @@ function Invoice({purchaseOrder}) {
                     <span className='ml-3'>Invoice</span>
                 </div>
 
-                <div className='flex items-center'>
-                    {/* Upload ur Invoice */}
-                    <UploadInvoice />
-
-                    {/* Generate Invoice */}
-                    <div className='ml-4'>
-                        <Button onClick={() => setShowInvoice(!showInvoice)} className="rounded-none">Generate</Button>
-                    </div>
-                </div>
+                {!inVoice.isInvoice
+                    ? <div className='flex items-center'>
+                            {/* Upload ur Invoice */}
+                            <UploadInvoice projectName={projectName}/> {/* Generate Invoice */}
+                            {!inVoice.isInvoice
+                                ? <div className='ml-4'>
+                                        <Button onClick={() => setShowInvoice(!showInvoice)} className="rounded-none">Generate</Button>
+                                    </div>
+                                : null}
+                        </div>
+                    : <Button className="rounded-none">
+                        <a
+                            href={inVoice.InvoiceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"  
+                            className='rounded-none'
+                        >
+                            Download
+                        </a>
+                    </Button>
+}
             </div>
-            {
-                showInvoice &&
-                <div className='mt-4'>
-                    <GenerateInvoice purchaseOrder={purchaseOrder}/>
-                </div>
-            }
+            {!inVoice.isInvoice
+                ? <div className='mt-4'>
+                        <GenerateInvoiceForm purchaseOrder={purchaseOrder}/>
+                    </div>
+                : null
+}
         </div>
     )
 }

@@ -8,6 +8,7 @@ import axios from 'axios';
 import {useParams} from 'react-router-dom';
 import jsPDF from 'jspdf';
 import {useQuery, useQueryClient} from 'react-query'
+import { useToast } from '@/hooks/use-toast';
 
 function PurchaseOrderFile({
     name,
@@ -22,7 +23,7 @@ function PurchaseOrderFile({
     trainerPAN
 }) {
     const queryClient = useQueryClient();
-
+    const {toast} = useToast()
     // JavaScript program to convert number into words by breaking it into groups of
     // three
 
@@ -189,12 +190,17 @@ function PurchaseOrderFile({
             }
             console.log(data)
             // console.log(data)
-            // const response = await axios.put(`http://localhost:5000/api/project/purchaseOrder/${projectId.projectId}/trainer/${id}`, {
-            //     ...data
-            // });
-            // console.log(response.data)
+            const response = await axios.put(`http://localhost:5000/api/project/purchaseOrder/${projectId.projectId}/trainer/${id}`, {
+                ...data
+            });
+            console.log(response.data)
             queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
-
+            toast({
+                title: "PO Sent Successfully",
+                // description: "Purchase Order has been downloaded as a PDF",
+                variant: "success",
+                // duration: 5000
+            })
             // const sendDataToBackend = await axios.put const res console.log("FOrm Data",
             // tableRows, terms) }
         } catch (err) {
@@ -202,6 +208,7 @@ function PurchaseOrderFile({
             alert("Error Uploading File")
         }
         // }
+        setIsDownloading(p => !p);
 
         console.log("FOrm Data", tableRows, terms)
 
@@ -294,7 +301,7 @@ function PurchaseOrderFile({
                                             <td className="px-2 font-medium">RJP GSTIN:</td>
                                             <td className="px-2">33AABCR8275Q1ZP</td>
                                         </tr>
-                                        {trainerGST && <tr>
+                                        {/* {trainerGST && <tr>
                                             <td className="px-2 font-medium">Code:</td>
                                             <td className="px-2">{isTNGST
                                                     ? 33
@@ -304,7 +311,7 @@ function PurchaseOrderFile({
                                         <tr>
                                             <td className="px-2 font-medium">Place of Supply:</td>
                                             <td className="px-2">Chennai, India</td>
-                                        </tr>
+                                        </tr> */}
                                         <tr>
                                             <td className="px-2 font-medium">PAN:</td>
                                             <td className="px-2">AABCR8275Q</td>

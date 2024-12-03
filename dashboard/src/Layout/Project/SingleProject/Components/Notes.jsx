@@ -282,13 +282,13 @@ function Notes({projectName, projectId}) {
                                                                     ? (
                                                                         <div className="mt-2 flex items-center">
                                                                             <ion-icon name="document-outline"></ion-icon>
-                                                                            <a
-                                                                                href={item.file.url}
-                                                                                target="_blank"
-                                                                                rel="noopener noreferrer"
-                                                                                className="text-blue-500 underline ml-2">
-                                                                                {item.file.name}
-                                                                            </a>
+                                                                                <a
+                                                                                    href={item.file.url}
+                                                                                    target="_blank"
+                                                                                    rel="noopener noreferrer"
+                                                                                    className="text-blue-500 underline ml-2">
+                                                                                    {item.file.name}
+                                                                                </a>
                                                                         </div>
                                                                     )
                                                                     : null}

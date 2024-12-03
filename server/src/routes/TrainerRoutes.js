@@ -6,6 +6,7 @@ import authorizeRole from '../middleware/roleMiddleware.js';
 import { searchTrainer } from '../controllers/SearchController.js';
 import { changepassword } from '../controllers/TrainerController.js';
 import { updateResume } from '../controllers/TrainerSourcerController.js';
+import { upload_Invoice_Url_Trainer } from '../controllers/ProjectController.js';
 
 const router = express.Router();
 
@@ -24,6 +25,7 @@ router.post("/:id/copy-resume", authMiddleware, resumeCopy)
 router.get("/resume/:id", authEmployeeMiddleware, getResumeById)
 router.get("/signout", authMiddleware, signOut)
 router.put("/updateResume/:trainer_id/resume/:resume_id", authMiddleware, updateResume)
+router.put('/uploadInvoice/project/:projectId/trainer/:trainerId', authMiddleware, upload_Invoice_Url_Trainer)
 
 // get
 

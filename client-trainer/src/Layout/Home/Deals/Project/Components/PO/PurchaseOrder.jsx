@@ -127,7 +127,7 @@ function PurchaseOrder({purchaseOrder}) {
                                                             <td className="px-2 font-medium">RJP GSTIN:</td>
                                                             <td className="px-2">33AABCR8275Q1ZP</td>
                                                         </tr>
-                                                        {user.bankDetails.gstNumber && <tr>
+                                                        {/* {user.bankDetails.gstNumber && <tr>
                                                             <td className="px-2 font-medium">Code:</td>
                                                             <td className="px-2">{isTNGST
                                                                     ? 33
@@ -137,7 +137,7 @@ function PurchaseOrder({purchaseOrder}) {
                                                         <tr>
                                                             <td className="px-2 font-medium">Place of Supply:</td>
                                                             <td className="px-2">Chennai, India</td>
-                                                        </tr>
+                                                        </tr> */}
                                                         <tr>
                                                             <td className="px-2 font-medium">PAN:</td>
                                                             <td className="px-2">AABCR8275Q</td>

@@ -19,6 +19,7 @@ import PurchaseOrder from './Components/PO/PurchaseOrder'
 import TrainerPurchaseList from './Components/PO/TrainerPurchaseList'
 import { userAccess } from '@/utils/CheckUserAccess'
 import { RolesEnum } from '@/utils/constants'
+import InvoiceList from './Components/Invoice/InvoiceList'
 const state = {
   ParticipantList: "Participant List",
   Hotel: "Hotel",
@@ -249,6 +250,10 @@ function ViewSingleProject() {
       {/* PO */}
       <TrainerPurchaseList trainers={trainers} projectName={projectName} />
       {/* <PurchaseOrder /> */}
+
+      {/* Invoice */}
+      <InvoiceList trainers={trainers} projectName={projectName} />
+
 
 
       {/* Training Delivery Section - showcase all the conditions */}

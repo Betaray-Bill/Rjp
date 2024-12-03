@@ -310,43 +310,19 @@ const getProject = asyncHandler(async(req, res) => {
         }
 
         if (employee.role[i].name === 'Finance') {
-            // // console.log("Key acc", employee.role.populate('roleId'))
-            // const projects = await Pipeline.aggregate([{
-            //     $project: {
-            //         stages: {
-            //             $map: {
-            //                 input: "$stages",
-            //                 as: "stage",
-            //                 in: {
-            //                     name: "$$stage.name",
-            //                     projects: {
-            //                         $map: {
-            //                             input: "$$stage.projectDetails", // Map over the projectDetails array
-            //                             as: "project",
-            //                             in: {
-            //                                 projectName: "$$project.projectName",
-            //                                 domain: "$$project.domain",
-            //                                 company: "$$project.company.name",
-            //                                 trainingDates: "$$project.trainingDates",
-            //                                 projectOwner: {
-            //                                     name: {
-            //                                         $arrayElemAt: ["$$project.projectOwnerDetails.name", 0]
-            //                                     },
-            //                                     email: {
-            //                                         $arrayElemAt: ["$$project.projectOwnerDetails.contactDetails.email", 0]
-            //                                     },
-            //                                     phone: {
-            //                                         $arrayElemAt: ["$$project.projectOwnerDetails.contactDetails.phone", 0]
-            //                                     }
-            //                                 }
-            //                             }
-            // //                         }
-            // //                     }
-            // //                 }
-            // //             }
-            // //         }
-            // //     }
-            // // }]);
+            // // console.log("Key acc", employee.role.populate('roleId')) const projects =
+            // await Pipeline.aggregate([{     $project: {         stages: { $map: { input:
+            // "$stages",                 as: "stage",          in: { name: "$$stage.name",
+            // projects: {                         $map: { input: "$$stage.projectDetails",
+            // // Map over the projectDetails array as: "project",   in: { projectName:
+            // "$$project.projectName",                domain: "$$project.domain", company:
+            // "$$project.company.name", trainingDates: "$$project.trainingDates",
+            // projectOwner: {  name: { $arrayElemAt: ["$$project.projectOwnerDetails.name",
+            // 0] }, email: {       $arrayElemAt:
+            // ["$$project.projectOwnerDetails.contactDetails.email", 0]                 },
+            //                         phone: { $arrayElemAt:
+            // ["$$project.projectOwnerDetails.contactDetails.phone", 0]           } }   }
+            // // } //                     } // } //   } //         } //     } // }]);
             const pipelines = await Pipeline.find({}, "stages").populate({
                 path: 'stages.projects', // Populate 'projects' within each stage
                 select: 'projectName domain company.name trainingDates', // Select specific fields from 'Project'
@@ -358,18 +334,17 @@ const getProject = asyncHandler(async(req, res) => {
             const projects = pipelines.map((pipeline) => {
                 return {
                     ...pipeline,
-                    stages: pipeline.stages.map((stage) => {
-                        if (["Payment", "PO received / Invoice Raised", "Invoice Sent"].includes(stage.name)) {
+                    stages: pipeline
+                        .stages
+                        .map((stage) => {
+                            if (["Payment", "PO received / Invoice Raised", "Invoice Sent"].includes(stage.name)) {
+                                return { name: stage.name, projects: stage.projects };
+                            }
                             return {
                                 name: stage.name,
-                                projects: stage.projects
+                                projects: [] // Empty array for other stages
                             };
-                        }
-                        return {
-                            name: stage.name,
-                            projects: [] // Empty array for other stages
-                        };
-                    })
+                        })
                 };
             });
 
@@ -850,6 +825,48 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
 
 })
 
+// Invoice Upload to the
+const upload_Invoice_Url_Trainer = asyncHandler(async(req, res) => {
+    const { trainerId } = req.params;
+    const { projectId } = req.params;
+    console.log(trainerId)
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+
+    console.log(req.body)
+
+    try {
+        const project = await Project.findById(projectId)
+            // console.log(project)
+
+        for (let i = 0; i < project.trainers.length; i++) {
+            console.log(project.trainers[i])
+            if (project.trainers[i].trainer.toString() === trainerId) {
+                console.log("Trainer found", project.trainers[i].trainer)
+                project.trainers[i].inVoice.isInvoice = true
+                project.trainers[i].inVoice.InvoiceUrl = req.body.url
+                    // project.trainers[i].inVoice.name = req.body.name
+                project.trainers[i].inVoice.inVoiceDate = new Date()
+                    // project.trainers[i].inVoice.details./
+
+                await project.save()
+
+                break
+            }
+        }
+        res.json({ message: " Done", project: project });
+
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: "Error uploading file URL." });
+    }
+
+})
+
 export {
     createProject,
     getProjectDetails,
@@ -864,5 +881,6 @@ export {
     getAllNotes,
     getProjectForTrainer,
     isClientCallDone,
-    uploadPOUrl_Trainer
+    uploadPOUrl_Trainer,
+    upload_Invoice_Url_Trainer
 }
