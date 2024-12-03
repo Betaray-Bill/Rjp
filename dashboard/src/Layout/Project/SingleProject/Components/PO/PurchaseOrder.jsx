@@ -105,7 +105,7 @@ function PurchaseOrder({
             {!isPurchased && <div>
                 <div className="my-5">
                     <div className='flex items-center justify-between'>
-                        <h2 className="text-md font-semibold mb-3">Add New Row</h2>
+                        <h2 className="text-md font-semibold mb-3">Add New Description</h2>
 
                     </div>
                     <Fragment>
@@ -159,7 +159,7 @@ function PurchaseOrder({
                             placeholder="Enter Description"
                             className="border p-2 rounded w-full mt-6"/>
                         <Button onClick={addRow} className="my-3">
-                            Add Row
+                            Add Description
                         </Button>
 
                         {/* Terms */}

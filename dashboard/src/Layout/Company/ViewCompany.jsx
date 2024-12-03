@@ -35,7 +35,7 @@ function ViewCompany() {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className= "">Invoice</TableHead>
+                        <TableHead className= "">S.no</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Method</TableHead>
                         <TableHead className="text-right">Amount</TableHead>

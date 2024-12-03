@@ -157,20 +157,25 @@ function PurchaseOrderFile({
             const content = poRef.current.outerHTML;
             console.log(content)
             // Create a blob from the content
-            const blob = new Blob([content], {type: "pdf"});
-            console.log(blob)
-            // Create a FormData object to send to the backend
-            const formData = new FormData();
-            formData.append("file", blob);
-            formData.append("projectName", projectName);
-            formData.append("fileName", `${name} - Purchase Order`); // Include file name
+            // const blob = new Blob([content], {type: "application/pdf"});
+            // var u = URL.createObjectURL(blob);
+            // console.log(u)
+            // // Create a FormData object to send to the backend
+            // const formData = new FormData();
+            // formData.append("file", blob);
+            // formData.append("projectName", projectName);
+            // formData.append("fileName", `${name} - Purchase Order`); // Include file name
 
-            console.log(formData.file)
+            // console.log(formData.file)
 
-            //  // Call the POST API to upload the file  const uploadResult = await
+            // //  // Call the POST API to upload the file  
+            // const uploadResult = await
             // axios.post('http://localhost:5000/api/filestorage/upload-to-blob/training/po'
             // , formData, {     headers: {         "Content-Type": "multipart/form-data" }
-            // }); const res = await uploadResult.data console.log(res) get the URL and
+            // }); 
+            // const res = await uploadResult.data 
+            // console.log(res) 
+            // get the URL and
             // save it in the Backend of the Trainer as well in the Project DOCS if
             // (uploadResult.status == 200) {
             console.log("URL got success");
@@ -183,10 +188,11 @@ function PurchaseOrderFile({
                 terms: terms
             }
             console.log(data)
-            const response = await axios.put(`http://localhost:5000/api/project/purchaseOrder/${projectId.projectId}/trainer/${id}`, {
-                ...data
-            });
-            console.log(response.data)
+            // console.log(data)
+            // const response = await axios.put(`http://localhost:5000/api/project/purchaseOrder/${projectId.projectId}/trainer/${id}`, {
+            //     ...data
+            // });
+            // console.log(response.data)
             queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
 
             // const sendDataToBackend = await axios.put const res console.log("FOrm Data",

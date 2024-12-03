@@ -116,7 +116,7 @@ function PurchaseOrder({purchaseOrder}) {
                                                         </tr>
                                                         <tr>
                                                             <td className="px-2 font-medium">Date:</td>
-                                                            <td className="px-2">{new Date()
+                                                            <td className="px-2">{new Date(purchaseOrder.time)
                                                                     .toISOString()
                                                                     .split('T')[0]
                                                                     .split('-')
@@ -179,7 +179,7 @@ function PurchaseOrder({purchaseOrder}) {
                                                 <th className="border border-gray-300 px-4 py-2">S No</th>
                                                 <th className="border border-gray-300 px-4 py-2">Description</th>
                                                 <th className="border border-gray-300 px-4 py-2">HSN / SAC</th>
-                                                <th className="border border-gray-300 px-4 py-2">{purchaseOrder.type}</th>
+                                                <th className="border border-gray-300 px-4 py-2">{purchaseOrder.details.type}</th>
                                                 <th className="border border-gray-300 px-4 py-2">Rate</th>
                                                 <th className="border border-gray-300 px-4 py-2">Amount</th>
                                             </tr>

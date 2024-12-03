@@ -3,7 +3,7 @@ import UploadInvoice from './UploadInvoice';
 import GenerateInvoice from './GenerateInvoice';
 import { Button } from '@/components/ui/button';
 
-function Invoice() {
+function Invoice({purchaseOrder}) {
 
     const [showInvoice, setShowInvoice] = useState(false)
 
@@ -38,7 +38,7 @@ function Invoice() {
             {
                 showInvoice &&
                 <div className='mt-4'>
-                    <GenerateInvoice />
+                    <GenerateInvoice purchaseOrder={purchaseOrder}/>
                 </div>
             }
         </div>
