@@ -767,9 +767,27 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
             .populate({ path: 'projectOwner', select: 'name email' })
             .lean();
         console.log(projects)
-        projects.trainers = projects
+            // projects.trainers 
+        let a = projects
             .trainers
             .filter(trainer => trainer.trainer.equals(trainerId));
+
+        projects.trainers = a.map(trainer => {
+            if (trainer.purchaseOrder && trainer.purchaseOrder.canSend === false) {
+                // Remove the purchaseOrder object if canSend is false
+                const { purchaseOrder, ...rest } = trainer;
+                return rest;
+            } else {
+                return trainer
+            }
+            return trainer;
+        });
+
+        // if(a.length > 0) {
+        //     if(a[0].purchaseOrder.canSend === true){
+        //         let details = [...]
+        //     }
+        // }
         // console.log(object)
         res
             .status(200)
@@ -784,6 +802,51 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
 
 // PO Upload to the File URL to the
 const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
+    const { trainerId } = req.params;
+    const { projectId } = req.params;
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+
+    console.log(req.body)
+
+    try {
+        const project = await Project.findById(projectId)
+            // console.log(project)
+
+        for (let i = 0; i < project.trainers.length; i++) {
+            console.log(project.trainers[i])
+            if (project.trainers[i].trainer.toString() === trainerId) {
+                console.log("Trainer found", project.trainers[i].trainer)
+                project.trainers[i].isClientCallDone = true
+                project.trainers[i].purchaseOrder.url = req.body.url
+                project.trainers[i].purchaseOrder.canSend = true
+                project.trainers[i].purchaseOrder.name = req.body.name
+                project.trainers[i].purchaseOrder.time = new Date()
+                project.trainers[i].purchaseOrder.details.description = req.body.description
+                project.trainers[i].purchaseOrder.details.type = req.body.type
+                project.trainers[i].purchaseOrder.details.terms = req.body.terms
+
+                await project.save()
+
+                break
+            }
+        }
+        res.json({ message: " Done" });
+
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: "Error uploading file URL." });
+    }
+
+})
+
+
+// Save PO in the DB, doesn't send the PO
+const savePurchaseOrder = asyncHandler(async(req, res) => {
     const { trainerId } = req.params;
     const { projectId } = req.params;
     console.log("-----------------------------------")
@@ -926,5 +989,6 @@ export {
     isClientCallDone,
     uploadPOUrl_Trainer,
     upload_Invoice_Url_Trainer,
+    savePurchaseOrder,
     upload_Invoice_Content_Trainer
 }

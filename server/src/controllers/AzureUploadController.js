@@ -50,8 +50,9 @@ export const uploadFileToBlob = async(file, folderName, projectName) => {
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
         // Upload file buffer to Azure Blob Storage
-        await blockBlobClient.uploadData(file.buffer);
-
+        await blockBlobClient.uploadData(file.buffer, {
+            blobHTTPHeaders: { blobContentType: file.mimetype },
+        });
         // Get the blob URL
         const blobUrl = blockBlobClient.url;
         return { success: true, message: "File uploaded successfully", url: blobUrl };
@@ -72,12 +73,13 @@ export const uploadPOToBlob = async(file, fileName, projectName) => {
         await containerClient.createIfNotExists();
 
         // Generate a unique blob name with the folder path (e.g., folderName/fileName)
-        const blobName = `${projectName}/Invoice/${fileName}`;
+        const blobName = `${projectName}/Invoice/${file.originalname}`;
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
-        // Upload file buffer to Azure Blob Storage
-        await blockBlobClient.uploadData(file.buffer);
 
+        await blockBlobClient.uploadData(file.buffer, {
+            blobHTTPHeaders: { blobContentType: file.mimetype },
+        });
         // Get the blob URL
         const blobUrl = blockBlobClient.url;
         return { success: true, message: "File uploaded successfully", url: blobUrl };
@@ -93,6 +95,9 @@ export const uploadInvoiceToBlob = async(file, fileName, projectName) => {
     try {
         const containerClient = blobServiceClient.getContainerClient(containerName);
 
+        console.log("*********file ", file, fileName.mimetype)
+        console.log(fileName, projectName)
+
         // Create the container if it doesn't already exist
         await containerClient.createIfNotExists();
 
@@ -100,8 +105,10 @@ export const uploadInvoiceToBlob = async(file, fileName, projectName) => {
         const blobName = `${projectName}/Invoice/${fileName}`;
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
-        // Upload file buffer to Azure Blob Storage
-        await blockBlobClient.uploadData(file.buffer);
+        // Upload PDF to Azure Blob Storage with Content-Type
+        await blockBlobClient.uploadData(file.buffer, {
+            blobHTTPHeaders: { blobContentType: file.mimetype },
+        });
 
         // Get the blob URL
         const blobUrl = blockBlobClient.url;

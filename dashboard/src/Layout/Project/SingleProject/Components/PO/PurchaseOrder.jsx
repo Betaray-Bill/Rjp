@@ -76,24 +76,48 @@ function PurchaseOrder({
     // Add new row to the table
     const addRow = () => {
         if (formInput.description && formInput.typeQty && formInput.rate) {
-            setTableRows([
-                ...tableRows, {
-                    id: tableRows.length + 1,
+            if (editRowIndex !== null) {
+                // Save edited row
+                const updatedRows = [...tableRows];
+                updatedRows[editRowIndex] = {
+                    ...updatedRows[editRowIndex],
                     description: formInput.description,
-                    hsnSac: "993293", // constant value
                     typeQty: Number(formInput.typeQty),
                     rate: Number(formInput.rate),
                     amount: Number(formInput.typeQty) * Number(formInput.rate)
-                }
-            ]);
-            // Clear form after adding
+                };
+                setTableRows(updatedRows);
+                setEditRowIndex(null); // Exit edit mode
+            } else {
+                // Add new row
+                setTableRows([
+                    ...tableRows, {
+                        id: tableRows.length + 1,
+                        description: formInput.description,
+                        hsnSac: "993293",
+                        typeQty: Number(formInput.typeQty),
+                        rate: Number(formInput.rate),
+                        amount: Number(formInput.typeQty) * Number(formInput.rate)
+                    }
+                ]);
+            }
+            // Clear form
             setFormInput({description: "", typeQty: "", rate: "", amount: ""});
         } else {
             alert("Please fill in all fields.");
         }
     };
+    const [editRowIndex,
+        setEditRowIndex] = useState(null);
+
     const [preview,
         setPreview] = useState(false)
+
+    const editRow = (index) => {
+        const row = tableRows[index];
+        setFormInput({description: row.description, typeQty: row.typeQty, rate: row.rate, amount: row.amount});
+        setEditRowIndex(index);
+    };
 
     return (
         <div className='border my-5 rounded-md px-4 drop-shadow-sm'>
@@ -102,7 +126,7 @@ function PurchaseOrder({
             </div>
 
             {/* FORM */}
-            {!isPurchased && <div>
+            <div>
                 <div className="my-5">
                     <div className='flex items-center justify-between'>
                         <h2 className="text-md font-semibold mb-3">Add New Description</h2>
@@ -159,26 +183,57 @@ function PurchaseOrder({
                             placeholder="Enter Description"
                             className="border p-2 rounded w-full mt-6"/>
                         <Button onClick={addRow} className="my-3">
-                            Add Description
+                            {editRowIndex !== null
+                                ? "Save Changes"
+                                : "Add Description"}
                         </Button>
 
-                        {/* Terms */}
-                        <div>
-                            <Textarea
-                                type="text"
-                                placeholder="Add a new term..."
-                                value={task}
-                                onChange={(e) => setTask(e.target.value)}/>
-                            <Button onClick={addTerms} className="my-3">
-                                Add Terms
-                            </Button>
+                        {/* Display List */}
+
+                        <div className='my-4 '>
+                            <h2>Description List
+                            </h2>
+                            {tableRows.length > 0 && tableRows.map((row, index) => (
+                                <div className='flex items-start justify-between'>
+                                    <div key={index} className="flex items-start flex-col justify-between my-3">
+                                        <div className="flex items-start">
+                                            <span className="text-sm font-normal mr-2">{index + 1}.
+                                            </span>
+                                            <span>{row.description}</span>
+                                        </div>
+                                        <div className='flex flex-col ml-3'>
+                                            <span className='my-1'>Type Qty: {row.typeQty}</span>
+                                            <span className='my-2'>Rate: {row.rate}</span>
+                                            <span>Amount: {row.amount}</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Button onClick={() => editRow(index)}>Edit</Button>
+                                    </div>
+                                </div>
+                            ))
+}
                         </div>
+
                     </Fragment>
 
                 </div>
 
             </div>
-}
+
+            {/* Terms */}
+            <div>
+                <h2 className='font-semibold my-4'>Add Terms</h2>
+                <Textarea
+                    type="text"
+                    placeholder="Add a new term..."
+                    value={task}
+                    onChange={(e) => setTask(e.target.value)}/>
+                <Button onClick={addTerms} className="my-3">
+                    Add Terms
+                </Button>
+            </div>
+
             <PurchaseOrderFile
                 id={id}
                 projectName={projectName}

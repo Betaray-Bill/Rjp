@@ -42,7 +42,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
         }
     }
 
-    const handleDownload = () => {
+    const handleDownload = async() => {
         const element = invoiceRef.current;
         console.log(element)
         const getTargetElement = () => document.getElementById("invoiceRef");
@@ -65,14 +65,19 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
 
     return (
         <Fragment>
-            { !inVoice.isInvoice
+            {/* {!inVoice.isInvoice
                 ? <div className='flex items-end justify-end my-8'>
                         <Button onClick={handleSendToRJP}>Save and Send</Button>
+                    </div> */}
+                <div className='flex items-center justify-between'>
+                    <div className='text-red-700'>
+                        *Download and Re-upload the Invoice with your signature on the bottom.*
                     </div>
-                : <div className='flex items-end justify-end my-8'>
-                    <Button onClick={handleDownload}>Download</Button>
+                    <div className='flex items-end justify-end my-8'>
+                        <Button onClick={handleDownload}>Download</Button>
+                    </div>
                 </div>
-}
+{/* } */}
             <div
                 className="max-w-6xl mx-auto p-4 text-sm w-[80vw]"
                 id="invoiceRef"
@@ -122,7 +127,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
                             <p>
                                 <span className="font-bold">Invoice No:
                                 </span>
-                                {inVoice.isInvoice
+                                {inVoice && inVoice.isInvoice
                                     ? inVoice.inVoiceNumber
                                     : formData.inVoiceNumber}
                             </p>
@@ -297,7 +302,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
                                         .reduce((total, row) => total + row.amount, 0)}</td>
                                 {/* .reduce((total, row) => total + row.amount, 0) */}
                             </tr>
-
+{/* 
                             <tr>
                                 <td className="border border-gray-600 px-4 py-1"></td>
                                 <td colSpan="2" className="border border-gray-600 px-4 py-1">Add</td>
@@ -305,8 +310,8 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
                                 <td className="border border-gray-600 px-4 py-1"></td>
                                 <td className="border border-gray-600 px-4 py-1"></td>
                                 <td className="border border-gray-600 px-4 py-1"></td>
-                            </tr>
-                            {isTNGST
+                            </tr> */}
+                            {/* {isTNGST
                                 ? <Fragment>
                                         <tr>
                                             <td className="border border-gray-600 px-4 py-1"></td>
@@ -353,9 +358,9 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
                                     </td>
 
                                 </tr>
-}
+} */}
 
-                            <tr className='font-semibold'>
+                            {/* <tr className='font-semibold'>
                                 <td className="border border-gray-600 px-4 py-1"></td>
                                 <td colSpan="2" className="border text-center border-gray-600 px-4 py-1">Tax Amount : GST</td>
                                 <td className="border border-gray-600 px-4 py-1"></td>
@@ -367,7 +372,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
 }
                                 </td>
 
-                            </tr>
+                            </tr> */}
 
                             <tr className='text-center border-gray-600 border'>
                                 <td colSpan="7">
@@ -398,7 +403,10 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
                     <p>For {user.generalDetails.name}
                     </p>
                     {/* IMg - SIgn */}
-                    <img src="" alt="sign"/>
+                    {/* <img src="" alt="sign"/> */}
+                    <div className='h-[100px]'>
+
+                    </div>
                     <p>{user.generalDetails.name}
                     </p>
 

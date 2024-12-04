@@ -9,6 +9,9 @@ import {useParams} from 'react-router-dom';
 import jsPDF from 'jspdf';
 import {useQuery, useQueryClient} from 'react-query'
 import { useToast } from '@/hooks/use-toast';
+import { userAccess } from '@/utils/CheckUserAccess';
+import { RolesEnum } from '@/utils/constants';
+import { useSelector } from 'react-redux';
 
 function PurchaseOrderFile({
     name,
@@ -125,34 +128,71 @@ function PurchaseOrderFile({
     // check if thr GST is TN or NOT
     const [isTNGST,
         setisTNGST] = useState(trainerGST.startsWith("33"))
+        const {currentUser} = useSelector(state => state.auth)
 
     const poRef = useRef();
 
-    const handleDownload = async() => {
-        setIsDownloading(p => !p);
-        // Download The PO
-        const element = poRef.current;
-        console.log(element)
-        const getTargetElement = () => document.getElementById("poRef");
-        console.log(getTargetElement)
-        generatePDF(getTargetElement, {
-            filename: `Purchase Order - ${name}`,
-            overrides: {
-                // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
-                pdf: {
-                    compress: true
-                },
-                // see https://html2canvas.hertzen.com/configuration for more options
-                canvas: {
-                    useCORS: true
-                }
-            }
-        })
-
-        // Upload the File to the Azure
-        setisUploading(true)
-
+    const handleSavePO = async() => {
         // if (!isPurchased) {
+            try {
+                // console.log(a)
+                const content = poRef.current.outerHTML;
+                console.log(content)
+                // Create a blob from the content
+                // const blob = new Blob([content], {type: "application/pdf"});
+                // var u = URL.createObjectURL(blob);
+                // console.log(u)
+                // // Create a FormData object to send to the backend
+                // const formData = new FormData();
+                // formData.append("file", blob);
+                // formData.append("projectName", projectName);
+                // formData.append("fileName", `${name} - Purchase Order`); // Include file name
+    
+                // console.log(formData.file)
+    
+                // //  // Call the POST API to upload the file  
+                // const uploadResult = await
+                // axios.post('http://localhost:5000/api/filestorage/upload-to-blob/training/po'
+                // , formData, {     headers: {         "Content-Type": "multipart/form-data" }
+                // }); 
+                // const res = await uploadResult.data 
+                // console.log(res) 
+                // get the URL and
+                // save it in the Backend of the Trainer as well in the Project DOCS if
+                // (uploadResult.status == 200) {
+                console.log("URL got success");
+                // Update the message with the uploaded file URL
+                const data = {
+                    // url:res.url,
+                    name: `${name} - Purchase Order`,
+                    description: tableRows,
+                    type: type,
+                    terms: terms
+                }
+                console.log(data)
+                // console.log(data)
+                const response = await axios.put(`http://localhost:5000/api/project/save-purchaseOrder/${projectId.projectId}/trainer/${id}`, {
+                    ...data
+                });
+                console.log(response.data)
+                queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
+                toast({
+                    title: "PO Saved   Successfully",
+                    // description: "Purchase Order has been downloaded as a PDF",
+                    variant: "success",
+                    // duration: 5000
+                })
+                // const sendDataToBackend = await axios.put const res console.log("FOrm Data",
+                // tableRows, terms) }
+            } catch (err) {
+                console.log(err)
+                alert("Error Uploading File")
+            }
+            // }
+            // setIsDownloading(p => !p);
+    }
+
+    const handleSendPO = async() => {
         try {
             // console.log(a)
             const content = poRef.current.outerHTML;
@@ -207,9 +247,6 @@ function PurchaseOrderFile({
             console.log(err)
             alert("Error Uploading File")
         }
-        // }
-        setIsDownloading(p => !p);
-
         console.log("FOrm Data", tableRows, terms)
 
     };
@@ -242,31 +279,52 @@ function PurchaseOrderFile({
 
     return (
         <Fragment>
-            {isPurchased
-                ? <div className="flex justify-end m-4">
+            {
+                true && 
+                (
+                    <div className="flex items-center justify-center">
+                        <div>
+                            <Button className="rounded-none" onClick={handleSavePO}>Save</Button>
+                        </div>
+                        {userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) &&
+                        <Button 
+                            className="rounded-none ml-4 bg-white border-black border text-black hover:bg-blue-700 hover:text-white" 
+                            onClick={handleSendPO}
+                        >
+                            Send
+                        </Button>}
+                    </div>
+                )
+            }
+            {
+              userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) && 
+              (isPurchased?
+                <div className="flex justify-end m-4">
                         <Button onClick={handleOnlyDownload}>{isDownloading
                                 ? "Downloading"
                                 : "Download "}</Button>
                     </div>
                 : <div className="flex justify-end m-4">
-                    <Button onClick={handleDownload}>{isDownloading
+                    <Button onClick={handleSendPO}>{isDownloading
                             ? isUploading
                                 ? "UPloading...."
                                 : "Downloading"
                             : "Download And Send"}</Button>
-                </div>
-}
+                </div>)
+            }
 
             {/* Add form here */}
 
             {/* display Data */}
             <div className="max-w-6xl mx-auto p-4" id="poRef" ref={poRef}>
                 {/* Header Section */}
-                <div className='grid place-content-center text-center my-5'>
-                    <img src={logo} width="100px" alt=""/>
+                <div className='grid place-content-center text-center my-3'>
+                    <img src={logo} width="100px" alt="" className='ml-5'/>
                     <h1 className="text-xl font-semibold">RJP Infotek Pvt Ltd</h1>
                 </div>
-
+            <div className='flex items-center justify-center mb-3'>
+                <h2 className='text-lg font-semibold'>Purchase Order</h2>
+            </div>
                 <div className='grid grid-cols-2 gap-0'>
                     <div className='border border-black p-3'>
                         <h1 className="text-xl font-bold mb-3">RJP Infotek Pvt Ltd</h1>
@@ -279,7 +337,7 @@ function PurchaseOrderFile({
                             <span className='font-semibold'>GSTIN</span>: 33AAFCA8917Q1Z5</p> */}
                     </div>
                     <div className='border-t border-r border-b border-black p-3'>
-                        <h1 className="text-xl text-center mb-3 font-bold">Purchase Order</h1>
+                        <h1 className="text-xl text-center mb-3 font-bold"></h1>
                         <div>
                             <div className='max-w-max'>
                                 <table className="table-auto border-collapse w-full text-left text-sm">
@@ -385,15 +443,15 @@ function PurchaseOrderFile({
                                     </td>
                                 </tr>
                             ))}
-                            <tr>
+                            {/* <tr>
                                 <td colSpan="4" className="border border-gray-300 px-4 py-2"></td>
                                 <td className="border border-gray-300 px-4 py-2">Subtotal</td>
                                 <td className="border border-gray-300 px-4 py-2 text-right">
                                     INR{" "} {tableRows.reduce((total, row) => total + row.amount, 0).toLocaleString()}
                                 </td>
-                            </tr>
+                            </tr> */}
 
-                            {trainerGST && isTNGST
+                            {/* {trainerGST && isTNGST
                                 ? (
                                     <Fragment>
                                         <tr>
@@ -419,7 +477,7 @@ function PurchaseOrderFile({
                                         INR{" "} {(tableRows.reduce((total, row) => total + row.amount, 0) * 1.18).toLocaleString()}
                                     </td>
                                 </tr>
-}
+} */}
 
                             <tr className="font-bold">
                                 <td colSpan="4" className="border border-gray-300 px-4 py-2">
@@ -428,7 +486,7 @@ function PurchaseOrderFile({
                                 </td>
                                 <td className="border border-gray-300 px-4 py-2">Total</td>
                                 <td className="border border-gray-300 px-4 py-2 text-right">
-                                    INR{" "} {(tableRows.reduce((total, row) => total + row.amount, 0) * 1.18).toLocaleString()}
+                                    INR{" "} {(tableRows.reduce((total, row) => total + row.amount, 0) ).toLocaleString()}
                                 </td>
                             </tr>
                         </tbody>
@@ -442,19 +500,20 @@ function PurchaseOrderFile({
                         <p className="text-sm mt-2">
                             Terms of Payments: {/* <br/> */}
                         </p>
+                        <p className='text-sm'>1.) GST additional as applicable</p>
                         {terms.map((term, i) => (
                             <p className='text-sm' key={i}>
-                                {i + 1}.) {term}
+                                {i + 2}.) {term}
                             </p>
                         ))
 }
 
                     </div>
                     <div className="flex flex-col justify-start mt-8">
-                        <div className='flex items-center'>
+                        {/* <div className='flex items-center'>
                             <img src={sign} alt=""/>
                             <img src={seal} className='ml-4' alt=""/>
-                        </div>
+                        </div> */}
                         <div className="text-left mt-4">
                             <p className='text-sm'>P Vijay</p>
                             <p className='text-sm'>Director</p>

@@ -11,9 +11,7 @@ function GenerateInvoiceForm({purchaseOrder, inVoice}) {
     return (
         <div>
             {/* GenerateInvoiceForm */}
-            {
-                !inVoice.isInvoice ?
-            
+
             <Fragment>
                 <h2 className='font-semibold text-xl mb-5'>Generate Invoice</h2>
             <form className='border p-4 rounded-lg'>
@@ -35,7 +33,7 @@ function GenerateInvoiceForm({purchaseOrder, inVoice}) {
                     </div>
                 </div>
             </form> 
-            </Fragment>: null}
+            </Fragment>
 
             <GenerateInvoice inVoice={inVoice} purchaseOrder={purchaseOrder} formData={formData}/>
         </div>

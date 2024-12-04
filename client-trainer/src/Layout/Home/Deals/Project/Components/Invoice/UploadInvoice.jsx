@@ -1,5 +1,6 @@
 import {Button} from '@/components/ui/button'
 import {Input} from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 import axios from 'axios';
 import React, {useRef, useState} from 'react'
 import { useQueryClient } from 'react-query';
@@ -14,6 +15,7 @@ function UploadInvoice({projectName}) {
     const {user} = useSelector((state) => state.auth)
     const params = useParams()
     const fileInputRef = useRef(null);
+    const {toast} = useToast()
 
     const handleFileChange = async(event) => {
         const file = event.target.files[0];
@@ -58,12 +60,16 @@ function UploadInvoice({projectName}) {
                         // in
                     }
 
-                    // Post the Chat in the Chat in Backend 
+                    // Post the Invoice in Backend 
                     const sendUrlToDB = await axios.put(`http://localhost:5000/api/trainer/uploadInvoice/project/${params.projectId}/trainer/${user._id}`, data); 
                     const resp = await sendUrlToDB.data
 
                     console.log(resp)
-
+                    toast({
+                        title: "Invoice Uploaded Successfully",
+                        description: "Your invoice has been uploaded successfully to RJP.",
+                        variant: "success"
+                    })
                     // console.log(chatResp) // Add the message to the data array setData([
                     // ...data, {         ...message     } ]); 
                     // console.log("Message added

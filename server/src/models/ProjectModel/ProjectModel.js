@@ -95,6 +95,10 @@ const projectSchema = new mongoose.Schema({
             ref: 'Resume'
         },
         purchaseOrder: {
+            canSend: {
+                type: Boolean,
+                default: false
+            },
             url: String,
             name: String,
             time: String,
