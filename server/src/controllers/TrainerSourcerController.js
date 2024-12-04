@@ -234,15 +234,33 @@ const uploadResumeToAzureAndExtractText = asyncHandler(async(req, res) => {
 
 //Send PO to the Trainer for the respective deal Generate Unique Id
 const generateTrainerId = async() => {
-    let trainerId;
-    let existingTrainer;
+    // let trainerId;
+    // let existingTrainer;
 
-    do {
-        trainerId = Math.floor(1000 + Math.random() * 9000).toString(); // Generate 4-digit random ID
-        existingTrainer = await Trainer.findOne({ trainerId: trainerId });
-    } while (existingTrainer); // Loop until a unique ID is found
+    // do {
+    //     trainerId = Math.floor(1000 + Math.random() * 9000).toString(); // Generate 4-digit random ID
+    //     existingTrainer = await Trainer.findOne({ trainerId: trainerId });
+    // } while (existingTrainer); // Loop until a unique ID is found
+    const prefix = "RJP";
+    let newId;
+    const trainers = await Trainer.find({})
+        .sort({ createdAt: -1 }) // Sort by `createdAt` in descending order
+        .limit(1).select('trainerId');
+    console.log(trainers)
+    if (trainers === undefined || trainers === null || trainers.length == 0) {
+        newId = "0001";
+    } else {
+        const lastId = trainers[0].trainerId;
+        const numericPart = parseInt(lastId.split('P')[1], 10); // Extract numeric part after 'RJP'
+        newId = (numericPart + 1).toString().padStart(4, "0"); // Increment and pad to 4 digits
+    }
+
+    const trainerId = prefix + newId;
+    // array.push(trainerId);
 
     return trainerId;
+
+    // return trainerId;
 };
 
 // update an existing Resume
