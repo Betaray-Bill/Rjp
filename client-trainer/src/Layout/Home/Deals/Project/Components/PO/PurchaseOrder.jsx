@@ -284,10 +284,10 @@ function PurchaseOrder({purchaseOrder}) {
 
                                 </div>
                                 <div className="flex flex-col justify-start mt-8">
-                                    <div className='flex items-center'>
+                                    {/* <div className='flex items-center'>
                                         <img src={sign} alt=""/>
                                         <img src={seal} className='ml-4' alt=""/>
-                                    </div>
+                                    </div> */}
                                     <div className="text-left mt-4">
                                         <p className='text-sm'>P Vijay</p>
                                         <p className='text-sm'>Director</p>

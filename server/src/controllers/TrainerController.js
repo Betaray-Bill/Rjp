@@ -183,40 +183,42 @@ const resumeCopy = asyncHandler(async(req, res) => {
 
 // Change password
 const changepassword = asyncHandler(async(req, res) => {
-    // Get the Trainer Id and check if he exits
-    const trainerId = req.params.id
-    const { currentPassword, newpassword } = req.body
-    console.log(currentPassword, newpassword)
-    const trainer = await Trainer.findById(trainerId)
-    console.log("Trainer ", trainer.generalDetails.name)
-    if (!trainer) {
-        res
-            .status(404)
-            .json({ message: 'Trainer does not exists' });
-    }
-    let a = bcrypt.compare(currentPassword, trainer.password, function(err, result) {
-        // result == true
-        console.log("true", result)
-    })
+    const trainerId = req.params.id;
+    const { currentPassword, newPassword } = req.body;
+    console.log(req.body)
+    try {
+        console.log(1)
+            // Find the trainer by ID
+        const trainer = await Trainer.findById(trainerId);
+        if (!trainer) {
+            return res.status(404).json({ message: "Trainer does not exist" });
+        }
+        console.log(2, trainer)
 
-    console.log(a)
-        // get the current password and check if its legit let isValid = await trainer ?
-        // .matchPassword(currentPassword) console.log(isValid)
-    if (trainer && (await trainer.matchPassword(currentPassword))) {
-        const updatepasswordTrainer = await Trainer.findByIdAndUpdate(trainerId, {
-            password: newpassword
-        }, { new: true })
+        // Check if the current password matches the trainer's stored password
+        const isPasswordValid = await trainer.matchPassword(currentPassword);
+        console.log(3, isPasswordValid)
 
-        updatepasswordTrainer.save();
-        res
-            .status(200)
-            .json({ message: 'Password Cahgned Successfully', updatepasswordTrainer });
+        // if (!isPasswordValid) {
+        //     return res.status(400).json({ message: "Current password is incorrect" });
+        // }
+        console.log(4)
+
+        // Hash and update the new password
+        const salt = await bcrypt.genSalt(10)
+        console.log(5)
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        console.log(6)
+        trainer.password = hashedPassword;
+        await trainer.save();
+
+        res.status(200).json({ message: "Password changed successfully" });
+    } catch (error) {
+        console.error("Error changing password:", error.message);
+        res.status(500).json({ message: "Error in changing the password" });
     }
-    // get new pass, then save
-    res
-        .status(500)
-        .json({ message: "Error in changing the password" });
-})
+});
+
 
 // Accept PO Reject PO Raise Invoice Get Trainer by ID
 const getTrainerById = asyncHandler(async(req, res) => {

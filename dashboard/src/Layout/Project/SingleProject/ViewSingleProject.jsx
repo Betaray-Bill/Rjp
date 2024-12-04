@@ -84,7 +84,12 @@ function ViewSingleProject() {
       LabDetails: response.data.project.trainingDelivery.LabDetails,
       All_Reports_Mailed: response.data.project.trainingDelivery.All_Reports_Mailed,
       FB_MTM: response.data.project.trainingDelivery.FB_MTM,
-      certificate_Issued: response.data.project.trainingDelivery.certificate_Issued
+      certificate_Issued: response.data.project.trainingDelivery.certificate_Issued,
+      fullTime_start: response.data.project.trainingDelivery.fullTime_start,
+      fullTime_end: response.data.project.trainingDelivery.fullTime_end,
+      partTime_start: response.data.project.trainingDelivery.partTime_start,
+      partTime_end: response.data.project.trainingDelivery.partTime_end,
+
 
     })
     return response.data.project
@@ -124,8 +129,12 @@ function ViewSingleProject() {
         LabDetails: projects.trainingDelivery.LabDetails,
         All_Reports_Mailed: projects.trainingDelivery.All_Reports_Mailed,
         FB_MTM: projects.trainingDelivery.FB_MTM,
-        certificate_Issued: projects.trainingDelivery.certificate_Issued
-
+        certificate_Issued: projects.trainingDelivery.certificate_Issued,
+        fullTime_start:projects.trainingDelivery.fullTime_start,
+        fullTime_end:projects.trainingDelivery.fullTime_end,
+        partTime_start:projects.trainingDelivery.partTime_start,
+        partTime_end:projects.trainingDelivery.partTime_end,
+  
       })
     }
   }, [projectId.projectId])
@@ -135,6 +144,14 @@ function ViewSingleProject() {
     setFormData((prevData) => ({
       ...prevData,
       [field]: prevData[field] === true ? false : true,
+    }));
+  };
+
+  const handleChange = (e) => {
+    console.log(e.target.name, e.target.value)
+    setFormData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value ,
     }));
   };
  
@@ -322,14 +339,26 @@ function ViewSingleProject() {
                         </label>
                       </div>
                       <div key="FullTime" className="flex items-center space-x-2">
-                        <Checkbox
-                          id="FullTime"
-                          checked={formData.FullTime}
-                          onCheckedChange={() => handleCheckboxChange('FullTime')}
-                        />
-                        <label htmlFor="FullTime" className="capitalize font-normal text-[14px]">
-                          Full-Time
-                        </label>
+                        <div>
+                          <Checkbox
+                            id="FullTime"
+                            checked={formData.FullTime}
+                            onCheckedChange={() => handleCheckboxChange('FullTime')}
+                          />
+                          <label htmlFor="FullTime" className="capitalize font-normal ml-2 text-[14px]">
+                            Full-Time
+                          </label>
+
+                        </div>
+                        {
+                          formData.FullTime && 
+                          <div className='block'>
+                            <input onChange={(e) => handleChange(e)} value={formData.fullTime_start} type="time" name="fullTime_start" className='border border-black p-'/>
+                            <input onChange={(e) => handleChange(e)} value={formData.fullTime_end} type="time" name="fullTime_end" className='border mx-3 border-black p-'/>
+
+                          </div>
+                        }
+                        
                       </div>
                       <div key="PartTime" className="flex  items-center space-x-2">
                         <div>
@@ -345,9 +374,12 @@ function ViewSingleProject() {
                         {
                           formData.PartTime && 
                           <div className='block'>
-                            <Input type="time"/>
+                            <input onChange={(e) => handleChange(e)} value={formData.partTime_start}  type="time" name="partTime_start" className='border border-black p-'/>
+                            <input onChange={(e) => handleChange(e)} value={formData.partTime_end}  type="time" name="partTime_end" className='border mx-3 border-black p-'/>
+
                           </div>
                         }
+                        
                       </div>
                       <div key="venue" className="flex items-center space-x-2">
                         <Checkbox

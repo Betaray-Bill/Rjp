@@ -27,29 +27,36 @@ function Invoice({purchaseOrder, projectName, inVoice}) {
                     }}></ion-icon>
                     <span className='ml-3'>Invoice</span>
                 </div>
-
                 {
-                    inVoice && inVoice.InvoiceUrl
-                    ? null :
-                        <div className='flex items-center'>
-                            <UploadInvoice projectName={projectName}/>
-                            <div className='ml-4'>
-                                <Button onClick={() => setShowInvoice(!showInvoice)} className="rounded-none">Generate</Button>
+                    purchaseOrder && purchaseOrder?.details?.description.length > 0 ?  
+                    <Fragment>
+                    {
+                        inVoice && inVoice.InvoiceUrl
+                        ? null :
+                            <div className='flex items-center'>
+                                <UploadInvoice projectName={projectName}/>
+                                <div className='ml-4'>
+                                    <Button onClick={() => setShowInvoice(!showInvoice)} className="rounded-none">Generate</Button>
+                                </div>
                             </div>
-                        </div>
-                }
-                {
-                    inVoice && inVoice.InvoiceUrl
-                    && <a
-                            href={inVoice
-                            ? inVoice.InvoiceUrl
-                            : null}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className='rounded-none px-3 py-2 bg-black text-white'>
-                            Download
-                        </a>
-    
+                    }
+                    {
+                        inVoice && inVoice.InvoiceUrl
+                        && <a
+                                href={inVoice
+                                ? inVoice.InvoiceUrl
+                                : null}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className='rounded-none px-4 py-2 font-medium text-md bg-black text-white'
+                            >
+                                    Download
+                            </a>
+        
+                    }
+
+                    </Fragment>
+                    : <p className='text-sm italic'>PO not issued yet</p> 
                 }
 
             </div>
@@ -64,9 +71,6 @@ function Invoice({purchaseOrder, projectName, inVoice}) {
 
 export default Invoice
 
-// {     purchaseOrder ?     <Fragment>         { inVoice &&  !inVoice.isInvoice
-//         ?         <div className='flex items-center'>                 {/*
-// Upload ur Invoice */}                 <UploadInvoice
 // projectName={projectName}/> {/* Generate Invoice */}
 // {!inVoice.isInvoice                     ?                     // {
 //              // purchaseOrder &&                         <div

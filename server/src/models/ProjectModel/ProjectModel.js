@@ -81,10 +81,7 @@ const projectSchema = new mongoose.Schema({
         type: String,
         enum: ['Virtual', 'In-Person']
     },
-    // trainers: [{
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Trainer'
-    // }],
+    // trainers: [{     type: mongoose.Schema.Types.ObjectId,     ref: 'Trainer' }],
     trainers: [{
         trainer: {
             type: mongoose.Schema.Types.ObjectId,
@@ -106,28 +103,30 @@ const projectSchema = new mongoose.Schema({
                 description: [{
                     description: {
                         type: String,
-                        required: true,
+                        required: true
                     },
                     hsnSac: {
                         type: String,
-                        required: true,
+                        required: true
                     },
                     typeQty: {
                         type: Number,
-                        required: true,
+                        required: true
                     },
                     rate: {
                         type: Number,
-                        required: true,
+                        required: true
                     },
                     amount: {
                         type: Number,
-                        required: true,
-                    },
+                        required: true
+                    }
                 }],
-                type: { type: String },
+                type: {
+                    type: String
+                },
                 terms: [{
-                    type: String,
+                    type: String
                 }]
             }
         },
@@ -138,13 +137,13 @@ const projectSchema = new mongoose.Schema({
         inVoice: {
             isInvoice: {
                 type: Boolean,
-                default: false,
+                default: false
             },
             InvoiceUrl: {
-                type: String,
+                type: String
             },
             inVoiceNumber: {
-                type: String,
+                type: String
             },
             inVoiceDate: {
                 type: String
@@ -153,7 +152,7 @@ const projectSchema = new mongoose.Schema({
     }],
     notes: [notesSchema],
     stages: {
-        type: String,
+        type: String
     },
     trainingDelivery: {
         Travel: {
@@ -179,6 +178,18 @@ const projectSchema = new mongoose.Schema({
         FullTime: {
             type: Boolean,
             default: false, // Default to
+        },
+        fullTime_start: {
+            type: String, // Default to
+        },
+        fullTime_end: {
+            type: String, // Default to
+        },
+        partTime_start: {
+            type: String, // Default to
+        },
+        partTime_end: {
+            type: String, // Default to
         },
         PartTime: {
             type: Boolean,
@@ -248,9 +259,7 @@ const projectSchema = new mongoose.Schema({
         }
 
     },
-    // required: function() {
-    //     return this.stages === "Training Delivery"
-    // }
+    // required: function() {     return this.stages === "Training Delivery" }
 }, { timestamps: true });
 
 const Project = mongoose.model('Project', projectSchema);
