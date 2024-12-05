@@ -7,16 +7,16 @@ import {Avatar, AvatarImage, AvatarFallback} from "@/components/ui/avatar";
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
 } from "@/components/ui/dialog"
 import axios from 'axios';
-import { useToast } from '@/hooks/use-toast';
-import { sub } from 'date-fns';
+import {useToast} from '@/hooks/use-toast';
+import {sub} from 'date-fns';
 
 const style = {
     position: 'absolute',
@@ -39,41 +39,42 @@ function Profile() {
     console.log(currentUser)
     // const empId = useParams()
 
-    
     const {toast} = useToast()
-        // Pass change
+    // Pass change
     const [pass,
-      setPass] = useState({currentPassword: "", newpassword: "", confirmnewpassword: ""})
-  axios.defaults.withCredentials = true;
-  const submitHandler = async(e) => {
-      // e.preventDefault()
-      if (pass.newpassword === pass.confirmnewpassword) {
-          console.log("Same")
-          try {
-              const response = await axios.put(`http://localhost:5000/api/employee/updatePassword/${currentUser.employee._id}`, {
-                  newpassword: pass.newpassword,
-                  currentPassword: pass.currentPassword
-              }); // Replace with your API endpoint
-              console.log('Password Adding successful:', response.data);
-              toast({
-                title: "Password Updated",
-                // description: "Friday, February 10, 2023 at 5:57 PM",
-                variant:"success"
-              })
+        setPass] = useState({currentPassword: "", newpassword: "", confirmnewpassword: ""})
 
-              window.location.reload()
-          } catch (error) {
-              console.error('Password Adding failed:', error);
-          }
+    axios.defaults.withCredentials = true;
+    const submitHandler = async(e) => {
+        // e.preventDefault()
+        if (pass.newpassword === pass.confirmnewpassword) {
+            console.log("Same")
+            try {
+                const response = await axios.put(`http://localhost:5000/api/employee/updatePassword/${currentUser.employee._id}`, {
+                    newpassword: pass.newpassword,
+                    currentPassword: pass.currentPassword
+                }); // Replace with your API endpoint
+                console.log('Password Adding successful:', response.data);
+                toast({
+                    title: "Password Updated",
+                    // description: "Friday, February 10, 2023 at 5:57 PM",
+                    variant: "success"
+                })
 
-          // http://localhost:5000/api/trainer/change-password/${user._id}
-      } else {
-          alert("Not same")
-      }
-  }
+                window
+                    .location
+                    .reload()
+            } catch (error) {
+                console.error('Password Adding failed:', error);
+            }
 
-  console.log(currentUser)
+            // http://localhost:5000/api/trainer/change-password/${user._id}
+        } else {
+            alert("Not same")
+        }
+    }
 
+    console.log(currentUser)
 
     return (
         <div >
@@ -83,8 +84,7 @@ function Profile() {
                 <div className='mt-4'>
                     <Card className="w-[90vw] lg:w-[80vw] ">
                         <CardContent className="flex flex-col p-4">
-                            <div
-                                className="flex justify-between items-center mb-4">
+                            <div className="flex justify-between items-center mb-4">
                                 <div className='flex items-center'>
                                     <Avatar className="h-12 w-12 mr-4 ">
                                         <AvatarImage
@@ -101,68 +101,69 @@ function Profile() {
                                     </div>
                                 </div>
                                 <div>
-                                  <Button variant="outline" size="sm" className="w-max mt-4">
-                                      <Dialog className="w-max">
-                                          <DialogTrigger>
-                                              <div className='flex items-center '><PencilLine className="h-4 w-4 mr-2"/>
-                                                  <span>change Password
-                                                  </span>
-                                              </div>
-                                          </DialogTrigger>
-                                          <DialogContent>
-                                              <DialogHeader>
-                                                  <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                                  <DialogDescription>
-                                                      {/* <form onSubmit={submitHandler}> */}
-                                                          <div className=' gap-8'>
-                                                              <div className='my-2'>
-                                                                  <Label className="mt-4 mb-10 text-black mt-2">Current Password</Label>
-                                                                  <Input
-                                                                      type="password"
-                                                                      name="currentPassword"
-                                                                      placeholder="Current Password"
-                                                                      required
-                                                                      onChange={(e) => setPass({
-                                                                      ...pass,
-                                                                      [e.target.name]: e.target.value
-                                                                  })}/>
-                                                              </div>
-                                                              <div className='my-2'>
+                                    <Button variant="outline" size="sm" className="w-max mt-4">
+                                        <Dialog className="w-max">
+                                            <DialogTrigger>
+                                                <div className='flex items-center '>
+                                                    <PencilLine className="h-4 w-4 mr-2"/>
+                                                    <span>change Password
+                                                    </span>
+                                                </div>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                                    <DialogDescription>
+                                                        {/* <form onSubmit={submitHandler}> */}
+                                                        <div className=' gap-8'>
+                                                            <div className='my-2'>
+                                                                <Label className="mt-4 mb-10 text-black mt-2">Current Password</Label>
+                                                                <Input
+                                                                    type="password"
+                                                                    name="currentPassword"
+                                                                    placeholder="Current Password"
+                                                                    required
+                                                                    onChange={(e) => setPass({
+                                                                    ...pass,
+                                                                    [e.target.name]: e.target.value
+                                                                })}/>
+                                                            </div>
+                                                            <div className='my-2'>
 
-                                                                  <Label className="mt-4 mb-10 text-black mt-2">New Password</Label>
-                                                                  <Input
-                                                                      type="password"
-                                                                      name="newpassword"
-                                                                      placeholder="New Password"
-                                                                      required
-                                                                      onChange={(e) => setPass({
-                                                                      ...pass,
-                                                                      [e.target.name]: e.target.value
-                                                                  })}/>
-                                                              </div>
-                                                              <div className='my-3'>
-                                                              
-                                                                  <Label className="mt-4 mb-10 text-black mt-2">Confirm New Password</Label>
-                                                                  <Input
-                                                                      type="password"
-                                                                      name="confirmnewpassword"
-                                                                      placeholder="Confirm New Password"
-                                                                      required
-                                                                      onChange={(e) => setPass({
-                                                                      ...pass,
-                                                                      [e.target.name]: e.target.value
-                                                                  })}/>
-                                                              </div>
+                                                                <Label className="mt-4 mb-10 text-black mt-2">New Password</Label>
+                                                                <Input
+                                                                    type="password"
+                                                                    name="newpassword"
+                                                                    placeholder="New Password"
+                                                                    required
+                                                                    onChange={(e) => setPass({
+                                                                    ...pass,
+                                                                    [e.target.name]: e.target.value
+                                                                })}/>
+                                                            </div>
+                                                            <div className='my-3'>
 
-                                                          </div>
-                                                          <Button onClick={() => submitHandler()} type="submit" className="mt-4 w-max">Update Password</Button>
-                                                      {/* </form> */}
-                                                  </DialogDescription>
-                                              </DialogHeader>
-                                          </DialogContent>
-                                      </Dialog>
+                                                                <Label className="mt-4 mb-10 text-black mt-2">Confirm New Password</Label>
+                                                                <Input
+                                                                    type="password"
+                                                                    name="confirmnewpassword"
+                                                                    placeholder="Confirm New Password"
+                                                                    required
+                                                                    onChange={(e) => setPass({
+                                                                    ...pass,
+                                                                    [e.target.name]: e.target.value
+                                                                })}/>
+                                                            </div>
 
-                                  </Button>
+                                                        </div>
+                                                        <Button onClick={() => submitHandler()} type="submit" className="mt-4 w-max">Update Password</Button>
+                                                        {/* </form> */}
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                            </DialogContent>
+                                        </Dialog>
+
+                                    </Button>
                                 </div>
                             </div>
                         </CardContent>
@@ -191,15 +192,17 @@ function Profile() {
                             <div className="space-y-2">
                                 <Label className="text-slate-700" htmlFor="trainerId">Roles Assigned</Label>
                                 <div className="flex flex-wrap items-center gap-2">
-                                    {currentUser.employee.role.map((role, _i) => (
-                                        <div
-                                        className='bg-blue-50 w-max mr-5 px-4 py-1 border border-black rounded-lg flex items-center'
-                                        key={_i}>{role.name}</div>
-                                    ))}
+                                    {currentUser
+                                        .employee
+                                        .role
+                                        .map((role, _i) => (
+                                            <div
+                                                className='bg-blue-50 w-max mr-5 px-4 py-1 border border-black rounded-lg flex items-center'
+                                                key={_i}>{role.name}</div>
+                                        ))}
                                 </div>
                             </div>
 
-                           
                         </CardContent>
                     </Card>
                 </div>

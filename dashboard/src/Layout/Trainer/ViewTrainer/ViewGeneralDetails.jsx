@@ -7,12 +7,14 @@ import {Button} from '@/components/ui/button';
 import axios from 'axios';
 import {useParams} from 'react-router-dom';
 import {useQueryClient} from 'react-query';
+import { useToast } from '@/hooks/use-toast';
 
 function ViewGeneralDetails({data, id}) {
     const trainerId = useParams()
     const queryClient = useQueryClient()
     const dispatch = useDispatch();
     const {trainerDetails} = useSelector(state => state.trainer)
+    const {toast} = useToast()
     const [isEdit,
         setIsEdit] = useState(false)
     console.log("Trainer Details ", trainerDetails)
@@ -81,6 +83,29 @@ function ViewGeneralDetails({data, id}) {
         }
         setGeneralDetails(updatedGeneralDetails);
         dispatch(setResumeDetails({name: "generalDetails", data: updatedGeneralDetails}))
+    }
+
+    // Reset Password
+    const ResetPassword = async() => {
+        console.log("object")
+        try {
+            console.log("object ", trainerDetails)
+            // console.log(resume)
+            const res = await axios.put(`http://localhost:5000/api/trainer/reset/${trainerId.id}`)
+            console.log(generalDetails)
+            const data = res.data
+            console.log(data)
+            toast({
+                title: "Password Reset Successfully",
+                // description: "Your password has been reset successfully",
+                variant: "success",
+            })
+            queryClient.invalidateQueries(["getTrainerById", trainerId.id])
+            setIsEdit(false)
+        } catch (e) {
+            console.error(e)
+            // setError('Failed to submit the resume')
+        }
     }
 
     return (
@@ -239,6 +264,15 @@ function ViewGeneralDetails({data, id}) {
                         onChange={(e) => handleAddressChange(e)}/>
                 </div>
 
+            </div>
+
+            {/* Reset Password */}
+
+            <div className='flex justify-between items-center mt-10 w-[80vw] border py-2 px-4 rounded-md'>
+                <h2 className='font-semibold'>Password Reset</h2>
+                <Button className='w-[200px] bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full' onClick={ResetPassword}>
+                    Reset Password
+                </Button>
             </div>
         </div>
     )

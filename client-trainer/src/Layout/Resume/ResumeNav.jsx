@@ -157,7 +157,7 @@ function ResumeNav() {
                     </Tooltip>
                 </TooltipProvider>
             </div>
-            {
+            {/* {
                 location.pathname.split('/')[location.pathname.split('/').length - 1 ] === 'main' ? 
                 (
                     <Fragment>
@@ -172,7 +172,7 @@ function ResumeNav() {
                        
                     </Fragment>
                 ) : null
-            }
+            } */}
         </div>
         
     </div>

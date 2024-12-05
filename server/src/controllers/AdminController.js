@@ -9,6 +9,7 @@ import { Trainer } from "../models/TrainerModel.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import argon2 from 'argon2';
 
 // Admin Add Role const createRole = asyncHandler(async(req, res) => {     try {
 //         const { name, permissions } = req.body;         const role = new
@@ -34,7 +35,7 @@ const addEmployee = asyncHandler(async(req, res) => {
 
         let employee;
         try {
-            employee = new Employee({ name, email, password, role: [] })
+            employee = new Employee({ name, email, password: await argon2.hash(password), role: [] })
             await employee.save();
             console.log(employee)
 
@@ -232,7 +233,6 @@ const getAllTrainers = asyncHandler(async(req, res) => {
     }
 })
 
-// Create Deal
 
 export {
     updateEmployeeRole,

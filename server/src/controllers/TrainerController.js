@@ -224,6 +224,34 @@ const changepassword = asyncHandler(async(req, res) => {
     }
 });
 
+
+// Reset Password
+const resetPassword = asyncHandler(async(req, res) => {
+    const trainerId = req.params.id;
+    // const { currentPassword, newpassword } = req.body;
+
+    try {
+        const trainer = await Trainer.findById(trainerId).select(' password');
+        console.log(trainer.password)
+        if (!trainer) {
+            return res.status(404).json({ message: 'Trainer not found' });
+        }
+
+        // Hash the new password
+        const hashedPassword = await argon2.hash("123");
+        console.log(2)
+
+        // Update the password in the database
+        trainer.password = hashedPassword;
+        await trainer.save();
+
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+        console.error('Error changing password:', error.message);
+        res.status(500).json({ message: 'Error in changing the password' });
+    }
+})
+
 // Accept PO Reject PO Raise Invoice Get Trainer by ID
 const getTrainerById = asyncHandler(async(req, res) => {
     const { id } = req.params;
@@ -375,5 +403,6 @@ export {
     changepassword,
     signOut,
     getResumeById,
-    lockResume
+    lockResume,
+    resetPassword
 }
