@@ -100,10 +100,12 @@ function ViewResume({data, projects}) {
             </Popover>
 
             <div className='flex items-center justify-between'>
-                <Link to={`/home/trainer/resume/${resumeDetails?._id}`} target='_blank' className="bg-white py-2 px-3 flex items-center text-gray-800 border border-black">
+                {
+                    value && <Link to={`/home/trainer/resume/${resumeDetails?._id}`} target='_blank' className="bg-white py-2 px-3 flex items-center text-gray-800 border border-black">
                     <ion-icon name="download-outline" style={{fontSize:"18px"}}></ion-icon>
                     <span className='ml-1'>Download</span>
                 </Link>
+                }
 
                 {
                     !isNew ?

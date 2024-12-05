@@ -21,7 +21,7 @@ function ViewTrainer() {
     const [isEdit,
         setIsEdit] = useState(false)
     const [viewData,
-        setViewData] = useState("Training Domains")
+        setViewData] = useState("Resumes")
     const [isF, setFet] = useState(false)
     // console.log(data)
 

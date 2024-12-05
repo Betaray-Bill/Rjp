@@ -2,7 +2,7 @@
 import { useParams } from 'react-router-dom'
 // import {Button} from '@/components/ui/button';
 // import {setIsDownload} from '@/features/resumeSlice';
-import React, {Fragment, useEffect, useRef} from 'react'
+import React, {Fragment, useEffect, useRef, useState} from 'react'
 // import {useDispatch, useSelector} from 'react-redux';
 import ResumeLogo from '../../assets/ResumeLogo.png'
 import generatePDF, {Margin, Resolution, usePDF} from 'react-to-pdf';
@@ -15,6 +15,7 @@ function Resume() {
     const params = useParams()
     console.log(params)
     const {currentUser} = useSelector(state => state.auth)
+
     const fetchResume = async(id) => {
         return axios.get(`http://localhost:5000/api/trainer/resume/${id}`).then(res => res.data);
     }
@@ -36,9 +37,23 @@ function Resume() {
       }
 
     console.log(data)
+      // Update the height of the blue strip based on the resume content height
+
+    // const [contentHeight, setContentHeight] = useState(resumeRef && resumeRef.current?.offsetHeight);
+
     // const {currentResumeDetails, currentResumeName, downloadResume, downloadResumeName} = useSelector(state => state.resume)
     // const resumeRef = useRef();
 
+    const roundHeight = (height) => {
+        const multiple = 1000;
+        // console.log(height/1123)
+        // console.log(Math.ceil(height / 1000) * 1000)
+        // console.log(height% multiple)
+        const numberOfPages = Math.ceil(height / 1123);
+        return  numberOfPages * 1123
+    };
+
+    // console.log(resumeRef.current.offsetHeight)
 
     const handleDownload = () => {
         const element = resumeRef.current;
@@ -47,10 +62,13 @@ function Resume() {
         console.log(getTargetElement)
         // const res = axios.get('http://localhost:5000/generatePDF', "element")
         // console.log(res.data)
+        console.log(roundHeight(resumeRef.current.offsetHeight))
+
             generatePDF(getTargetElement, {
                 filename: `${data.trainer_id
                                     .generalDetails
                                     .name}-${data.domain}`,
+                                    
                 overrides: {
                     // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
                     pdf: {
@@ -97,15 +115,16 @@ function Resume() {
                 <Button onClick={handleDownload}>Download</Button>
             </div>
             <hr className='pb-8'/>
-            <div className='h-full'>
+            <div>
                 {/* New template */}
                 <div
                     className="bg-white w-[80vw]  relative"
                     ref={resumeRef}
+                    style={{ height: `${roundHeight(resumeRef.current?.offsetHeight)}px`}}
                     id="resumeRef">
                       
                     {/* Blue strip on the left */}
-                    <div className="absolute top-0 bottom-0 left-0 w-8 h-full bg-resumeText"></div>
+                    <div className="absolute top-0 bottom-0 left-0 w-8  bg-resumeText"  style={{ height: `${roundHeight(resumeRef.current?.offsetHeight)}px`}}></div>
 
                     {/* Main content */}
                     <div className="pl-12 pr-6 py-6 h-full">
