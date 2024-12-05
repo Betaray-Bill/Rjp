@@ -19,7 +19,7 @@ import {Label} from '@/components/ui/label';
 import { useQuery, useQueryClient } from 'react-query';
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 
-function SearchBar({domain, id}) {
+function SearchBar({domain, id, trainingDates}) {
     const queryClient = useQueryClient();
     const [query,
         setQuery] = useState(domain ? domain : "")
@@ -34,9 +34,9 @@ function SearchBar({domain, id}) {
     const [endPrice,
         setEndPrice] = useState('');
     const [startDate,
-        setStartDate] = useState('');
+        setStartDate] = useState(trainingDates && trainingDates.startDate.split("T")[0]);
     const [endDate,
-        setEndDate] = useState('');
+        setEndDate] = useState(trainingDates && trainingDates.endDate.split("T")[0]);
     const [rating,
         setRating] = useState('asc');
     const [mode, setMode] = useState('');
@@ -67,6 +67,9 @@ function SearchBar({domain, id}) {
         if (endPrice) req_query += `&price[lte]=${Number(endPrice)}`;
         if (mode) req_query += `&mode=${encodeURIComponent(mode)}`;
         if (type) req_query += `&type=${encodeURIComponent(type)}`;
+        if (startDate) req_query += `&startDate=${startDate}`;
+        if (endDate) req_query += `&endDate=${endDate}`;
+    
         console.log(req_query);
         
         const response = await axios.get(req_query);

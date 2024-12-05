@@ -244,7 +244,7 @@ function ViewSingleProject() {
         </div>
         <div>
           {/* Search Bar */}
-          <ViewTrainers trainers={trainers}/>
+          <ViewTrainers trainers={trainers} />
       
           {
             isAdd &&(
@@ -255,7 +255,7 @@ function ViewSingleProject() {
                     name="close-outline" 
                     style={{fontSize:"22px", cursor:"pointer", borderRadius:"50%", border:"1px solid black"}} ></ion-icon>
                 </div>
-                <SearchBar domain={domain} id={_id}/>
+                <SearchBar domain={domain} id={_id} trainingDates={trainingDates}/>
               </div>
             )
           }

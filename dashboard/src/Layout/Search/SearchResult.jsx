@@ -67,13 +67,13 @@ function SearchResult() {
                                                 <div>
                                                     <h2 className='text-gray-600'>Session Taken</h2>
                                                     <p>
-                                                        <span className='text-black font-medium'>{res.trainingDomain[0].paymentSession}</span>
+                                                        <span className='text-black font-medium'>{res.trainingDomain[0]?.paymentSession}</span>
                                                     </p>
                                                 </div>
                                                 <div className='ml-4'>
                                                     <h2 className='text-gray-600'>Price</h2>
                                                     <p>
-                                                        <span className='text-black font-medium'>₹{res.trainingDomain[0].price}</span>
+                                                        <span className='text-black font-medium'>₹{res.trainingDomain[0]?.price}</span>
                                                     </p>
                                                 </div>
                                             </div>

@@ -2,13 +2,17 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { Trainer } from "../models/TrainerModel.js";
 
 // Build Search Project
-const buildProjectStage = (domain, minPrice, maxPrice, mode, type) => {
-    let conditions = [{
-        $regexMatch: {
-            input: "$$td.domain",
-            regex: new RegExp(domain, "i")
-        }
-    }];
+const buildProjectStage = (domain, minPrice, maxPrice, mode, type, startDate, endDate) => {
+    let conditions = [];
+
+    if (domain) {
+        conditions.push({
+            $regexMatch: {
+                input: "$$td.domain",
+                regex: new RegExp(domain, "i"),
+            },
+        });
+    }
 
     if (minPrice !== undefined) {
         conditions.push({ $gte: ["$$td.price", minPrice] });
@@ -19,79 +23,74 @@ const buildProjectStage = (domain, minPrice, maxPrice, mode, type) => {
     if (mode) {
         conditions.push({ $eq: ["$$td.paymentSession", mode] });
     }
-
-    if (mode) {
-        conditions.push({ $eq: ["$$td.paymentSession", mode] });
-    }
-
     if (type) {
         conditions.push({ $eq: ["$$td.type", type] });
     }
 
-    return {
-        $project: {
-            trainingDomain: {
-                $filter: {
-                    input: "$trainingDomain",
-                    as: "td",
-                    cond: { $and: conditions },
+    return [{
+            $lookup: {
+                from: "projects", // Assuming the projects collection is named 'projects'
+                localField: "projects",
+                foreignField: "_id",
+                as: "projects",
+            },
+        },
+        {
+            $addFields: {
+                filteredProjects: {
+                    $filter: {
+                        input: "$projects",
+                        as: "project",
+                        cond: {
+                            $and: [
+                                startDate ? { $gte: ["$$project.trainingDates.startDate", new Date(startDate)] } : {},
+                                endDate ? { $lte: ["$$project.trainingDates.endDate", new Date(endDate)] } : {},
+                            ],
+                        },
+                    },
                 },
             },
-            generalDetails: 1,
-            trainerId: 1,
         },
-    };
-};
+        {
+            $match: {
+                filteredProjects: { $ne: [] }, // Only include trainers with filtered projects
+            },
+        },
+        {
+            $project: {
+                trainingDomain: {
+                    $filter: {
+                        input: "$trainingDomain",
+                        as: "td",
+                        cond: { $and: conditions },
+                    },
+                },
+                generalDetails: 1,
+                trainerId: 1,
+                // filteredProjects: {
 
+                // }, // Include filtered projects in the output
+            },
+        },
+    ];
+};
 
 // Search Function
 const searchTrainer = asyncHandler(async(req, res) => {
-    const { domain, price, mode, type } = req.query;
-    console.log("QUERY ", req.query)
+    const { domain, price, mode, type, startDate, endDate } = req.query;
+
     try {
-
-        // Get The internal Trainers
-        const internalTrainers = await Trainer.aggregate([{
-                $match: {
-                    "trainingDomain.domain": {
-                        $regex: new RegExp(domain, "i"), // Case-insensitive match for domain
-                    },
-                    "trainingDetails.trainerType": "Internal" // Match trainer type as "Internal"
-                }
-            },
-            {
-                $project: {
-                    generalDetails: 1,
-                    trainerId: 1,
-                    trainingDomain: {
-                        $filter: {
-                            input: "$trainingDomain",
-                            as: "td", // Alias for each item in the array
-                            cond: {
-                                $regexMatch: { input: "$$td.domain", regex: new RegExp(domain, "i") } // Filter condition
-                            }
-                        }
-                    }
-                }
-            }
-        ]);
-
-
-
-        console.log("Result da ", internalTrainers)
-
-        let minPrice
-        let maxPrice
+        let minPrice, maxPrice;
         if (price) {
             if (price.gte !== undefined) {
-                minPrice = price.gte ? Number(price.gte) : undefined;
+                minPrice = Number(price.gte);
             }
             if (price.lte !== undefined) {
-                maxPrice = price.lte ? Number(price.lte) : undefined;
+                maxPrice = Number(price.lte);
             }
         }
-        console.log(minPrice, maxPrice)
-        let pipeline = []
+
+        let pipeline = [];
         if (domain) {
             pipeline.push({
                 $match: {
@@ -99,33 +98,24 @@ const searchTrainer = asyncHandler(async(req, res) => {
                         $regex: new RegExp(domain, "i"),
                     },
                 },
-            })
+            });
         }
-        // Add $project stage based on filters
-        pipeline.push(buildProjectStage(domain, minPrice, maxPrice, mode, type));
 
-        // Filter out documents with empty trainingDomain array
-        pipeline.push({
-            $match: {
-                trainingDomain: { $ne: [] },
-            },
-        });
+        // Add the project stages to the pipeline
+        pipeline.push(...buildProjectStage(domain, minPrice, maxPrice, mode, type, startDate, endDate));
 
-        let result = await Trainer.aggregate(pipeline);
-        // result.push(internalTrainers)
+        // Execute the pipeline
+        const result = await Trainer.aggregate(pipeline);
 
         if (!result.length) {
-            return res.status(200).json({ message: 'No trainers found matching the criteria' });
+            return res.status(200).json({ message: "No trainers found matching the criteria" });
         }
 
         res.status(200).json(result);
     } catch (err) {
-        console.log(err)
-        res
-            .status(500)
-            .json({ message: 'Trainer not available', err });
+        console.error(err);
+        res.status(500).json({ message: "Trainer not available", error: err });
     }
+});
 
-})
-
-export { searchTrainer }
+export { searchTrainer };
