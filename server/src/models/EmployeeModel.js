@@ -35,20 +35,20 @@ const employeeSchema = new mongoose.Schema({
 })
 
 // Match user entered password to hashed password in database
-employeeSchema.methods.matchPassword = async function(enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password)
-};
+// employeeSchema.methods.matchPassword = async function(enteredPassword) {
+//     return await bcrypt.compare(enteredPassword, this.password)
+// };
 
 
-// Pre-save hook to hash password
-employeeSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) {
-        next();
-    }
+// // Pre-save hook to hash password
+// employeeSchema.pre('save', async function(next) {
+//     if (!this.isModified('password')) {
+//         next();
+//     }
 
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-});
+//     const salt = await bcrypt.genSalt(10);
+//     this.password = await bcrypt.hash(this.password, salt);
+// });
 
 
 // const Role = mongoose.model('Role', roleSchema);

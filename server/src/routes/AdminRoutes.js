@@ -1,6 +1,6 @@
 import express from 'express';
 import { addEmployee, getEmployeeById, getAllEmployees, updateEmployeeRole, getAllTrainers, getEmployee } from '../controllers/AdminController.js';
-import { login, signOut } from '../controllers/AuthController.js';
+import { login, signOut, updatePassword } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
 
@@ -13,6 +13,8 @@ router.get("/", authEmployeeMiddleware, authorizeRole(["ADMIN"]), (req, res) => 
 // Auth Based Routes
 router.post("/login", login)
 router.post("/register", authEmployeeMiddleware, addEmployee)
+router.put("/updatePassword/:empId", authEmployeeMiddleware, updatePassword)
+
 router.get("/signout", authEmployeeMiddleware, signOut)
 router.get("/getAll", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), getAllEmployees)
 
