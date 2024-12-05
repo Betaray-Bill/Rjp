@@ -26,36 +26,39 @@ const buildProjectStage = (domain, minPrice, maxPrice, mode, type, startDate, en
     if (type) {
         conditions.push({ $eq: ["$$td.type", type] });
     }
-
-    return [{
+    const projectStages = [];
+    if (startDate && endDate) {
+        projectStages.push({
             $lookup: {
                 from: "projects", // Assuming the projects collection is named 'projects'
                 localField: "projects",
                 foreignField: "_id",
                 as: "projects",
             },
-        },
-        {
+        }, {
             $addFields: {
                 filteredProjects: {
                     $filter: {
                         input: "$projects",
                         as: "project",
                         cond: {
-                            $and: [
-                                startDate ? { $gte: ["$$project.trainingDates.startDate", new Date(startDate)] } : {},
-                                endDate ? { $lte: ["$$project.trainingDates.endDate", new Date(endDate)] } : {},
+                            $or: [
+                                { $lt: ["$$project.trainingDates.endDate", new Date(startDate)] }, // Ends before the range
+                                { $gt: ["$$project.trainingDates.startDate", new Date(endDate)] }, // Starts after the range
                             ],
                         },
                     },
                 },
             },
-        },
-        {
+        }, {
             $match: {
-                filteredProjects: { $ne: [] }, // Only include trainers with filtered projects
+                filteredProjects: { $ne: [] }, // Ensure there are projects that satisfy the condition
             },
-        },
+        });
+    }
+
+    return [
+        ...projectStages,
         {
             $project: {
                 trainingDomain: {
@@ -67,9 +70,7 @@ const buildProjectStage = (domain, minPrice, maxPrice, mode, type, startDate, en
                 },
                 generalDetails: 1,
                 trainerId: 1,
-                // filteredProjects: {
-
-                // }, // Include filtered projects in the output
+                filteredProjects: 1,
             },
         },
     ];

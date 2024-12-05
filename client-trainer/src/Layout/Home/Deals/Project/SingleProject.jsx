@@ -37,7 +37,7 @@ function SingleProject() {
 
     return (
         <div className='grid place-content-center mb-8 '>
-            <div className='w-[80vw] mt-8 p-6 bg-white rounded-md shadow-sm'>
+            <div className='w-[90vw] lg:w-[80vw]  mt-8 p-6 bg-white rounded-md shadow-sm'>
                 <div className='flex items-center justify-between pb-3'>
                     <div className='font-semibold text-md flex items-center justify-start'>
                         <ion-icon

@@ -81,7 +81,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
                 </div>
 {/* } */}
             <div
-                className="max-w-6xl mx-auto p-4 text-sm w-[80vw]"
+                className="max-w-6xl mx-auto p-4 text-sm w-[90vw] lg:w-[80vw] "
                 id="invoiceRef"
                 ref={invoiceRef}>
                 <div

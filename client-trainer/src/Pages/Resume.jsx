@@ -13,10 +13,10 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 
 function Resume() {
-    const location  = useLocation()
+    const location = useLocation()
     const dispatch = useDispatch()
-    const {currentResumeName} = useSelector(state => state.resume)
-    const [path , setPath] = useState('')
+    const { currentResumeName } = useSelector(state => state.resume)
+    const [path, setPath] = useState('')
 
     useEffect(() => {
         const path = location.pathname.split('/')[location.pathname.split('/').length - 1]
@@ -25,75 +25,95 @@ function Resume() {
         console.log(currentResumeName)
     }, [location.pathname])
 
-  return (
-    <div className='grid place-content-center my-10'>
-        {
+    return ( <
+        div className = 'grid place-content-center my-10' > {
             // resumeState && 
-        }
-        <div className='mb-3 text-sm w-[80vw]'>
-            <Breadcrumb>
-                <BreadcrumbList>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/home/Dashboard">Home</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/home/resume">Resume</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    {
-                       path !== '' ? 
-                       (
-                        <Fragment>
-                            {
-                                path === 'new' ?
-                                <Fragment>
-                                    <BreadcrumbSeparator />
-                                    <BreadcrumbItem>
-                                        <BreadcrumbPage>{currentResumeName === "" ? "new" : currentResumeName}</BreadcrumbPage>
-                                    </BreadcrumbItem>
-                                </Fragment> : 
-                                (
-                                    location.pathname.split('/')[location.pathname.split('/').length - 2] === 'copy' ? 
-                                    (
-                                        <Fragment>
-                                            <BreadcrumbSeparator />
-                                            <BreadcrumbItem>
-                                                <BreadcrumbPage><span className='text-gray-500 text-sm'>Copy of</span> {currentResumeName && currentResumeName}</BreadcrumbPage>
-                                            </BreadcrumbItem>
-                                        </Fragment>
-                                    ) : 
-                                     location.pathname.split('/').includes("preview") ? 
-                                     <Fragment>
-                                        <BreadcrumbSeparator />
-                                        <BreadcrumbItem>
-                                            <BreadcrumbPage className="flex items-center"><span className='text-gray-500 text-sm flex items-center justify-between' >Preview  <BreadcrumbSeparator /> </span> {currentResumeName && currentResumeName}</BreadcrumbPage>
-                                        </BreadcrumbItem>
-                                    </Fragment> : null
-                                )
-                            }
-                        </Fragment>
-                       ) : null
-                    }
-                </BreadcrumbList>
-            </Breadcrumb>
-        </div>
+        } <
+        div className = 'mb-3 text-sm w-[90vw] lg:w-[80vw] ' >
+        <
+        Breadcrumb >
+        <
+        BreadcrumbList >
+        <
+        BreadcrumbItem >
+        <
+        BreadcrumbLink href = "/home/Dashboard" > Home < /BreadcrumbLink> <
+        /BreadcrumbItem> <
+        BreadcrumbSeparator / >
+        <
+        BreadcrumbItem >
+        <
+        BreadcrumbLink href = "/home/resume" > Resume < /BreadcrumbLink> <
+        /BreadcrumbItem> {
+            path !== '' ?
+                ( <
+                    Fragment > {
+                        path === 'new' ?
+                        <
+                        Fragment >
+                        <
+                        BreadcrumbSeparator / >
+                        <
+                        BreadcrumbItem >
+                        <
+                        BreadcrumbPage > { currentResumeName === "" ? "new" : currentResumeName } < /BreadcrumbPage> <
+                        /BreadcrumbItem> <
+                        /Fragment> : 
+                        (
+                            location.pathname.split('/')[location.pathname.split('/').length - 2] === 'copy' ?
+                            ( <
+                                Fragment >
+                                <
+                                BreadcrumbSeparator / >
+                                <
+                                BreadcrumbItem >
+                                <
+                                BreadcrumbPage > < span className = 'text-gray-500 text-sm' > Copy of < /span> {currentResumeName && currentResumeName}</BreadcrumbPage >
+                                <
+                                /BreadcrumbItem> <
+                                /Fragment>
+                            ) :
+                            location.pathname.split('/').includes("preview") ?
+                            <
+                            Fragment >
+                            <
+                            BreadcrumbSeparator / >
+                            <
+                            BreadcrumbItem >
+                            <
+                            BreadcrumbPage className = "flex items-center" > < span className = 'text-gray-500 text-sm flex items-center justify-between' > Preview < BreadcrumbSeparator / > < /span> {currentResumeName && currentResumeName}</BreadcrumbPage >
+                            <
+                            /BreadcrumbItem> <
+                            /Fragment> : null
+                        )
+                    } <
+                    /Fragment>
+                ) : null
+        } <
+        /BreadcrumbList> <
+        /Breadcrumb> <
+        /div>
 
-        {/* Resume Nav */}
-        <ResumeNav />
-        
+        { /* Resume Nav */ } <
+        ResumeNav / >
+
         {
             // currentResumeName === 'Main Resume' ? 
             // <div className='mt-10 m-1 p-2 bg-white grid place-content-center rounded-md border border-generalBorderColor'>
             //     <ResumeForm type="main"/>
             // </div> 
             // : 
-            <div className='mt-10 m-1 p-2 min-h-[100vh] bg-white grid place-content-center rounded-md border border-generalBorderColor'>
-                <Outlet />
-            </div> 
+            <
+            div className = 'mt-10 m-1 p-2 min-h-[100vh] bg-white grid place-content-center rounded-md border border-generalBorderColor' >
+            <
+            Outlet / >
+            <
+            /div> 
         }
-    
-    </div>
-  )
+
+        <
+        /div>
+    )
 }
 
 export default Resume

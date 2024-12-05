@@ -43,7 +43,7 @@ function PurchaseOrder({purchaseOrder}) {
 
     return (
         <div className='grid place-content-center'>
-            <div className='w-[80vw] mt-8 p-6 bg-white rounded-md shadow-sm'>
+            <div className='w-[90vw] lg:w-[80vw]  mt-8 p-6 bg-white rounded-md shadow-sm'>
                 {/* Accepted PO */}
                 <div className='font-semibold text-md flex items-center justify-between'>
                     <div>

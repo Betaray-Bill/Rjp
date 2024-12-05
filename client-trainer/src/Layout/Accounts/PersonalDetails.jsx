@@ -28,7 +28,7 @@ function PersonalDetails() {
         <div className=''> 
             <h2 className='text-slate-700  text-lg py-4 font-semibold'>General Details</h2>
             <div
-                className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[25px] mb-3 mt-3 place-items-center'>
+                className='grid grid-cols-1 lg:grid-cols-3 gap-[25px] mb-3 mt-3 place-items-center'>
                 <div>
                     <Label htmlFor="Name">Name</Label>
                     <Input type="text" id="name" name="name" onChange={(e) => handleChange(e)}/>

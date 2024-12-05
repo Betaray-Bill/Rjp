@@ -7,7 +7,7 @@ function DealCard({deal}) {
     >
         <div className='flex items-center justify-between'>
         <h4 className='font-semibold underline'>{deal.projectName}</h4>
-        <span className='border border-black rounded-md px-2 bg-blue-200'>{deal.modeOfTraining}</span>
+        {/* <span className='border border-black rounded-md px-2 bg-blue-200'>{deal.modeOfTraining}</span> */}
         </div>
         <div  className='flex items-center justify-start mt-4'>
         <span>

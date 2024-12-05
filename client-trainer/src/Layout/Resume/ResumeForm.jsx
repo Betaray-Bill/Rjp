@@ -201,7 +201,7 @@ function ResumeForm() {
                         readOnly={currentResumeDetails.isLocked}
                         onChange={(e) => handleChange(e, fieldName, 0)}
                         placeholder={`Type your ${fieldName}`}
-                        className="w-[30vw] text-gray-800 text-sm outline-none border-collapse border-none"/>
+                        className="lg:w-[30vw] w-[70vw] text-gray-800 text-sm outline-none border-collapse border-none"/>
                     <ion-icon
                         name="trash-outline"
                         style={{
@@ -379,7 +379,7 @@ function ResumeForm() {
                   <p className='text-slate-700'>Processing your resume...</p>
                 </div> : 
                 <Fragment>
-                    <form className='grid grid-cols-2 items-start'>
+                    <form className='grid grid-cols-1 lg:grid-cols-2 items-start'>
                         <div className='mt-4 rounded-sm p-2'>
                             <h3 className='font-semibold flex justify-between items-center'>
                                 <span>Professional Summary:</span>

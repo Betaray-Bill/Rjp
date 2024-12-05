@@ -23,7 +23,7 @@
           {   
               user?.trainingDetails.trainerType === 'Internal' ? 
                 <Fragment>
-                  <div className='w-[80vw] bg-white rounded-md border mt-6 border-generalBorderColor'>
+                  <div className='w-[90vw] lg:w-[80vw]  bg-white rounded-md border mt-6 border-generalBorderColor'>
                     <div className="border-b mt-4 pb-4">
                       <span className="text-slate-800 font-semibold flex items-center ml-10">
                         <ion-icon name="calendar-outline" style={{fontSize:"34px", color:"#3e4093"}}></ion-icon>
@@ -37,7 +37,7 @@
           }
         
         <div className='my-10'>
-          <div className='w-[80vw] bg-white rounded-md border border-generalBorderColor'>
+          <div className='w-[90vw] lg:w-[80vw]  bg-white rounded-md border border-generalBorderColor'>
             <div className="border-b mt-4 pb-4">
               <span className="text-slate-800 font-semibold flex items-center ml-10">
                 <ion-icon name="layers-outline" style={{fontSize:"34px", color:"#3e4093"}}></ion-icon>

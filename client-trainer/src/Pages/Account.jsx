@@ -1,245 +1,282 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, {useState} from 'react'
+import {useSelector} from 'react-redux'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
 } from "@/components/ui/dialog"
 
 import axios from 'axios';
 import PersonalDetails from '@/Layout/Accounts/PersonalDetails';
 import BankDetails from '@/Layout/Accounts/BankDetails';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from "@/components/ui/card";
-import { PencilLine, Upload } from "lucide-react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import {Button} from '@/components/ui/button';
+import {Card, CardContent} from "@/components/ui/card";
+import {PencilLine, Upload} from "lucide-react";
+import {Avatar, AvatarImage, AvatarFallback} from "@/components/ui/avatar";
+import {Label} from '@/components/ui/label';
+import {Input} from '@/components/ui/input';
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '  70vw',
-  height:'70vh',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  overflowY: 'scroll',
-  boxShadow: 24,
-  p: 4,
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '  70vw',
+    height: '70vh',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    overflowY: 'scroll',
+    boxShadow: 24,
+    p: 4
 };
- 
-function Account() {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
-    const {user}  = useSelector(state => state.auth)
+function Account() {
+    const [open,
+        setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const {user} = useSelector(state => state.auth)
     const renderArray = (arr) => {
         return arr.map((item, index) => item && <li key={index}>{item}</li>);
-      };
-    
-      const renderObject = (obj) => {
-        return Object.keys(obj).map((key) => (
-          <div key={key}>
-            <strong>{key.replace(/_/g, ' ')}:</strong> {obj[key]}
-          </div>
-        ));
-      };
+    };
+
+    const renderObject = (obj) => {
+        return Object
+            .keys(obj)
+            .map((key) => (
+                <div key={key}>
+                    <strong>{key.replace(/_/g, ' ')}:</strong>
+                    {obj[key]}
+                </div>
+            ));
+    };
 
     function convertDate(dateStr) {
         // Check if dateStr is a string, and then convert it to a Date object
         const date = new Date(dateStr);
-      
+
         // Verify that 'date' is a valid Date object
         if (isNaN(date.getTime())) {
-          throw new Error('Invalid Date');
+            throw new Error('Invalid Date');
         }
-      
+
         // Extract day, month, and year from the Date object
         const day = date.getUTCDate(); // For local time, use date.getDate()
         const month = date.getUTCMonth() + 1; // Months are zero-indexed, so add 1
         const year = date.getUTCFullYear(); // For local time, use date.getFullYear()
-      
+
         // Format the date as DD/MM/YYYY
         const formattedDate = `${day}/${month}/${year}`;
-      
+
         return formattedDate;
     }
 
+    // Edit Handle const [formData, setFormData] = useState(trainerData);
 
-    // Edit Handle
-    // const [formData, setFormData] = useState(trainerData);
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    const [formData,
+        setFormData] = useState(user);
 
-  const [formData, setFormData] = useState(user);
+    const handleInputChange = (e) => {
+        const {name, value} = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleArrayChange = (e, section) => {
-    const { value, name } = e.target;
-    const updatedArray = [...formData[section]];
-    console.log(e, section)
-    updatedArray[name] = value;
-    setFormData((prevData) => ({
-      ...prevData,
-      [section]: updatedArray,
-    }));
-  };
+    const handleArrayChange = (e, section) => {
+        const {value, name} = e.target;
+        const updatedArray = [...formData[section]];
+        console.log(e, section)
+        updatedArray[name] = value;
+        setFormData((prevData) => ({
+            ...prevData,
+            [section]: updatedArray
+        }));
+    };
 
     axios.defaults.withCredentials = true;
     const handleSubmit = async(e) => {
-      e.preventDefault();
-      // console.log('Form Data Submitted:', formData);
-      // // Perform API call to save form data
-      // try {
-      //     const response = await axios.post('http://localhost:5000/api/trainersourcer/register-trainer', formData); // Replace with your API endpoint
-      //     console.log('Registration successful:', response.data);
-      //     // setUser(response.data)
-      // }catch (error) {
-      //     console.error('Registration failed:', error);
-      // }
+        e.preventDefault();
+        // console.log('Form Data Submitted:', formData); // Perform API call to save
+        // form data try {     const response = await
+        // axios.post('http://localhost:5000/api/trainersourcer/register-trainer',
+        // formData); // Replace with your API endpoint     console.log('Registration
+        // successful:', response.data);     // setUser(response.data) }catch (error) {
+        //    console.error('Registration failed:', error); }
     };
-    
+
     console.log(user)
 
     // Pass change
-    const [pass, setPass] = useState({
-      currentPassword:"",
-      newpassword:"",
-      confirmnewpassword:""    
-    })
+    const [pass,
+        setPass] = useState({currentPassword: "", newpassword: "", confirmnewpassword: ""})
     axios.defaults.withCredentials = true;
     const submitHandler = async(e) => {
-      e.preventDefault()
-      if(pass.newpassword === pass.confirmnewpassword){
-        console.log("Same")
-        try {
-          const response = await axios.put(`http://localhost:5000/api/trainer/change-password/${user._id}`, {
-            newpassword:pass.newpassword,
-            currentPassword:pass.currentPassword
-          }); // Replace with your API endpoint
-          console.log('Password Adding successful:', response.data);
-        } catch (error) {
-            console.error('Password Adding failed:', error);
+        e.preventDefault()
+        if (pass.newpassword === pass.confirmnewpassword) {
+            console.log("Same")
+            try {
+                const response = await axios.put(`http://localhost:5000/api/trainer/change-password/${user._id}`, {
+                    newpassword: pass.newpassword,
+                    currentPassword: pass.currentPassword
+                }); // Replace with your API endpoint
+                console.log('Password Adding successful:', response.data);
+            } catch (error) {
+                console.error('Password Adding failed:', error);
+            }
+
+            // http://localhost:5000/api/trainer/change-password/${user._id}
+        } else {
+            alert("Not same")
         }
-    
-        // http://localhost:5000/api/trainer/change-password/${user._id}
-      }else{
-        alert("Not same")
-      }
     }
 
-  return (
-    <div className='grid w-full place-content-center my-4'>
-      <p className='text-md text-gray-700 mt-4 pb-[-2] font-semibold'>Accounts</p>
+    return (
+        <div className='grid w-full place-content-center my-4'>
+            <p className='text-md text-gray-700 mt-4 pb-[-2] font-semibold'>Accounts</p>
 
-      <div className='mt-8'>
-        <Card className="w-[80vw]">
-          <CardContent className="flex flex-col p-4">
-            <div className="flex items-center w-full mb-4">
-              <Avatar className="h-12 w-12 mr-4 ">
-                <AvatarImage src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt={user.generalDetails.name} />
-                <AvatarFallback>{user.generalDetails.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <div className="flex-1">
-                <p className="text-sm font-medium">{user.generalDetails.name}</p>
-                <Button variant="outline" size="sm" className="mt-2">
-                  <PencilLine className="h-4 w-4 mr-2"/>
-                  Update Picture
-                </Button>
-              </div>
-              <Button variant="outline" size="sm">
-                <Dialog>
-                  <DialogTrigger>
-                    <div className='flex items-center '><PencilLine className="h-4 w-4 mr-2"/>
-                    <span>change Password </span></div>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Are you absolutely sure?</DialogTitle>
-                      <DialogDescription>
-                        <form onSubmit={submitHandler}>
-                          <div className='grid grid-cols-2 gap-8'>
-                            <div>
-                              <Label className="mt-4 mb-10">Current Password</Label>
-                              <Input type="password" name="currentPassword" placeholder="Current Password" required onChange={(e) => setPass({...pass, [e.target.name]:e.target.value})} />
+            <div className='mt-8'>
+                <Card className="w-[90vw] lg:w-[80vw] ">
+                    <CardContent className="flex flex-col p-4">
+                        <div className=" grid place-content-between grid-cols-1 md:grid-cols-2 items-center w-full mb-4">
+                            <div className='flex items-center'> 
+                                <Avatar className="h-12 w-12 mr-4 ">
+                                    <AvatarImage
+                                        src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                                        alt={user.generalDetails.name}/>
+                                    <AvatarFallback>{user
+                                            .generalDetails
+                                            .name
+                                            .charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1">
+                                    <p className="text-sm font-medium">{user.generalDetails.name}</p>
+                                    <Button variant="outline" size="sm" className="mt-2">
+                                        <PencilLine className="h-4 w-4 mr-2"/>
+                                        Update Picture
+                                    </Button>
+                                </div>
                             </div>
-                            <div>
-                              <Label className="mt-4 mb-10">New Password</Label>
-                              <Input type="password" name="newpassword" placeholder="New Password" required onChange={(e) => setPass({...pass, [e.target.name]:e.target.value})} />
-                            </div>
-                            <div>
-                              <Label className="mt-4 mb-10">Confirm New Password</Label>
-                              <Input type="password" name="confirmnewpassword" placeholder="Confirm New Password" required onChange={(e) => setPass({...pass, [e.target.name]:e.target.value})} />
-                            </div>
+                            <Button variant="outline" size="sm" className="w-max mt-4">
+                                <Dialog>
+                                    <DialogTrigger>
+                                        <div className='flex items-center '><PencilLine className="h-4 w-4 mr-2"/>
+                                            <span>change Password
+                                            </span>
+                                        </div>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                            <DialogDescription>
+                                                <form onSubmit={submitHandler}>
+                                                    <div className='grid grid-cols-2 gap-8'>
+                                                        <div>
+                                                            <Label className="mt-4 mb-10">Current Password</Label>
+                                                            <Input
+                                                                type="password"
+                                                                name="currentPassword"
+                                                                placeholder="Current Password"
+                                                                required
+                                                                onChange={(e) => setPass({
+                                                                ...pass,
+                                                                [e.target.name]: e.target.value
+                                                            })}/>
+                                                        </div>
+                                                        <div>
+                                                            <Label className="mt-4 mb-10">New Password</Label>
+                                                            <Input
+                                                                type="password"
+                                                                name="newpassword"
+                                                                placeholder="New Password"
+                                                                required
+                                                                onChange={(e) => setPass({
+                                                                ...pass,
+                                                                [e.target.name]: e.target.value
+                                                            })}/>
+                                                        </div>
+                                                        <div>
+                                                            <Label className="mt-4 mb-10">Confirm New Password</Label>
+                                                            <Input
+                                                                type="password"
+                                                                name="confirmnewpassword"
+                                                                placeholder="Confirm New Password"
+                                                                required
+                                                                onChange={(e) => setPass({
+                                                                ...pass,
+                                                                [e.target.name]: e.target.value
+                                                            })}/>
+                                                        </div>
 
-                          </div>
-                          <Button type="submit" className="mt-4 w-full">Change Password</Button>
-                        </form>
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
+                                                    </div>
+                                                    <Button type="submit" className="mt-4 w-full">Change Password</Button>
+                                                </form>
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                    </DialogContent>
+                                </Dialog>
 
-              </Button>
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-      
-      <div className='w-[80vw] mt-8 p-6 bg-white rounded-md'>
-        Personal Info
 
-        <Card className="mx-auto mt-4">
-          <CardContent className="grid grid-cols-3 gap-6 p-6">
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="name">Name</Label>
-              <Input id="name" value={user.generalDetails.name} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="trainerId">Trainer ID</Label>
-              <Input id="trainerId" value={user.trainerId} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="dob">Date of Birth</Label>
-              <Input id="dob" type="date" readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="mobileNumber">Mobile Number</Label>
-              <Input id="mobileNumber" value={user.generalDetails.phoneNumber} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="alternateNumber">Alternate Number</Label>
-              <Input id="alternateNumber" value={user.generalDetails.alternateNumber} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="whatsappNumber">WhatsApp Number</Label>
-              <Input id="whatsappNumber" value={user.generalDetails.whatsappNumber} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="emailId">Email ID</Label>
-              <Input id="emailId" type="email" value={user.generalDetails.email} readOnly/>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div className='w-[90vw] lg:w-[80vw]  mt-8 p-6 bg-white rounded-md'>
+                Personal Info
 
-      {/* <div className='w-[80vw] mt-8 p-6 bg-white rounded-md'>
+                <Card className="mx-auto mt-4">
+                    <CardContent
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="name">Name</Label>
+                            <Input id="name" value={user.generalDetails.name} readOnly/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="trainerId">Trainer ID</Label>
+                            <Input id="trainerId" value={user.trainerId} readOnly/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="dob">Date of Birth</Label>
+                            <Input id="dob" type="date" readOnly/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="mobileNumber">Mobile Number</Label>
+                            <Input id="mobileNumber" value={user.generalDetails.phoneNumber} readOnly/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="alternateNumber">Alternate Number</Label>
+                            <Input
+                                id="alternateNumber"
+                                value={user.generalDetails.alternateNumber}
+                                readOnly/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="whatsappNumber">WhatsApp Number</Label>
+                            <Input id="whatsappNumber" value={user.generalDetails.whatsappNumber} readOnly/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="emailId">Email ID</Label>
+                            <Input id="emailId" type="email" value={user.generalDetails.email} readOnly/>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* <div className='w-[90vw] lg:w-[80vw]  mt-8 p-6 bg-white rounded-md'>
         Bank Details
 
         <Card className="mx-auto mt-4">
@@ -283,9 +320,9 @@ function Account() {
           </CardContent>
         </Card>
       </div> */}
-      <p className='text-end text-red-500 mt-10'>To update your details please contact the company</p>
-    </div>
-  )
+            <p className='text-end text-red-500 mt-10'>To update your details please contact the company</p>
+        </div>
+    )
 }
 
 export default Account
