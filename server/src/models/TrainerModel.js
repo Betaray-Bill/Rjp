@@ -214,19 +214,19 @@ const trainerSchema = mongoose.Schema({
 
 trainerSchema.index({ trainingDomain: 1, trainerId: 1 })
 
-// Match user entered password to hashed password in database
-trainerSchema.methods.matchPassword = async function(enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password);
-};
+// // Match user entered password to hashed password in database
+// trainerSchema.methods.matchPassword = async function(enteredPassword) {
+//     return await bcrypt.compare(enteredPassword, this.password);
+// };
 
-// Encrypt password using bcrypt
-trainerSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) {
-        next();
-    }
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-});
+// // Encrypt password using bcrypt
+// trainerSchema.pre('save', async function(next) {
+//     if (!this.isModified('password')) {
+//         next();
+//     }
+// const salt = await bcrypt.genSalt(10);
+// this.password = await bcrypt.hash(this.password, salt);
+// });
 
 const Resume = mongoose.model('Resume', resumeSchema);
 const Trainer = mongoose.model('Trainer', trainerSchema);

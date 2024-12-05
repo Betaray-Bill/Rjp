@@ -2,6 +2,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { Resume, Trainer } from "../models/TrainerModel.js";
 import { generateEmpToken, generateToken } from "../utils/generateToken.js";
 import bcrypt from 'bcryptjs';
+import argon2 from 'argon2';
 import Project from "../models/ProjectModel/ProjectModel.js";
 
 // Login - Trainer with trainerId and Trainer_password
@@ -14,22 +15,31 @@ const trainerLogin = asyncHandler(async(req, res) => {
             .json({ message: "Please provide both email and password." })
     }
 
-    const trainer = await Trainer
-        .find({ "generalDetails.email": email })
+    const trainer = await Trainer.find({ "generalDetails.email": email })
         .populate('resumeVersion')
-        .select("-password")
+        // .select("-password")
+    console.log(trainer[0].password, password)
     console.log(trainer)
-    if (trainer) {
-        console.log(trainer)
-            // await trainer
-        let token = generateToken(res, trainer._id);
-        console.log("login token ", token);
+    try {
+        if (trainer && (await argon2.verify(trainer[0].password, password))) {
+            console.log(trainer)
+                // await trainer
+            let token = generateToken(res, trainer._id);
+            console.log("login token ", token);
+            res
+                .status(200)
+                .json({ trainer });
+        } else {
+            console.log("error")
+            res
+                .status(500)
+                .json({ message: "Error in login", error: await bcrypt.compare(password, trainer[0].password) });
+        }
+    } catch (error) {
+        console.log(error)
         res
-            .status(200)
-            .json({ trainer });
-    } else {
-        res.status(401);
-        throw new Error('Invalid email or password');
+            .status(500)
+            .json({ message: "Error in login", error: error.message });
     }
 
 })
@@ -147,10 +157,8 @@ const resumeCopy = asyncHandler(async(req, res) => {
             experience: req.body.experience,
             domain: req.body.domain,
             trainer_id: id,
-            // trainingName: {
-            //     name: req.body.trainingName.name,
-            //     project: req.body.trainingName._id
-            // },
+            // trainingName: {     name: req.body.trainingName.name,     project:
+            // req.body.trainingName._id },
             projects: req.body.projects._id,
             isMainResume: false
         })
@@ -184,41 +192,37 @@ const resumeCopy = asyncHandler(async(req, res) => {
 // Change password
 const changepassword = asyncHandler(async(req, res) => {
     const trainerId = req.params.id;
-    const { currentPassword, newPassword } = req.body;
-    console.log(req.body)
+    const { currentPassword, newpassword } = req.body;
+
     try {
-        console.log(1)
-            // Find the trainer by ID
-        const trainer = await Trainer.findById(trainerId);
+        const trainer = await Trainer.findById(trainerId).select('generalDetails password');
+        console.log(trainer.password)
         if (!trainer) {
-            return res.status(404).json({ message: "Trainer does not exist" });
+            return res.status(404).json({ message: 'Trainer not found' });
         }
-        console.log(2, trainer)
 
-        // Check if the current password matches the trainer's stored password
-        const isPasswordValid = await trainer.matchPassword(currentPassword);
-        console.log(3, isPasswordValid)
+        // Check if the old password matches
+        console.log("Pass ", trainer)
+        const isMatch = await argon2.verify(trainer.password, currentPassword);
+        console.log(isMatch)
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Old password is incorrect' });
+        }
+        console.log(1)
+            // Hash the new password
+        const hashedPassword = await argon2.hash(newpassword);
+        console.log(2)
 
-        // if (!isPasswordValid) {
-        //     return res.status(400).json({ message: "Current password is incorrect" });
-        // }
-        console.log(4)
-
-        // Hash and update the new password
-        const salt = await bcrypt.genSalt(10)
-        console.log(5)
-        const hashedPassword = await bcrypt.hash(newPassword, salt);
-        console.log(6)
+        // Update the password in the database
         trainer.password = hashedPassword;
         await trainer.save();
 
-        res.status(200).json({ message: "Password changed successfully" });
+        res.status(200).json({ message: 'Password updated successfully' });
     } catch (error) {
-        console.error("Error changing password:", error.message);
-        res.status(500).json({ message: "Error in changing the password" });
+        console.error('Error changing password:', error.message);
+        res.status(500).json({ message: 'Error in changing the password' });
     }
 });
-
 
 // Accept PO Reject PO Raise Invoice Get Trainer by ID
 const getTrainerById = asyncHandler(async(req, res) => {
@@ -232,8 +236,7 @@ const getTrainerById = asyncHandler(async(req, res) => {
                 populate: {
                     path: 'projects',
                     select: 'projectName', // Only fetch the 'employeeId' field from each employee
-                },
-
+                }
             })
             .select(' -password -nda_Accepted -is_FirstLogin')
             .populate({
@@ -294,10 +297,7 @@ const getResumeById = asyncHandler(async(req, res) => {
     try {
         const resume = await Resume
             .findById(id)
-            .populate({
-                path: 'trainer_id',
-                select: 'generalDetails.name'
-            })
+            .populate({ path: 'trainer_id', select: 'generalDetails.name' })
         if (!resume) {
             return res
                 .status(404)

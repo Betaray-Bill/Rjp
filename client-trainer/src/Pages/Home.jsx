@@ -91,6 +91,13 @@ function Home() {
     const [currentTime,
         setCurrentTime] = useState(new Date());
 
+    const [isOpen,
+        setIsOpen] = useState(false);
+
+    const toggleNavbar = () => {
+        setIsOpen(!isOpen);
+    };
+
     return (
         <div className='flex w-screen h-screen overflow-hidden'>
             {/* SideBar */}
@@ -148,16 +155,71 @@ function Home() {
 
             </div>
 
+            <div
+                className={`fixed top-0 left-0 h-full w-72 bg-white shadow-lg transform ${isOpen
+                ? "translate-x-0"
+                : "-translate-x-full"} transition-transform duration-300 ease-in-out z-50`}>
+                <nav className="p-4">
+                <div className='flex flex-col justify-between'>
+                  <div className='flex items-center justify-between'>
+                    <img src={logo} alt="Rjp Logo" className='w-16 h-8 mx-4'/> 
+                    <div className='lg:hidden block ml-4' onClick={toggleNavbar}>
+                                    <ion-icon
+                                        name="close-outline"
+                                        style={{
+                                        fontSize: "24px"
+                                    }}></ion-icon>
+                                </div>
+                  </div>
+                        <ul className='flex flex-col mt-10 justify-between'>
+                            <Link
+                                to="/home/dashboard"
+                                className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md text-gray-800 ${isActive('dashboard')
+                                ? 'bg-primaryBgActive font-medium text-md '
+                                : 'bg-white'}`}>
+                                <ion-icon name="home-outline"></ion-icon>
+                                <span className='ml-3'>Home</span>
+                            </Link>
+                            <Link
+                                to="/home/resume/main"
+                                className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md ${isResume
+                                ? 'bg-primaryBgActive font-medium text-md'
+                                : 'bg-white'}`}>
+                                <ion-icon name="newspaper-outline"></ion-icon>
+                                <span className='ml-3'>Resume</span>
+                            </Link>
+                            {/* <Link to="/home/project"
+                className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md ${
+                  location.pathname.split("/").includes('project') ? 'bg-primaryBgActive font-medium text-md' : 'bg-white'
+                }`}
+              >
+                <ion-icon name="file-tray-stacked-outline"></ion-icon><span className='ml-3'>Training</span>
+              </Link> */}
+                            <Link
+                                to="/home/account"
+                                className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md ${isActive('account')
+                                ? 'bg-primaryBgActive font-medium text-md'
+                                : 'bg-white'}`}>
+                                <ion-icon name="person-outline"></ion-icon>
+                                <span className='ml-3'>Profile</span>
+                            </Link>
+
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
             {/* Main Section */}
             {!isLoading
                 ? (
                     <div
                         className='overflow-y-scroll bg-customBg w-screen rounded-none border border-generalBorderColor'>
                         {/* Main Section Nav */}
-                        <div className='w-full h-14 border-b border-gray-400  flex items-center justify-between px-4'>
-                          <Link to="/home/dashboard" className='text-sm text-gray-600'>
-                            <img src={logo} alt="Rjp Logo" className='w-18 h-9 mx-4'/>
-                          </Link>
+                        <div
+                            className='w-full h-14 border-b border-gray-400  flex items-center justify-between px-4'>
+                            <Link to="/home/dashboard" className='text-sm text-gray-600'>
+                                <img src={logo} alt="Rjp Logo" className='w-18 h-9 mx-4'/>
+                            </Link>
                             <div className='flex items-center justify-end'>
                                 <div className='flex items-center'>
                                     <p className='font-light text-sm'>Welcome {data && data.generalDetails.name}</p>
@@ -178,8 +240,12 @@ function Home() {
                                     </DropdownMenu>
                                 </div>
 
-                                <div className='lg:hidden block ml-4'>
-                                    <ion-icon name="menu-outline" style={{fontSize:"20px"}}></ion-icon>
+                                <div className='lg:hidden block ml-4' onClick={toggleNavbar}>
+                                    <ion-icon
+                                        name="menu-outline"
+                                        style={{
+                                        fontSize: "20px"
+                                    }}></ion-icon>
                                 </div>
                             </div>
 

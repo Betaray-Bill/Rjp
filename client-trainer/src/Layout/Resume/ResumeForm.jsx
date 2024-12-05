@@ -222,7 +222,7 @@ function ResumeForm() {
                     readOnly={currentResumeDetails.isLocked}
                     onChange={(e) => handleChange(e, fieldName, index)}
                     placeholder={`Type your ${fieldName}`}
-                    className="w-[30vw] text-gray-800 text-sm outline-none border-collapse border-none h-max"/>
+                    className="lg:w-[30vw] w-[70vw] text-gray-800 text-sm outline-none border-collapse border-none h-max"/>
                 <ion-icon
                     name="trash-outline"
                     style={{
@@ -329,7 +329,7 @@ function ResumeForm() {
         <div className="my-6 mb-6 w-[70vw] rounded-md ">
             <div className='flex justify-between items-center'>
                 <div
-                    className='flex justify-between border-b-1 border-gray-500 items-center'>
+                    className='flex-col md:flex justify-between border-b-1 border-gray-500 items-center'>
                     {currentResumeName !== 'Main Resume'
                         ? <div className=''>
                                 <label htmlFor="" className='font-semibold my-1'>Domain Name</label>

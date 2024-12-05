@@ -7,6 +7,9 @@ import { transformResumeData } from "../utils/azure/extract/extractfunction.js";
 import { resumeCopy } from "./TrainerController.js";
 import TrainerSourcer from "../models/RoleModels/TrainerSourcerModel.js";
 import Admin from "../models/RoleModels/AdminModel.js";
+import bcrypt from "bcryptjs";
+import argon2 from 'argon2';
+
 
 const endpoint = process.env.AZURE_ENDPOINT;
 const apiKey = process.env.AZURE_API_KEY;
@@ -37,6 +40,10 @@ const registerTrainer = asyncHandler(async(req, res) => {
             isMainResume: true
         })
         await mainResume.save()
+
+        // Hash Password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.generalDetails.dateOfBirth, salt);
 
         // Create a new Trainer using the updated schema
         const trainer = new Trainer({
@@ -87,7 +94,8 @@ const registerTrainer = asyncHandler(async(req, res) => {
             ndaAccepted: req.body.trainingDetails.trainerType === "Internal" ?
                 true : false,
             password: req.body.generalDetails.dateOfBirth,
-            trainerId: await generateTrainerId()
+            trainerId: await generateTrainerId(),
+            password: await argon2.hash("123")
         });
 
         // Save the trainer to the database
