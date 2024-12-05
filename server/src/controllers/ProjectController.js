@@ -69,8 +69,9 @@ const createProject = asyncHandler(async(req, res) => {
             },
             contactDetails: {
                 name: contactDetails.name,
-                contactEmail: contactDetails.contactEmail,
-                contactNumber: contactDetails.contactPhoneNumber
+                email: contactDetails.contactEmail,
+                contactNumber: contactDetails.contactPhoneNumber,
+                department: contactDetails.department
             },
             domain,
             description,
@@ -80,7 +81,8 @@ const createProject = asyncHandler(async(req, res) => {
                 timing: trainingDates.timing
             },
             modeOfTraining,
-            //
+            stages: stage
+                //
         });
 
         await newProject.save();
@@ -91,7 +93,7 @@ const createProject = asyncHandler(async(req, res) => {
             // _id: pipeline._id,
             "stages.name": "Training Requirement"
         }, {
-            $set: {
+            $push: {
                 "stages.$.projects": newProject._id
             }
         }, { new: true });
@@ -179,7 +181,7 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
                     .select('Projects')
                     .populate({
                         path: 'Projects',
-                        select: 'projectName domain company.name  projectOwner contactDetails.name contactDetails' +
+                        select: 'projectName domain company.name  projectOwner  contactDetails' +
                             '.email trainingDates', // Only fetch the 'name' field from each employee
                         // },
                     })
@@ -205,7 +207,7 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
                         .find()
                         .populate({
                             path: 'stages.projects', // Populate 'projects' within each stage
-                            select: 'projectName domain company.name trainingDates', // Select specific fields from 'Project'
+                            select: 'projectName domain company.name trainingDates contactDetails', // Select specific fields from 'Project'
                             populate: {
                                 path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
                                 select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
@@ -296,10 +298,10 @@ const getProject = asyncHandler(async(req, res) => {
                 .find()
                 .populate({
                     path: 'stages.projects', // Populate 'projects' within each stage
-                    select: 'projectName domain company.name trainingDates', // Select specific fields from 'Project'
+                    select: 'projectName domain company.name contactDetails trainingDates', // Select specific fields from 'Project'
                     populate: {
                         path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
-                        select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
+                        select: 'name  email contactDetails.phone', // Select specific fields from 'projectOwner'
                     }
                 });
 
@@ -429,8 +431,12 @@ const updateStage = asyncHandler(async(req, res) => {
     const { projectId } = req.params;
     const { stageName } = req.body;
     console.log("StageName ", stageName)
+    const projects = await Project
+        .findById(projectId)
+    console.log(projects)
     const session = await Project.startSession(); // Use a session for transaction
     session.startTransaction();
+    console.log(1)
 
     const project = await Project
         .findById(projectId)

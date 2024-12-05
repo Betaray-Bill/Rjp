@@ -44,6 +44,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
     }
 
     const handleDownload = async() => {
+        
         const element = invoiceRef.current;
         console.log(element)
         const getTargetElement = () => document.getElementById("invoiceRef");

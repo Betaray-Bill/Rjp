@@ -11,14 +11,6 @@ import {
     SelectValue,
   } from "@/components/ui/select"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
-import {
     Popover,
     PopoverContent,
     PopoverTrigger,
@@ -27,7 +19,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {resetDomainResultsAndSearch, setDomainResults, setIsSearching, setSearchDomain} from '@/features/searchTrainerSlice';
 import {Label} from '@/components/ui/label';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 
 function SearchBar({domainSearch}) {
     const [query,

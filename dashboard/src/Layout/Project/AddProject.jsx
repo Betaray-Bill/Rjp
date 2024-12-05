@@ -85,6 +85,21 @@ function AddProject() {
     const [companyData, setCompanyData] = useState([])
     const [companyContactData, setCompanyContactData] = useState([])
 
+    const handleDateChange = (e) => {
+        const {name, value} = e.target;
+        console.log(name, value);
+        const keys = name.split('.');
+
+        setProjectData(prevData => ({
+            ...prevData,
+            [keys[0]]: {
+                ...prevData.trainingDates,
+                [keys[1]]: value
+            }
+        }));
+    }
+    console.log(projectData)
+
     const handleChange = (e) => {
         const {name, value} = e.target;
         // console.log(value)
@@ -315,7 +330,6 @@ function AddProject() {
             <div className='border-b-[1px] pb-5'>
                 <h2 className='font-semibold text-lg'>Create Project</h2>
             </div>
-
             <div className='mt-8'>
                 {/* Project details form */}
                 <form onSubmit={handleSubmit}>
@@ -451,21 +465,25 @@ function AddProject() {
 
                             <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Training start Date</Label>
-                                <Input
-                                    type="date"
+                                <input
+                                    type="datetime-local"
                                     name="trainingDates.startDate"
                                     value={projectData.trainingDates.startDate}
-                                    onChange={handleChange}/>
+                                    onChange={(e) => handleDateChange(e)}
+                                    className='border px-4 py-1 rounded-sm border-gray-600'
+                                />
                                    
                             </div>
 
                             <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Training End Date</Label>
-                                <Input
-                                    type="date"
+                                <input
+                                    type="datetime-local"
                                     name="trainingDates.endDate"
                                     value={projectData.trainingDates.endDate}
-                                    onChange={handleChange}/>
+                                    onChange={(e) => handleDateChange(e)}
+                                    className='border px-4 py-1 rounded-sm border-gray-600'
+                                />
                             </div>
 
                             <div className="flex items-center justify-between">

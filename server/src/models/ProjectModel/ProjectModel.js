@@ -60,6 +60,9 @@ const projectSchema = new mongoose.Schema({
         },
         contactNumber: {
             type: String
+        },
+        department: {
+            type: String
         }
     },
     amount: {

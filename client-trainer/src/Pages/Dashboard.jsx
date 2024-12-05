@@ -41,7 +41,7 @@
             <div className="border-b mt-4 pb-4">
               <span className="text-slate-800 font-semibold flex items-center ml-10">
                 <ion-icon name="layers-outline" style={{fontSize:"34px", color:"#3e4093"}}></ion-icon>
-                <span className='ml-4 text-xl'  >Deals</span>
+                <span className='ml-4 text-xl'  >Training</span>
               </span>
             </div>
             <DealsDisplay />

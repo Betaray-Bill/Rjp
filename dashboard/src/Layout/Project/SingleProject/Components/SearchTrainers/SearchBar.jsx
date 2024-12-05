@@ -270,6 +270,47 @@ function SearchBar({domain, id, trainingDates}) {
                                         </PopoverContent>
                                     </Popover>
                                 </div>
+                                
+                                                                 {/* Dates */}
+                                                                 <div className='border w-max mx-4 px-4 py-[3px]  rounded-full'>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <span  className="border-none cursor-pointer flex items-center"><ion-icon name="calendar-outline" style={{marginRight:"8px"}}></ion-icon> <span>Dates</span></span>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-80">
+                                            <div className="grid gap-4">
+                                            <div className="space-y-2">
+                                                {/* <h4 className="font-medium leading-none">Rate Per Session</h4> */}
+                                                {/* <p className="text-sm text-muted-foreground">
+                                                Set the dimensions for the layer.
+                                                </p> */}
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <div className="grid grid-cols-3 items-center gap-4">
+                                                        <Label>Start Date</Label>
+                                                        <input
+                                                            type="date"
+                                                            value={startDate}
+                                                            onChange={(e) => setStartDate(e.target.value)}
+                                                            className="w-max py-1 px-2 border mt-2 rounded-sm border-gray-700"/>
+                                                </div>
+                                                <div className="grid grid-cols-3 items-center gap-4">
+                                                        <Label>End Date</Label>
+                                                        <input
+                                                            type="date"
+                                                            value={endDate}
+                                                            onChange={(e) => setEndDate(e.target.value)}
+                                                            className="w-max py-1 px-2 border mt-2 rounded-sm border-gray-700"/>
+                                                </div>
+                                                
+                                            </div>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+
+
+
                                 {/* Type Of Students */}
                                 <div className='mx-4'>
                                             <Select onValueChange={(e) => {
@@ -309,22 +350,25 @@ function SearchBar({domain, id, trainingDates}) {
                         <span className='ml-1'>Reset</span>
                 </p>
             </div>
+            
+            
+            {/* Print th */}
+            <div className='flex items-center mt-8 justify-between'>
+            {
+                selectedTrainers?.map((e, _i) => (
+                    <div className='border rounded-full px-2 ml-4 w-max flex items-center' key={_i}>
+                        <span className=''>{e.generalDetails.email}</span>
+                        <ion-icon name="close-outline" style={{cursor:"pointer", fontSize:"20px", marginLeft:"7px", color:"red"}} onClick={() =>deleteSelectedTrainer(e)}></ion-icon>
+                    </div>
+                ))
+            }
             {
                 selectedTrainers.length > 0 ?
                 <div className='text-right'>
                     <Button onClick={saveTrainer}>Save</Button>
                 </div> : null
             }
-            
-            {/* Print th */}
-            {
-                selectedTrainers?.map((e, _i) => (
-                    <div className='border rounded-full px-2 ml-4 w-max inline-block' key={_i}>
-                        <span className=''>{e.generalDetails.email}</span>
-                        <ion-icon name="close-outline" onClick={() =>deleteSelectedTrainer(e)}></ion-icon>
-                    </div>
-                ))
-            }
+            </div>
 
             {
                 result && result.length > 0 && 
@@ -339,7 +383,7 @@ function SearchBar({domain, id, trainingDates}) {
                                                     <AvatarImage src="https://github.com/shadcn.png"/>
                                                     <AvatarFallback>CN</AvatarFallback>
                                                 </Avatar>
-                                                <p className='ml-2 font-medium'>{res.generalDetails?.name}</p>
+                                                <p className='ml-2 font-medium text-md'>{res.generalDetails?.name}</p>
                                             </div>
                                             <div>
                                                 <p className='text-gray-600 mt-2'>
