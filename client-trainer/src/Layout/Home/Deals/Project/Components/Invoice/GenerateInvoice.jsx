@@ -7,6 +7,7 @@ import {useParams} from 'react-router-dom';
 import {useQueryClient} from 'react-query';
 import {useToast} from '@/hooks/use-toast';
 import axios from 'axios';
+import { toWords } from 'number-to-words'
 
 function GenerateInvoice({purchaseOrder, formData, inVoice}) {
     const {user} = useSelector((state) => state.auth)
@@ -376,7 +377,10 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
 
                             <tr className='text-center border-gray-600 border'>
                                 <td colSpan="7">
-                                    Sum in Text</td>
+                                    {toWords(Number(purchaseOrder
+                                            .details
+                                            .description
+                                            .reduce((total, row) => total + row.amount, 0)))}</td>
                             </tr>
                         </tbody>
                     </table>

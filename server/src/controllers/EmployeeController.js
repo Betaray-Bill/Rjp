@@ -8,7 +8,6 @@ import { generateToken } from "../utils/generateToken.js";
 
 
 
-
 // Finance Controller
 
 const sendPurchaseOrder = asyncHandler(async(req, res) => {
@@ -28,6 +27,7 @@ const sendPurchaseOrder = asyncHandler(async(req, res) => {
 
 
 
-export default {
-    sendPurchaseOrder
+export {
+    sendPurchaseOrder,
+    // getEmployee
 }

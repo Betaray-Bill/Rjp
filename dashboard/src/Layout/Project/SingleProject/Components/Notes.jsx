@@ -41,7 +41,7 @@ function Notes({projectName, projectId}) {
         setData] = useState([])
 
     useEffect(() => {
-        fetchNotes()
+        // fetchNotes()
 
     }, [projectId])
 

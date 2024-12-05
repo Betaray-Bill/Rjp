@@ -1,5 +1,5 @@
 import express from 'express';
-import { addEmployee, getEmployeeById, getAllEmployees, updateEmployeeRole, getAllTrainers } from '../controllers/AdminController.js';
+import { addEmployee, getEmployeeById, getAllEmployees, updateEmployeeRole, getAllTrainers, getEmployee } from '../controllers/AdminController.js';
 import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
@@ -18,6 +18,8 @@ router.get("/getAll", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccoun
 
 // Get Single Emp
 router.get("/getemployee", authEmployeeMiddleware, authorizeRole(["ADMIN"]), getEmployeeById)
+router.get("/getemployee/:empId", authEmployeeMiddleware, authorizeRole(["ADMIN"]), getEmployee)
+
 
 
 

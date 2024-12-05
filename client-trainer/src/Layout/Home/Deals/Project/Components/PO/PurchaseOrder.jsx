@@ -5,6 +5,7 @@ import sign from "../../../../../../assets/sign.png"
 import seal from "../../../../../../assets/seal.jpg"
 import generatePDF, {Margin, Resolution, usePDF} from 'react-to-pdf';
 import {Button} from '@/components/ui/button'
+import { toWords } from 'number-to-words';
 
 function PurchaseOrder({purchaseOrder}) {
     console.log(purchaseOrder)
@@ -254,12 +255,15 @@ function PurchaseOrder({purchaseOrder}) {
 
                                         <tr className="font-bold">
                                             <td colSpan="4" className="border border-gray-300 px-4 py-2">
-                                                INR{" "} {(purchaseOrder.details.description.reduce((total, row) => total + row.amount, 0) * 1.18).toLocaleString()}{" "}
+                                                INR{" "}  {toWords(Number(purchaseOrder
+                                            .details
+                                            .description
+                                            .reduce((total, row) => total + row.amount, 0)))}{" "}
                                                 Only
                                             </td>
                                             <td className="border border-gray-300 px-4 py-2">Total</td>
                                             <td className="border border-gray-300 px-4 py-2 text-right">
-                                                INR{" "} {(purchaseOrder.details.description.reduce((total, row) => total + row.amount, 0) * 1.18).toLocaleString()}
+                                                INR{" "} {(purchaseOrder.details.description.reduce((total, row) => total + row.amount, 0)).toLocaleString()}
                                             </td>
                                         </tr>
                                     </tbody>
