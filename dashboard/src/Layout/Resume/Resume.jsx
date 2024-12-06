@@ -10,60 +10,87 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
+
+// import { Document, Page } from '@react-pdf/renderer'; 
+
 // import { PDFViewer
 function Resume() {
     const params = useParams()
     console.log(params)
     const {currentUser} = useSelector(state => state.auth)
+    const resumeRef = useRef();
+    const contentRef = useRef();
+
+    const [numPages, setNumPages] = useState(null);
+
+  const [pageHeight, setPageHeight] = useState(null);
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+
+    setNumPages(numPages);
+
+    // Access the first page's height (adjust page index as needed)
+
+    getPage(1).then(page => setPageHeight(page.getHeight()));
+
+  };
+
+
+
+    
+
+    const blue = useRef();
 
     const fetchResume = async(id) => {
         return axios.get(`http://localhost:5000/api/trainer/resume/${id}`).then(res => res.data);
     }
-    const resumeRef = useRef();
-    const { data, isLoading, isError, error } = useQuery(
-        ['resume', params.id], // Query key (unique per query)
-        () => fetchResume(params.id), // Query function
-        {
-          enabled: !!params.id, // Ensure query runs only if ID is present
-        }
-      );
-    
-      if (isLoading) {
-        return <div>Loading...</div>;
-      }
-    
-      if (isError) {
-        return <div>Error: {error.message}</div>;
-      }
-
-    console.log(data)
-      // Update the height of the blue strip based on the resume content height
-
-    // const [contentHeight, setContentHeight] = useState(resumeRef && resumeRef.current?.offsetHeight);
-
-    // const {currentResumeDetails, currentResumeName, downloadResume, downloadResumeName} = useSelector(state => state.resume)
-    // const resumeRef = useRef();
 
     const roundHeight = (height) => {
-        const multiple = 1000;
-        // console.log(height/1123)
-        // console.log(Math.ceil(height / 1000) * 1000)
-        // console.log(height% multiple)
-        const numberOfPages = Math.ceil(height / 1123);
-        return  numberOfPages * 1123
-    };
+        const multiple = 1735; // Page height multiple
+        if(height <= 1735){
+            console.log("same", height)
+            return 1735
+        }
+        const numberOfPages = Math.ceil(height / multiple);
+        return numberOfPages * multiple;
+      };
+    
+      // Query to fetch resume data
+      const { data, isLoading, isError, error } = useQuery(
+        ['resume', params.id],
+        () => fetchResume(params.id),
+        { enabled: !!params.id }
+      );
+    
+      useEffect(() => {
+        // Adjust the blue strip height after rendering
+        if (resumeRef.current && blue.current) {
+          const height = contentRef.current.offsetHeight;
+          const roundedHeight = roundHeight(height);
+          console.log("Content ",height, "Rounded ",roundedHeight, "Blue", blue.current.offsetHeight)
+          blue.current.style.height = `${roundedHeight}px`;
+          resumeRef.current.style.height = `${roundedHeight}px`;
+          console.log(height, roundedHeight, blue.current.offsetHeight)
+          console.log("Content ",  contentRef.current.offsetHeight)
+          console.log("Resume ",  resumeRef.current.offsetHeight)
+          console.log("BLue ",  blue.current.offsetHeight)
 
-    // console.log(resumeRef.current.offsetHeight)
+        }
+      }, [data]);
+    
+      const handleDownload = () => {
+        if (resumeRef.current && blue.current) {
+          const height = contentRef.current.offsetHeight;
+          const roundedHeight = roundHeight(height);
+          blue.current.style.height = `${roundedHeight}px`;
+        }
+        console.log('Downloading resume...');
+        console.log("Strip ", blue.current.offsetHeight)
+        console.log("Resume COntent height ",contentRef.current.offsetHeight)
 
-    const handleDownload = () => {
         const element = resumeRef.current;
-        console.log(element)
         const getTargetElement = () => document.getElementById("resumeRef");
-        console.log(getTargetElement)
-        // const res = axios.get('http://localhost:5000/generatePDF', "element")
-        // console.log(res.data)
-        console.log(roundHeight(resumeRef.current.offsetHeight))
-
+        
             generatePDF(getTargetElement, {
                 filename: `${data.trainer_id
                                     .generalDetails
@@ -80,8 +107,14 @@ function Resume() {
                     }
                 }
             })
+      };
+    
+      if (isLoading) return <div>Loading...</div>;
+      if (isError) return <div>Error: {error.message}</div>;
+    
+        
   
-    };
+    // };
 
     // Function to shuffle an array (for randomness)
     const shuffleArray = (array) => {
@@ -124,10 +157,10 @@ function Resume() {
                     id="resumeRef">
                       
                     {/* Blue strip on the left */}
-                    <div className="absolute top-0 bottom-0 left-0 w-8  bg-resumeText"  style={{ height: `${roundHeight(resumeRef.current?.offsetHeight)}px`}}></div>
-
+                    <div className="absolute top-0 bottom-0 left-0 w-8  bg-resumeText" id="blue" ref={blue}></div>
+                    {/* style={{ height: `${roundHeight(resumeRef.current?.offsetHeight)}px`}} */}
                     {/* Main content */}
-                    <div className="pl-12 pr-6 py-6 h-full">
+                    <div className="pl-12 pr-6 py-6 " ref={contentRef}>
 
                         {/* Header with logo space */}
                         <div className="flex flex-col items-center mb-6 relative">
