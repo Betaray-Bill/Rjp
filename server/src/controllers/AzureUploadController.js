@@ -140,7 +140,9 @@ export const uploadPanAndAadharToBlob = async(file, fileName, trainer) => {
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
         // Upload file buffer to Azure Blob Storage
-        await blockBlobClient.uploadData(file.buffer);
+        await blockBlobClient.uploadData(file.buffer, {
+            blobHTTPHeaders: { blobContentType: file.mimetype },
+        });
 
         // Get the blob URL
         const blobUrl = blockBlobClient.url;

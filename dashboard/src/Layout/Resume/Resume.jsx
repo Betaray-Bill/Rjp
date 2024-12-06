@@ -186,8 +186,8 @@ function Resume() {
                                 </h2>
                                 <ul className="list-disc pl-5 space-y-2">
                                     {section.content.map((item, _i) => (
-                                    <li className="text-justify text-base leading-7" key={_i}>
-                                        {item}
+                                    <li className="text-justify leading-7 flex items-center" key={_i}>
+                                        <span>{_i+1}. </span><span className='ml-1'> { item}</span>
                                     </li>
                                     ))}
                                 </ul>

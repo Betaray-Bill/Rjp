@@ -97,7 +97,7 @@ function ViewTrainer() {
 
                             <div className='mt-5'>
                                 <div action="" className='border-t pt-4'>
-                                    {viewData === "Details" && <ViewGeneralDetails id={data._id} data={data && data.generalDetails}/>
+                                    {viewData === "Details" && <ViewGeneralDetails id={data._id} data={data && data.generalDetails} bank={data && data.bankDetails}/>
     }
                                     {viewData === "Training Domains" && <ViewTrainingDomain trainingType={data && data.trainingDetails.trainerType} id={data._id} data={data && data.trainingDomain}/>
     }

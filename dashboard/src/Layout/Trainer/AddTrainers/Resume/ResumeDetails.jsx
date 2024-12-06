@@ -121,6 +121,7 @@ function ResumeDetails({data}) {
   
   const handleChange = (e, field, index) => {
     const value = e.target.value;
+    console.log(resume)
     let updateResume = () => {
       if(Array.isArray(resume[field])) {
         const updatedArray = [...resume[field]];

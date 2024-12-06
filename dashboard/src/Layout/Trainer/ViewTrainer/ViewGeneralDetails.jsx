@@ -9,7 +9,7 @@ import {useParams} from 'react-router-dom';
 import {useQueryClient} from 'react-query';
 import { useToast } from '@/hooks/use-toast';
 
-function ViewGeneralDetails({data, id}) {
+function ViewGeneralDetails({data, id, bank}) {
     const trainerId = useParams()
     const queryClient = useQueryClient()
     const dispatch = useDispatch();
@@ -264,7 +264,21 @@ function ViewGeneralDetails({data, id}) {
                         onChange={(e) => handleAddressChange(e)}/>
                 </div>
 
+                <div className='flex items-center '>
+                    <Label className="font-semibold" htmlFor="Aadhar Cards">Aadhar Card</Label>
+                    {/* <a href={bank.aadharCard}>Aadhar</a> */}
+                    <a target='_blank' href={bank.aadharCard} className='py-2 text-sm bg-blue-900 text-white ml-2 border rounded-none px-4'>Download</a>
+                </div>
+
+
+                <div className='flex items-center '>
+                    <Label className="font-semibold" htmlFor="pan Cards">Pan Card</Label>
+                    {/* <a target='_blank' href={bank.panCard}>pan</a> */}
+                    <a target='_blank' href={bank?.panCard} className='py-2 text-sm bg-blue-900 text-white ml-2 border rounded-none px-4'>Download</a>
+                </div>
+
             </div>
+
 
             {/* Reset Password */}
 
