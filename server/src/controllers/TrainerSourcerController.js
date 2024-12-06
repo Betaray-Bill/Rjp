@@ -342,8 +342,9 @@ const getTrainerByEmpId = asyncHandler(async(req, res) => {
             }
 
             if (Emp.role[i].name == 'ADMIN') {
-                const trainers = await Trainer.find()
-                    // Return the Result
+                const trainers = await Trainer.find().select("generalDetails trainerId trainingDetails")
+
+                // Return the Result
                 res
                     .status(201)
                     .json({ message: 'Trainer Fetched successfully', trainers: trainers.slice(startIndex, endIndex), success: true, trainersTotals: trainers.length });

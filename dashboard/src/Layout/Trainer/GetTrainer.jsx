@@ -81,6 +81,7 @@ function GetTrainer() {
                     <TableRow>
                         <TableHead>S.no</TableHead>
                         <TableHead className="">Name</TableHead>
+                        <TableHead className="">Trainer ID</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Type</TableHead>
                     </TableRow>
@@ -105,6 +106,7 @@ function GetTrainer() {
                                                 </Avatar>
                                                 <span className='ml-2'>{trainer.generalDetails.name}</span>
                                             </TableCell>
+                                            <TableCell>{trainer.trainerId}</TableCell>
                                             <TableCell>{trainer.generalDetails.email}</TableCell>
                                             <TableCell>{trainer.trainingDetails.trainerType}</TableCell>
                                             <TableCell>

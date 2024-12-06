@@ -367,7 +367,7 @@ function ViewTrainingDomain({data, trainingType}) {
                                     
                                     trainingType.trim() !== "Internal" &&
                                 
-                                    <div>
+                                    <div className='ml-8'>
                                         <Label className="text-md font-medium text-slate-700">Enter Price (₹)</Label>
                                         <Input type="number" placeholder="Enter Price(Rupees)" value={item.price ? item.price : ""} name="price" className="w-[200px]" onChange={(e) =>  handleChange(e, index)}/>
                                     </div>

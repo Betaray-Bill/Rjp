@@ -276,30 +276,35 @@ function    ViewNewResume({data, projects}) {
     const sortDataByDomain = (domain) => {
         // Helper function to sort a single array based on the domain
         const sortArray = (array, domain) => {
-            return array.sort((a, b) => {
-                console.log(domain.split(" "));
-                const aContainsDomain = a
-                  .toLowerCase()
-                  .includes(domain.toLowerCase().split(" "));
-                const bContainsDomain = b
-                  .toLowerCase()
-                  .includes(domain.toLowerCase().split(" "));
-                return bContainsDomain - aContainsDomain;
-              });
+            if (Array.isArray(array)) {
+                return [...array].sort((a, b) => { // Use spread to create a new array
+                    let aContainsDomain = a.toLowerCase().includes(domain.toLowerCase());
+                    let bContainsDomain = b.toLowerCase().includes(domain.toLowerCase());
+                    return bContainsDomain - aContainsDomain; // Sort items with domain first
+                });
+            }
+            return array;
         };
-        let data = resume
-        // console.log(data)
+    
+        // Create a deep clone of the `resume` object to avoid direct mutations
+        let data = JSON.parse(JSON.stringify(resume)); // Deep clone
+    
         // Iterate over each key in the data object and sort if it's an array
         for (let key in data) {
-    
-            if(Array.isArray(data[key]) && data[key].length>0){
-                data[key] = sortArray(data[key], domain)
+            if (Array.isArray(data[key]) && data[key].length > 0 && key !== "projects") {
+                data[key] = sortArray(data[key], domain); // Sort and reassign the cloned array
             }
         }
+    
+        setResume(data); // Update the state with the sorted data
+        // return data;
         console.log(data)
-        setResume(data)
-        return data;    
-      }
+    };
+    
+    // Example usage with "Ansible" as the domain
+    // sortDataByDomain("Ansible");
+    
+    
     // console.log(resume)
     const handleSearchTerm = (e) => {
         console.log(e)
@@ -310,10 +315,7 @@ function    ViewNewResume({data, projects}) {
 
             // Sort the Result
             sortDataByDomain(e)
-            
-            setTimeout(() => {
-                setResLoading(false)
-            }, 1000)
+    
 
 
     }
