@@ -32,7 +32,7 @@ function ResumeNav() {
     const dispatch = useDispatch()
     const {currentResumeDetails, currentResumeName,downloadResume, downloadResumeName} = useSelector(state => state.resume)
     const resumeRef = useRef();
-
+    console.log(currentResumeDetails._id)
     
     const [position, setPosition] = useState("Main Resume")
     const {user}  = useSelector(state => state.auth)
@@ -140,7 +140,7 @@ function ResumeNav() {
                     bool:true, name:currentResumeName
                 }))
                 console.log(currentResumeName)
-                navigate(`/home/resume/download/preview/${currentResumeName}`)
+                navigate(`/home/resume/download/preview/${currentResumeDetails._id}`)
             }}>
                 <TooltipProvider>
                     <Tooltip>
