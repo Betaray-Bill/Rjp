@@ -76,7 +76,7 @@ function ResumeDownload() {
             generatePDF(getTargetElement, {
                 filename: `${data.trainer_id
                                     .generalDetails
-                                    .name}-${data.domain}`,
+                                    .name}`,
                                     
                 overrides: {
                     // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options

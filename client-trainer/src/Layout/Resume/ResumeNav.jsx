@@ -141,6 +141,7 @@ function ResumeNav() {
                 }))
                 console.log(currentResumeName)
                 navigate(`/home/resume/download/preview/${currentResumeDetails._id}`)
+                
             }}>
                 <TooltipProvider>
                     <Tooltip>
