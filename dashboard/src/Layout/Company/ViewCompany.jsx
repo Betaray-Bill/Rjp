@@ -36,7 +36,7 @@ function ViewCompany() {
                 <TableHeader>
                     <TableRow>
                         <TableHead className= "">S.no</TableHead>
-                        <TableHead>Status</TableHead>
+                        <TableHead>Company Name</TableHead>
                         <TableHead>Method</TableHead>
                         <TableHead className="text-right">Amount</TableHead>
                     </TableRow>
