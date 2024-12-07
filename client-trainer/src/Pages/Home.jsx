@@ -126,6 +126,14 @@ function Home() {
                                 <ion-icon name="newspaper-outline"></ion-icon>
                                 <span className='ml-3'>Resume</span>
                             </Link>
+                            <Link
+                                to="/home/domain"
+                                className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md text-gray-800 ${isActive('domain')
+                                ? 'bg-primaryBgActive font-medium text-md '
+                                : 'bg-white'}`}>
+                                <ion-icon name="desktop-outline"></ion-icon>
+                                <span className='ml-3'>Domain</span>
+                            </Link>
                             {/* <Link to="/home/project"
                 className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md ${
                   location.pathname.split("/").includes('project') ? 'bg-primaryBgActive font-medium text-md' : 'bg-white'
@@ -160,17 +168,17 @@ function Home() {
                 ? "translate-x-0"
                 : "-translate-x-full"} transition-transform duration-300 ease-in-out z-50`}>
                 <nav className="p-4">
-                <div className='flex flex-col justify-between'>
-                  <div className='flex items-center justify-between'>
-                    <img src={logo} alt="Rjp Logo" className='w-16 h-8 mx-4'/> 
-                    <div className='lg:hidden block ml-4' onClick={toggleNavbar}>
-                                    <ion-icon
-                                        name="close-outline"
-                                        style={{
-                                        fontSize: "24px"
-                                    }}></ion-icon>
-                                </div>
-                  </div>
+                    <div className='flex flex-col justify-between'>
+                        <div className='flex items-center justify-between'>
+                            <img src={logo} alt="Rjp Logo" className='w-16 h-8 mx-4'/>
+                            <div className='lg:hidden block ml-4' onClick={toggleNavbar}>
+                                <ion-icon
+                                    name="close-outline"
+                                    style={{
+                                    fontSize: "24px"
+                                }}></ion-icon>
+                            </div>
+                        </div>
                         <ul className='flex flex-col mt-10 justify-between'>
                             <Link
                                 to="/home/dashboard"
@@ -187,6 +195,15 @@ function Home() {
                                 : 'bg-white'}`}>
                                 <ion-icon name="newspaper-outline"></ion-icon>
                                 <span className='ml-3'>Resume</span>
+                            </Link>
+
+                            <Link
+                                to="/home/domain"
+                                className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md text-gray-800 ${isActive('domain')
+                                ? 'bg-primaryBgActive font-medium text-md '
+                                : 'bg-white'}`}>
+                                <ion-icon name="desktop-outline"></ion-icon>
+                                <span className='ml-3'>Domain</span>
                             </Link>
                             {/* <Link to="/home/project"
                 className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md ${

@@ -17,6 +17,7 @@ import ResumeDownload from './Layout/Resume/ResumeDownload'
 import ResumeExtractor from './Pages/ResumeExtractor'
 import AzureBlobUploader from './Pages/AzureBlobUploader'
 import SingleProject from './Layout/Home/Deals/Project/SingleProject'
+import TrainingDomains from './Pages/TrainingDomains'
 
 
 function App() {
@@ -48,6 +49,8 @@ function App() {
         <Route element={<ProtectedRoute/> }>
           <Route path='/home' element={<Home />}>
             <Route path='dashboard' index element={<Dashboard /> }/>
+            <Route path='domain' index element={<TrainingDomains /> }/>
+
             <Route path="resume" element={<Resume />}>
               <Route path='new' element={<ResumeNew />} />
               <Route path='download/preview/:id' element={<ResumeDownload />} />   {/* Preview Resume Routes */}

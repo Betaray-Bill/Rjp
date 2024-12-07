@@ -93,9 +93,9 @@ const registerTrainer = asyncHandler(async(req, res) => {
             isFirstLogin: true,
             ndaAccepted: req.body.trainingDetails.trainerType === "Internal" ?
                 true : false,
-            password: req.body.generalDetails.dateOfBirth,
+            // password: req.body.generalDetails.dateOfBirth,
             trainerId: await generateTrainerId(),
-            password: await argon2.hash("123")
+            password: await argon2.hash("P@ssw0rd")
         });
 
         // Save the trainer to the database

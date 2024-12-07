@@ -14,7 +14,8 @@ const router = express.Router();
 router.post("/login", trainerLogin)
 router.post("/accept-nda", authMiddleware, acceptNDA)
 router.post("/reject-nda", authMiddleware, signOut)
-router.put("/update-profile/:id", authMiddleware, updateTrainerProfile)
+router.put("/update/:id", authMiddleware, updateTrainerProfile)
+
 router.put("/change-password/:id", authMiddleware, changepassword)
 router.put("/reset/:id", authEmployeeMiddleware, authorizeRole(['ADMIN', 'Trainer Sourcer']), resetPassword)
 router.get("/search", authEmployeeMiddleware, authorizeRole(['ADMIN', 'KeyAccounts']), searchTrainer)

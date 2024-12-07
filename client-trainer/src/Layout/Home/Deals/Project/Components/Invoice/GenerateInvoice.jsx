@@ -7,9 +7,77 @@ import {useParams} from 'react-router-dom';
 import {useQueryClient} from 'react-query';
 import {useToast} from '@/hooks/use-toast';
 import axios from 'axios';
-import { toWords } from 'number-to-words'
+// import { convertToIndianWords } from 'number-to-words'
 
 function GenerateInvoice({purchaseOrder, formData, inVoice}) {
+
+    function convertToIndianWords(number) {
+        if (number === 0) return 'Zero';
+        
+        const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+        const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+        
+        function convertHundreds(n) {
+          if (n === 0) return '';
+          
+          let result = '';
+          
+          // Handle hundreds place
+          if (Math.floor(n / 100) > 0) {
+            result += ones[Math.floor(n / 100)] + ' Hundred ';
+            n %= 100;
+          }
+          
+          // Handle tens and ones
+          if (n > 0) {
+            if (n < 10) {
+              result += ones[n];
+            } else if (n < 20) {
+              result += teens[n - 10];
+            } else {
+              result += tens[Math.floor(n / 10)];
+              if (n % 10 > 0) {
+                result += ' ' + ones[n % 10];
+              }
+            }
+          }
+          
+          return result.trim();
+        }
+        
+        if (number < 0) {
+          return 'Minus ' + convertToIndianWords(Math.abs(number));
+        }
+        
+        // Break the number into groups of 2 and 3 digits for Indian system
+        const crores = Math.floor(number / 10000000);
+        const lakhs = Math.floor((number % 10000000) / 100000);
+        const thousands = Math.floor((number % 100000) / 1000);
+        const remainder = number % 1000;
+        
+        let words = '';
+        
+        // Add each component
+        if (crores > 0) {
+          words += convertHundreds(crores) + ' Crore ';
+        }
+        
+        if (lakhs > 0) {
+          words += convertHundreds(lakhs) + ' Lakh ';
+        }
+        
+        if (thousands > 0) {
+          words += convertHundreds(thousands) + ' Thousand ';
+        }
+        
+        if (remainder > 0) {
+          words += convertHundreds(remainder);
+        }
+        
+        return words.trim();
+      }
+
     const {user} = useSelector((state) => state.auth)
     const params = useParams()
     const {toast} = useToast()
@@ -86,7 +154,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
                 ref={invoiceRef}>
                 <div
                     className="text-center grid place-content-center justify-center font-bold text-lg border-b border-black pb-2">
-                    <img src={logo} alt="" className='w-[100px]'/>
+                    {/* <img src={logo} alt="" className='w-[100px]'/> */}
                     <span className='my-2'>TAX INVOICE</span>
                 </div>
 
@@ -313,7 +381,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
                                 <td className="border border-gray-600 px-4 py-1"></td>
                                 <td className="border border-gray-600 px-4 py-1"></td>
                             </tr> */}
-                            {/* {isTNGST
+                            {formData.GST !== "IGST"
                                 ? <Fragment>
                                         <tr>
                                             <td className="border border-gray-600 px-4 py-1"></td>
@@ -360,9 +428,9 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
                                     </td>
 
                                 </tr>
-} */}
+}
 
-                            {/* <tr className='font-semibold'>
+                            <tr className='font-semibold'>
                                 <td className="border border-gray-600 px-4 py-1"></td>
                                 <td colSpan="2" className="border text-center border-gray-600 px-4 py-1">Tax Amount : GST</td>
                                 <td className="border border-gray-600 px-4 py-1"></td>
@@ -374,14 +442,18 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
 }
                                 </td>
 
-                            </tr> */}
+                            </tr>
 
                             <tr className='text-center border-gray-600 border'>
                                 <td colSpan="7">
-                                    {toWords(Number(purchaseOrder
+                                    {convertToIndianWords(
+                                        Number(purchaseOrder
                                             .details
                                             .description
-                                            .reduce((total, row) => total + row.amount, 0)))}</td>
+                                            .reduce((total, row) => total + row.amount, 0)) + Number(purchaseOrder
+                                            .details
+                                            .description
+                                            .reduce((total, row) => total + row.amount, 0)) * 0.18)}</td>
                             </tr>
                         </tbody>
                     </table>

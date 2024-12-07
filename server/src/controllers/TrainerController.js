@@ -44,6 +44,7 @@ const trainerLogin = asyncHandler(async(req, res) => {
 
 })
 
+
 // Accept the NDA
 const acceptNDA = asyncHandler(async(req, res) => {
     // Get the Id of the Trainer
@@ -404,5 +405,6 @@ export {
     signOut,
     getResumeById,
     lockResume,
+    // updateData,
     resetPassword
 }

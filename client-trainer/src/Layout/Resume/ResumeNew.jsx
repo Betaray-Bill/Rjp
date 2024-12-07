@@ -5,9 +5,9 @@ import {useDispatch, useSelector} from 'react-redux'
 import {setCopyResumeDetails, setCurrentResumeName} from '@/features/resumeSlice'
 import {Button} from '@/components/ui/button'
 import axios from 'axios'
-import { setCredentials } from '@/features/authSlice'
-import { useNavigate } from 'react-router-dom'
-import { useToast } from '@/hooks/use-toast'
+import {setCredentials} from '@/features/authSlice'
+import {useNavigate} from 'react-router-dom'
+import {useToast} from '@/hooks/use-toast'
 
 function ResumeNew() {
     const {currentResumeDetails, currentResumeName} = useSelector(state => state.resume)
@@ -31,16 +31,18 @@ function ResumeNew() {
     })
 
     function isObjectEmpty(obj) {
-        return Object.values(obj).every(value => {
-            if (Array.isArray(value)) {
-                return value.length === 0 || (value.length === 1 && value[0] === '');
-            }
-            return value === '';
-        });
+        return Object
+            .values(obj)
+            .every(value => {
+                if (Array.isArray(value)) {
+                    return value.length === 0 || (value.length === 1 && value[0] === '');
+                }
+                return value === '';
+            });
     }
 
     useEffect(() => {
-        if(isObjectEmpty(currentResume)){
+        if (isObjectEmpty(currentResume)) {
             setCurrentResume({
                 ...currentResumeDetails
             })
@@ -51,7 +53,10 @@ function ResumeNew() {
 
     const handleNewResumeName = (e) => {
         dispatch(setCurrentResumeName(e.target.value))
-        setCurrentResume({...currentResume, trainingName:e.target.value})
+        setCurrentResume({
+            ...currentResume,
+            trainingName: e.target.value
+        })
         console.log(currentResumeName)
     }
 
@@ -128,7 +133,7 @@ function ResumeNew() {
                         onClick={() => handleDelete(fieldName, 0)}></ion-icon>
                 </div>
             )
-        } 
+        }
         return fieldArray.map((value, index) => (
             <div
                 key={index}
@@ -150,58 +155,57 @@ function ResumeNew() {
         ))
     };
 
-
     // Handle Submitting the Copy resume
-    const [isSubmit, setIsSubmit] = useState(false)
+    const [isSubmit,
+        setIsSubmit] = useState(false)
     axios.defaults.withCredentials = true;
     const handleSubmit = async(e) => {
-      e.preventDefault();
-      setIsSubmit(prev => !prev)
+        e.preventDefault();
+        setIsSubmit(prev => !prev)
 
-      console.log('Form Data Submitted:', currentResume);
-      // Perform API call to save form data
-      try {
-          const response = await axios.post(`http://localhost:5000/api/trainer/${user._id}/copy-resume`, currentResume); // Replace with your API endpoint
-          console.log('Registration successful:', response.data);
-          getTrainerDetails() 
-          setIsSubmit(prev => !prev)
-          setCurrentResume({
-              professionalSummary: [''],
-              technicalSkills: [''],
-              careerHistory: [''],
-              certifications: [''],
-              education: [''],
-              trainingsDelivered: [''],
-              clientele: [''],
-              experience: [''],
-              file_url: '',
-              trainingName: ''
-          })
-          toast({
-            duration: 3000, variant: "success", title: "Submitted successfully",
-            // description: "Click edit to take action",
-        })
-        getTrainerDetails()
-        //   navigate("/home/resume/main")
-          // setUser(response.data)
-      }catch (error) {
-          console.error('Registration failed:', error);
-      }
+        console.log('Form Data Submitted:', currentResume);
+        // Perform API call to save form data
+        try {
+            const response = await axios.post(`http://localhost:5000/api/trainer/${user._id}/copy-resume`, currentResume); // Replace with your API endpoint
+            console.log('Registration successful:', response.data);
+            getTrainerDetails()
+            setIsSubmit(prev => !prev)
+            setCurrentResume({
+                professionalSummary: [''],
+                technicalSkills: [''],
+                careerHistory: [''],
+                certifications: [''],
+                education: [''],
+                trainingsDelivered: [''],
+                clientele: [''],
+                experience: [''],
+                file_url: '',
+                trainingName: ''
+            })
+            toast({
+                duration: 3000, variant: "success", title: "Submitted successfully",
+                // description: "Click edit to take action",
+            })
+            getTrainerDetails()
+            //   navigate("/home/resume/main") setUser(response.data)
+        } catch (error) {
+            console.error('Registration failed:', error);
+        }
     };
 
     axios.defaults.withCredentials = true;
     const getTrainerDetails = async() => {
-  
-      try{
-        const res = await axios.get(`http://localhost:5000/api/trainer/details/${user._id}`)
-        console.log(res.data)
-        // setData(res.data)
-        dispatch(setCredentials(res.data))
-      }catch(err){
-        console.log("Error fetching the data")
-      }
+
+        try {
+            const res = await axios.get(`http://localhost:5000/api/trainer/details/${user._id}`)
+            console.log(res.data)
+            // setData(res.data)
+            dispatch(setCredentials(res.data))
+        } catch (err) {
+            console.log("Error fetching the data")
+        }
     }
-  
+
     return (
         <div className='my-6 mb-6  bg-white rounded-md  '>
             <form className='grid grid-cols-2 items-start mt-4'>
@@ -327,8 +331,10 @@ function ResumeNew() {
 
             </form>
 
-            <div className='grid place-content-center w-full my-8' >
-                <Button onClick={handleSubmit} disabled={isSubmit}>{isSubmit ? "Saving ":"Save"}</Button>
+            <div className='grid place-content-center w-full my-8'>
+                <Button onClick={handleSubmit} disabled={isSubmit}>{isSubmit
+                        ? "Saving "
+                        : "Save"}</Button>
             </div>
         </div>
     )

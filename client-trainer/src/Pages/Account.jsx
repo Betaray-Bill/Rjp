@@ -55,25 +55,7 @@ function Account() {
             ));
     };
 
-    function convertDate(dateStr) {
-        // Check if dateStr is a string, and then convert it to a Date object
-        const date = new Date(dateStr);
-
-        // Verify that 'date' is a valid Date object
-        if (isNaN(date.getTime())) {
-            throw new Error('Invalid Date');
-        }
-
-        // Extract day, month, and year from the Date object
-        const day = date.getUTCDate(); // For local time, use date.getDate()
-        const month = date.getUTCMonth() + 1; // Months are zero-indexed, so add 1
-        const year = date.getUTCFullYear(); // For local time, use date.getFullYear()
-
-        // Format the date as DD/MM/YYYY
-        const formattedDate = `${day}/${month}/${year}`;
-
-        return formattedDate;
-    }
+    
 
     // Edit Handle const [formData, setFormData] = useState(trainerData);
 

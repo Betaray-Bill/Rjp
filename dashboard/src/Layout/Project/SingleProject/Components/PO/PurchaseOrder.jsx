@@ -133,7 +133,7 @@ function PurchaseOrder({
 
                     </div>
                     <Fragment>
-                        <Select onValueChange={(e) => setType(e)}>
+                        <Select onValueChange={(e) => setType(e)} value={type}>
                             <SelectTrigger className="w-max">
                                 <SelectValue placeholder="Select a Type"/>
                             </SelectTrigger>

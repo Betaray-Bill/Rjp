@@ -209,13 +209,13 @@ function ViewSingleProject() {
     <div className=''>
 
       <div className='flex items-center justify-between mb-3'>
-        <button onClick={() => navigate(-1)} className='flex items-center mt-[-10] mb-4'>
+        <button onClick={() => navigate(-1)} className='flex items-center mt-5 mb-4'>
           <ion-icon name="arrow-back-outline"></ion-icon>
           <span className='ml-2'>Go Back</span>
         </button>
-        <div>
+        {/* <div>
           <Button className="rounded-none">Edit</Button>
-        </div>
+        </div> */}
       </div>
 
       {/* <div className='flex items-center justify-start mb-3 border-b'>

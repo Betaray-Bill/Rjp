@@ -24,7 +24,8 @@ router.put("/updateCheckList/:projectId", authEmployeeMiddleware, authorizeRole(
 router.put("/updateClientCall/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), isClientCallDone)
 router.put("/purchaseOrder/:projectId/trainer/:trainerId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), uploadPOUrl_Trainer)
 router.put("/save-purchaseOrder/:projectId/trainer/:trainerId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts", "Finance"]), savePurchaseOrder)
-    // router.put("/purchaseOrder/:projectId/trainer/:trainerId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), upload_Invoice_Url_Trainer)
+
+// router.put("/purchaseOrder/:projectId/trainer/:trainerId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), upload_Invoice_Url_Trainer)
 
 // upload_Invoice_Url_Trainer
 
