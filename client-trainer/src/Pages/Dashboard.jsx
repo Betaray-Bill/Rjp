@@ -21,7 +21,7 @@
         <p className='text-md text-gray-700 mt-4 pb-[-2] font-semibold'>Dashboard</p>
         {/* Calendar Only for the Internal Trainers */}
           {   
-              user?.trainingDetails.trainerType === 'Internal' ? 
+              user?.trainingDetails.trainerType == 'Internal' ? 
                 <Fragment>
                   <div className='w-[90vw] lg:w-[80vw]  bg-white rounded-md border mt-6 border-generalBorderColor'>
                     <div className="border-b mt-4 pb-4">

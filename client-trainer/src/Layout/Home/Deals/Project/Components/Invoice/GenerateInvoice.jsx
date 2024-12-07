@@ -72,7 +72,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
                         <Button onClick={handleSendToRJP}>Save and Send</Button>
                     </div> */}
                 <div className='flex items-center justify-between'>
-                    <div className='text-red-700'>
+                    <div className='text-red-600'>
                         *Download and Re-upload the Invoice with your signature on the bottom.*
                     </div>
                     <div className='flex items-end justify-end my-8'>
@@ -398,8 +398,8 @@ function GenerateInvoice({purchaseOrder, formData, inVoice}) {
                     </p>
                     <p>IFSC Code : {user.bankDetails.bankIFSCCode}
                     </p>
-                    <p>MICR No: 600240013
-                    </p>
+                        {/* <p>MICR No: 600240013
+                        </p> */}
 
                 </div>
 

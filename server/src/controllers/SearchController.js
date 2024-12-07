@@ -56,30 +56,47 @@ const buildProjectStage = (domain, minPrice, maxPrice, mode, type, startDate, en
             },
         });
     }
+    console.log(conditions)
+        // return [
+        //     // ...projectStages,
+        //     {
+        //         $project: {
+        //             trainingDomain: {
+        //                 $filter: {
+        //                     input: "$trainingDomain",
+        //                     as: "td",
+        //                     cond: { $and: conditions },
+        //                 },
+        //             },
+        //             generalDetails: 1,
+        //             trainerId: 1,
+        //             // trainingDomain: 1,
+        //             filteredProjects: 1,
+        //         },
+        //     },
+        // ];
 
-    return [
-        ...projectStages,
-        {
-            $project: {
-                trainingDomain: {
-                    $filter: {
-                        input: "$trainingDomain",
-                        as: "td",
-                        cond: { $and: conditions },
-                    },
+
+    return {
+        // ...projectStages,
+        $project: {
+            trainingDomain: {
+                $filter: {
+                    input: "$trainingDomain",
+                    as: "td",
+                    cond: { $and: conditions },
                 },
-                generalDetails: 1,
-                trainerId: 1,
-                filteredProjects: 1,
             },
+            generalDetails: 1,
+            trainerId: 1,
         },
-    ];
+    };
 };
 
 // Search Function
 const searchTrainer = asyncHandler(async(req, res) => {
     const { domain, price, mode, type, startDate, endDate } = req.query;
-
+    console.log(req.query)
     try {
         let minPrice, maxPrice;
         if (price) {
@@ -103,10 +120,20 @@ const searchTrainer = asyncHandler(async(req, res) => {
         }
 
         // Add the project stages to the pipeline
-        pipeline.push(...buildProjectStage(domain, minPrice, maxPrice, mode, type, startDate, endDate));
+        let a = buildProjectStage(domain, minPrice, maxPrice, mode, type, startDate, endDate)
+        console.log(a)
+        pipeline.push(a);
+
+        pipeline.push({
+            $match: {
+                trainingDomain: { $ne: [] }
+            },
+
+        })
 
         // Execute the pipeline
         const result = await Trainer.aggregate(pipeline);
+        // console.log(result)
 
         if (!result.length) {
             return res.status(200).json({ message: "No trainers found matching the criteria" });

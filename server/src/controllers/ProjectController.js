@@ -767,6 +767,8 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
                 .json({ message: "Project not found for the trainer" });
         }
 
+        // Check if the Trainer can view the PO yet 
+
         const projects = await Project
             .findById(projectId)
             .select('projectName company.name trainers domain modeOfTraining trainingDates')
@@ -872,6 +874,7 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
                 console.log("Trainer found", project.trainers[i].trainer)
                 project.trainers[i].isClientCallDone = true
                 project.trainers[i].purchaseOrder.url = req.body.url
+                project.trainers[i].purchaseOrder.canSend = false
                 project.trainers[i].purchaseOrder.name = req.body.name
                 project.trainers[i].purchaseOrder.time = new Date()
                 project.trainers[i].purchaseOrder.details.description = req.body.description

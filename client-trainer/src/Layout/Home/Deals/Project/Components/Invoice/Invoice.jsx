@@ -62,6 +62,12 @@ function Invoice({purchaseOrder, projectName, inVoice}) {
             </div>
 
             {showInvoice && <div className='mt-4'>
+                
+                <div className='grid place-items-end'>
+                    <Button onClick={() => setShowInvoice(false)}
+                        className="rounded-none bg-white text-red-600 border hover:bg-red-600 border-red-600 hover:text-white"
+                    >Close</Button>
+                </div>
                 <GenerateInvoiceForm inVoice={inVoice} purchaseOrder={purchaseOrder}/>
             </div>
 }
