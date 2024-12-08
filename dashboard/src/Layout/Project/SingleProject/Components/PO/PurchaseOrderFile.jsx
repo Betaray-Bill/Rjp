@@ -21,6 +21,7 @@ function PurchaseOrderFile({
     id,
     projectName,
     address,
+    poNumber,
     terms,
     type,
     trainerGST,
@@ -31,91 +32,6 @@ function PurchaseOrderFile({
     // JavaScript program to convert number into words by breaking it into groups of
     // three
 
-    function convertToWords(n) {
-        console.log(n)
-        if (n === 0) 
-            return "Zero";
-        
-        // Words for numbers 0 to 19
-        const units = [
-            "",
-            "One",
-            "Two",
-            "Three",
-            "Four",
-            "Five",
-            "Six",
-            "Seven",
-            "Eight",
-            "Nine",
-            "Ten",
-            "Eleven",
-            "Twelve",
-            "Thirteen",
-            "Fourteen",
-            "Fifteen",
-            "Sixteen",
-            "Seventeen",
-            "Eighteen",
-            "Nineteen"
-        ];
-
-        // Words for numbers multiple of 10
-        const tens = [
-            "",
-            "",
-            "Twenty",
-            "Thirty",
-            "Forty",
-            "Fifty",
-            "Sixty",
-            "Seventy",
-            "Eighty",
-            "Ninety"
-        ];
-
-        const multiplier = ["", "Thousand", "Million", "Billion"];
-
-        let res = "";
-        let group = 0;
-
-        // Process number in group of 1000s
-        while (n > 0) {
-            if (n % 1000 !== 0) {
-
-                let value = n % 1000;
-                let temp = "";
-
-                // Handle 3 digit number
-                if (value >= 100) {
-                    temp = units[Math.floor(value / 100)] + " Hundred ";
-                    value %= 100;
-                }
-
-                // Handle 2 digit number
-                if (value >= 20) {
-                    temp += tens[Math.floor(value / 10)] + " ";
-                    value %= 10;
-                }
-
-                // Handle unit number
-                if (value > 0) {
-                    temp += units[value] + " ";
-                }
-
-                // Add the multiplier according to the group
-                temp += multiplier[group] + " ";
-
-                // Add the result of this group to overall result
-                res = temp + res;
-            }
-            n = Math.floor(n / 1000);
-            group++;
-        }
-        console.log(res)
-        // Remove trailing space
-        return res.trim();
-    }
 
     // const n = 2147483647;
     // console.log(convertToWords(n));
@@ -128,7 +44,7 @@ function PurchaseOrderFile({
     const projectId = useParams()
     // check if thr GST is TN or NOT
     const [isTNGST,
-        setisTNGST] = useState(trainerGST.startsWith("33"))
+        setisTNGST] = useState(trainerGST && trainerGST.startsWith("33"))
         const {currentUser} = useSelector(state => state.auth)
 
     const poRef = useRef();
@@ -138,7 +54,7 @@ function PurchaseOrderFile({
             try {
                 // console.log(a)
                 const content = poRef.current.outerHTML;
-                console.log(content)
+                // console.log(content)
                 // Create a blob from the content
                 // const blob = new Blob([content], {type: "application/pdf"});
                 // var u = URL.createObjectURL(blob);
@@ -163,14 +79,22 @@ function PurchaseOrderFile({
                 // (uploadResult.status == 200) {
                 console.log("URL got success");
                 // Update the message with the uploaded file URL
+                console.log("TablesROws ", tableRows)
                 const data = {
                     // url:res.url,
                     name: `${name} - Purchase Order`,
-                    description: tableRows,
-                    type: type,
-                    terms: terms
+                    details: {
+                        description: tableRows,
+                        type: type,
+                        terms: terms
+
+                    },
+                    // type: type,
+                    poNumber:Number(poNumber),
+                    // terms: terms
                 }
                 console.log(data)
+
                 // console.log(data)
                 const response = await axios.put(`http://localhost:5000/api/project/save-purchaseOrder/${projectId.projectId}/trainer/${id}`, {
                     ...data
@@ -418,8 +342,8 @@ function PurchaseOrderFile({
                             </tr>
                         </thead>
                         <tbody>
-                            {tableRows.map((row, index) => (
-                                <tr key={row.id}>
+                            {tableRows?.map((row, index) => (
+                                <tr key={index}>
                                     <td className="border border-gray-300 px-4 py-2 text-center">
                                         {index + 1}
                                     </td>
@@ -502,7 +426,7 @@ function PurchaseOrderFile({
                             Terms of Payments: {/* <br/> */}
                         </p>
                         <p className='text-sm'>1.) GST additional as applicable</p>
-                        {terms.map((term, i) => (
+                        {terms?.map((term, i) => (
                             <p className='text-sm' key={i}>
                                 {i + 2}.) {term}
                             </p>

@@ -247,7 +247,7 @@ function Notes({projectName, projectId}) {
                         ? <div
                                 className='min-h-[100px]     max-h-[80vh] h-max relative scroll-m-1 overflow-y-scroll  rounded-t-md shadow-sm border p-3'>
                                 {data && data.map((e, index) => (
-                                    <div>
+                                    <div key={index}>
                                         <div className='text-center my-2'>
                                             <h2 className='font-semibold'>{e.date}</h2>
                                         </div>

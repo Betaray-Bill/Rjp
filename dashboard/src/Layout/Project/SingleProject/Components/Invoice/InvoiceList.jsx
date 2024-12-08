@@ -10,7 +10,7 @@ function InvoiceList({trainers, projectName}) {
 
             {/* Trainers */}
             {trainers && trainers.map((trainer, index) => (
-                <div className='flex items-center justify-between py-3 border-b'>
+                <div className='flex items-center justify-between py-3 border-b' key={index}>
                     <div className='flex items-center'>
                         <span>{index + 1}.)</span>
                         <p className='ml-2'>{trainer.trainer.generalDetails.name}</p>

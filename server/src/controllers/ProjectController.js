@@ -181,8 +181,8 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
                     .select('Projects')
                     .populate({
                         path: 'Projects',
-                        select: 'projectName domain company.name  projectOwner  contactDetails' +
-                            '.email trainingDates', // Only fetch the 'name' field from each employee
+                        select: 'projectName domain company.name  projectOwner  contactDetails.email trainingDate' +
+                            's', // Only fetch the 'name' field from each employee
                         // },
                     })
                     .populate({
@@ -322,7 +322,7 @@ const getProject = asyncHandler(async(req, res) => {
             // projectOwner: {  name: { $arrayElemAt: ["$$project.projectOwnerDetails.name",
             // 0] }, email: {       $arrayElemAt:
             // ["$$project.projectOwnerDetails.contactDetails.email", 0]                 },
-            //                         phone: { $arrayElemAt:
+            //                        phone: { $arrayElemAt:
             // ["$$project.projectOwnerDetails.contactDetails.phone", 0]           } }   }
             // // } //                     } // } //   } //         } //     } // }]);
             const pipelines = await Pipeline.find({}, "stages").populate({
@@ -431,8 +431,7 @@ const updateStage = asyncHandler(async(req, res) => {
     const { projectId } = req.params;
     const { stageName } = req.body;
     console.log("StageName ", stageName)
-    const projects = await Project
-        .findById(projectId)
+    const projects = await Project.findById(projectId)
     console.log(projects)
     const session = await Project.startSession(); // Use a session for transaction
     session.startTransaction();
@@ -767,7 +766,7 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
                 .json({ message: "Project not found for the trainer" });
         }
 
-        // Check if the Trainer can view the PO yet 
+        // Check if the Trainer can view the PO yet
 
         const projects = await Project
             .findById(projectId)
@@ -775,7 +774,7 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
             .populate({ path: 'projectOwner', select: 'name email' })
             .lean();
         console.log(projects)
-            // projects.trainers 
+            // projects.trainers
         let a = projects
             .trainers
             .filter(trainer => trainer.trainer.equals(trainerId));
@@ -783,7 +782,10 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
         projects.trainers = a.map(trainer => {
             if (trainer.purchaseOrder && trainer.purchaseOrder.canSend === false) {
                 // Remove the purchaseOrder object if canSend is false
-                const { purchaseOrder, ...rest } = trainer;
+                const {
+                    purchaseOrder,
+                    ...rest
+                } = trainer;
                 return rest;
             } else {
                 return trainer
@@ -791,12 +793,8 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
             return trainer;
         });
 
-        // if(a.length > 0) {
-        //     if(a[0].purchaseOrder.canSend === true){
-        //         let details = [...]
-        //     }
-        // }
-        // console.log(object)
+        // if(a.length > 0) {     if(a[0].purchaseOrder.canSend === true){         let
+        // details = [...]     } } console.log(object)
         res
             .status(200)
             .json({ project: projects })
@@ -852,7 +850,6 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
 
 })
 
-
 // Save PO in the DB, doesn't send the PO
 const savePurchaseOrder = asyncHandler(async(req, res) => {
     const { trainerId } = req.params;
@@ -866,33 +863,81 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
 
     try {
         const project = await Project.findById(projectId)
-            // console.log(project)
+            // console.log(project) Find the trainer
+        const trainer = project
+            .trainers
+            .find((t) => t.trainer.toString() === trainerId);
 
-        for (let i = 0; i < project.trainers.length; i++) {
-            console.log(project.trainers[i])
-            if (project.trainers[i].trainer.toString() === trainerId) {
-                console.log("Trainer found", project.trainers[i].trainer)
-                project.trainers[i].isClientCallDone = true
-                project.trainers[i].purchaseOrder.url = req.body.url
-                project.trainers[i].purchaseOrder.canSend = false
-                project.trainers[i].purchaseOrder.name = req.body.name
-                project.trainers[i].purchaseOrder.time = new Date()
-                project.trainers[i].purchaseOrder.details.description = req.body.description
-                project.trainers[i].purchaseOrder.details.type = req.body.type
-                project.trainers[i].purchaseOrder.details.terms = req.body.terms
-
-                await project.save()
-
-                break
-            }
+        if (!trainer) {
+            return res
+                .status(404)
+                .json({ message: "Trainer not found in the project" });
         }
+
+        // Check if the purchaseOrder index exists if
+        // (!trainer.purchaseOrder[req.body.poNumber]) {     return res
+        // .status(404)         .json({ message: `Purchase Order with index ${
+        // req.body.poNumber} not found` }); } Check if purchaseOrder exists, if not
+        // initialize it
+        if (!trainer.purchaseOrder) {
+            trainer.purchaseOrder = [];
+        }
+
+        // Update the specific purchase order
+        if (!trainer.purchaseOrder[req.body.poNumber]) {
+            // Add a new entry if the index doesn't exist
+            trainer.purchaseOrder[req.body.poNumber] = {
+                poNumber: req.body.poNumber,
+                name: req.body.name,
+                time: new Date(),
+                details: {
+                    description: req.body.details.description,
+                    type: req.body.details.type,
+                    terms: req.body.details.terms
+                }
+            };
+        } else {
+            const purchaseOrder = trainer.purchaseOrder[req.body.poNumber];
+            purchaseOrder.canSend = false;
+            purchaseOrder.poNumber = req.body.poNumber;
+            purchaseOrder.name = req.body.name;
+            purchaseOrder.time = new Date();
+            purchaseOrder.details = {
+                description: req.body.details.description,
+                type: req.body.details.type,
+                terms: req.body.details.terms
+            };
+        }
+        // console.log(purchaseOrder)
+
+        // Save the updated project
+        await project.save();
+
+        // for (let i = 0; i < project.trainers.length; i++) {
+        // console.log(project.trainers[i])     if
+        // (project.trainers[i].trainer.toString() === trainerId) {
+        // console.log("Trainer found", project.trainers[i].trainer)             //
+        // project.trainers[i].isClientCallDone = true             //
+        // project.trainers[i].purchaseOrder.url = req.body.url         for (let j = 0;
+        // i < project.trainers[j].purchaseOrder.length; j++) {             if (j ==
+        // req.body.poNumber) {
+        // project.trainers[i].purchaseOrder[j].canSend = false
+        // project.trainers[i].purchaseOrder[j].poNumber = req.body.poNumber
+        //     project.trainers[i].purchaseOrder[j].name = req.body.name
+        // project.trainers[i].purchaseOrder[j].time = new Date()
+        // project.trainers[i].purchaseOrder[j].details.description =
+        // req.body.details.description
+        // project.trainers[i].purchaseOrder[j].details.type = req.body.details.type
+        //             project.trainers[i].purchaseOrder[j].details.terms =
+        // req.body.details.terms             }         }         await project.save()
+        //       break     } }
         res.json({ message: " Done" });
 
     } catch (err) {
         console.log(err)
         return res
             .status(500)
-            .json({ message: "Error uploading file URL." });
+            .json({ message: "Error uploading PO" });
     }
 
 })
@@ -938,7 +983,6 @@ const upload_Invoice_Url_Trainer = asyncHandler(async(req, res) => {
     }
 
 })
-
 
 // Invoice Upload to the
 const upload_Invoice_Content_Trainer = asyncHandler(async(req, res) => {

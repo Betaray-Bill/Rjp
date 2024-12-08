@@ -95,7 +95,8 @@ const projectSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Resume'
         },
-        purchaseOrder: {
+        purchaseOrder: [{
+            poNumber: Number,
             canSend: {
                 type: Boolean,
                 default: false
@@ -133,12 +134,12 @@ const projectSchema = new mongoose.Schema({
                     type: String
                 }]
             }
-        },
+        }],
         isClientCallDone: {
             type: Boolean,
             default: false, // Default to `false`
         },
-        inVoice: {
+        inVoice: [{
             isInvoice: {
                 type: Boolean,
                 default: false
@@ -152,7 +153,7 @@ const projectSchema = new mongoose.Schema({
             inVoiceDate: {
                 type: String
             }
-        }
+        }]
     }],
     notes: [notesSchema],
     stages: {

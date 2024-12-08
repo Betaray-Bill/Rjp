@@ -43,7 +43,7 @@ function App() {
         <Route path='/' index element={<Navigate to="/home/dashboard" replace />}></Route>
         <Route path='/home' index element={<Navigate to="/home/dashboard" replace />}></Route>
 
-        {/* <Route path='/home/resume' index element={<Navigate to="/home/resume/:id" replace />}></Route> */}
+        <Route path='/home/resume' index element={<Navigate to="/home/resume/:id" replace />}></Route>
      
         {/* Protected Routes */}
         <Route element={<ProtectedRoute/> }>

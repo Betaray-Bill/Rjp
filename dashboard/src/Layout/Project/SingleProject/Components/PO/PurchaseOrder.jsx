@@ -23,7 +23,9 @@ function PurchaseOrder({
     trainerGST,
     isPurchased,
     name,
+    poNumber,
     id,
+    po,
     trainerPAN,
     address,
     projectName
@@ -42,14 +44,13 @@ function PurchaseOrder({
         setTerms] = useState([])
     const [task,
         setTask] = useState([])
-
+        console.log(po)
     useEffect(() => {
         if (isPurchased) {
             // alert("meow")
-            setTableRows(isPurchased.description)
-            setType(isPurchased.type)
-            setTerms(isPurchased
-                ?.terms)
+            setTableRows(po.details.description)
+            setType(po?.details.type)
+            setTerms(po?.details.terms)
         }
     }, [])
 
@@ -61,7 +62,7 @@ function PurchaseOrder({
         setTask("")
     };
 
-    console.log(terms)
+    console.log(tableRows)
 
     // Handle form input change
     const handleChange = (e) => {
@@ -122,7 +123,7 @@ function PurchaseOrder({
     return (
         <div className='border my-5 rounded-md px-4 drop-shadow-sm'>
             <div className='my-4 font-semibold'>
-                Purchase Order for trainers
+                Purchase Order for trainers 
             </div>
 
             {/* FORM */}
@@ -188,12 +189,11 @@ function PurchaseOrder({
                                 : "Add Description"}
                         </Button>
 
-                        {/* Display List */}
 
                         <div className='my-4 '>
                             <h2>Description List
                             </h2>
-                            {tableRows.length > 0 && tableRows.map((row, index) => (
+                            {tableRows?.length > 0 && tableRows.map((row, index) => (
                                 <div className='flex items-start justify-between'>
                                     <div key={index} className="flex items-start flex-col justify-between my-3">
                                         <div className="flex items-start">
@@ -233,18 +233,29 @@ function PurchaseOrder({
                     Add Terms
                 </Button>
             </div>
+            <div>
+                <ul>
+                    {
+                        po.details.terms?.length > 0 && po.details.terms?.map((e, i) => (
+                            <li key={i}>{e}</li>
+                        ))
+                    }
+                </ul>
+            </div>
 
             <PurchaseOrderFile
                 id={id}
                 projectName={projectName}
-                name
-                ={name}
+                name ={name}
                 isPurchased={isPurchased}
                 terms={terms}
                 type={type}
                 tableRows={tableRows}
                 trainerGST={trainerGST}
-                trainerPAN={trainerPAN}address={address}/>
+                trainerPAN={trainerPAN}
+                address={address}
+                poNumber={poNumber}
+            />
 
         </div>
     )

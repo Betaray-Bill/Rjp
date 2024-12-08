@@ -21,9 +21,23 @@ function ResumeForm({data}) {
     const queryClient =useQueryClient()
   const {toast} = useToast()
 
+  const [resume, setResume] = useState({
+    professionalSummary: [],
+    technicalSkills: [],
+    careerHistory: [],
+    certifications: [],
+    education: [],
+    trainingsDelivered: [],
+    clientele: [],
+    experience: [],
+    trainingName:""
+  })
   
   useEffect(() => {
     // checkConnection();
+    if(user.resumeVersion.length>0){
+        setResume(user.resumeVersion[0])
+    }
   }, []);
   
   const [connectionStatus, setConnectionStatus] = useState("");
@@ -43,17 +57,6 @@ function ResumeForm({data}) {
 
 //   console.log(resume)
 
-  const [resume, setResume] = useState({
-    professionalSummary: [],
-    technicalSkills: [],
-    careerHistory: [],
-    certifications: [],
-    education: [],
-    trainingsDelivered: [],
-    clientele: [],
-    experience: [],
-    trainingName:""
-  })
   console.log(resume)
 
   useEffect(() => {
