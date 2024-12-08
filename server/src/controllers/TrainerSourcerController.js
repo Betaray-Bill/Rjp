@@ -10,14 +10,13 @@ import Admin from "../models/RoleModels/AdminModel.js";
 import bcrypt from "bcryptjs";
 import argon2 from 'argon2';
 
-
 const endpoint = process.env.AZURE_ENDPOINT;
 const apiKey = process.env.AZURE_API_KEY;
 const modelId = process.env.MODEL_ID;
 
 // Register Trainer - Create a new Trainer POST - /register
 const registerTrainer = asyncHandler(async(req, res) => {
-    // console.log(req.body);
+    console.log(req.body);
     const trainerId = req.params.trainerId
     try {
         // check if he already registered const existingTrainer = await
@@ -25,22 +24,26 @@ const registerTrainer = asyncHandler(async(req, res) => {
         // (existingTrainer) {     return res.status(400).json({ message: "Trainer
         // already registered" }); } Register the Main Resume and get its Id from its
         // collections
-        const mainResume = new Resume({
-            professionalSummary: req.body.mainResume.professionalSummary,
-            technicalSkills: req.body.mainResume.technicalSkills,
-            careerHistory: req.body.mainResume.careerHistory,
-            certifications: req.body.mainResume.certifications,
-            education: req.body.mainResume.education,
-            trainingsDelivered: req.body.mainResume.trainingsDelivered,
-            clientele: req.body.mainResume.clientele,
-            experience: req.body.mainResume.experience,
+        let resumeId
+        if (req.body.mainResume && req.body.mainResume.technicalSkills.length > 0) {
+            const mainResume = new Resume({
+                professionalSummary: req.body.mainResume.professionalSummary,
+                technicalSkills: req.body.mainResume.technicalSkills,
+                careerHistory: req.body.mainResume.careerHistory,
+                certifications: req.body.mainResume.certifications,
+                education: req.body.mainResume.education,
+                trainingsDelivered: req.body.mainResume.trainingsDelivered,
+                clientele: req.body.mainResume.clientele,
+                experience: req.body.mainResume.experience,
+                domain: req.body.mainResume.trainingName ?
+                    req.body.mainResume.trainingName : "Main Resume",
+                isMainResume: true
+            })
+            await mainResume.save()
 
-            trainingName: req.body.mainResume.trainingName ?
-                req.body.mainResume.trainingName : "Main Resume",
-            isMainResume: true
-        })
-        await mainResume.save()
+            resumeId = mainResume._id
 
+        }
         // Hash Password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.generalDetails.dateOfBirth, salt);
@@ -84,11 +87,13 @@ const registerTrainer = asyncHandler(async(req, res) => {
                 .trainingDomain
                 .map(domain => ({
                     domain: domain.domain,
-                    price: Number(domain.price) ? Number(domain.price) : Number(),
-                    paymentSession: domain.paymentSession !== "" ? domain.paymentSession : "",
+                    price: Number(domain.price) ?
+                        Number(domain.price) : Number(),
+                    paymentSession: domain.paymentSession !== "" ?
+                        domain.paymentSession : "",
                     type: domain.type
                 })),
-            resumeVersion: [mainResume._id],
+            resumeVersion: resumeId ? [] : [resumeId],
             trainer_sourcer: trainerId,
             isFirstLogin: true,
             ndaAccepted: req.body.trainingDetails.trainerType === "Internal" ?
@@ -101,11 +106,14 @@ const registerTrainer = asyncHandler(async(req, res) => {
         // Save the trainer to the database
         await trainer.save();
 
-        // get the Trainer Id and save it in the resume version docs
-        const resume = await Resume.findByIdAndUpdate(mainResume._id, {
-            trainer_id: trainer._id
-        }, { new: true });
-        await resume.save()
+        if (resumeId) {
+
+            // get the Trainer Id and save it in the resume version docs
+            const resume = await Resume.findByIdAndUpdate(mainResume._id, {
+                trainer_id: trainer._id
+            }, { new: true });
+            await resume.save()
+        }
 
         // save the Trainers Id in the trainer Sourcer's Docs
         const emp = await Employee.findById(trainerId)
@@ -242,25 +250,26 @@ const uploadResumeToAzureAndExtractText = asyncHandler(async(req, res) => {
 
 //Send PO to the Trainer for the respective deal Generate Unique Id
 const generateTrainerId = async() => {
-    // let trainerId;
-    // let existingTrainer;
-
-    // do {
-    //     trainerId = Math.floor(1000 + Math.random() * 9000).toString(); // Generate 4-digit random ID
-    //     existingTrainer = await Trainer.findOne({ trainerId: trainerId });
-    // } while (existingTrainer); // Loop until a unique ID is found
+    // let trainerId; let existingTrainer; do {     trainerId = Math.floor(1000 +
+    // Math.random() * 9000).toString(); // Generate 4-digit random ID
+    // existingTrainer = await Trainer.findOne({ trainerId: trainerId }); } while
+    // (existingTrainer); // Loop until a unique ID is found
     const prefix = "RJP";
     let newId;
-    const trainers = await Trainer.find({})
+    const trainers = await Trainer
+        .find({})
         .sort({ createdAt: -1 }) // Sort by `createdAt` in descending order
-        .limit(1).select('trainerId');
+        .limit(1)
+        .select('trainerId');
     console.log(trainers)
     if (trainers === undefined || trainers === null || trainers.length == 0) {
         newId = "0001";
     } else {
         const lastId = trainers[0].trainerId;
         const numericPart = parseInt(lastId.split('P')[1], 10); // Extract numeric part after 'RJP'
-        newId = (numericPart + 1).toString().padStart(4, "0"); // Increment and pad to 4 digits
+        newId = (numericPart + 1)
+            .toString()
+            .padStart(4, "0"); // Increment and pad to 4 digits
     }
 
     const trainerId = prefix + newId;
@@ -275,6 +284,7 @@ const generateTrainerId = async() => {
 const updateResume = asyncHandler(async(req, res) => {
     const { trainer_id } = req.params;
     // Check if the trainer exits
+    console.log(trainer_id)
     const trainer = await Trainer.findById(trainer_id);
     if (!trainer) {
         return res
@@ -283,6 +293,7 @@ const updateResume = asyncHandler(async(req, res) => {
     }
     // Get the Resume Id
     const { resume_id } = req.params;
+    console.log(resume_id)
     try {
         // Update the Resume Field
         const updateResume = await Resume.findByIdAndUpdate(resume_id, {
@@ -333,21 +344,38 @@ const getTrainerByEmpId = asyncHandler(async(req, res) => {
         for (let i = 0; i < Emp.role.length; i++) {
             console.log(Emp.role[i].name)
             if (Emp.role[i].name === 'Trainer Sourcer') {
-                const trainers = await TrainerSourcer.findById(Emp.role[i].roleId).populate('registeredTrainers').select('registeredTrainers')
+                const trainers = await TrainerSourcer
+                    .findById(Emp.role[i].roleId)
+                    .populate('registeredTrainers')
+                    .select('registeredTrainers')
                     // Return the Result
                 res
                     .status(201)
-                    .json({ message: 'Trainer Fetched successfully', trainers: trainers.registeredTrainers.slice(startIndex, endIndex), success: true, trainersTotals: trainers.registeredTrainers.length });
+                    .json({
+                        message: 'Trainer Fetched successfully',
+                        trainers: trainers
+                            .registeredTrainers
+                            .slice(startIndex, endIndex),
+                        success: true,
+                        trainersTotals: trainers.registeredTrainers.length
+                    });
 
             }
 
             if (Emp.role[i].name == 'ADMIN') {
-                const trainers = await Trainer.find().select("generalDetails trainerId trainingDetails")
+                const trainers = await Trainer
+                    .find()
+                    .select("generalDetails trainerId trainingDetails")
 
                 // Return the Result
                 res
                     .status(201)
-                    .json({ message: 'Trainer Fetched successfully', trainers: trainers.slice(startIndex, endIndex), success: true, trainersTotals: trainers.length });
+                    .json({
+                        message: 'Trainer Fetched successfully',
+                        trainers: trainers.slice(startIndex, endIndex),
+                        success: true,
+                        trainersTotals: trainers.length
+                    });
 
             }
         }

@@ -56,9 +56,17 @@ function Home() {
         dispatch(setCredentials(res.data))
         return res.data;
     };
-    const {data, isLoading, isError} = useQuery([
-        "user", user._id
-    ], fetchUser);
+ 
+    const {data, refetch, isLoading} = useQuery({
+        queryKey: [
+            "user", user._id,
+        ],
+        queryFn: fetchUser,
+        enabled:!!user._id,
+        staleTime: 1000 * 60 * 5, // data stays    fresh for 5 minutes
+        cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
+
+    });
 
     axios.defaults.withCredentials = true;
     const handleNdaSubmit = async() => {
@@ -119,7 +127,7 @@ function Home() {
                                 <span className='ml-3'>Home</span>
                             </Link>
                             <Link
-                                to="/home/resume/main"
+                                to="/home/resume"
                                 className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md ${isResume
                                 ? 'bg-primaryBgActive font-medium text-md'
                                 : 'bg-white'}`}>
@@ -189,7 +197,7 @@ function Home() {
                                 <span className='ml-3'>Home</span>
                             </Link>
                             <Link
-                                to="/home/resume/main"
+                                to="/home/resume"
                                 className={`pt-2 pb-2 mt-2 pl-2 rounded-sm flex items-center text-md ${isResume
                                 ? 'bg-primaryBgActive font-medium text-md'
                                 : 'bg-white'}`}>

@@ -37,7 +37,7 @@ const initialState = {
         file_url: '',
         trainingName: ''
     },
-    currentResumeName: "Main Resume",
+    currentResumeName: "",
     downloadResume: false,
     downloadResumeName: ""
 };

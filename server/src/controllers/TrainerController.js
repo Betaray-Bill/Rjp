@@ -130,6 +130,61 @@ const addTrainingDates = asyncHandler(async(req, res) => {
         .json({ message: "Training dates added successfully", trainer: trainer });
 })
 
+
+// Make a copy of the resume - Create a New Resume By the Trainer
+const addMainResume = asyncHandler(async(req, res) => {
+    const { id } = req.params;
+    console.log("Trainer Id", id)
+    console.log(req.body)
+
+    // Check if the trainer exits
+    const trainer = await Trainer.findById(id);
+    if (!trainer) {
+        return res
+            .status(404)
+            .json({ message: "Trainer not found" });
+    }
+
+    try {
+
+        // Create A new docs for this resume - save it in the trainers profile
+        const resume = new Resume({
+            professionalSummary: req.body.professionalSummary,
+            technicalSkills: req.body.technicalSkills,
+            careerHistory: req.body.careerHistory,
+            certifications: req.body.certifications,
+            education: req.body.education,
+            trainingsDelivered: req.body.trainingsDelivered,
+            clientele: req.body.clientele,
+            experience: req.body.experience,
+            domain: req.body.domain,
+            trainer_id: id,
+            // trainingName: {     name: req.body.trainingName.name,     project:
+            // req.body.trainingName._id },
+            // projects: req.body.projects._id,
+            isMainResume: true
+        })
+        await resume.save()
+
+        // Save the resume to the trainer profile
+        await trainer
+            .resumeVersion
+            .push(resume._id);
+        await trainer.save();
+
+        res
+            .status(200)
+            .json({ message: "Resume copy created successfully", resume });
+
+    } catch (err) {
+        console.error("Error creating resume copy:", err);
+        res
+            .status(500)
+            .json({ error: "Internal server error" });
+    }
+})
+
+
 // Make a copy of the resume - Create a New Resume By the Trainer
 const resumeCopy = asyncHandler(async(req, res) => {
     const { id } = req.params;
@@ -406,5 +461,6 @@ export {
     getResumeById,
     lockResume,
     // updateData,
+    addMainResume,
     resetPassword
 }

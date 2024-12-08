@@ -74,7 +74,7 @@ const trainerSchema = mongoose.Schema({
         },
         phoneNumber: {
             type: String,
-            required: true
+            // required: true
         },
         whatsappNumber: {
             type: String
@@ -114,15 +114,15 @@ const trainerSchema = mongoose.Schema({
     bankDetails: {
         accountName: {
             type: String,
-            required: true
+            // required: true
         },
         accountNumber: {
             type: String,
-            required: true
+            // required: true
         },
         bankName: {
             type: String,
-            required: true
+            // required: true
         },
         bankBranch: {
             type: String
@@ -155,7 +155,7 @@ const trainerSchema = mongoose.Schema({
             // enum: [
             //     'Internal', 'External'
             // ],
-            required: true
+            // required: true
         },
         modeOfTraining: {
             type: String

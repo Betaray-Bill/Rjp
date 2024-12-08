@@ -170,7 +170,7 @@ function ViewTrainingDomain({data, trainingType}) {
 
     return (
         <div className='mb-6 grid place-content-center items-center'>
-            <div className='flex justify-between'>
+            <div className='flex justify-between w-[80vw]'>
                 <h2 className='text-slate-700 grid place-content-center items-center text-lg py-4 pt-2 font-semibold'>Training Domains</h2>
                 <div>
                     {
@@ -331,7 +331,7 @@ function ViewTrainingDomain({data, trainingType}) {
                         </Command>
                     </PopoverContent>
                 </Popover>
-            </div>
+                </div>
 
              }
 

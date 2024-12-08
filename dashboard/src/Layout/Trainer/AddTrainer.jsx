@@ -20,7 +20,7 @@ const AddTrainer = () => {
     const dispatch = useDispatch()
     const {currentUser} = useSelector(state => state.auth)
     const {trainerDetails} = useSelector(state => state.trainer)
-
+    console.log(trainerDetails)
     console.log(currentUser)
     const handleReset = () => {
         dispatch(removeResumeDetails())
@@ -70,48 +70,61 @@ const AddTrainer = () => {
         event.preventDefault();
         // console.log(formData)
         console.log("Submit Handler")
+        // if()
         try {
             console.log("1")
             console.log(trainerDetails)
-
+ 
             // UPload aadhar and pancard File and get URL
-            console.log("Checking blob connection...");
-            const result = await axios.get('http://localhost:5000/api/filestorage/check-blob-connection');
-            const response = result.data;
-            console.log("Connection check result:", response);
-
-            if (result.status == 200) {
-                console.log("File is present. Sending data to another API...");
-
-                // Call another POST API Create a FormData object to handle file upload
-                const formData = new FormData();
-                formData.append("aadharCard", trainerDetails.bankDetails.aadharCard);
-                formData.append("pancard", trainerDetails.bankDetails.pancard); 
-                console.log(trainerDetails.generalDetails.name)
-                // Additional metadata Call the POST API to upload the file
-                const uploadResult = await axios.post(`http://localhost:5000/api/filestorage/upload-aadhar-pan/trainer/${trainerDetails.generalDetails.name}`, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                });
-
-                const res = uploadResult.data
-                const data = {...trainerDetails, bankDetails:{
-                    ...trainerDetails.bankDetails, 
-                    panCard:res.panCard,
-                    aadharCard:res.aadharCard,
-                }}
-                // // Upload trainer details 
-                trainerMutation.mutate(data)
-                dispatch(removeResumeDetails()) 
+            console.log(trainerDetails.bankDetails.aadharCard, trainerDetails.bankDetails.pancard)
+            if (trainerDetails.bankDetails.aadharCard === undefined || trainerDetails.bankDetails.pancard === undefined) {
+                console.log("meow")
+                trainerMutation.mutate(trainerDetails)
+                dispatch(removeResumeDetails())
                 dispatch(resetTrainerDetails())
-            }    
+            } else {
+                console.log("Checking blob connection...");
+                const result = await axios.get('http://localhost:5000/api/filestorage/check-blob-connection');
+                const response = result.data;
+                console.log("Connection check result:", response);
 
-            navigate("/home/trainer")
+                if (result.status == 200) {
+                    console.log("File is present. Sending data to another API...");
+
+                    // Call another POST API Create a FormData object to handle file upload
+                    const formData = new FormData();
+                    formData.append("aadharCard", trainerDetails.bankDetails.aadharCard);
+                    formData.append("pancard", trainerDetails.bankDetails.pancard);
+                    console.log(trainerDetails.generalDetails.name)
+                    // Additional metadata Call the POST API to upload the file
+                    const uploadResult = await axios.post(`http://localhost:5000/api/filestorage/upload-aadhar-pan/trainer/${trainerDetails.generalDetails.name}`, formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data"
+                        }
+                    });
+
+                    const res = uploadResult.data
+                    const data = {
+                        ...trainerDetails,
+                        bankDetails: {
+                            ...trainerDetails.bankDetails,
+                            panCard: res.panCard,
+                            aadharCard: res.aadharCard
+                        }
+                    }
+                    // // Upload trainer details
+                    trainerMutation.mutate(data)
+                    dispatch(removeResumeDetails())
+                    dispatch(resetTrainerDetails())
+                }
+
+                navigate("/home/trainer")
+            }
 
         } catch (error) {
             console.log(error);
         }
+
     }
 
     return (

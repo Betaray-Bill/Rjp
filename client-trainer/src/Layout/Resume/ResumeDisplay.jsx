@@ -1,48 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import axios from 'axios'
-import { useDispatch, useSelector } from 'react-redux'
-import { setResumeDetails } from '@/features/trainerSlice'
-import { useToast } from '@/hooks/use-toast'
-import { useQueryClient } from 'react-query'
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import axios from 'axios';
+import React, { useState } from 'react'
+import { useQuery, useQueryClient } from 'react-query';
+import {useDispatch, useSelector} from 'react-redux';
+import {useParams} from 'react-router-dom';
 
+function ResumeDisplay() {
+    const params = useParams()
+    const [isEdit, setIsEdit] = useState(false)
+    console.log(params)
+    const queryClient = useQueryClient()
+    const dispatch = useDispatch()
+    const {toast} = useToast()
+    const {user} = useSelector(state => state.auth)
 
-function ResumeForm({data}) {
-  const [file, setFile] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [isEdit, setIsEdit] = useState(true)
-  const [extractedData, setExtractedData] = useState(null);
-  const [error, setError] = useState(null);
-  const {user}  = useSelector   (state => state.auth)
-    const queryClient =useQueryClient()
-  const {toast} = useToast()
-
-  
-  useEffect(() => {
-    // checkConnection();
-  }, []);
-  
-  const [connectionStatus, setConnectionStatus] = useState("");
-  const [modelStatus, setModelStatus] = useState("");
-  // const [isModelLoaded, setIsModelLoaded] = useState(false);
-
-  const checkConnection = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/resumeextractor/check-connection");
-      setConnectionStatus(response.data.message);
-      setModelStatus(response.data.modelStatus);
-    } catch (error) {
-      setConnectionStatus("Failed to connect to Azure");
-      setError(error.response ? error.response.data : error.message);
-    }
-  };
-
-//   console.log(resume)
-
+    
   const [resume, setResume] = useState({
     professionalSummary: [],
     technicalSkills: [],
@@ -54,78 +28,26 @@ function ResumeForm({data}) {
     experience: [],
     trainingName:""
   })
-  console.log(resume)
 
-  useEffect(() => {
-    if(data){
-      setResume(data)
-      setExtractedData(data)
-      setIsEdit(false)
+    const fetchResume = async(id) => {
+        return axios
+            .get(`http://localhost:5000/api/trainer/resume/${id}`)
+            .then((res) => {
+                console.log(res.data)
+                setResume(res.data)
+            });
     }
-  }, [])
 
-  const dispatch = useDispatch()
+    // Query to fetch resume data
+    const {data, isLoading, isError, error} = useQuery([
+        'resume', params.id
+    ], () => fetchResume(params.id), {
+        enabled: !!params.id
+    });
 
-  // UPloading the Resume and Extracting the Resume
-  const fileInputRef = useRef(null);
 
-  // Function to handle the button click and trigger the file input click
-  const handleButtonClick = (e) => {
-    e.preventDefault()
-    console.log("1")
-    fileInputRef.current.click();
-    console.log("2")
-  };
 
-  // Function to handle file upload
-  const handleFileChange = async(event) => {
-    const file = event.target.files[0];
-    console.log("INSIDE the file: " + file)
-    if (file) {
-      // Handle the uploaded file here
-      console.log('File uploaded:', file.name);
-      setIsLoading(true);
-
-      setFile(event.target.files[0]);
-      setError(null);
-      setExtractedData(null);
-
-      await uploadToAzure(file)
-      fileInputRef.current  = null
-    }
-  };
-
-  // Function to upload the resume to Azure and extract the data
-  const uploadToAzure = async(file) => {
-    const formData = new FormData();
-    formData.append("resume", file);
-    setIsUploading(true)
-    try {
-        checkConnection()
-      const response = await axios.post("http://localhost:5000/api/resumeextractor/upload ", formData);
-      setExtractedData(response.data);
-      console.log(response.data)
-      const newResume = {
-        professionalSummary: Array.isArray(response.data.fields.professionalSummary) ?  response.data.fields.professionalSummary : [],
-        technicalSkills: Array.isArray(response.data.fields.technicalSkills) ?  response.data.fields.technicalSkills : [],
-        careerHistory: Array.isArray(response.data.fields.careerHistory) ?  response.data.fields.careerHistory : [],
-        certifications: Array.isArray(response.data.fields.certifications) ?  response.data.fields.certifications : [],
-        education: Array.isArray(response.data.fields.education) ?  response.data.fields.education : [],
-        trainingsDelivered: Array.isArray(response.data.fields.trainingsDelivered) ?  response.data.fields.trainingsDelivered : [],
-        clientele: Array.isArray(response.data.fields.clientele) ?  response.data.fields.clientele : [],
-        experience: Array.isArray(response.data.fields.experience) ?  response.data.fields.experience : [],
-      };
-      dispatch(setResumeDetails({name: "mainResume", data: newResume}))
-      setResume(newResume)
-    } catch (error) {
-      console.error("Error extracting resume data:", error.response ? error.response.data : error.message);
-      setError(error.response ? error.response.data : error.message);
-    } finally {
-      setIsLoading(false);
-      setIsUploading(false)
-    }
-  }
-
+    
   // -----------------------Render the Resume Details Sections -------------------------------
   
   const handleChange = (e, field, index) => {
@@ -169,7 +91,7 @@ function ResumeForm({data}) {
     });
 
     console.log("Resume is ", resume)
-    dispatch(setResumeDetails({name: "mainResume", data: updateResume()}))
+    // dispatch(setResumeDetails({name: "mainResume", data: updateResume()}))
 
   };
 
@@ -207,7 +129,7 @@ function ResumeForm({data}) {
                   className='py-2 flex justify-between align-top items-start border border-gray-200 px-2 my-2 rounded-md'>
                   <Textarea
                       value=""
-                      // readOnly={isEdit}
+                    //   readOnly={!isEdit}
                       onChange={(e) => handleChange(e, fieldName, 0)}
                       placeholder={`Type your ${fieldName}`}
                       className=" text-gray-800 text-sm outline-none border-collapse border-none"/>
@@ -221,7 +143,7 @@ function ResumeForm({data}) {
             className='py-2 flex justify-between align-top items-start border    border-gray-200 p-2 my-2 rounded-md'>
             <Textarea
                 value={value}
-                // readOnly={isEdit}
+                // readOnly={!isEdit}
                 onChange={(e) => handleChange(e, fieldName, index)}
                 placeholder={`Type your ${fieldName}`}
                 className="text-gray-800 text-sm outline-none border-collapse border-none"/>
@@ -238,7 +160,7 @@ function ResumeForm({data}) {
           className='py-2 flex justify-between align-top items-start border    border-gray-200 px-2 my-2 rounded-md'>
           <Textarea
               value={fieldArray}
-              // readOnly={isEdit}
+            //   readOnly={!isEdit}
               onChange={(e) => handleChange(e, fieldName, index)}
               placeholder={`Type your ${fieldName}`}
               className="text-gray-800 text-sm outline-none border-collapse border-none h-max"/>
@@ -254,78 +176,37 @@ function ResumeForm({data}) {
     };
 
 
+    const submitResumeHandler = async(e) => {
+        e.preventDefault()
+        // http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/671f1f348706010ba634eb8f
+        // console.log(`http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/${data._id}`)
+        try{
+            console.log("object")
+            console.log(resume)
+            const r = await axios.put(`http://localhost:5000/api/trainersourcer/updateResume/${user._id}/resume/${params.id}`, resume)
+            const res= await r.data
+            console.log(res)
+            toast({
+                title:"Resume is Updated",
+                // description:`$ is Updated`
+            })
+            queryClient.invalidateQueries(['resume', params.id]);
+        }catch(e){
+            console.error(e)
+            // setError('Failed to submit the resume')
+        }
+
+    }
 
 
-        // Handle Submitting the Copy resume
-        const [isSubmit,
-            setIsSubmit] = useState(false)
-        axios.defaults.withCredentials = true;
-        const submitHandler = async(e) => {
-            e.preventDefault();
-            setIsSubmit(prev => !prev)
-    
-            console.log('Form Data Submitted:', resume);
-            // Perform API call to save form data
-            try {
-                const response = await axios.post(`http://localhost:5000/api/trainer/main-resume/${user._id}`, resume); // Replace with your API endpoint
-                console.log('Registration successful:', response.data);
-                // getTrainerDetails()
-                // setIsSubmit(prev => !prev)
-                setResume({
-                    professionalSummary: [''],
-                    technicalSkills: [''],
-                    careerHistory: [''],
-                    certifications: [''],
-                    education: [''],
-                    trainingsDelivered: [''],
-                    clientele: [''],
-                    experience: [''],
-                    file_url: '',
-                    trainingName: ''
-                })
-                toast({
-                    duration: 3000, variant: "success", title: "Submitted successfully",
-                    // description: "Click edit to take action",
-                })
-                // getTrainerDetails()
-                    // window.location.reload()
-                //   navigate("/home/resume") 
-                  queryClient.invalidateQueries(["user", user._id])
-                  //   navigate(`/home/resume/${response.data.resume._id}`) 
-                  //   setUser(response.data)
-                  window.location.reload()
-              
-                //   setUser(response.data)
-            } catch (error) {
-                console.error('Registration failed:', error);
-            }
-            setIsSubmit(prev => !prev)
-
-        };
-    
 
 
-  return ( 
-      <div className='w-[80vw] grid place-content-center'>
-        <div className='flex items-center justify-between  p-4'>
-          <h2 className='text-slate-700 text-lg py-4 font-semibold'>Resume Details</h2>
-
-          <div className="w-full max-w-sm items-center gap-1.5 hidden">
-            <Input  ref={fileInputRef} id="resume" type="file" onChange={handleFileChange} accept=".pdf,.docx" />
-          </div>
-          <div className='flex items-center justify-between'>
-            {
-              isUploading ? 
-              <img src="https://media.lordicon.com/icons/wired/outline/2-cloud-upload.gif" 
-                className='w-[30px] mx-5'
-                alt="" 
-              /> : null
-            }
-            <Button onClick={handleButtonClick} disabled={isLoading}>
-              {isLoading ? "Processing..." : "Upload Resume"}
-            </Button>
-          </div>
-        </div>
+    return (
+        <div>
+            <div className='grid place-content-end px-4 pt-3'>
+                <Button className="rounded-none  bg-blue-800"   onClick={submitResumeHandler}>Save</Button>
+   
+            </div>
         {
           isLoading ? 
           <div className="text-center grid place-content-center w-full">
@@ -450,13 +331,8 @@ function ResumeForm({data}) {
           </div>
 
         }
-            <div className='grid place-content-center my-10'>
-
-                <Button className="rounded-none" onClick={submitHandler} disabled={isSubmit}>{isSubmit ? "Submitting" : "Submit"}</Button>
-            </div>
-        
-      </div>
-  )
+        </div>
+    )
 }
 
-export default ResumeForm
+export default ResumeDisplay

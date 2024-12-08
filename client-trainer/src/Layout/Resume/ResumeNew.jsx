@@ -8,6 +8,7 @@ import axios from 'axios'
 import {setCredentials} from '@/features/authSlice'
 import {useNavigate} from 'react-router-dom'
 import {useToast} from '@/hooks/use-toast'
+import { useQueryClient } from 'react-query'
 
 function ResumeNew() {
     const {currentResumeDetails, currentResumeName} = useSelector(state => state.resume)
@@ -15,6 +16,7 @@ function ResumeNew() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const {toast} = useToast()
+    const queryClient = useQueryClient()
 
     const [currentResume,
         setCurrentResume] = useState({
@@ -42,13 +44,13 @@ function ResumeNew() {
     }
 
     useEffect(() => {
-        if (isObjectEmpty(currentResume)) {
-            setCurrentResume({
-                ...currentResumeDetails
-            })
-        }
+        // if (isObjectEmpty(currentResume)) {
+        //     setCurrentResume({
+        //         ...currentResumeDetails
+        //     })
+        // }
 
-        console.log(currentResumeDetails)
+        // console.log(currentResumeDetails)
     }, [])
 
     const handleNewResumeName = (e) => {
@@ -186,8 +188,11 @@ function ResumeNew() {
                 duration: 3000, variant: "success", title: "Submitted successfully",
                 // description: "Click edit to take action",
             })
-            getTrainerDetails()
-            //   navigate("/home/resume/main") setUser(response.data)
+            // getTrainerDetails()
+            queryClient.invalidateQueries(["user", user._id])
+            //   navigate(`/home/resume/${response.data.resume._id}`) 
+            //   setUser(response.data)
+            window.location.reload()
         } catch (error) {
             console.error('Registration failed:', error);
         }
@@ -207,14 +212,14 @@ function ResumeNew() {
     }
 
     return (
-        <div className='my-6 mb-6  bg-white rounded-md  '>
+        <div className='my-6 mb-6 p-4 bg-white rounded-md  '>
             <form className='grid grid-cols-2 items-start mt-4'>
                 <div className='py-2 my-2 rounded-md'>
                     <label htmlFor="" className='mb-2 font-semibold'>Training Name</label>
                     <Input
                         className="w-[30vw]"
                         placeholder="Training Name"
-                        value={currentResumeDetails.trainingName}
+                        value={currentResumeDetails?.trainingName}
                         onChange={(e) => handleNewResumeName(e)}/>
                 </div>
                 <div></div>

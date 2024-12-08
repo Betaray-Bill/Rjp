@@ -323,7 +323,7 @@ function TrainingDomains() {
                         ?.map((item, index) => (
                             <div
                                 key={index}
-                                className="mb-2 mt-4 flex items-start w-[70vw] p-4 rounded-md justify-between border border-slate-200 ">
+                                className="mb-2 mt-4 flex items-start w-[80vw] p-4 rounded-md justify-between border border-slate-200 ">
                                 <div className='flex flex-col'>
                                     <Label className="text-md font-semibold">{index + 1}. {item.domain}</Label>
                                     {

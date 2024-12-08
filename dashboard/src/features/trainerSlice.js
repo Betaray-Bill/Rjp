@@ -22,11 +22,13 @@ const initialState = {
             aadharCardNumber: "",
             gstNumber: "",
             vendorName: "",
+            panCard: "",
+            aadharCard: "",
         },
-        // Training Details 
+        // Training Details
         trainingDetails: {
             trainerType: "",
-            modeOfTraining: "",
+            modeOfTraining: ""
         },
         //  Training Domain
         trainingDomain: [],
@@ -42,7 +44,7 @@ const initialState = {
             experience: [],
             trainingName: []
         }
-    },
+    }
 };
 
 const trainerSlice = createSlice({
@@ -54,7 +56,12 @@ const trainerSlice = createSlice({
             if (action.payload.name === 'trainingDomain') {
                 state.trainerDetails[action.payload.name] = action.payload.data
             } else {
-                state.trainerDetails = {...state.trainerDetails, [action.payload.name]: {...action.payload.data } }
+                state.trainerDetails = {
+                    ...state.trainerDetails,
+                    [action.payload.name]: {
+                        ...action.payload.data
+                    }
+                }
             }
             console.log(state.trainerDetails)
         },
@@ -65,7 +72,7 @@ const trainerSlice = createSlice({
                     email: "",
                     phoneNumber: Number(),
                     whatsappNumber: Number(),
-                    alternateNumber: Number(),
+                    alternateNumber: Number()
                 },
                 bankDetails: {
                     accountName: "",
@@ -76,11 +83,11 @@ const trainerSlice = createSlice({
                     pancardNumber: "",
                     aadharCardNumber: "",
                     gstNumber: "",
-                    vendorName: "",
+                    vendorName: ""
                 },
                 trainingDetails: {
                     trainerType: "",
-                    modeOfTraining: "",
+                    modeOfTraining: ""
                 },
                 trainingDomain: [],
                 mainResume: {
@@ -118,12 +125,12 @@ const trainerSlice = createSlice({
                     pancardNumber: "",
                     aadharCardNumber: "",
                     gstNumber: "",
-                    vendorName: "",
+                    vendorName: ""
                 },
-                // Training Details 
+                // Training Details
                 trainingDetails: {
                     trainerType: "",
-                    modeOfTraining: "",
+                    modeOfTraining: ""
                 },
                 //  Training Domain
                 trainingDomain: [],
@@ -141,7 +148,7 @@ const trainerSlice = createSlice({
                 }
             }
         }
-    },
+    }
 });
 
 export const {

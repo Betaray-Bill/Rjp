@@ -1,7 +1,7 @@
 import express from 'express';
 import { authEmployeeMiddleware, authMiddleware } from '../middleware/authMiddleware.js';
 
-import { acceptNDA, addTrainingDates, getAllTrainer, getResumeById, getTrainerById, resetPassword, resumeCopy, signOut, trainerLogin, updateTrainerProfile } from '../controllers/TrainerController.js';
+import { acceptNDA, addMainResume, addTrainingDates, getAllTrainer, getResumeById, getTrainerById, resetPassword, resumeCopy, signOut, trainerLogin, updateTrainerProfile } from '../controllers/TrainerController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { searchTrainer } from '../controllers/SearchController.js';
 import { changepassword } from '../controllers/TrainerController.js';
@@ -25,6 +25,7 @@ router.get("/details/emp/:id", authEmployeeMiddleware, getTrainerById)
 router.get("/getAll", authMiddleware, authorizeRole(['ADMIN', 'KeyAccounts']), getAllTrainer)
 router.post("/:id/copy-resume", authMiddleware, resumeCopy)
 router.get("/resume/:id", authEmployeeMiddleware, getResumeById)
+router.post("/main-resume/:id", authEmployeeMiddleware, addMainResume)
 router.get("/signout", authMiddleware, signOut)
 router.put("/updateResume/:trainer_id/resume/:resume_id", authMiddleware, updateResume)
 router.put('/uploadInvoice/project/:projectId/trainer/:trainerId', authMiddleware, upload_Invoice_Url_Trainer)
