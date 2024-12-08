@@ -322,7 +322,7 @@ const getProject = asyncHandler(async(req, res) => {
             // projectOwner: {  name: { $arrayElemAt: ["$$project.projectOwnerDetails.name",
             // 0] }, email: {       $arrayElemAt:
             // ["$$project.projectOwnerDetails.contactDetails.email", 0]                 },
-            //                        phone: { $arrayElemAt:
+            //                       phone: { $arrayElemAt:
             // ["$$project.projectOwnerDetails.contactDetails.phone", 0]           } }   }
             // // } //                     } // } //   } //         } //     } // }]);
             const pipelines = await Pipeline.find({}, "stages").populate({
@@ -819,26 +819,52 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
 
     try {
         const project = await Project.findById(projectId)
-            // console.log(project)
+            // console.log(project) Find the trainer
+        const trainer = project
+            .trainers
+            .find((t) => t.trainer.toString() === trainerId);
 
-        for (let i = 0; i < project.trainers.length; i++) {
-            console.log(project.trainers[i])
-            if (project.trainers[i].trainer.toString() === trainerId) {
-                console.log("Trainer found", project.trainers[i].trainer)
-                project.trainers[i].isClientCallDone = true
-                project.trainers[i].purchaseOrder.url = req.body.url
-                project.trainers[i].purchaseOrder.canSend = true
-                project.trainers[i].purchaseOrder.name = req.body.name
-                project.trainers[i].purchaseOrder.time = new Date()
-                project.trainers[i].purchaseOrder.details.description = req.body.description
-                project.trainers[i].purchaseOrder.details.type = req.body.type
-                project.trainers[i].purchaseOrder.details.terms = req.body.terms
-
-                await project.save()
-
-                break
-            }
+        if (!trainer) {
+            return res
+                .status(404)
+                .json({ message: "Trainer not found in the project" });
         }
+
+        // Check if the purchaseOrder index exists if
+        // (!trainer.purchaseOrder[req.body.poNumber]) {     return res .status(404)
+        //     .json({ message: `Purchase Order with index ${ req.body.poNumber} not
+        // found` }); } Check if purchaseOrder exists, if not initialize it
+        if (!trainer.purchaseOrder) {
+            trainer.purchaseOrder = [];
+        }
+
+        // Update the specific purchase order
+        if (!trainer.purchaseOrder[req.body.poNumber]) {
+            // Add a new entry if the index doesn't exist
+            trainer.purchaseOrder[req.body.poNumber] = {
+                poNumber: req.body.poNumber,
+                name: req.body.name,
+                time: new Date(),
+                details: {
+                    description: req.body.details.description,
+                    type: req.body.details.type,
+                    terms: req.body.details.terms
+                }
+            };
+        } else {
+            const purchaseOrder = trainer.purchaseOrder[req.body.poNumber];
+            purchaseOrder.canSend = false;
+            purchaseOrder.poNumber = req.body.poNumber;
+            purchaseOrder.name = req.body.name;
+            purchaseOrder.time = new Date();
+            purchaseOrder.details = {
+                description: req.body.details.description,
+                type: req.body.details.type,
+                terms: req.body.details.terms
+            };
+        }
+        // console.log(purchaseOrder) Save the updated project
+        await project.save();
         res.json({ message: " Done" });
 
     } catch (err) {
@@ -875,10 +901,9 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
         }
 
         // Check if the purchaseOrder index exists if
-        // (!trainer.purchaseOrder[req.body.poNumber]) {     return res
-        // .status(404)         .json({ message: `Purchase Order with index ${
-        // req.body.poNumber} not found` }); } Check if purchaseOrder exists, if not
-        // initialize it
+        // (!trainer.purchaseOrder[req.body.poNumber]) {     return res .status(404)
+        //     .json({ message: `Purchase Order with index ${ req.body.poNumber} not
+        // found` }); } Check if purchaseOrder exists, if not initialize it
         if (!trainer.purchaseOrder) {
             trainer.purchaseOrder = [];
         }
@@ -908,29 +933,26 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
                 terms: req.body.details.terms
             };
         }
-        // console.log(purchaseOrder)
-
-        // Save the updated project
+        // console.log(purchaseOrder) Save the updated project
         await project.save();
 
         // for (let i = 0; i < project.trainers.length; i++) {
         // console.log(project.trainers[i])     if
-        // (project.trainers[i].trainer.toString() === trainerId) {
-        // console.log("Trainer found", project.trainers[i].trainer)             //
+        // (project.trainers[i].trainer.toString() === trainerId) { console.log("Trainer
+        // found", project.trainers[i].trainer)             //
         // project.trainers[i].isClientCallDone = true             //
         // project.trainers[i].purchaseOrder.url = req.body.url         for (let j = 0;
         // i < project.trainers[j].purchaseOrder.length; j++) {             if (j ==
-        // req.body.poNumber) {
-        // project.trainers[i].purchaseOrder[j].canSend = false
+        // req.body.poNumber) { project.trainers[i].purchaseOrder[j].canSend = false
         // project.trainers[i].purchaseOrder[j].poNumber = req.body.poNumber
-        //     project.trainers[i].purchaseOrder[j].name = req.body.name
+        // project.trainers[i].purchaseOrder[j].name = req.body.name
         // project.trainers[i].purchaseOrder[j].time = new Date()
         // project.trainers[i].purchaseOrder[j].details.description =
         // req.body.details.description
         // project.trainers[i].purchaseOrder[j].details.type = req.body.details.type
-        //             project.trainers[i].purchaseOrder[j].details.terms =
+        //         project.trainers[i].purchaseOrder[j].details.terms =
         // req.body.details.terms             }         }         await project.save()
-        //       break     } }
+        //     break     } }
         res.json({ message: " Done" });
 
     } catch (err) {

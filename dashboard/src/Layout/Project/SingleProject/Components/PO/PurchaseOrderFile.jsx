@@ -52,31 +52,6 @@ function PurchaseOrderFile({
     const handleSavePO = async() => {
         // if (!isPurchased) {
             try {
-                // console.log(a)
-                const content = poRef.current.outerHTML;
-                // console.log(content)
-                // Create a blob from the content
-                // const blob = new Blob([content], {type: "application/pdf"});
-                // var u = URL.createObjectURL(blob);
-                // console.log(u)
-                // // Create a FormData object to send to the backend
-                // const formData = new FormData();
-                // formData.append("file", blob);
-                // formData.append("projectName", projectName);
-                // formData.append("fileName", `${name} - Purchase Order`); // Include file name
-    
-                // console.log(formData.file)
-    
-                // //  // Call the POST API to upload the file  
-                // const uploadResult = await
-                // axios.post('http://localhost:5000/api/filestorage/upload-to-blob/training/po'
-                // , formData, {     headers: {         "Content-Type": "multipart/form-data" }
-                // }); 
-                // const res = await uploadResult.data 
-                // console.log(res) 
-                // get the URL and
-                // save it in the Backend of the Trainer as well in the Project DOCS if
-                // (uploadResult.status == 200) {
                 console.log("URL got success");
                 // Update the message with the uploaded file URL
                 console.log("TablesROws ", tableRows)
@@ -120,41 +95,23 @@ function PurchaseOrderFile({
     const handleSendPO = async() => {
         try {
             // console.log(a)
-            const content = poRef.current.outerHTML;
-            console.log(content)
-            // Create a blob from the content
-            // const blob = new Blob([content], {type: "application/pdf"});
-            // var u = URL.createObjectURL(blob);
-            // console.log(u)
-            // // Create a FormData object to send to the backend
-            // const formData = new FormData();
-            // formData.append("file", blob);
-            // formData.append("projectName", projectName);
-            // formData.append("fileName", `${name} - Purchase Order`); // Include file name
-
-            // console.log(formData.file)
-
-            // //  // Call the POST API to upload the file  
-            // const uploadResult = await
-            // axios.post('http://localhost:5000/api/filestorage/upload-to-blob/training/po'
-            // , formData, {     headers: {         "Content-Type": "multipart/form-data" }
-            // }); 
-            // const res = await uploadResult.data 
-            // console.log(res) 
-            // get the URL and
-            // save it in the Backend of the Trainer as well in the Project DOCS if
-            // (uploadResult.status == 200) {
             console.log("URL got success");
-            // Update the message with the uploaded file URL
-            const data = {
-                // url:res.url,
-                name: `${name} - Purchase Order`,
-                description: tableRows,
-                type: type,
-                terms: terms
-            }
-            console.log(data)
-            // console.log(data)
+                // Update the message with the uploaded file URL
+                console.log("TablesROws ", tableRows)
+                const data = {
+                    // url:res.url,
+                    name: `${name} - Purchase Order`,
+                    details: {
+                        description: tableRows,
+                        type: type,
+                        terms: terms
+
+                    },
+                    // type: type,
+                    poNumber:Number(poNumber),
+                    // terms: terms
+                }
+                console.log(data)
             const response = await axios.put(`http://localhost:5000/api/project/purchaseOrder/${projectId.projectId}/trainer/${id}`, {
                 ...data
             });
