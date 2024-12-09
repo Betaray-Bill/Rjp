@@ -3,7 +3,7 @@ import React, {Fragment} from 'react'
 
 function InvoiceList({trainers, projectName}) {
     return (
-        <div className='border border-gray-500 my-5 rounded-md px-4 drop-shadow-sm py-3 border-b'>
+        <div className='border border-gray-500 my-5 rounded-md  px-4 drop-shadow-sm py-3 border-b'>
             <div className='my-4 font-semibold'>
                 Invoice from trainers
             </div>
@@ -36,20 +36,20 @@ function InvoiceList({trainers, projectName}) {
                             trainer && trainer.inVoice.length > 0 ? 
                             (
                                 trainer.inVoice.map((invoice, invoiceIndex) => (
-                                    <div key={invoiceIndex} className='flex items-center justify-between py-2'>
+                                    <div key={invoiceIndex} className='flex items-center justify-between py-4'>
                                         <div className='flex items-center font-medium text-md'>
                                             Invoice {invoiceIndex+1}
                                         </div>
                                         <div>
-                                            <Button className="rounded-none">
-                                                <a
-                                                    href={invoice.invoiceUrl}
+                            
+                                            {/* <Button className="rounded-none"> */}
+                                                <a href={invoice ? invoice.InvoiceUrl : "https://music.youtube.com/"}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className='rounded-none'>
+                                                    className='rounded-none bg-blue-700 text-white px-4 py-2 cursor-pointer'>
                                                     Download
                                                 </a>
-                                            </Button>
+                                            {/* </Button> */}
                                         </div>
                                     </div>
                                 ))

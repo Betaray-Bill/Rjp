@@ -77,7 +77,7 @@ function Home() {
 
                 console.log(resData.trainer)
                 dispatch(setCredentials(resData.trainer))
-                setOpen(close)
+                // setOpen(close)
             } else {
                 signOut()
             }

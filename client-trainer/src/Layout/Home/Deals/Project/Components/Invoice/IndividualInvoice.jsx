@@ -19,7 +19,7 @@ function IndividualInvoice({po, index, inVoice, projectName}) {
             </div>
 
             <div>
-                {po && po
+                {/* {po && po
                     ?.details
                         ?.description.length > 0
                             ? <Fragment>
@@ -45,7 +45,24 @@ function IndividualInvoice({po, index, inVoice, projectName}) {
 
                                 </Fragment>
                             : <p className='text-sm italic'>PO not issued yet</p>
-}
+} */}
+                    {
+                        inVoice && (inVoice.InvoiceUrl !== undefined &&      inVoice.InvoiceUrl !== "")
+                            ? <a href={inVoice
+                                ? inVoice.InvoiceUrl
+                                : null}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className='rounded-none px-4 py-2 font-medium text-md bg-black text-white'>
+                                Download
+                            </a>
+                            : <div className='flex items-center'>
+                                    <UploadInvoice index={index} projectName={projectName}/>
+                                    <div className='ml-4'>
+                                        <Button onClick={() => setShowInvoice(!showInvoice)} className="rounded-none">Generate</Button>
+                                    </div>
+                                </div>
+                    }
 
             </div>
         </div>

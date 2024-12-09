@@ -1055,7 +1055,7 @@ const upload_Invoice_Url_Trainer = asyncHandler(async(req, res) => {
         if (!trainer.inVoice[req.body.index]) {
             // Add a new entry if the index doesn't exist
             trainer.inVoice[req.body.index] = {
-                url: req.body.url
+                InvoiceUrl: req.body.url
             };
         } else {
             const inVoice = trainer.inVoice[req.body.index];
