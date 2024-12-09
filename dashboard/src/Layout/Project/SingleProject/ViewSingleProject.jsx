@@ -267,7 +267,7 @@ function ViewSingleProject() {
       {/* <PurchaseOrder /> */}
 
       {/* Invoice */}
-      <InvoiceList trainers={trainers} projectName={projectName} />
+      {/* <InvoiceList trainers={trainers} projectName={projectName} /> */}
 
 
 

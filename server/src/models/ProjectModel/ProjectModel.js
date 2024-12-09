@@ -165,7 +165,11 @@ const projectSchema = new mongoose.Schema({
             inVoiceDate: {
                 type: String
             },
-            invoiceIndex: Number
+            invoiceIndex: Number,
+            isPaid: Boolean,
+            description: {
+                type: String
+            }
         }]
     }],
     notes: [notesSchema],

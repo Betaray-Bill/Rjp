@@ -7,7 +7,7 @@ import { useQueryClient } from 'react-query';
 import {useSelector} from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-function UploadInvoice({projectName}) {
+function UploadInvoice({projectName, index}) {
     const [file,
         setFile] = useState(null);
     
@@ -58,10 +58,11 @@ function UploadInvoice({projectName}) {
                     const data = {
                         url: url,
                         // in
+                        index:index
                     }
 
                     // Post the Invoice in Backend 
-                    const sendUrlToDB = await axios.put(`http://localhost:5000/api/trainer/uploadInvoice/project/${params.projectId}/trainer/${user._id}`, data); 
+                    const sendUrlToDB = await axios.put(`http://localhost:5000/api/trainer/uploadInvoice/project/${params.projectId}/trainer/${user._id}`, {...data}); 
                     const resp = await sendUrlToDB.data
 
                     console.log(resp)
@@ -70,6 +71,7 @@ function UploadInvoice({projectName}) {
                         description: "Your invoice has been uploaded successfully to RJP.",
                         variant: "success"
                     })
+                    queryClient.invalidateQueries(["projects", params.projectId])
                     // console.log(chatResp) // Add the message to the data array setData([
                     // ...data, {         ...message     } ]); 
                     // console.log("Message added

@@ -34,7 +34,7 @@ function ResumeDownload() {
         }
         const numberOfPages = Math.ceil(height / multiple);
         return numberOfPages * multiple;
-      };
+      };    
     
       // Query to fetch resume data
       const { data, isLoading, isError, error } = useQuery(

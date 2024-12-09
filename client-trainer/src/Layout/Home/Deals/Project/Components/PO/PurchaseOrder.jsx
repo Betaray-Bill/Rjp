@@ -18,12 +18,18 @@ function PurchaseOrder({purchaseOrder}) {
                         }}></ion-icon>
                         <span className='ml-3'>Purchase Order</span>
                     </div>
+
+                    {
+                        purchaseOrder && purchaseOrder.length === 0? 
+                        <div className='text-center'>No Purchase Order found.</div>
+                        : null
+                    }
                 
 
                     <div className='mt-6'>
                         {
                             purchaseOrder && purchaseOrder?.map((e, _i) => (
-                                <IndividualPO purchaseOrder={e} index={_i} />
+                                <IndividualPO purchaseOrder={e} index={_i} key={_i}/>
                             ))
                         }
                     </div>

@@ -11,7 +11,7 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select"
-function GenerateInvoiceForm({purchaseOrder, inVoice}) {
+function GenerateInvoiceForm({purchaseOrder, inVoice, index}) {
 
     const [formData,
         setFormData] = useState({inVoiceNumber: '', GST: ''})
@@ -60,6 +60,7 @@ function GenerateInvoiceForm({purchaseOrder, inVoice}) {
             <GenerateInvoice
                 inVoice={inVoice}
                 purchaseOrder={purchaseOrder}
+                index={index}
                 formData={formData}/>
         </div>
     )

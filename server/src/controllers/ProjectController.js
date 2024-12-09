@@ -1035,23 +1035,36 @@ const upload_Invoice_Url_Trainer = asyncHandler(async(req, res) => {
 
     try {
         const project = await Project.findById(projectId)
-            // console.log(project)
+            // console.log(project) Find the trainer
+        const trainer = project
+            .trainers
+            .find((t) => t.trainer.toString() === trainerId);
 
-        for (let i = 0; i < project.trainers.length; i++) {
-            console.log(project.trainers[i])
-            if (project.trainers[i].trainer.toString() === trainerId) {
-                console.log("Trainer found", project.trainers[i].trainer)
-                project.trainers[i].inVoice.isInvoice = true
-                project.trainers[i].inVoice.InvoiceUrl = req.body.url
-                    // project.trainers[i].inVoice.name = req.body.name
-                project.trainers[i].inVoice.inVoiceDate = new Date()
-                    // project.trainers[i].inVoice.details./
-
-                await project.save()
-
-                break
-            }
+        if (!trainer) {
+            return res
+                .status(404)
+                .json({ message: "Trainer not found in the project" });
         }
+
+        if (!trainer.inVoice) {
+            trainer.inVoice = [];
+        }
+
+
+        // Update the specific purchase order
+        if (!trainer.inVoice[req.body.index]) {
+            // Add a new entry if the index doesn't exist
+            trainer.inVoice[req.body.index] = {
+                url: req.body.url
+            };
+        } else {
+            const inVoice = trainer.inVoice[req.body.index];
+            inVoice.InvoiceUrl = req.body.url
+        };
+        // }
+
+        await project.save();
+
         res.json({ message: " Done", project: project });
 
     } catch (err) {

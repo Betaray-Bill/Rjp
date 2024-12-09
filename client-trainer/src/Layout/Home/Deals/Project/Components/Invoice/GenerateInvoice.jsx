@@ -9,7 +9,7 @@ import {useToast} from '@/hooks/use-toast';
 import axios from 'axios';
 // import { convertToIndianWords } from 'number-to-words'
 
-function GenerateInvoice({purchaseOrder, formData, inVoice}) {
+function GenerateInvoice({purchaseOrder, formData, inVoice, index}) {
 
     function convertToIndianWords(number) {
         if (number === 0) return 'Zero';

@@ -91,11 +91,11 @@ function SingleProject() {
 
             <PurchaseOrder purchaseOrder={data.trainers[0].purchaseOrder}/>
 
-            {/* <Invoice 
+            <Invoice 
                 purchaseOrder={data.trainers[0].purchaseOrder} 
                 projectName={data.projectName}
                 inVoice={data.trainers[0].inVoice}
-            /> */}
+            />
         </div>
     )
 }
