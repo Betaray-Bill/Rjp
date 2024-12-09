@@ -30,6 +30,7 @@ function ResumeForm({data}) {
     trainingsDelivered: [],
     clientele: [],
     experience: [],
+    domain:"",
     trainingName:""
   })
   
@@ -305,7 +306,81 @@ function ResumeForm({data}) {
             setIsSubmit(prev => !prev)
 
         };
-    
+
+
+        const submitCopyHandler = async(e) => {
+          e.preventDefault();
+          setIsSubmit(prev => !prev)
+  
+          console.log('Form Data Submitted:', resume);
+          // Perform API call to save form data
+          try {
+              const response = await axios.post(`http://localhost:5000/api/trainer/${user._id}/copy-resume`, {...resume, domain:domainName}); // Replace with your API endpoint
+              console.log('Registration successful:', response.data);
+              // getTrainerDetails()
+              // setIsSubmit(prev => !prev)
+              setResume({
+                  professionalSummary: [''],
+                  technicalSkills: [''],
+                  careerHistory: [''],
+                  certifications: [''],
+                  education: [''],
+                  trainingsDelivered: [''],
+                  clientele: [''],
+                  experience: [''],
+                  file_url: '',
+                  trainingName: ''
+              })
+              toast({
+                  duration: 3000, variant: "success", title: "Submitted successfully",
+                  // description: "Click edit to take action",
+              })
+              // getTrainerDetails()
+                  // window.location.reload()
+              //   navigate("/home/resume") 
+                queryClient.invalidateQueries(["user", user._id])
+                //   navigate(`/home/resume/${response.data.resume._id}`) 
+                //   setUser(response.data)
+                // window.location.reload()
+            
+              //   setUser(response.data)
+          } catch (error) {
+              console.error('Registration failed:', error);
+          }
+          setIsSubmit(prev => !prev)
+
+      };
+
+
+        const [domainName, setDomainName] = useState("")
+        const sortDataByDomain = () => {
+          console.log(domainName)
+          // Helper function to sort a single array based on the domain
+          const sortArray = (array, domainName) => {
+              if (Array.isArray(array)) {
+                  return [...array].sort((a, b) => { // Use spread to create a new array
+                      let aContainsDomain = a.toLowerCase().includes(domainName.toLowerCase());
+                      let bContainsDomain = b.toLowerCase().includes(domainName.toLowerCase());
+                      return bContainsDomain - aContainsDomain; // Sort items with domain first
+                  });
+              }
+              return array;
+          };
+      
+          // Create a deep clone of the `resume` object to avoid direct mutations
+          let data = JSON.parse(JSON.stringify(resume)); // Deep clone
+      
+          // Iterate over each key in the data object and sort if it's an array
+          for (let key in data) {
+              if (Array.isArray(data[key]) && data[key].length > 0 && key !== "projects") {
+                  data[key] = sortArray(data[key], domainName); // Sort and reassign the cloned array
+              }
+          }
+      
+          setResume(data); // Update the state with the sorted data
+          // return data;
+          console.log(data)
+      };
 
 
   return ( 
@@ -324,11 +399,24 @@ function ResumeForm({data}) {
                 alt="" 
               /> : null
             }
-            <Button onClick={handleButtonClick} disabled={isLoading}>
+            {
+              user.resumeVersion.length == 0 && 
+              <Button onClick={handleButtonClick} disabled={isLoading}>
               {isLoading ? "Processing..." : "Upload Resume"}
             </Button>
+            }
           </div>
         </div>
+        
+            {user.resumeVersion.length > 0 && 
+                      <div className='p-4'>
+                      <div>Domain Name</div>
+                      <div className='flex items-center '>
+                        <Input value={domainName} onChange={(e) => setDomainName(e.target.value)} placeholder='Type your domain name' />
+                        <Button className="rounded-none ml-4" onClick={sortDataByDomain}>Filter</Button>
+                      </div>
+                    </div>
+            }
         {
           isLoading ? 
           <div className="text-center grid place-content-center w-full">
@@ -454,8 +542,11 @@ function ResumeForm({data}) {
 
         }
             <div className='grid place-content-center my-10'>
-
-                <Button className="rounded-none" onClick={submitHandler} disabled={isSubmit}>{isSubmit ? "Submitting" : "Submit"}</Button>
+              {
+                user.resumeVersion.length === 0 ?
+                <Button className="rounded-none" onClick={submitHandler} disabled={isSubmit}>{isSubmit? "Submitting" : "Submit"}</Button>:
+                <Button className="rounded-none" onClick={submitCopyHandler} disabled={isSubmit}>{isSubmit ? "Submitting" : "Submit"}</Button>
+              }
             </div>
         
       </div>
