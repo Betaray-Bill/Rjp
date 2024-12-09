@@ -2,10 +2,10 @@ import Employee from "../models/EmployeeModel.js"
 
 const authorizeRole = (...allowedRoles) => {
     return async(req, res, next) => {
-        console.log("REQ", req.user)
+        // console.log("REQ", req.user)
         try {
             const employee = await Employee.findById(req.user._id)
-            console.log("Emp : " + employee)
+                // console.log("Emp : " + employee)
             if (!employee) {
                 return res.status(404).json({ message: "Employee not found" })
             }
@@ -21,7 +21,7 @@ const authorizeRole = (...allowedRoles) => {
             roles.forEach(role => {
                 for (let i = 0; i < req.user.role.length; i++) {
                     if (req.user.role[i].name === role) {
-                        console.log("Same ", req.user.role[i].name, " as ", role)
+                        // console.log("Same ", req.user.role[i].name, " as ", role)
                         next()
                         break
                     }

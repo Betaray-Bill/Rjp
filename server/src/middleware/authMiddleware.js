@@ -19,7 +19,7 @@ const authMiddleware = asyncHandler(async(req, res, next) => {
 
         req.user = await Employee.findById(decoded.userId).select('-password');
 
-        console.log("TOKEN IS FOUND", token)
+        // console.log("TOKEN IS FOUND", token)
         next();
     } catch (error) {
         res.status(400).json({ message: 'Invalid token' });
@@ -29,8 +29,8 @@ const authMiddleware = asyncHandler(async(req, res, next) => {
 // Middleware to authenticate and authorize users
 const authEmployeeMiddleware = asyncHandler(async(req, res, next) => {
     let token = req.cookies.empToken; // Get JWT from cookies
-    console.log("1")
-    console.log(token)
+    // console.log("1")
+    // console.log(token)
     if (!token) {
         // Write a sign out function over here
         return res.status(401).json({ message: 'Access denied. No token provided.' });
@@ -43,7 +43,7 @@ const authEmployeeMiddleware = asyncHandler(async(req, res, next) => {
 
         req.user = await Employee.findById(decoded.userId).select('-password');
 
-        console.log("TOKEN IS FOUND", token)
+        // console.log("TOKEN IS FOUND", token)
         next();
     } catch (error) {
         res.status(400).json({ message: 'Invalid token' });

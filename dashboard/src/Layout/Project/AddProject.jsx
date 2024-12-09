@@ -279,6 +279,7 @@ function AddProject() {
         e.preventDefault()
         // console.log(projectData)
         // Submit the form data to the server
+        // if(projectD)
         try{
             const result = await axios.post(`http://localhost:5000/api/project/create/${currentUser.employee._id}`, projectData)
             const response = await result.data;
@@ -459,6 +460,7 @@ function AddProject() {
                                     <SelectContent>
                                         <SelectItem value="Virtual">Virtual</SelectItem>
                                         <SelectItem value="In-Person">In-Person</SelectItem>
+                                        <SelectItem value="Hybrid">Hybrid</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>

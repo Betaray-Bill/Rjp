@@ -55,7 +55,7 @@ const Pipeline = mongoose.model('Pipeline', pipelineSchema);
 async function getOrCreatePipeline() {
     try {
         const pipeline = await Pipeline.getSingletonPipeline();
-        console.log('Pipeline:', pipeline);
+        // console.log('Pipeline:', pipeline);
         return pipeline;
     } catch (error) {
         console.error('Error accessing pipeline:', error);

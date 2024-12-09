@@ -203,8 +203,13 @@ function ResumeDisplay() {
 
     return (
         <div>
-            <div className='grid place-content-end px-4 pt-3'>
-                <Button className="rounded-none  bg-blue-800"   onClick={submitResumeHandler}>Save</Button>
+            <div className='flex items-center justify-between px-4 pt-3'>
+                <div>
+                    {
+                        resume.isLocked ? <ion-icon style={{fontSize:"20px"}} name="lock-closed-outline"></ion-icon> : <ion-icon style={{fontSize:"20px"}} name="lock-open-outline"></ion-icon>
+                    }
+                </div>
+                <Button className="rounded-none  bg-blue-800" disabled={!resume.isLocked} onClick={submitResumeHandler}>Save</Button>
    
             </div>
         {

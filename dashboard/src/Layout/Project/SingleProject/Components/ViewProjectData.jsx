@@ -3,16 +3,17 @@ import {Label} from '@/components/ui/label';
 import React, {Fragment, useState} from 'react'
 import {Skeleton} from "@/components/ui/skeleton"
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { useQueryClient } from 'react-query';
-import { useSelector } from 'react-redux';
-import { useToast } from '@/hooks/use-toast';
+import {useParams} from 'react-router-dom';
+import {useQueryClient} from 'react-query';
+import {useSelector} from 'react-redux';
+import {useToast} from '@/hooks/use-toast';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 
 function ViewProjectData({projects}) {
-  const projectId = useParams()
-  const queryClient = useQueryClient();
-  const { toast } = useToast()
- 
+    const projectId = useParams()
+    const queryClient = useQueryClient();
+    const {toast} = useToast()
+
     const {
         _id,
         company,
@@ -28,37 +29,61 @@ function ViewProjectData({projects}) {
         modeOfTraining,
         stages
     } = projects;
-    const { currentUser } = useSelector(state => state.auth)
+    const {currentUser} = useSelector(state => state.auth)
     console.log()
     // Change Stage API CALL
     const [isChanging,
         setIsChanging] = useState(false)
     const changeStage = async(e) => {
         try {
-           console.log(e.target.value)
-           const res = await axios.put(`http://localhost:5000/api/project/updateStage/${projectId.projectId}`, {stageName:e.target.value})
-           const data = await res.data
-           console.log(data)
+            console.log(e.target.value)
+            const res = await axios.put(`http://localhost:5000/api/project/updateStage/${projectId.projectId}`, {stageName: e.target.value})
+            const data = await res.data
+            console.log(data)
             setIsChanging(false)
-            queryClient.invalidateQueries(['projects',currentUser.employee._id]);
+            queryClient.invalidateQueries(['projects', currentUser.employee._id]);
             queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
 
+            toast({
+                title: `${projectName} Pipeline Stage Updated`,
+                // description: `${projectName} S`,
+            })
 
         } catch (error) {
             console.error(error)
+            toast({
+                title: `${projectName} Pipeline Stage Not Updated`,
+                // description: `${projectName} S`,
+            })
         }
-        toast({
-            title: `${projectName} Pipeline Stage Updated`,
-            // description: `${projectName} S`,
-        })
+
 
         // window.location.reload()
     }
-    
+
+
+    // update Training MOde
+    const handleUpdateTraining = async(e) => {
+        try {
+            console.log(e.target.value)
+            const res = await axios.put(`http://localhost:5000/api/project/updateTrainingMode/${projectId.projectId}`, {trainingMode: e.target.value})
+            const data = await res.data
+            console.log(data)
+            queryClient.invalidateQueries(['projects', currentUser.employee._id]);
+            queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
+
+            toast({
+                title: `${projectName}  Updated`,
+                // description: `${projectName} S`,
+            })
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
 
-        <div className='border rounded-md shadow-sm py-4 px-4 border-gray-500'>
+        <div className='border rounded-md shadow-sm py-4 px-4 border-gray-300'>
             <div className='flex items-center justify-between'>
                 <h2 className='font-semibold text-xl uppercase'>{projectName}</h2>
                 {/* Stages Change it */}
@@ -68,7 +93,11 @@ function ViewProjectData({projects}) {
                     changeStage(e)
                 }}>
                     <Label>Stage</Label>
-                    <select name="pipeline" id="" className='ml-3 font-semibold' value={stages || ''}>
+                    <select
+                        name="pipeline"
+                        id=""
+                        className='ml-3 font-semibold'
+                        value={stages || ''}>
                         <option value="Training Requirement">Training Requirement</option>
                         <option value="Reply">Reply</option>
                         <option value="Proposal Sent">Proposal Sent</option>
@@ -79,7 +108,6 @@ function ViewProjectData({projects}) {
                     </select>
                 </div>
             </div>
-            
 
             <div className="grid grid-cols-3 gap-6 mt-8 place-content-center">
                 <div className='flex flex-col justify-between'>
@@ -108,11 +136,23 @@ function ViewProjectData({projects}) {
                 </div>
                 <div className='flex flex-col justify-between'>
                     <h2 className="text-left text-gray-700 mb-[3px]">Mode of Training</h2>
-                    <Input
-                        type="text"
-                        className="text-gray-900 font-medium"
-                        readOnly
-                        value={modeOfTraining}/>
+                    <Select
+                        name="modeOfTraining"
+                    //     onValueChange={(value) => setProjectData(prevData => ({
+                    //     ...prevData,
+                    //     modeOfTraining: value
+                    // }))}
+                    >
+                        <SelectTrigger className="w-[300px]" >
+                            <SelectValue placeholder={modeOfTraining || "Select Mode"}/>
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Virtual">Virtual</SelectItem>
+                            <SelectItem value="In-Person">In-Person</SelectItem>
+                            <SelectItem value="Hybrid">Hybrid</SelectItem>
+                        </SelectContent>
+                    </Select>
+
                 </div>
                 <div className='flex flex-col justify-between'>
                     <h2 className="text-left text-gray-700 mb-[3px]">Amount</h2>
@@ -154,4 +194,3 @@ function ViewProjectData({projects}) {
 }
 
 export default ViewProjectData
-

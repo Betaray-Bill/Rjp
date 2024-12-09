@@ -312,6 +312,7 @@ function TrainingDomains() {
 
 
             <div className='bg-white mt-10 rounded-md'>
+                {/* {user.trainingDetails?.trainerType} */}
                 <div className='mt-4 p-3 gap-9'>
                     {/* Get all the Listed Domains selected by the user */}
                     {trainingDomain
@@ -364,7 +365,7 @@ function TrainingDomains() {
                                         </Select>
                                     </div>
                                     {user.trainingDetails
-                                        ?.trainingType !== "Internal" && <div className='ml-8'>
+                                        ?.trainerType?.trim() !== "Internal" && <div className='ml-8'>
                                             <Label className="text-md font-medium text-slate-700">Enter Price (₹)</Label>
                                             <Input
                                                 type="number"
@@ -379,7 +380,7 @@ function TrainingDomains() {
                                         </div>
 }
                                     {user.trainingDetails
-                                        ?.trainingType !== "Internal" && <div className='flex flex-col items-start justify-between ml-10'>
+                                        ?.trainerType?.trim() !== "Internal" && <div className='flex flex-col items-start justify-between ml-10'>
 
                                             <Label className="text-md font-medium text-slate-700">Enter Mode</Label>
                                                                                         

@@ -294,7 +294,7 @@ const resetPassword = asyncHandler(async(req, res) => {
         }
 
         // Hash the new password
-        const hashedPassword = await argon2.hash("123");
+        const hashedPassword = await argon2.hash("P@ssw0rd");
         console.log(2)
 
         // Update the password in the database

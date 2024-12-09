@@ -83,7 +83,7 @@ const projectSchema = new mongoose.Schema({
     },
     modeOfTraining: {
         type: String,
-        enum: ['Virtual', 'In-Person']
+        enum: ['Virtual', 'In-Person', 'Hybrid']
     },
     // trainers: [{     type: mongoose.Schema.Types.ObjectId,     ref: 'Trainer' }],
     trainers: [{
