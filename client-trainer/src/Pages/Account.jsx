@@ -18,6 +18,7 @@ import {PencilLine, Upload} from "lucide-react";
 import {Avatar, AvatarImage, AvatarFallback} from "@/components/ui/avatar";
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 
 const style = {
     position: 'absolute',
@@ -36,68 +37,57 @@ const style = {
 function Account() {
     const [open,
         setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+        const {toast} = useToast()
 
     const {user} = useSelector(state => state.auth)
-    const renderArray = (arr) => {
-        return arr.map((item, index) => item && <li key={index}>{item}</li>);
-    };
 
-    const renderObject = (obj) => {
-        return Object
-            .keys(obj)
-            .map((key) => (
-                <div key={key}>
-                    <strong>{key.replace(/_/g, ' ')}:</strong>
-                    {obj[key]}
-                </div>
-            ));
-    };
-
-    
-
-    // Edit Handle const [formData, setFormData] = useState(trainerData);
-
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
+    const [isEdit, setIsEdit] = useState(false);
 
     const [formData,
         setFormData] = useState(user);
 
-    const handleInputChange = (e) => {
-        const {name, value} = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value
+    const [generalDetails,
+        setGeneralDetails] = useState({...user.generalDetails});
+
+    // Update handlers (optional for convenience)
+    const handleChange = (e) => {
+        const {id, value} = e.target;
+        setGeneralDetails((prev) => ({
+            ...prev,
+            [id]: value
         }));
     };
 
-    const handleArrayChange = (e, section) => {
-        const {value, name} = e.target;
-        const updatedArray = [...formData[section]];
-        console.log(e, section)
-        updatedArray[name] = value;
-        setFormData((prevData) => ({
-            ...prevData,
-            [section]: updatedArray
+    const handleAddressChange = (e) => {
+        const {id, value} = e.target;
+        setGeneralDetails((prev) => ({
+            ...prev,
+            address: {
+                ...prev.address,
+                [id]: value
+            }
         }));
     };
 
     axios.defaults.withCredentials = true;
     const handleSubmit = async(e) => {
-        e.preventDefault();
-        // console.log('Form Data Submitted:', formData); // Perform API call to save
-        // form data try {     const response = await
-        // axios.post('http://localhost:5000/api/trainersourcer/register-trainer',
-        // formData); // Replace with your API endpoint     console.log('Registration
-        // successful:', response.data);     // setUser(response.data) }catch (error) {
-        //    console.error('Registration failed:', error); }
+        try {
+            const res = await axios.put(`http://localhost:5000/api/trainer/update/${user._id}`, {generalDetails:{...generalDetails}}  )
+            const response = await res.data;
+            queryClient.invalidateQueries(["user", user._id])
+
+   
+            toast({
+                title: "Training Domains Updated",
+                description: "Your training domains have been successfully updated",
+                variant: "success",
+                duration: 3000,
+            })
+            setIsEdit(false)
+        } catch (e) {
+            console.error(e)
+            // setError('Failed to submit the resume')
+        }
     };
 
     console.log(user)
@@ -105,6 +95,7 @@ function Account() {
     // Pass change
     const [pass,
         setPass] = useState({currentPassword: "", newpassword: "", confirmnewpassword: ""})
+
     axios.defaults.withCredentials = true;
     const submitHandler = async(e) => {
         e.preventDefault()
@@ -133,8 +124,9 @@ function Account() {
             <div className='mt-8'>
                 <Card className="w-[90vw] lg:w-[80vw] ">
                     <CardContent className="flex flex-col p-4">
-                        <div className=" grid place-content-between grid-cols-1 md:grid-cols-2 items-center w-full mb-4">
-                            <div className='flex items-center'> 
+                        <div
+                            className=" grid place-content-between grid-cols-1 md:grid-cols-2 items-center w-full mb-4">
+                            <div className='flex items-center'>
                                 <Avatar className="h-12 w-12 mr-4 ">
                                     <AvatarImage
                                         src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
@@ -218,90 +210,119 @@ function Account() {
             </div>
 
             <div className='w-[90vw] lg:w-[80vw]  mt-8 p-6 bg-white rounded-md'>
-                Personal Info
+                <div className='flex items-center justify-between'>
+                    <h2 className='font-semibold'>Personal Info</h2>
+                    {
+                        isEdit ?
+                        <Button className="rounded-none" onClick={handleSubmit}>Submit</Button>:
+                        <Button className="rounded-none" onClick={() => setIsEdit(true)}>Edit</Button>
+                    }
+                </div>
 
                 <Card className="mx-auto mt-4">
                     <CardContent
                         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
                         <div className="space-y-2">
-                            <Label className="text-slate-700" htmlFor="name">Name</Label>
-                            <Input id="name" value={user.generalDetails.name} readOnly/>
+                            <Label className="text-slate-700" htmlFor="name">
+                                Name
+                            </Label>
+                            <Input readOnly={true} id="name" value={generalDetails.name} onChange={handleChange}/>
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-slate-700" htmlFor="trainerId">Trainer ID</Label>
-                            <Input id="trainerId" value={user.trainerId} readOnly/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-slate-700" htmlFor="dob">Date of Birth</Label>
-                            <Input id="dob" type="date" readOnly/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-slate-700" htmlFor="mobileNumber">Mobile Number</Label>
-                            <Input id="mobileNumber" value={user.generalDetails.phoneNumber} readOnly/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-slate-700" htmlFor="alternateNumber">Alternate Number</Label>
+                            <Label className="text-slate-700" htmlFor="email">
+                                Email
+                            </Label>
                             <Input
+                                id="email"
+                                readOnly={true}
+                                type="email"
+                                value={generalDetails.email}
+                                onChange={handleChange}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="phoneNumber">
+                                Mobile Number
+                            </Label>
+                            <Input
+                                readOnly={!isEdit}
+                                id="phoneNumber"
+                                value={generalDetails.phoneNumber}
+                                onChange={handleChange}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="alternateNumber">
+                                Alternate Number
+                            </Label>
+                            <Input
+                                readOnly={!isEdit}
                                 id="alternateNumber"
-                                value={user.generalDetails.alternateNumber}
-                                readOnly/>
+                                value={generalDetails.alternateNumber}
+                                onChange={handleChange}/>
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-slate-700" htmlFor="whatsappNumber">WhatsApp Number</Label>
-                            <Input id="whatsappNumber" value={user.generalDetails.whatsappNumber} readOnly/>
+                            <Label className="text-slate-700" htmlFor="whatsappNumber">
+                                WhatsApp Number
+                            </Label>
+                            <Input
+                                readOnly={!isEdit}
+                                id="whatsappNumber"
+                                value={generalDetails.whatsappNumber}
+                                onChange={handleChange}/>
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-slate-700" htmlFor="emailId">Email ID</Label>
-                            <Input id="emailId" type="email" value={user.generalDetails.email} readOnly/>
+                            <Label className="text-slate-700" htmlFor="flat_doorNo_street">
+                                Address - Flat/Door No/Street
+                            </Label>
+                            <Input
+                                readOnly={!isEdit}
+                                id="flat_doorNo_street"
+                                value={generalDetails.address.flat_doorNo_street}
+                                onChange={handleAddressChange}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="area">
+                                Address - Area
+                            </Label>
+                            <Input
+                                readOnly={!isEdit}
+                                id="area"
+                                value={generalDetails.address.area}
+                                onChange={handleAddressChange}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="townOrCity">
+                                Address - Town/City
+                            </Label>
+                            <Input
+                                readOnly={!isEdit}
+                                id="townOrCity"
+                                value={generalDetails.address.townOrCity}
+                                onChange={handleAddressChange}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="state">
+                                Address - State
+                            </Label>
+                            <Input
+                                readOnly={!isEdit}
+                                id="state"
+                                value={generalDetails.address.state}
+                                onChange={handleAddressChange}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-slate-700" htmlFor="pincode">
+                                Address - Pincode
+                            </Label>
+                            <Input
+                                readOnly={!isEdit}
+                                id="pincode"
+                                value={generalDetails.address.pincode}
+                                onChange={handleAddressChange}/>
                         </div>
                     </CardContent>
                 </Card>
             </div>
 
-            {/* <div className='w-[90vw] lg:w-[80vw]  mt-8 p-6 bg-white rounded-md'>
-        Bank Details
-
-        <Card className="mx-auto mt-4">
-          <CardContent className="grid grid-cols-3 gap-6 p-6">
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="AccountName">Account Name</Label>
-              <Input id="AccountName" value={user?.bankDetails?.accountName} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="AccountNumber">Account Number</Label>
-              <Input id="AccountNumber" value={user.bankDetails.accountNumber} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="BankName">Bank Name</Label>
-              <Input id="BankName" value={user.bankDetails.bankName} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="Branch">Branch</Label>
-              <Input id="Branch" value={user.bankDetails.bankBranch} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="IFSCCode">IFSC Code</Label>
-              <Input id="IFSCCode" value={user.bankDetails.bankIFSCCode} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="PancardNumber">Pancard Number</Label>
-              <Input id="PancardNumber" value={user.bankDetails.pancardNumber} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="GSTNumber">GST Number</Label>
-              <Input id="GSTNumber" value={user.bankDetails.gstNumber} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="Aadhar">Aadhar</Label>
-              <Input id="Aadhar" value={user.bankDetails.aadharCardNumber} readOnly/>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-slate-700" htmlFor="VendorName">Vendor Name</Label>
-              <Input id="VendorName" value={user.bankDetails.vendorName} readOnly/>
-            </div>
-          </CardContent>
-        </Card>
-      </div> */}
             <p className='text-end text-red-500 mt-10'>To update your details please contact the company</p>
         </div>
     )
