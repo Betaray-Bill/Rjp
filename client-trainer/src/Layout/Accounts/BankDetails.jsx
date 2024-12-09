@@ -234,7 +234,7 @@ function BankDetails() {
                     <Label htmlFor="account_Name">Aadhar Card</Label>
                     {/* <Input type="text" id="account_Card" name="accountName" onChange={(e) => handleChange(e)}/> */}
                     {
-                        bankDetails.aadharCard? 
+                        user.bankDetails.aadharCard? 
                             <a href={bankDetails.aadharCard} target="_blank" rel="noopener noreferrer">View Aadhar Card</a>
                             : <Input
                             ref={AadharCardRef}
@@ -250,7 +250,7 @@ function BankDetails() {
                     <Label htmlFor="account_Name">Pan Card</Label>
                     {/* <Input type="text" id="account_Card" name="accountName" onChange={(e) => handleChange(e)}/> */}
                     {
-                        bankDetails.pancard? 
+                        user.bankDetails.pancard? 
                             <a href={bankDetails.pancard} target="_blank" rel="noopener noreferrer">View Pan Card</a>
                             : <Input
                             ref={PanCardRef}
