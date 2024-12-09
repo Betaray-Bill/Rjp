@@ -29,13 +29,6 @@ function PurchaseOrderFile({
 }) {
     const queryClient = useQueryClient();
     const {toast} = useToast()
-    // JavaScript program to convert number into words by breaking it into groups of
-    // three
-
-
-    // const n = 2147483647;
-    // console.log(convertToWords(n));
-    // const projectId = useParams()
 
     const [isDownloading,
         setIsDownloading] = useState(false)

@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input'
 
 function ViewCompanyContact({data, contact}) {
     return (
-        <div className='border my-5 rounded-md px-4 drop-shadow-sm'>
+        <div className='border my-5 rounded-md px-4 drop-shadow-sm border-gray-500'>
             <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">
                     <AccordionTrigger>Contact Information</AccordionTrigger>

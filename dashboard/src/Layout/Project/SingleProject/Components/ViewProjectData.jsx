@@ -58,7 +58,7 @@ function ViewProjectData({projects}) {
 
     return (
 
-        <div className='border rounded-md shadow-sm py-4 px-4'>
+        <div className='border rounded-md shadow-sm py-4 px-4 border-gray-500'>
             <div className='flex items-center justify-between'>
                 <h2 className='font-semibold text-xl uppercase'>{projectName}</h2>
                 {/* Stages Change it */}
