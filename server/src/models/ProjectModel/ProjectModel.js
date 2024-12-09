@@ -97,6 +97,18 @@ const projectSchema = new mongoose.Schema({
         },
         purchaseOrder: [{
             poNumber: Number,
+            isAccepted: {
+                type: Boolean,
+                default: false
+            },
+            isDeclined: {
+                type: Boolean,
+                default: false
+            },
+            isReIssue: {
+                type: Boolean,
+                default: false
+            },
             canSend: {
                 type: Boolean,
                 default: false
@@ -152,7 +164,8 @@ const projectSchema = new mongoose.Schema({
             },
             inVoiceDate: {
                 type: String
-            }
+            },
+            invoiceIndex: Number
         }]
     }],
     notes: [notesSchema],

@@ -36,8 +36,8 @@ function SingleProject() {
     console.log(data)
 
     return (
-        <div className='grid place-content-center mb-8 '>
-            <div className='w-[90vw] lg:w-[80vw]  mt-8 p-6 bg-white rounded-md shadow-sm'>
+        <div className='grid place-content-center mb-8 w-full'>
+            <div className='w-[80vw] lg:w-[80vw] mt-8 p-6 bg-white rounded-md shadow-sm border border-gray-300'>
                 <div className='flex items-center justify-between pb-3'>
                     <div className='font-semibold text-md flex items-center justify-start'>
                         <ion-icon
@@ -91,11 +91,11 @@ function SingleProject() {
 
             <PurchaseOrder purchaseOrder={data.trainers[0].purchaseOrder}/>
 
-            <Invoice 
+            {/* <Invoice 
                 purchaseOrder={data.trainers[0].purchaseOrder} 
                 projectName={data.projectName}
                 inVoice={data.trainers[0].inVoice}
-            />
+            /> */}
         </div>
     )
 }

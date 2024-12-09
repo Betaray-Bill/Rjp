@@ -322,7 +322,7 @@ const getProject = asyncHandler(async(req, res) => {
             // projectOwner: {  name: { $arrayElemAt: ["$$project.projectOwnerDetails.name",
             // 0] }, email: {       $arrayElemAt:
             // ["$$project.projectOwnerDetails.contactDetails.email", 0]                 },
-            //                       phone: { $arrayElemAt:
+            //                      phone: { $arrayElemAt:
             // ["$$project.projectOwnerDetails.contactDetails.phone", 0]           } }   }
             // // } //                     } // } //   } //         } //     } // }]);
             const pipelines = await Pipeline.find({}, "stages").populate({
@@ -773,25 +773,19 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
             .select('projectName company.name trainers domain modeOfTraining trainingDates')
             .populate({ path: 'projectOwner', select: 'name email' })
             .lean();
-        console.log(projects)
-            // projects.trainers
-        let a = projects
-            .trainers
-            .filter(trainer => trainer.trainer.equals(trainerId));
+        // console.log(projects)
+        // projects.trainers
 
-        projects.trainers = a.map(trainer => {
-            if (trainer.purchaseOrder && trainer.purchaseOrder.canSend === false) {
-                // Remove the purchaseOrder object if canSend is false
-                const {
-                    purchaseOrder,
-                    ...rest
-                } = trainer;
-                return rest;
-            } else {
-                return trainer
-            }
-            return trainer;
-        });
+        projects.trainers = projects
+            .trainers
+            .filter(trainer => trainer.trainer.equals(trainerId)) // Match trainer ID
+            .map(trainer => {
+                // Filter purchaseOrder where canSend is true
+                trainer.purchaseOrder = trainer
+                    .purchaseOrder
+                    .filter(po => po.canSend === true);
+                return trainer;
+            });
 
         // if(a.length > 0) {     if(a[0].purchaseOrder.canSend === true){         let
         // details = [...]     } } console.log(object)
@@ -832,8 +826,8 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
 
         // Check if the purchaseOrder index exists if
         // (!trainer.purchaseOrder[req.body.poNumber]) {     return res .status(404)
-        //     .json({ message: `Purchase Order with index ${ req.body.poNumber} not
-        // found` }); } Check if purchaseOrder exists, if not initialize it
+        // .json({ message: `Purchase Order with index ${ req.body.poNumber} not found`
+        // }); } Check if purchaseOrder exists, if not initialize it
         if (!trainer.purchaseOrder) {
             trainer.purchaseOrder = [];
         }
@@ -843,6 +837,10 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
             // Add a new entry if the index doesn't exist
             trainer.purchaseOrder[req.body.poNumber] = {
                 poNumber: req.body.poNumber,
+                isReIssue: trainer.purchaseOrder[req.body.poNumber].isDeclined ? true : false,
+                isDeclined: false,
+                isAccepted: false,
+                // isReIssue: false,
                 name: req.body.name,
                 time: new Date(),
                 details: {
@@ -853,7 +851,11 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
             };
         } else {
             const purchaseOrder = trainer.purchaseOrder[req.body.poNumber];
-            purchaseOrder.canSend = false;
+            purchaseOrder.canSend = true;
+            purchaseOrder.isReIssue = trainer.purchaseOrder[req.body.poNumber].isDeclined ? true : false;
+            purchaseOrder.isDeclined = false;
+            // purchaseOrder.isReIssue = trainer.purchaseOrder[req.body.poNumber].isDeclined ? true : false;
+            purchaseOrder.isAccepted = false;
             purchaseOrder.poNumber = req.body.poNumber;
             purchaseOrder.name = req.body.name;
             purchaseOrder.time = new Date();
@@ -902,8 +904,8 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
 
         // Check if the purchaseOrder index exists if
         // (!trainer.purchaseOrder[req.body.poNumber]) {     return res .status(404)
-        //     .json({ message: `Purchase Order with index ${ req.body.poNumber} not
-        // found` }); } Check if purchaseOrder exists, if not initialize it
+        // .json({ message: `Purchase Order with index ${ req.body.poNumber} not found`
+        // }); } Check if purchaseOrder exists, if not initialize it
         if (!trainer.purchaseOrder) {
             trainer.purchaseOrder = [];
         }
@@ -915,6 +917,8 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
                 poNumber: req.body.poNumber,
                 name: req.body.name,
                 time: new Date(),
+                isDeclined: false,
+                isAccepted: false,
                 details: {
                     description: req.body.details.description,
                     type: req.body.details.type,
@@ -924,6 +928,8 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
         } else {
             const purchaseOrder = trainer.purchaseOrder[req.body.poNumber];
             purchaseOrder.canSend = false;
+            purchaseOrder.isDeclined = false;
+            purchaseOrder.isAccepted = false;
             purchaseOrder.poNumber = req.body.poNumber;
             purchaseOrder.name = req.body.name;
             purchaseOrder.time = new Date();
@@ -936,23 +942,6 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
         // console.log(purchaseOrder) Save the updated project
         await project.save();
 
-        // for (let i = 0; i < project.trainers.length; i++) {
-        // console.log(project.trainers[i])     if
-        // (project.trainers[i].trainer.toString() === trainerId) { console.log("Trainer
-        // found", project.trainers[i].trainer)             //
-        // project.trainers[i].isClientCallDone = true             //
-        // project.trainers[i].purchaseOrder.url = req.body.url         for (let j = 0;
-        // i < project.trainers[j].purchaseOrder.length; j++) {             if (j ==
-        // req.body.poNumber) { project.trainers[i].purchaseOrder[j].canSend = false
-        // project.trainers[i].purchaseOrder[j].poNumber = req.body.poNumber
-        // project.trainers[i].purchaseOrder[j].name = req.body.name
-        // project.trainers[i].purchaseOrder[j].time = new Date()
-        // project.trainers[i].purchaseOrder[j].details.description =
-        // req.body.details.description
-        // project.trainers[i].purchaseOrder[j].details.type = req.body.details.type
-        //         project.trainers[i].purchaseOrder[j].details.terms =
-        // req.body.details.terms             }         }         await project.save()
-        //     break     } }
         res.json({ message: " Done" });
 
     } catch (err) {
@@ -962,6 +951,74 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
             .json({ message: "Error uploading PO" });
     }
 
+})
+
+// Accept or Decline the INvoice
+const acceptOrDecline = asyncHandler(async(req, res) => {
+    const { trainerId } = req.params;
+    const { projectId } = req.params;
+    console.log("-----------------------------------")
+    try {
+        const project = await Project.findById(projectId)
+            // console.log(project) Find the trainer
+        const trainer = project
+            .trainers
+            .find((t) => t.trainer.toString() === trainerId);
+        console.log(req.body)
+        console.log(1)
+        if (!trainer) {
+            return res
+                .status(404)
+                .json({ message: "Trainer not found in the project" });
+        }
+
+
+        if (!trainer.purchaseOrder) {
+            trainer.purchaseOrder = [];
+        }
+
+        // Update the specific purchase order
+        if (req.body.isAccepted) {
+            if (!trainer.purchaseOrder[req.body.poNumber]) {
+                // Add a new entry if the index doesn't exist 
+                trainer.purchaseOrder[req.body.poNumber] = {
+                    isAccepted: req.body.isAccepted,
+                    isDeclined: false
+                };
+            } else {
+                let purchaseOrder = trainer.purchaseOrder[req.body.poNumber];
+                purchaseOrder.isAccepted = req.body.isAccepted
+                purchaseOrder.isDeclined = false
+            }
+        } else {
+            console.log("DEclined Section")
+            if (!trainer.purchaseOrder[req.body.poNumber]) {
+                // Add a new entry if the index doesn't exist 
+                trainer.purchaseOrder[req.body.poNumber] = {
+                    isAccepted: false,
+                    canSend: false,
+                    isDeclined: true
+                };
+            } else {
+                let purchaseOrder = trainer.purchaseOrder[req.body.poNumber];
+                purchaseOrder.isAccepted = false
+                purchaseOrder.isDeclined = true
+                purchaseOrder.canSend = false
+                    // isDeclined:true
+            }
+            // console.log(purchaseOrder)
+        }
+
+        // console.log(purchaseOrder) Save the updated project
+        await project.save();
+        res.json({ message: " Done" });
+
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: "Error uploading PO" });
+    }
 })
 
 // Invoice Upload to the
@@ -1065,5 +1122,6 @@ export {
     uploadPOUrl_Trainer,
     upload_Invoice_Url_Trainer,
     savePurchaseOrder,
-    upload_Invoice_Content_Trainer
+    upload_Invoice_Content_Trainer,
+    acceptOrDecline
 }
