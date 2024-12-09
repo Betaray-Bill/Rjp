@@ -8,10 +8,10 @@ function BankDetails() {
 
     const dispatch = useDispatch();
     const {trainerDetails} = useSelector(state => state.trainer)
-    const AadharCardRef = useRef()    
-    const PanCardRef = useRef()    
-    const [pan, setPan] = useState()
-    const [aadharCard, setAadharCard] = useState()
+        const AadharCardRef = useRef()    
+        const PanCardRef = useRef()    
+        const [pan, setPan] = useState()
+        const [aadharCard, setAadharCard] = useState()
 
 
     const [bankDetails, setBankDetails] = useState({
@@ -123,27 +123,27 @@ function BankDetails() {
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-3 mt-3 place-items-center'>
-                <div>
-                    <Label htmlFor="account_Name">Aadhar Card</Label>
-                    {/* <Input type="text" id="account_Card" name="accountName" onChange={(e) => handleChange(e)}/> */}
-                    <Input
-                        ref={AadharCardRef}
-                        id="resume"
-                        type="file"
-                        onChange={(e) => handleFileChange(e, "aadharcard")}
-                        accept=".pdf,.docx,.xlsx"/>
-                </div>
+                    <div>
+                        <Label htmlFor="account_Name">Aadhar Card</Label>
+                        {/* <Input type="text" id="account_Card" name="accountName" onChange={(e) => handleChange(e)}/> */}
+                        <Input
+                            ref={AadharCardRef}
+                            id="resume"
+                            type="file"
+                            onChange={(e) => handleFileChange(e, "aadharcard")}
+                            accept=".pdf,.docx,.xlsx"/>
+                    </div>
 
-                <div>
-                    <Label htmlFor="account_Name">Pan Card</Label>
-                    {/* <Input type="text" id="account_Card" name="accountName" onChange={(e) => handleChange(e)}/> */}
-                    <Input
-                        ref={PanCardRef}
-                        id="resume"
-                        type="file"
-                        onChange={(e) => handleFileChange(e, "pancard")}
-                        accept=".pdf,.docx,.xlsx"/>
-                </div>
+                    <div>
+                        <Label htmlFor="account_Name">Pan Card</Label>
+                        {/* <Input type="text" id="account_Card" name="accountName" onChange={(e) => handleChange(e)}/> */}
+                        <Input
+                            ref={PanCardRef}
+                            id="resume"
+                            type="file"
+                            onChange={(e) => handleFileChange(e, "pancard")}
+                            accept=".pdf,.docx,.xlsx"/>
+                    </div>
 
                 
 

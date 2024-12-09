@@ -30,12 +30,11 @@ function ResumeDisplay() {
   })
 
     const fetchResume = async(id) => {
-        return axios
+        const response = await axios
             .get(`http://localhost:5000/api/trainer/resume/${id}`)
-            .then((res) => {
-                console.log(res.data)
-                setResume(res.data)
-            });
+      
+            setResume(response.data)
+            return response.data
     }
 
     // Query to fetch resume data
@@ -209,7 +208,7 @@ function ResumeDisplay() {
                         resume.isLocked ? <ion-icon style={{fontSize:"20px"}} name="lock-closed-outline"></ion-icon> : <ion-icon style={{fontSize:"20px"}} name="lock-open-outline"></ion-icon>
                     }
                 </div>
-                <Button className="rounded-none  bg-blue-800" disabled={!resume.isLocked} onClick={submitResumeHandler}>Save</Button>
+                <Button className="rounded-none  bg-blue-800" disabled={resume.isLocked} onClick={submitResumeHandler}>Save</Button>
    
             </div>
         {

@@ -111,6 +111,8 @@ router.post("/upload-aadhar-pan/trainer/:trainer", upload.fields([
     console.log(" uploaded ", trainer)
     const files = req.files;
 
+    console.log(files)
+
 
     const panCard = files.pancard[0]
     const aadharCard = files.aadharCard[0]
