@@ -206,6 +206,43 @@ const trainerSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    workingDates: [{
+        name: {
+            type: String,
+            // required: true,
+        },
+        startDate: {
+            type: Date,
+            // required: true,
+        },
+        endDate: {
+            type: Date,
+            // required: true,
+        },
+        startTime: {
+            type: String, // e.g., "09:00 AM"
+            // required: true,
+        },
+        endTime: {
+            type: String, // e.g., "05:00 PM"
+            // required: true,
+        },
+        specialTimings: [{
+            date: {
+                type: Date,
+                // required: true,
+            },
+            startTime: {
+                type: String, // e.g., "09:00 AM"
+                // required: true,
+            },
+            endTime: {
+                type: String, // e.g., "05:00 PM"
+                // required: true,
+            },
+
+        }],
+    }],
     projects: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Project'

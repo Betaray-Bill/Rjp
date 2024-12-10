@@ -19,9 +19,66 @@ import {Button} from "@/components/ui/button";
 // Localizer for react-big-calendar using moment.js const localizer =
 // momentLocalizer(moment);
 
-const CalendarComp = () => {
-    const [events,
-        setEvents] = useState([]);
+const CalendarComp = ({eventsDate}) => {
+
+    const [events, setEvents] = useState([]);
+
+    useEffect(() => {
+        // Transform the eventsDate into FullCalendar events
+        const transformedEvents = eventsDate.flatMap((event) => {
+          const { startDate, endDate, projectName, specialTimings } = event;
+          const eventInstances = [];
+          const currentDate = moment(startDate);
+    
+          while (currentDate.isSameOrBefore(moment(endDate), "day")) {
+            const isSpecialDate = specialTimings.find((special) =>
+              moment(special.date).isSame(currentDate, "day")
+            );
+    
+            // Determine start and end times for the event
+            const eventStart = isSpecialDate
+              ? moment(isSpecialDate.date)
+                  .set({
+                    hour: moment(isSpecialDate.startTime).hours(),
+                    minute: moment(isSpecialDate.startTime).minutes(),
+                  })
+                  .toISOString()
+              : moment(currentDate)
+                  .set({
+                    hour: moment(startDate).hours(),
+                    minute: moment(startDate).minutes(),
+                  })
+                  .toISOString();
+    
+            const eventEnd = isSpecialDate
+              ? moment(isSpecialDate.date)
+                  .set({
+                    hour: moment(isSpecialDate.endTime).hours(),
+                    minute: moment(isSpecialDate.endTime).minutes(),
+                  })
+                  .toISOString()
+              : moment(currentDate)
+                  .set({
+                    hour: moment(endDate).hours(),
+                    minute: moment(endDate).minutes(),
+                  })
+                  .toISOString();
+    
+            eventInstances.push({
+              title: projectName || "Untitled Event",
+              start: eventStart,
+              end: eventEnd,
+            });
+    
+            currentDate.add(1, "day");
+          }
+    
+          return eventInstances;
+        });
+    
+        setEvents(transformedEvents);
+      }, [eventsDate]);
+    
     const [formValues,
         setFormValues] = useState({
         title: "",
@@ -63,6 +120,8 @@ const CalendarComp = () => {
             alert("Please fill all fields for special timing!");
         }
     };
+
+    console.log(eventsDate)
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -139,6 +198,8 @@ const CalendarComp = () => {
 
     const [show,
         setShow] = useState(false)
+
+        console.log(events)
     return (
         <div className="  h-max p-3">
             <div>

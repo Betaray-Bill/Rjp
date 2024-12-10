@@ -535,7 +535,7 @@ function AddProject() {
                                     <DatePicker
                                     // selected={formValues.startDate}
                                     // onChange={(date) => handleInputChange("startDate", date)}
-                                    dateFormat="P"
+                                    dateFormat="dd/MM/yyyy"
                                     name="trainingDates.startDate"
                                     selected={projectData.trainingDates.startDate}
                                      onChange={(date) => handleDateChange(date, "trainingDates.startDate")}
@@ -551,7 +551,7 @@ function AddProject() {
                                     name="trainingDates.endDate"
                                     selected={projectData.trainingDates.endDate}
                                      onChange={(date) => handleDateChange(date, "trainingDates.endDate")}
-                                    dateFormat="P"
+                                    dateFormat="dd/MM/yyyy"
                                     className="px-3 py-2 border border-black ml-2"
                                     required/>
                             </div>
@@ -604,7 +604,7 @@ function AddProject() {
                                         className="px-3 py-2 border border-black ml-2"
                                         selected={specialTimingInput.date}
                                         onChange={(date) => handleSpecialTimingInputChange("date", date)}
-                                        dateFormat="P"/>
+                                        dateFormat="dd/MM/yyyy"/>
                                 </div>
                                 <div>
                                     <Label>Start Time:</Label>

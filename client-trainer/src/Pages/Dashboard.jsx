@@ -6,12 +6,22 @@
 
   function Dashboard() {
     const [data, setData] = useState()
+    const [events, setEvents] = useState()
     const {user} = useSelector((state)=> state.auth)
 
     useEffect(() => {
       if(user){
-          console.log(user)
+          // console.log(user)
           setData(user)
+
+          const dates = user.projects.map((e) => {
+            return {
+              ...e.trainingDates, projectName:e.projectName
+            }
+          })
+
+          // console.log(dates)
+          setEvents(dates)
         }
     }, [user])
     
@@ -30,7 +40,7 @@
                         <span className='ml-4 text-xl'>Training dates</span>
                       </span>
                     </div>
-                    <CalendarComp  eventsDate={data?.availableDate} /> 
+                    <CalendarComp  eventsDate={events} /> 
                   </div>
                 </Fragment>
                 {/* : null
