@@ -83,6 +83,8 @@ function BankDetails() {
         const response = result.data;
         console.log("Connection check result:", response);
 
+        if( bankDetails.aadharCard && bankDetails.pancard ){
+            
         if (result.status == 200) {
             console.log("File is present. Sending data to another API...");
 
@@ -102,7 +104,7 @@ function BankDetails() {
             console.log(res)
             const data = { 
                     ...user.bankDetails,
-                    panCard: res.panCard,
+                    panCard: res.pancard,
                     aadharCard: res.aadharCard
                 
             }
@@ -117,6 +119,15 @@ function BankDetails() {
             setIsEdit(false)
 
         }
+        }else{
+            toast({
+                title: "Bank Details Update",
+                description: "Please upload both Aadhar and Pancard documents",
+                variant: "destructive",
+                duration: 3000,
+            })
+        }
+
     }
 
     // console.log(trainerDetails.trainingDetails)
@@ -235,7 +246,7 @@ function BankDetails() {
                     {/* <Input type="text" id="account_Card" name="accountName" onChange={(e) => handleChange(e)}/> */}
                     {
                         user.bankDetails.aadharCard? 
-                            <a href={bankDetails.aadharCard} target="_blank" rel="noopener noreferrer">View Aadhar Card</a>
+                            <a href={bankDetails.aadharCard} className='px-3 py-2 text-white bg-blue-600 block w-max' target="_blank" rel="noopener noreferrer">View Aadhar Card</a>
                             : <Input
                             ref={AadharCardRef}
                             id="resume"
@@ -250,8 +261,8 @@ function BankDetails() {
                     <Label htmlFor="account_Name">Pan Card</Label>
                     {/* <Input type="text" id="account_Card" name="accountName" onChange={(e) => handleChange(e)}/> */}
                     {
-                        user.bankDetails.pancard? 
-                            <a href={bankDetails.pancard} target="_blank" rel="noopener noreferrer">View Pan Card</a>
+                        user.bankDetails.panCard? 
+                            <a href={bankDetails.panCard} className='px-3 py-2 text-white bg-blue-600 block w-max' target="_blank" rel="noopener noreferrer">View Pan Card</a>
                             : <Input
                             ref={PanCardRef}
                             id="resume"

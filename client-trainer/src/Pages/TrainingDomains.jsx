@@ -218,7 +218,7 @@ function TrainingDomains() {
                                     onClick={() => setIsEdit(true)}
                                     className="flex rounded-none items-center bg-blue-900 border border-black">
                                     {/* <ion-icon name="pencil-outline"></ion-icon> */}
-                                    Add Domain
+                                    Edit / Add Domain
                                 </Button>
                             // </Button>
                             )

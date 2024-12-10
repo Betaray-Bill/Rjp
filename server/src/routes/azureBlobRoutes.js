@@ -114,10 +114,10 @@ router.post("/upload-aadhar-pan/trainer/:trainer", upload.fields([
     console.log(files)
 
 
-    const panCard = files.pancard[0]
+    const pancard = files.pancard[0]
     const aadharCard = files.aadharCard[0]
 
-    console.log("Pancard file:", panCard); // Details of uploaded pancard
+    console.log("pancard file:", pancard); // Details of uploaded pancard
     console.log("AadharCard file:", aadharCard); // Details of uploaded aadhar card
 
     if (!req.files) {
@@ -127,14 +127,14 @@ router.post("/upload-aadhar-pan/trainer/:trainer", upload.fields([
     }
 
     try {
-        const resultPan = await uploadPanAndAadharToBlob(panCard, "pancard", trainer);
+        const resultPan = await uploadPanAndAadharToBlob(pancard, "pancard", trainer);
         const resultAadhar = await uploadPanAndAadharToBlob(aadharCard, "aadharCard", trainer);
 
         res
             .status(200)
             .json({
                 message: "Files uploaded successfully",
-                panCard: resultPan.url,
+                pancard: resultPan.url,
                 aadharCard: resultAadhar.url
             });
     } catch (error) {

@@ -446,7 +446,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice, index}) {
 
                             <tr className='text-center border-gray-600 border'>
                                 <td colSpan="7">
-                                    {convertToIndianWords(
+                                   INR {convertToIndianWords(
                                         Number(purchaseOrder
                                             .details
                                             .description

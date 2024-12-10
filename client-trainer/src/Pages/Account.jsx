@@ -19,6 +19,7 @@ import {Avatar, AvatarImage, AvatarFallback} from "@/components/ui/avatar";
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { useQueryClient } from 'react-query';
 
 const style = {
     position: 'absolute',
@@ -38,7 +39,7 @@ function Account() {
     const [open,
         setOpen] = useState(false);
         const {toast} = useToast()
-
+        const queryClient= useQueryClient()
     const {user} = useSelector(state => state.auth)
 
     const [isEdit, setIsEdit] = useState(false);
@@ -78,8 +79,8 @@ function Account() {
 
    
             toast({
-                title: "Training Domains Updated",
-                description: "Your training domains have been successfully updated",
+                title: "Personal Details Updated",
+                description: "Your details have been successfully updated",
                 variant: "success",
                 duration: 3000,
             })
