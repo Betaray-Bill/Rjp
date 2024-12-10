@@ -234,7 +234,7 @@ function ViewSingleProject() {
       <ViewCompanyContact data={company} contact={contactDetails}/>  
 
       {/* Show the Trainers Added to the  */}
-      <div className='border rounded-md mt-8 py-4 px-3 shadow-sm border-gray-500'>
+      <div className='border rounded-md mt-8 py-4 px-3 shadow-sm border-gray-300'>
         <div className='flex items-center justify-between'>
           <div className='font-semibold'>Trainers</div>
           <Button onClick={scrollToSection} className='flex items-center bg-blue-950 rounded-none'>

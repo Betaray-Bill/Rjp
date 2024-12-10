@@ -35,6 +35,8 @@ import { useToast } from '@/hooks/use-toast'
 import { setDomainResults } from '@/features/searchTrainerSlice'
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 // import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
 // import {Label} from '@/components/ui/label'
 // import {Button} from '@/components/ui//button'
@@ -55,7 +57,10 @@ function AddProject() {
         setOpen] = useState(false)
     const [value,
         setValue] = useState("")
-
+    const [specialTimingInput,
+            setSpecialTimingInput] = useState({date: null, startTime: null, endTime: null});
+    
+    
     const [projectData,
         setProjectData] = useState({
         projectName: '',
@@ -73,32 +78,72 @@ function AddProject() {
         domain: '',
         description: '',
         trainingDates: {
-            startDate: '',
-            endDate: '',
-            timing: ''
+            startDate: null,
+            endDate: null,
+            startTime: null,
+            endTime: null,
+            specialTimings: []
         },
         modeOfTraining: '',
         employees: [],
         trainers: []
     });
+    console.log(projectData)
 
     const [companyData, setCompanyData] = useState([])
     const [companyContactData, setCompanyContactData] = useState([])
 
-    const handleDateChange = (e) => {
-        const {name, value} = e.target;
-        console.log(name, value);
-        const keys = name.split('.');
+    // const handleDateChange = (e) => {
+    //     const {name, value} = e.target;
+    //     console.log(name, value);
+    //     const keys = name.split('.');
 
-        setProjectData(prevData => ({
-            ...prevData,
-            [keys[0]]: {
-                ...prevData.trainingDates,
-                [keys[1]]: value
-            }
-        }));
-    }
+    //     setProjectData(prevData => ({
+    //         ...prevData,
+    //         [keys[0]]: {
+    //             ...prevData.trainingDates,
+    //             [keys[1]]: value
+    //         }
+    //     }));
+    // }
     console.log(projectData)
+
+    const handleDateChange = (value, name) => {
+        // console.log(e)
+        // const { name, value } = e.target;
+        console.log(value, name)
+        const keys = name.split('.');
+    
+        setProjectData((prevData) => {
+            const updatedField = { ...prevData[keys[0]], [keys[1]]: value };
+            return { ...prevData, [keys[0]]: updatedField };
+        });
+    };
+
+    const handleSpecialTimingInputChange = (field, value) => {
+        setSpecialTimingInput((prevInput) => ({
+            ...prevInput,
+            [field]: value,
+        }));
+
+     
+    };
+    
+    const addSpecialTiming = () => {
+        setProjectData((prevData) => ({
+            ...prevData,
+            trainingDates: {
+                ...prevData.trainingDates,
+                specialTimings: [
+                    ...prevData.trainingDates.specialTimings,
+                    specialTimingInput,
+                ],
+            },
+        }));
+        setSpecialTimingInput({ date: null, startTime: null, endTime: null }); // Reset special timing input
+    };
+    
+    
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -215,12 +260,12 @@ function AddProject() {
     };
 
     const [filteredResults, setFilterResults] = useState(domains);
-    console.log(domains)
+    // console.log(domains)
 
     // EMPLOYEE
     const {project} = useSelector(state => state.project)
 
-    console.log(project)
+    // console.log(project)
     // const [open, setOpen] = useState(false)
     // const [valueEmp, setValueEmp] = useState("")
     const [searchTerm, setSearchTerm] = useState("")
@@ -269,7 +314,7 @@ function AddProject() {
         setSelectedEmployees(a)
     }
 
-    console.log(projectData.contactDetails)
+    // console.log(projectData.contactDetails)
 
 
     // Submit the Form
@@ -302,9 +347,11 @@ function AddProject() {
                 domain: '',
                 description: '',
                 trainingDates: {
-                    startDate: '',
-                    endDate: '',
-                    timing: ''
+                    startDate: null,
+                    endDate: null,
+                    startTime: null,
+                    endTime: null,
+                    specialTimings: []
                 },
                 modeOfTraining: '',
                 employee: [],
@@ -465,37 +512,6 @@ function AddProject() {
                                 </Select>
                             </div>
 
-                            <div className="flex items-center justify-between">
-                                <Label className="font-normal mr-4">Training start Date</Label>
-                                <input
-                                    type="datetime-local"
-                                    name="trainingDates.startDate"
-                                    value={projectData.trainingDates.startDate}
-                                    onChange={(e) => handleDateChange(e)}
-                                    className='border px-4 py-1 rounded-sm border-gray-600'
-                                />
-                                   
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <Label className="font-normal mr-4">Training End Date</Label>
-                                <input
-                                    type="datetime-local"
-                                    name="trainingDates.endDate"
-                                    value={projectData.trainingDates.endDate}
-                                    onChange={(e) => handleDateChange(e)}
-                                    className='border px-4 py-1 rounded-sm border-gray-600'
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <Label className="font-normal mr-4">Training Timing</Label>
-                                <Input
-                                    type="text"
-                                    name="trainingDates.timing"
-                                    value={projectData.trainingDates.timing}
-                                    onChange={handleChange}/>
-                            </div>
 
                             <div className="flex items-center justify-between">
                                 <Label className="font-normal mr-4">Amount (₹)</Label>
@@ -505,6 +521,132 @@ function AddProject() {
                                     value={projectData.amount}
                                     onChange={handleChange}/>
                             </div>
+                        </div>
+                    </div>
+
+                     
+                    <div className='mt-10 border rounded-md py-5 px-3'>
+                        <div>
+                            <h2 className='font-semibold '>Training Dates</h2>
+                        </div>
+                        <div className="grid grid-cols-2 gap-8 mt-8">
+                            <div className="flex items-center ">
+                                <Label>Training start Date</Label>
+                                    <DatePicker
+                                    // selected={formValues.startDate}
+                                    // onChange={(date) => handleInputChange("startDate", date)}
+                                    dateFormat="P"
+                                    name="trainingDates.startDate"
+                                    selected={projectData.trainingDates.startDate}
+                                     onChange={(date) => handleDateChange(date, "trainingDates.startDate")}
+                                    className="px-3 py-2 border border-black"
+                                    required/>
+                                   
+                            </div>
+
+                            <div className="flex items-center ">
+                                <Label>Training End Date</Label>
+                                 <DatePicker
+                                    // selected={formValues.endDate}
+                                    name="trainingDates.endDate"
+                                    selected={projectData.trainingDates.endDate}
+                                     onChange={(date) => handleDateChange(date, "trainingDates.endDate")}
+                                    dateFormat="P"
+                                    className="px-3 py-2 border border-black ml-2"
+                                    required/>
+                            </div>
+                            <div>
+                                <Label>Start Time:</Label>
+                                <DatePicker
+                                    // selected={formValues.startTime}
+                                    name="trainingDates.startTime"
+                                    selected={projectData.trainingDates.startTime}
+                                    onChange={(date) => handleDateChange(date, "trainingDates.startTime")}
+                                    showTimeSelect
+                                    showTimeSelectOnly
+                                    timeIntervals={15}
+                                    timeCaption="Time"
+                                    className="px-3 py-2 border border-black ml-2"
+                                    dateFormat="h:mm aa"
+                                    required/>
+                            </div>
+                            <div>
+                                <Label>End Time:</Label>
+                                <DatePicker
+                                    // selected={formselecteds.endTime}
+                                    name="trainingDates.endTime"
+                                    selected={projectData.trainingDates.endTime}
+                                    onChange={(date) => handleDateChange(date, "trainingDates.endTime")}
+                                    showTimeSelect
+                                    showTimeSelectOnly
+                                    timeIntervals={15}
+                                    timeCaption="Time"
+                                    className="px-3 py-2 border border-black ml-2"
+                                    dateFormat="h:mm aa"
+                                    required/>
+                            </div>
+
+                            {/* <div className="flex items-center ">
+                                <Label className="font-normal mr-4">Training Timing</Label>
+                                <Input
+                                    type="text"
+                                    name="trainingDates.timing"
+                                    value={projectData.trainingDates.timing}
+                                    onChange={handleChange}/>
+                            </div> */}
+                        </div>
+                        <div className="  mt-10">
+                            <h4 className="font-semibold my-4">Special Timings</h4>
+                            <div className="grid grid-cols-3">
+                                <div>
+                                    <Label>Date:</Label>
+                                    <DatePicker
+                                        className="px-3 py-2 border border-black ml-2"
+                                        selected={specialTimingInput.date}
+                                        onChange={(date) => handleSpecialTimingInputChange("date", date)}
+                                        dateFormat="P"/>
+                                </div>
+                                <div>
+                                    <Label>Start Time:</Label>
+                                    <DatePicker
+                                        className="px-3 py-2 border border-black ml-2"
+                                        selected={specialTimingInput.startTime}
+                                        onChange={(time) => handleSpecialTimingInputChange("startTime", time)}
+                                        showTimeSelect
+                                        showTimeSelectOnly
+                                        timeIntervals={15}
+                                        timeCaption="Time"
+                                        dateFormat="h:mm aa"/>
+                                </div>
+                                <div>
+                                    <Label>End Time:</Label>
+                                    <DatePicker
+                                        className="px-3 py-2 border border-black ml-2"
+                                        selected={specialTimingInput.endTime}
+                                        onChange={(time) => handleSpecialTimingInputChange("endTime", time)}
+                                        showTimeSelect
+                                        showTimeSelectOnly
+                                        timeIntervals={15}
+                                        timeCaption="Time"
+                                        dateFormat="h:mm aa"/>
+                                </div>
+                            </div>
+                            <div className="mt-8">
+                                <Button type="button" onClick={addSpecialTiming}>
+                                    Add Special Timing
+                                </Button>
+                            </div>
+                            <ul>
+                                {/* {formValues
+                                    .specialTimings
+                                    .map((special, index) => (
+                                        <li key={index}>
+                                            {moment(special.date).format("YYYY-MM-DD")}
+                                            |{" "} {moment(special.startTime).format("h:mm A")}
+                                            -{" "} {moment(special.endTime).format("h:mm A")}
+                                        </li>
+                                    ))} */}
+                            </ul>
                         </div>
                     </div>
 

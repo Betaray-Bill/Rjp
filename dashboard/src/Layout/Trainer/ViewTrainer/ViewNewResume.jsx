@@ -273,33 +273,33 @@ function    ViewNewResume({data, projects}) {
     };
 
     const [resLoading, setResLoading] = useState(false)
-    const sortDataByDomain = (domain) => {
-        // Helper function to sort a single array based on the domain
-        const sortArray = (array, domain) => {
-            if (Array.isArray(array)) {
-                return [...array].sort((a, b) => { // Use spread to create a new array
-                    let aContainsDomain = a.toLowerCase().includes(domain.toLowerCase());
-                    let bContainsDomain = b.toLowerCase().includes(domain.toLowerCase());
-                    return bContainsDomain - aContainsDomain; // Sort items with domain first
-                });
+        const sortDataByDomain = (domain) => {
+            // Helper function to sort a single array based on the domain
+            const sortArray = (array, domain) => {
+                if (Array.isArray(array)) {
+                    return [...array].sort((a, b) => { // Use spread to create a new array
+                        let aContainsDomain = a.toLowerCase().includes(domain.toLowerCase());
+                        let bContainsDomain = b.toLowerCase().includes(domain.toLowerCase());
+                        return bContainsDomain - aContainsDomain; // Sort items with domain first
+                    });
+                }
+                return array;
+            };
+        
+            // Create a deep clone of the `resume` object to avoid direct mutations
+            let data = JSON.parse(JSON.stringify(resume)); // Deep clone
+        
+            // Iterate over each key in the data object and sort if it's an array
+            for (let key in data) {
+                if (Array.isArray(data[key]) && data[key].length > 0 && key !== "projects") {
+                    data[key] = sortArray(data[key], domain); // Sort and reassign the cloned array
+                }
             }
-            return array;
+        
+            setResume(data); // Update the state with the sorted data
+            // return data;
+            console.log(data)
         };
-    
-        // Create a deep clone of the `resume` object to avoid direct mutations
-        let data = JSON.parse(JSON.stringify(resume)); // Deep clone
-    
-        // Iterate over each key in the data object and sort if it's an array
-        for (let key in data) {
-            if (Array.isArray(data[key]) && data[key].length > 0 && key !== "projects") {
-                data[key] = sortArray(data[key], domain); // Sort and reassign the cloned array
-            }
-        }
-    
-        setResume(data); // Update the state with the sorted data
-        // return data;
-        console.log(data)
-    };
     
     // Example usage with "Ansible" as the domain
     // sortDataByDomain("Ansible");

@@ -4,7 +4,7 @@ import TrainerPurchaseListPurchaseGenerate from './TrainerPurchaseListPurchaseGe
 
 function TrainerPurchaseList({trainers, projectName}) {
     return (
-        <div className='border border-gray-500 my-5 rounded-md px-4 drop-shadow-sm'>
+        <div className='border border-gray-300 my-5 rounded-md px-4 drop-shadow-sm'>
             <div className='my-4 font-semibold'>
                 Purchase Order for trainers
             </div>

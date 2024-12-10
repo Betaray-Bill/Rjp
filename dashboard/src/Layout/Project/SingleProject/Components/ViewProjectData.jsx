@@ -57,10 +57,8 @@ function ViewProjectData({projects}) {
             })
         }
 
-
         // window.location.reload()
     }
-
 
     // update Training MOde
     const handleUpdateTraining = async(e) => {
@@ -136,14 +134,11 @@ function ViewProjectData({projects}) {
                 </div>
                 <div className='flex flex-col justify-between'>
                     <h2 className="text-left text-gray-700 mb-[3px]">Mode of Training</h2>
-                    <Select
-                        name="modeOfTraining"
-                    //     onValueChange={(value) => setProjectData(prevData => ({
-                    //     ...prevData,
-                    //     modeOfTraining: value
-                    // }))}
+                    <Select name="modeOfTraining" //     onValueChange={(value) => setProjectData(prevData => ({} //     ...prevData,
+                        //     modeOfTraining: value
+                        // }))}
                     >
-                        <SelectTrigger className="w-[300px]" >
+                        <SelectTrigger className="w-[300px]">
                             <SelectValue placeholder={modeOfTraining || "Select Mode"}/>
                         </SelectTrigger>
                         <SelectContent>
@@ -179,16 +174,62 @@ function ViewProjectData({projects}) {
                         .split('T')[0]}/>
                 </div>
                 <div className='flex flex-col justify-between'>
-                    <h2 className="text-left text-gray-700 mb-[3px]">Timing</h2>
+                    <h2 className="text-left text-gray-700 mb-[3px]">Start Timing</h2>
                     <Input
-                        type="date"
-                        className="text-gray-900 font-medium"
-                        readOnly
-                        value={new Date(trainingDates.endDate)
-                        .toISOString()
-                        .split('T')[0]}/>
+                                    type="text"
+                                    className="text-gray-900 font-medium"
+                                    readOnly
+                                    value={new Date(trainingDates.endTime).toLocaleTimeString()}/>
                 </div>
+                <div className='flex flex-col justify-between'>
+                    <h2 className="text-left text-gray-700 mb-[3px]">End Timing</h2>
+                    <Input
+                                    type="text"
+                                    className="text-gray-900 font-medium"
+                                    readOnly
+                                    value={new Date(trainingDates.endTime).toLocaleTimeString()}/>
+                </div>
+                {/* <div> */}
+
+                {/* </div> */}
             </div>
+
+            {trainingDates
+                    ?.specialTimings.length > 0 &&
+                    (trainingDates.specialTimings.map((time, _i) => (
+                        <Fragment key={_i} className="my-2 mt-4">
+                            <h2 className='mt-8 font-semibold'>Special Training Dates</h2>
+                            <div className='grid grid-cols-3 gap-5 mt-4'>
+                                <div className='flex flex-col justify-between'>
+                                    <h2 className="text-left text-gray-700 mb-[3px]">Special Date</h2>
+                                    <Input
+                                        type="date"
+                                        className="text-gray-900 font-medium"
+                                        readOnly
+                                        value={new Date(time.date)
+                                        .toISOString()
+                                        .split('T')[0]}/>
+                                </div>
+                                <div className='flex flex-col justify-between'>
+                                    <h2 className="text-left text-gray-700 mb-[3px]">Start Timing</h2>
+                                    <Input
+                                        type="text"
+                                        className="text-gray-900 font-medium"
+                                        readOnly
+                                        value={new Date(time.startTime).toLocaleTimeString()}/>
+                                </div>
+                                <div className='flex flex-col justify-between'>
+                                    <h2 className="text-left text-gray-700 mb-[3px]">End Timing</h2>
+                                    <Input
+                                        type="text"
+                                        className="text-gray-900 font-medium"
+                                        readOnly
+                                        value={new Date(time.endTime).toLocaleTimeString()}/>
+                                </div>
+                            </div>
+                        </Fragment>
+                    )))
+}
         </div>
     )
 }

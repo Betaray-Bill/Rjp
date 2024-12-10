@@ -38,7 +38,24 @@ const createProject = asyncHandler(async(req, res) => {
         employees,
         // stage:"Training Requirement"
     } = req.body;
+    console.log("-------------")
+    console.log("-------------")
+    console.log("-------------")
+    console.log("-------------")
+    console.log("-------------")
+    console.log("-------------")
+    console.log("-------------")
+
     console.log(req.body)
+
+    console.log("-------------")
+    console.log("-------------")
+    console.log("-------------")
+    console.log("-------------")
+    console.log("-------------")
+    console.log("-------------")
+    console.log("-------------")
+
     const stage = "Training Requirement"
 
     // Validate required fields
@@ -78,7 +95,9 @@ const createProject = asyncHandler(async(req, res) => {
             trainingDates: {
                 startDate: trainingDates.startDate,
                 endDate: trainingDates.endDate,
-                timing: trainingDates.timing
+                startTime: trainingDates.startTime,
+                endTime: trainingDates.endTime,
+                specialTimings: trainingDates.specialTimings
             },
             modeOfTraining,
             stages: stage
