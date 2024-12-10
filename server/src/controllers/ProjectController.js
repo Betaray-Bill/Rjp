@@ -445,6 +445,28 @@ const getProjectDetails = asyncHandler(async(req, res) => {
     res.json({ project });
 })
 
+// Update Training
+const updateTraining = asyncHandler(async(req, res) => {
+    const { projectId, trainerId } = req.params;
+    // const { trainerType, resumeVersion } = req.body;
+    console.log(req.body)
+    const project = await Project
+        .findByIdAndUpdate(projectId, {
+            $set: {
+                ...req.body
+            },
+            arrayFilters: [{ "_id": trainerId }]
+        }, { new: true });
+
+    if (!project) {
+        return res
+            .status(404)
+            .json({ message: "Project not found" });
+    }
+
+    res.json({ project });
+})
+
 // Update Project Stage
 const updateStage = asyncHandler(async(req, res) => {
     const { projectId } = req.params;
@@ -1150,6 +1172,7 @@ export {
     checkListUpdate,
     getAllNotes,
     getProjectForTrainer,
+    updateTraining,
     isClientCallDone,
     uploadPOUrl_Trainer,
     upload_Invoice_Url_Trainer,
