@@ -16,7 +16,7 @@ import {Label} from "@/components/ui/Label";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 
-// Localizer for react-big-calendar using moment.js const localizer =
+// Localizer for react-big-calendar using npm run dev.js const localizer =
 // momentLocalizer(moment);
 
 const CalendarComp = ({eventsDate}) => {
@@ -25,7 +25,7 @@ const CalendarComp = ({eventsDate}) => {
 
     useEffect(() => {
         // Transform the eventsDate into FullCalendar events
-        const transformedEvents = eventsDate.flatMap((event) => {
+        const transformedEvents = eventsDate?.flatMap((event) => {
           const { startDate, endDate, projectName, specialTimings } = event;
           const eventInstances = [];
           const currentDate = moment(startDate);

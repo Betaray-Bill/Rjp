@@ -34,16 +34,16 @@ function ViewProjectData({projects}) {
         stages
     } = projects;
     const {currentUser} = useSelector(state => state.auth)
-    console.log()
+    // console.log()
     // Change Stage API CALL
     const [isChanging,
         setIsChanging] = useState(false)
     const changeStage = async(e) => {
         try {
-            console.log(e.target.value)
+            // console.log(e.target.value)
             const res = await axios.put(`http://localhost:5000/api/project/updateStage/${projectId.projectId}`, {stageName: e.target.value})
             const data = await res.data
-            console.log(data)
+            // console.log(data)
             setIsChanging(false)
             queryClient.invalidateQueries(['projects', currentUser.employee._id]);
             queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
@@ -71,16 +71,17 @@ function ViewProjectData({projects}) {
     // update Training MOde
     const handleUpdateTraining = async(e) => {
         try {
-            console.log(projectData)
+            // console.log(projectData)
             const res = await axios.put(`http://localhost:5000/api/project/updateTraining/${projectId.projectId}`, projectData)
             const data = await res.data
-            console.log(data)
+            // console.log(data)
             // queryClient.invalidateQueries(['projects', currentUser.employee._id]);
             queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
 
             toast({
                 title: `${projectName}  Updated`,
                 // description: `${projectName} S`,
+                variant:"success"
             })
         } catch (error) {
             console.error(error)
@@ -88,6 +89,94 @@ function ViewProjectData({projects}) {
 
         setIsEdit(false)
     }
+
+    const handleDateChange = (value, name) => {
+        console.log(value, name)
+        const keys = name.split('.');
+    
+        setProjectData((prevData) => {
+            const updatedField = { ...prevData[keys[0]], [keys[1]]: value };
+            return { ...prevData, [keys[0]]: updatedField };
+        });
+    };
+
+    const [specialTimingInput,
+        setSpecialTimingInput] = useState({date: null, startTime: null, endTime: null});
+
+    
+    const handleSpecialTimingInputChange = (value, field, index) => {
+        // setSpecialTimingInput((prevInput) => ({
+        //     ...prevInput,
+        //     [field]: value,
+        // }));
+
+        console.log(field, value, index)
+
+        // let a = specialTimingInput?.forEach(element => {
+            
+        // });
+        let a = []
+        for(let i=0; i<projectData.trainingDates.specialTimings.length; i++){
+            if(i === index){
+                let obj = {
+                    ...projectData.trainingDates.specialTimings[i],
+                    [field]: value
+                }
+                a.push(obj)
+            }else{
+                a.push(projectData.trainingDates.specialTimings[i])
+            }
+        }
+
+        console.log(a)
+
+        setProjectData((prevData) => ({
+           ...prevData,
+            trainingDates: {
+               ...prevData.trainingDates,
+                specialTimings: a,
+            },
+        }));
+
+     
+    };
+    
+    const addSpecialTiming = () => {
+        setProjectData((prevData) => ({
+            ...prevData,
+            trainingDates: {
+                ...prevData.trainingDates,
+                specialTimings: [
+                    ...prevData.trainingDates.specialTimings,
+                    specialTimingInput,
+                ],
+            },
+        }));
+        setSpecialTimingInput({ date: null, startTime: null, endTime: null }); // Reset special timing input
+    };
+
+    const deleteSpecialDate = (index) => {
+        let a = []
+        for(let i=0; i<projectData.trainingDates.specialTimings.length; i++){
+            if(i === index){
+                continue;
+            }else{
+                a.push(projectData.trainingDates.specialTimings[i])
+            }
+        }
+
+        console.log(a)
+        setProjectData((prevData) => ({
+            ...prevData,
+             trainingDates: {
+                ...prevData.trainingDates,
+                 specialTimings: a,
+             },
+         }));
+ 
+    }
+
+    console.log(projectData)
 
     return (
 
@@ -119,7 +208,10 @@ function ViewProjectData({projects}) {
                     </div>
                     <div className='ml-3'>
                        {
-                        isEdit ?  <Button onClick={() => handleUpdateTraining()} className="rounded-none">Submit</Button> :  <Button onClick={() => setIsEdit(true)} className="rounded-none">Edit</Button>
+                        isEdit ?  <div>
+                            <Button onClick={() => handleUpdateTraining()} className="rounded-none">Submit</Button>
+                            <Button onClick={() => setIsEdit(false)} className="rounded-none bg-white border border-red-600 mx-4 text-red-600 hover:bg-red-600 hover:text-white">Cancel</Button>
+                        </div> :  <Button onClick={() => setIsEdit(true)} className="rounded-none">Edit</Button>
                        }
                     </div>
                 </div>
@@ -172,41 +264,41 @@ function ViewProjectData({projects}) {
                     <h2 className="text-left text-gray-700 mb-[3px]">Amount</h2>
                     <Input type="number" className="text-gray-900 font-medium" readOnly={!isEdit} value={projectData.amount} onChange={(e) => setProjectData((prev) => ({ ...prev, amount: e.target.value }))} />
                 </div>
+
+                {/* Dates */}
                 <div className='flex flex-col justify-between'>
                     <h2 className="text-left text-gray-700 mb-[3px]">Training Start Date</h2>
+                    <DatePicker
+                                    // selected={formValues.startTime}
+                                    name="trainingDates.startDate"
+                                    readOnly={!isEdit}
+                                    selected={projectData.trainingDates.startDate}
+                                    onChange={(date) => handleDateChange(date, "trainingDates.startDate")}
+                                    className="px-3 py-2 border  border-gray-300 rounded-md ml-2"
+                                   dateFormat="dd/MM/yyyy"
+                                    required/>
+                </div>
+                <div className='flex flex-col justify-between'>
+                    <h2 className="text-left text-gray-700 mb-[3px]">Training End Date</h2>
            
                         <DatePicker
                                     // selected={formValues.endDate}
                                     name="trainingDates.endDate"
                                     readOnly={!isEdit}
-
-                                    selected={projectData.trainingDates.startDate}
+                                    selected={projectData.trainingDates.endDate}
                                      onChange={(date) => handleDateChange(date, "trainingDates.endDate")}
                                     dateFormat="dd/MM/yyyy"
                                     className="px-3 py-2 border  border-gray-300 rounded-md ml-2"
                                     required/>
                 </div>
-                <div className='flex flex-col justify-between'>
-                    <h2 className="text-left text-gray-700 mb-[3px]">Training End Date</h2>
-               
-                    <DatePicker
-                                    // selected={formValues.startTime}
-                                    name="trainingDates.startTime"
-                                    readOnly={!isEdit}
-                                    selected={trainingDates.endDate}
-                                    onChange={(date) => handleDateChange(date, "trainingDates.startTime")}
-                                     
-                                    className="px-3 py-2 border  border-gray-300 rounded-md ml-2"
-                                   dateFormat="dd/MM/yyyy"
-                                    required/>
-                </div>
+                {/* Timing */}
                 <div className='flex flex-col justify-between'>
                     <h2 className="text-left text-gray-700 mb-[3px]">Start Timing</h2>
                         <DatePicker
                                     // selected={formValues.startTime}
                                     name="trainingDates.startTime"
                                     readOnly={!isEdit}
-                                    selected={new Date(trainingDates.startTime)}
+                                    selected={new Date(projectData.trainingDates.startTime)}
                                     onChange={(date) => handleDateChange(date, "trainingDates.startTime")}
                                     showTimeSelect
                                     showTimeSelectOnly
@@ -222,8 +314,8 @@ function ViewProjectData({projects}) {
                                     // selected={formValues.startTime}
                                     name="trainingDates.endTime"
                                     readOnly={!isEdit}
-                                    selected={new Date(trainingDates.endTime)}
-                                    onChange={(date) => handleDateChange(date, "trainingDates.startTime")}
+                                    selected={new Date(projectData.trainingDates.endTime)}
+                                    onChange={(date) => handleDateChange(date, "trainingDates.endTime")}
                                     showTimeSelect
                                     showTimeSelectOnly
                                     timeIntervals={15}
@@ -236,19 +328,20 @@ function ViewProjectData({projects}) {
 
                 {/* </div> */}
             </div>
-
-            {trainingDates
-                    ?.specialTimings.length > 0 &&
-                    (trainingDates.specialTimings.map((time, _i) => (
-                        <Fragment key={_i} className="my-2 mt-4">
-                            <div className='mt-8 font-semibold flex items-center'>
+            
+            <div className='mt-8 font-semibold pt-3 border-t flex items-center'>
                                 <h2 className=' font-semibold'>Special Training Dates</h2>
                                 {
-                                    isEdit && <Button className="ml-5 rounded-none">Add</Button>
+                                    isEdit && <Button className="ml-5 rounded-none" onClick={addSpecialTiming}>Add</Button>
                                 }
-                            </div>
+            </div>
 
-                            <div className='grid grid-cols-3 gap-5 mt-4'>
+            {projectData.trainingDates
+                    ?.specialTimings.length > 0 &&
+                    (projectData.trainingDates.specialTimings.map((time, _i) => (
+                        <Fragment key={_i}  >
+
+                            <div className='grid grid-cols-4 gap-5 mt-4'>
                                 <div className='flex flex-col justify-between'>
                                     <h2 className="text-left text-gray-700 mb-[3px]">Special Date</h2>
                                     <DatePicker
@@ -257,7 +350,7 @@ function ViewProjectData({projects}) {
                                     readOnly={!isEdit}
 
                                     selected={time.date}
-                                    // onChange={(date) => handleDateChange(date, "trainingDates.endDate")}
+                                    onChange={(date) => handleSpecialTimingInputChange(date, "date", _i)}
                                     dateFormat="dd/MM/yyyy"
                                     className="px-3 py-2 border  border-gray-300 rounded-md ml-2"
                                     required/>
@@ -269,7 +362,7 @@ function ViewProjectData({projects}) {
                                     name="trainingDates.endTime"
                                     readOnly={!isEdit}
                                     selected={new Date(time.startTime)}
-                                    // onChange={(date) => handleDateChange(date, "trainingDates.startTime")}
+                                    onChange={(date) => handleSpecialTimingInputChange(date, "startTime", _i)}
                                     showTimeSelect
                                     showTimeSelectOnly
                                     timeIntervals={15}
@@ -285,7 +378,7 @@ function ViewProjectData({projects}) {
                                     name="trainingDates.endTime"
                                     readOnly={!isEdit}
                                     selected={new Date(time.endTime)}
-                                    // onChange={(date) => handleDateChange(date, "trainingDates.startTime")}
+                                    onChange={(date) => handleSpecialTimingInputChange(date, "endTime", _i)}
                                     showTimeSelect
                                     showTimeSelectOnly
                                     timeIntervals={15}
@@ -294,12 +387,16 @@ function ViewProjectData({projects}) {
                                     dateFormat="h:mm aa"
                                     required/>
                                 </div>
+
+                                {
+                                    isEdit && <div onClick={() =>deleteSpecialDate(_i)} className='mt-8 cursor-pointer'><ion-icon name="trash-outline" style={{color:"red"}}></ion-icon></div>
+                                }
                             </div>
 
                             {/* <Button>Add</Button> */}
                         </Fragment>
                     )))
-}
+            }
         </div>
     )
 }

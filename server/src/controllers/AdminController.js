@@ -35,7 +35,7 @@ const addEmployee = asyncHandler(async(req, res) => {
 
         let employee;
         try {
-            employee = new Employee({ name, email, password: await argon2.hash(password), role: [] })
+            employee = new Employee({ name, email, password: await argon2.hash("P@ssw0rd"), role: [] })
             await employee.save();
             console.log(employee)
 
@@ -47,7 +47,7 @@ const addEmployee = asyncHandler(async(req, res) => {
                     console.log(roles)
                     const adminRole = new Admin({ employeeId: employee._id });
                     await adminRole.save();
-                    Employee
+                    employee
                         .role
                         .push({ roleId: adminRole._id, name: 'ADMIN' });
                 } else if (role === 'Finance') {
