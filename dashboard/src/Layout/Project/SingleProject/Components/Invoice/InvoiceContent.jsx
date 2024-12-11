@@ -15,7 +15,7 @@ function InvoiceContent({index, invoice ,id}) {
 
 
     const [paidContent,
-        setPaidContent] = useState({isPaid: false, index: index, description: "", trainerId:id})
+        setPaidContent] = useState({isPaid: invoice.isPaid , index: index, description: invoice.description,  trainerId:id})
 
     console.log(paidContent)
 
@@ -67,7 +67,7 @@ function InvoiceContent({index, invoice ,id}) {
 
                             {show && <div className='flex items-center mt-6'>
                                 {/* <Button>Paid</Button> */}
-                                <Input type="text" className="mx-3" onChange={(e) => setPaidContent((p) =>( {...p, description:e.target.value}))}/>
+                                <Input type="text" className="mx-3" onChange={(e) => setPaidContent((p) =>( {...p, description:e.target.value}))} value={invoice.description ? invoice.description : paidContent.description}/>
                                 <Button className="rounded-none bg-green-600 mx-3" onClick={() => setPaidContent((p) =>( {...p, isPaid:!p.isPaid}))}>{paidContent.isPaid ? "Paid" : "Pay"}</Button>
                                 <Button className="rounded-none bg-black" onClick={sendPaidINfoToINvoice}>Send</Button>
                             </div>

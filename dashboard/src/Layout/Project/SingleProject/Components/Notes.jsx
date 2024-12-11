@@ -255,14 +255,14 @@ function Notes({projectName, projectId}) {
                                                 <div key={i} className="flex items-start justify-start mt-[20px]">
                                                     <Avatar>
                                                         <AvatarImage src={item.photo_url || "https://via.placeholder.com/150"}/>
-                                                        <AvatarFallback>{item
+                                                        <AvatarFallback className="text-sm">{item
                                                                 .sent
                                                                 .charAt(0)
                                                                 .toUpperCase()}</AvatarFallback>
                                                     </Avatar>
                                                     <div className="ml-2">
                                                         <div className="flex items-center justify-between">
-                                                            <p className="font-normal text-md text-slate-700">{item.sent}</p>
+                                                            <p className="font-normal text-sm text-slate-700">{item.sent}</p>
                                                             {/* <span className='text-slate-700 text-sm'> */}
                                                         </div>
                                                         <div className='flex items-end'>
@@ -271,7 +271,7 @@ function Notes({projectName, projectId}) {
                                                                     ? (
                                                                         <div className='flex items-end'>
                                                                             <div className="w-max bg-blue-50 font-normal rounded-md px-3 py-2 mt-[4px]">
-                                                                                <p>{item.text.content}</p>
+                                                                                <p className='text-sm'>{item.text.content}</p>
                                                                             </div>
                                                                             {/* <span className='text-slate-700 ml-2'>
                                                                 {new Date(item.timestamps).toLocaleDateString()}</span> */}
@@ -294,7 +294,7 @@ function Notes({projectName, projectId}) {
                                                                     : null}
                                                             </div>
                                                             <span className='text-slate-700 ml-4 text-[14px]'>
-                                                                {new Date(item.timestamps).toLocaleTimeString()}
+                                                                {/* {new Date(item.timestamps).} */}
                                                             </span>
                                                         </div>
 
