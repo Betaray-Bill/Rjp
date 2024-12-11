@@ -46,6 +46,17 @@ app.use("/api/resumeextractor", azureRoutes); // Azure routes for checking conne
 app.use("/api/filestorage", azureBlobRoutes);
 app.use("/api/project", projectRoutes)
 
+app.use((err, req, res, next) => {
+    console.error(err.stack); // Log the error for debugging
+
+    const statusCode = err.status || 500;
+    res.status(statusCode).json({
+        success: false,
+        message: err.message || 'Internal Server Error',
+    });
+});
+
+
 
 // Start server
 app.listen(PORT, () => {

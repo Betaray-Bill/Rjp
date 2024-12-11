@@ -246,7 +246,7 @@ function BankDetails() {
                     {/* <Input type="text" id="account_Card" name="accountName" onChange={(e) => handleChange(e)}/> */}
                     {
                         user.bankDetails.aadharCard? 
-                            <a href={bankDetails.aadharCard} className='px-3 py-2 text-white bg-blue-600 block w-max' target="_blank" rel="noopener noreferrer">View Aadhar Card</a>
+                            <a href={user.bankDetails.aadharCard} className='px-3 py-2 text-white bg-blue-600 block w-max' target="_blank" rel="noopener noreferrer">View Aadhar Card</a>
                             : <Input
                             ref={AadharCardRef}
                             id="resume"
@@ -262,7 +262,7 @@ function BankDetails() {
                     {/* <Input type="text" id="account_Card" name="accountName" onChange={(e) => handleChange(e)}/> */}
                     {
                         user.bankDetails.panCard? 
-                            <a href={bankDetails.panCard} className='px-3 py-2 text-white bg-blue-600 block w-max' target="_blank" rel="noopener noreferrer">View Pan Card</a>
+                            <a href={user.bankDetails.panCard} className='px-3 py-2 text-white bg-blue-600 block w-max' target="_blank" rel="noopener noreferrer">View Pan Card</a>
                             : <Input
                             ref={PanCardRef}
                             id="resume"

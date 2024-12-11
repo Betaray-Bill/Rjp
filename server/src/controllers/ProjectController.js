@@ -60,18 +60,14 @@ const createProject = asyncHandler(async(req, res) => {
 
     // Validate required fields
     if (!projectName || !domain || !company || !trainingDates || !modeOfTraining) {
-        return res
-            .status(400)
-            .json({ message: "Required fields are missing." });
+        throw new Error('Required fields are missing.');
     }
 
     // Save the Project to the Company Check if company exists
     const companyExists = await Company.find({ companyName: company.name });
     console.log(companyExists)
     if (!companyExists) {
-        return res
-            .status(404)
-            .json({ message: "Company not found." });
+        throw new Error('Company not found.');
     }
 
     // await stagePipelineExists Save the Project
@@ -167,13 +163,14 @@ const createProject = asyncHandler(async(req, res) => {
 
         return res
             .status(200)
-            .json({ message: 'Project created.', project: newProject });
+            .json({ success: true, message: 'Project created.', project: newProject });
 
     } catch (err) {
         console.log(err)
-        return res
-            .status(500)
-            .json({ message: 'Error creating project.', error: err.message });
+        next(error);
+        // return res
+        //     .status(500)
+        //     .json({ message: 'Error creating project.', error: err.message });
     }
 })
 
@@ -293,12 +290,13 @@ const getProject = asyncHandler(async(req, res) => {
         .findById(empId)
         .populate('role.roleId')
     console.log("EMP", employee.role[0].roleId)
+    console.log(1)
 
     // Extract the projects assigned to the employee
     let assignedProjects = []
     for (let i = 0; i < employee.role.length; i++) {
         console.log(employee.role[i].name)
-
+        console.log(2)
         if (employee.role[i].name === 'KeyAccounts') {
             // console.log("Key acc", employee.role.populate('roleId'))
             assignedProjects = employee
@@ -325,25 +323,13 @@ const getProject = asyncHandler(async(req, res) => {
                 });
 
             console.log(projects)
-            res.json({ projects: projects[0].stages });
+            return res.json({ projects: projects[0].stages });
 
             break;
         }
 
         if (employee.role[i].name === 'Finance') {
-            // // console.log("Key acc", employee.role.populate('roleId')) const projects =
-            // await Pipeline.aggregate([{     $project: {         stages: { $map: { input:
-            // "$stages",                 as: "stage",          in: { name: "$$stage.name",
-            // projects: {                         $map: { input: "$$stage.projectDetails",
-            // // Map over the projectDetails array as: "project",   in: { projectName:
-            // "$$project.projectName",                domain: "$$project.domain", company:
-            // "$$project.company.name", trainingDates: "$$project.trainingDates",
-            // projectOwner: {  name: { $arrayElemAt: ["$$project.projectOwnerDetails.name",
-            // 0] }, email: {       $arrayElemAt:
-            // ["$$project.projectOwnerDetails.contactDetails.email", 0]                 },
-            //                      phone: { $arrayElemAt:
-            // ["$$project.projectOwnerDetails.contactDetails.phone", 0]           } }   }
-            // // } //                     } // } //   } //         } //     } // }]);
+
             const pipelines = await Pipeline.find({}, "stages").populate({
                 path: 'stages.projects', // Populate 'projects' within each stage
                 select: 'projectName domain company.name trainingDates', // Select specific fields from 'Project'
@@ -377,6 +363,8 @@ const getProject = asyncHandler(async(req, res) => {
             break;
         }
     }
+
+    // Only for Key Accounts
     try {
         const projects = await Pipeline
             .find()

@@ -94,7 +94,7 @@ function SingleProject() {
 
                     <div className='flex items-center'>
                         <Label className="opacity-70">Timing -</Label>
-                        <span className='ml-2 text-black-900 font-semibold'>{new Date(data.trainingDates.startTime).toLocaleTimeString()} to {new Date(data.trainingDates.endTime).toLocaleTimeString()}</span>
+                        <span className='ml-2 text-black-900 font-semibold'>{new Date(data.trainingDates.startTime).toLocaleTimeString()}   to {new Date(data.trainingDates.endTime).toLocaleTimeString()}</span>
                     </div>
                     {/* <div className='flex items-center'>
                         <Label className="opacity-70">End Date -</Label>

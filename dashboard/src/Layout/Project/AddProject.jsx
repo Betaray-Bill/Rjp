@@ -368,6 +368,23 @@ function AddProject() {
 
         }catch(err){
             console.error('Error:', err);
+            if (err.response) {
+                toast({
+                    title: "Project Not Created",
+                    variant:"destructive",
+                    description: `${err.response.data.message}`,
+                })
+                // setError(err.response.data.message); // Backend error message
+            } else {
+                // setError('An unexpected error occurred.');
+                toast({
+                    title: "Project Not Created",
+                    variant:"destructive",
+                    description: 'An unexpected error occurred'
+                    // description: "Friday, February 10, 2023 at 5:57 PM",
+                })
+            }
+           
         }
     }
 
