@@ -109,7 +109,7 @@ function SingleProject() {
                     }
                     {data.trainingDates.specialTimings
                         ?.map((e, i) => (
-                            <div className='grid grid-cols-3 gap-5 my-4'>
+                            <div className='grid grid-cols-3 gap-5 my-4' key={i}>
                                 <div className='flex items-center'>
                                     <Label className="opacity-70">Date -</Label>
                                     <span className='ml-2 text-black-900 font-semibold'>{new Date(e.date).toLocaleDateString()}</span>

@@ -225,7 +225,7 @@ function IndividualPO({purchaseOrder, index}) {
                                             .details
                                             .description
                                             .map((row, index) => (
-                                                <tr key={row.id}>
+                                                <tr key={index}>
                                                     <td className="border border-gray-300 px-4 py-2 text-center">
                                                         {index + 1}
                                                     </td>
