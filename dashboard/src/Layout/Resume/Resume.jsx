@@ -123,13 +123,17 @@ function Resume() {
     
     const allContent = [
         { title: "PROFESSIONAL SUMMARY", content: data['professionalSummary'] },
-        { title: "TECHNICAL SKILLS", content: data['technicalSkills'] },
-        { title: "CLIENTELE", content: data['clientele'] },
-        { title: "CAREER HISTORY", content: data['careerHistory'] },
-        { title: "TRAININGS DELIVERED", content: data['trainingsDelivered'] },
         { title: "EXPERIENCE", content: data['experience'] },
-        { title: "CERTIFICATIONS", content: data['certifications'] },
+        { title: "TECHNICAL SKILLS", content: data['technicalSkills'] },
         { title: "EDUCATION", content: data['education'] },
+        { title: "CERTIFICATIONS", content: data['certifications'] },
+        { title: "CLIENTELE", content: data['clientele'] },
+        { title: "TRAININGS DELIVERED", content: data['trainingsDelivered'] },
+        { title: "CAREER HISTORY", content: data['careerHistory'] },
+        // { title: "TRAININGS DELIVERED", content: data['trainingsDelivered'] },
+        // { title: "EXPERIENCE", content: data['experience'] },
+        // { title: "CERTIFICATIONS", content: data['certifications'] },
+        // { title: "EDUCATION", content: data['education'] },
     ].filter(item => item.content.length > 0);  // Filter out empty sections
     
     // Shuffle the content for randomness
@@ -187,7 +191,7 @@ function Resume() {
                                 <ul className="list-disc pl-5 space-y-2">
                                     {section.content.map((item, _i) => (
                                     <li className="text-justify leading-7 flex items-center" key={_i}>
-                                        <span>{_i+1}. </span><span className='ml-1'> { item}</span>
+                                        <span> </span><span className='ml-1'> { item}</span>
                                     </li>
                                     ))}
                                 </ul>

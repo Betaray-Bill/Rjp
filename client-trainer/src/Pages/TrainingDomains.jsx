@@ -224,7 +224,11 @@ function TrainingDomains() {
                             )
                             : (
                             // onClick={submitHandler} 
-                            <Button className = "rounded-none" onClick={submitHandler} > Submit </Button>
+                            <div>
+                                <Button className = "rounded-none bg-white border mx-5 hover:bg-red-200 border-red-600 text-red-600" onClick={() => setIsEdit(false)}> Cancel </Button>
+                                <Button className = "rounded-none" onClick={submitHandler} > Submit </Button>
+                                {/* <Button className = "rounded-none bg-white border mx-5 hover:bg-red-200 border-red-600 text-red-600" onClick={() => setIsEdit(false)}> Cancel </Button> */}
+                            </div>
                         )}
                     </div>
 

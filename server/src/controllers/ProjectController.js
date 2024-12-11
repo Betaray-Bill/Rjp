@@ -167,7 +167,7 @@ const createProject = asyncHandler(async(req, res) => {
 
     } catch (err) {
         console.log(err)
-        next(error);
+        next(err);
         // return res
         //     .status(500)
         //     .json({ message: 'Error creating project.', error: err.message });

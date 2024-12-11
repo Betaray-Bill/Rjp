@@ -1,6 +1,6 @@
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import React, {Fragment, useState} from 'react'
+import React, {Fragment, useEffect, useState} from 'react'
 import {Skeleton} from "@/components/ui/skeleton"
 import axios from 'axios';
 import {useParams} from 'react-router-dom';
@@ -67,6 +67,10 @@ function ViewProjectData({projects}) {
     const [isEdit, setIsEdit] = useState(false)
 
     const [projectData, setProjectData] = useState({...projects})
+
+    useEffect(() => {
+        // setProjectData({...projectData})
+    }, [])
 
     // update Training MOde
     const handleUpdateTraining = async(e) => {
@@ -187,16 +191,17 @@ function ViewProjectData({projects}) {
                 <div className='flex items-center justify-between'>
                     <div
                         className='flex  items-center justify-between'
-                        onChange={(e) => {
-                        changeStage(e)
-                    }}>
+                        >
                         <Label>Stage</Label>
                         <select
                             name="pipeline"
                             id=""
+                            onChange={(e) => {
+                                changeStage(e)
+                            }}
                             // disabled={!is}
                             className='ml-3 font-semibold'
-                            value={projectData.stages || ''}>
+                            value={stages || ''}>
                                 <option value="Training Requirement">Training Requirement</option>
                                 <option value="Reply">Reply</option>
                                 <option value="Proposal Sent">Proposal Sent</option>
@@ -217,7 +222,7 @@ function ViewProjectData({projects}) {
                 </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-6 mt-8 place-content-center">
+            <div className="grid grid-cols-3 gap-6 mt-6 place-content-center">
                 <div className='flex flex-col justify-between'>
                     <h2 className="text-left text-gray-700 mb-[3px]">Project Owner</h2>
                     <Input
@@ -330,7 +335,7 @@ function ViewProjectData({projects}) {
             </div>
             
             <div className='mt-8 font-semibold pt-3 border-t flex items-center'>
-                                <h2 className=' font-semibold'>Special Training Dates</h2>
+                                <h2 className=' font-semibold'>Exception Date and Time</h2>
                                 {
                                     isEdit && <Button className="ml-5 rounded-none" onClick={addSpecialTiming}>Add</Button>
                                 }
@@ -343,7 +348,7 @@ function ViewProjectData({projects}) {
 
                             <div className='grid grid-cols-4 gap-5 mt-4'>
                                 <div className='flex flex-col justify-between'>
-                                    <h2 className="text-left text-gray-700 mb-[3px]">Special Date</h2>
+                                    <h2 className="text-left text-gray-700 mb-[3px]">Date</h2>
                                     <DatePicker
                                     // selected={formValues.endDate}
                                     name="trainingDates.endDate"

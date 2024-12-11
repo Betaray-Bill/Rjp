@@ -21,64 +21,56 @@ import {Button} from "@/components/ui/button";
 
 const CalendarComp = ({eventsDate}) => {
 
-    const [events, setEvents] = useState([]);
+    const [events,
+        setEvents] = useState([]);
 
     useEffect(() => {
         // Transform the eventsDate into FullCalendar events
-        const transformedEvents = eventsDate?.flatMap((event) => {
-          const { startDate, endDate, projectName, specialTimings } = event;
-          const eventInstances = [];
-          const currentDate = moment(startDate);
-    
-          while (currentDate.isSameOrBefore(moment(endDate), "day")) {
-            const isSpecialDate = specialTimings.find((special) =>
-              moment(special.date).isSame(currentDate, "day")
-            );
-    
-            // Determine start and end times for the event
-            const eventStart = isSpecialDate
-              ? moment(isSpecialDate.date)
-                  .set({
-                    hour: moment(isSpecialDate.startTime).hours(),
-                    minute: moment(isSpecialDate.startTime).minutes(),
-                  })
-                  .toISOString()
-              : moment(currentDate)
-                  .set({
-                    hour: moment(startDate).hours(),
-                    minute: moment(startDate).minutes(),
-                  })
-                  .toISOString();
-    
-            const eventEnd = isSpecialDate
-              ? moment(isSpecialDate.date)
-                  .set({
-                    hour: moment(isSpecialDate.endTime).hours(),
-                    minute: moment(isSpecialDate.endTime).minutes(),
-                  })
-                  .toISOString()
-              : moment(currentDate)
-                  .set({
-                    hour: moment(endDate).hours(),
-                    minute: moment(endDate).minutes(),
-                  })
-                  .toISOString();
-    
-            eventInstances.push({
-              title: projectName || "Untitled Event",
-              start: eventStart,
-              end: eventEnd,
+        const transformedEvents = eventsDate
+            ?.flatMap((event) => {
+                const {startDate, endDate, projectName, specialTimings} = event;
+                const eventInstances = [];
+                const currentDate = moment(startDate);
+
+                while (currentDate.isSameOrBefore(moment(endDate), "day")) {
+                    const isSpecialDate = specialTimings.find((special) => moment(special.date).isSame(currentDate, "day"));
+
+                    // Determine start and end times for the event
+                    const eventStart = isSpecialDate
+                        ? moment(isSpecialDate.date).set({
+                            hour: moment(isSpecialDate.startTime).hours(),
+                            minute: moment(isSpecialDate.startTime).minutes()
+                        }).toISOString()
+                        : moment(currentDate).set({
+                            hour: moment(startDate).hours(),
+                            minute: moment(startDate).minutes()
+                        }).toISOString();
+
+                    const eventEnd = isSpecialDate
+                        ? moment(isSpecialDate.date).set({
+                            hour: moment(isSpecialDate.endTime).hours(),
+                            minute: moment(isSpecialDate.endTime).minutes()
+                        }).toISOString()
+                        : moment(currentDate).set({
+                            hour: moment(endDate).hours(),
+                            minute: moment(endDate).minutes()
+                        }).toISOString();
+
+                    eventInstances.push({
+                        title: projectName || "Untitled Event",
+                        start: eventStart,
+                        end: eventEnd
+                    });
+
+                    currentDate.add(1, "day");
+                }
+
+                return eventInstances;
             });
-    
-            currentDate.add(1, "day");
-          }
-    
-          return eventInstances;
-        });
-    
+
         setEvents(transformedEvents);
-      }, [eventsDate]);
-    
+    }, [eventsDate]);
+
     const [formValues,
         setFormValues] = useState({
         title: "",
@@ -199,7 +191,7 @@ const CalendarComp = ({eventsDate}) => {
     const [show,
         setShow] = useState(false)
 
-        console.log(events)
+    console.log(events)
     return (
         <div className="  h-max p-3">
             <div>
@@ -235,7 +227,7 @@ const CalendarComp = ({eventsDate}) => {
                                 <Input
                                     type="text"
                                     value={formValues.title}
-                                    className="px-3 py-2 border border-black rounded-none ml-3"
+                                    className="px-3 py-2 border border-gray-400 rounded-sm ml-3"
                                     onChange={(e) => handleInputChange("title", e.target.value)}
                                     required/>
                             </div>
@@ -245,7 +237,7 @@ const CalendarComp = ({eventsDate}) => {
                                     selected={formValues.startDate}
                                     onChange={(date) => handleInputChange("startDate", date)}
                                     dateFormat="P"
-                                    className="px-3 py-2 border border-black ml-2"
+                                    className="px-3 py-2 border border-gray-400 rounded-sm  ml-2"
                                     required/>
                             </div>
                             <div>
@@ -254,7 +246,7 @@ const CalendarComp = ({eventsDate}) => {
                                     selected={formValues.endDate}
                                     onChange={(date) => handleInputChange("endDate", date)}
                                     dateFormat="P"
-                                    className="px-3 py-2 border border-black ml-2"
+                                    className="px-3 py-2 border border-gray-400 rounded-sm  ml-2"
                                     required/>
                             </div>
                             <div>
@@ -266,7 +258,7 @@ const CalendarComp = ({eventsDate}) => {
                                     showTimeSelectOnly
                                     timeIntervals={15}
                                     timeCaption="Time"
-                                    className="px-3 py-2 border border-black ml-2"
+                                    className="px-3 py-2 border border-gray-400 rounded-sm  ml-2"
                                     dateFormat="h:mm aa"
                                     required/>
                             </div>
@@ -279,18 +271,18 @@ const CalendarComp = ({eventsDate}) => {
                                     showTimeSelectOnly
                                     timeIntervals={15}
                                     timeCaption="Time"
-                                    className="px-3 py-2 border border-black ml-2"
+                                    className="px-3 py-2 border border-gray-400 rounded-sm  ml-2"
                                     dateFormat="h:mm aa"
                                     required/>
                             </div>
                         </div>
                         <div className="  mt-10">
-                            <h4 className="font-semibold my-4">Special Timings</h4>
-                            <div className="grid grid-cols-3">
+                            <h4 className="font-semibold my-4">Exceptional Date and Timings</h4>
+                            <div className="grid grid-cols-3 gap-5">
                                 <div>
                                     <Label>Date:</Label>
                                     <DatePicker
-                                        className="px-3 py-2 border border-black ml-2"
+                                        className="px-3 py-2 border border-gray-400 ml-2 rounded-sm  "
                                         selected={specialTimingInput.date}
                                         onChange={(date) => handleSpecialTimingInputChange("date", date)}
                                         dateFormat="P"/>
@@ -298,7 +290,7 @@ const CalendarComp = ({eventsDate}) => {
                                 <div>
                                     <Label>Start Time:</Label>
                                     <DatePicker
-                                        className="px-3 py-2 border border-black ml-2"
+                                        className="px-3 py-2 border border-gray-400 ml-2 rounded-sm  "
                                         selected={specialTimingInput.startTime}
                                         onChange={(time) => handleSpecialTimingInputChange("startTime", time)}
                                         showTimeSelect
@@ -310,7 +302,7 @@ const CalendarComp = ({eventsDate}) => {
                                 <div>
                                     <Label>End Time:</Label>
                                     <DatePicker
-                                        className="px-3 py-2 border border-black ml-2"
+                                        className="px-3 py-2 border border-gray-400 ml-2 rounded-sm  "
                                         selected={specialTimingInput.endTime}
                                         onChange={(time) => handleSpecialTimingInputChange("endTime", time)}
                                         showTimeSelect
@@ -319,11 +311,11 @@ const CalendarComp = ({eventsDate}) => {
                                         timeCaption="Time"
                                         dateFormat="h:mm aa"/>
                                 </div>
-                            </div>
-                            <div className="mt-8">
-                                <Button type="button" onClick={addSpecialTiming}>
-                                    Add Special Timing
-                                </Button>
+                                <div className="">
+                                    <Button type="button" onClick={addSpecialTiming} className="">
+                                        Add Special Timing
+                                    </Button>
+                                </div>
                             </div>
                             <ul>
                                 {formValues
@@ -337,7 +329,9 @@ const CalendarComp = ({eventsDate}) => {
                                     ))}
                             </ul>
                         </div>
-                        <button type="submit">Add Event</button>
+                        <div className="flex items-center justify-center"> 
+                            <Button type="submit">Add Event</Button>
+                        </div>
                     </form>
 
                 </div>

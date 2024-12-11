@@ -76,11 +76,6 @@ const projectSchema = new mongoose.Schema({
         type: String
     },
     trainingDates: {
-        // startDate: Date,
-        // endDate: Date,
-        // timingStart: String,
-        // timingEnd: String
-
         startDate: {
             type: Date,
             required: true,

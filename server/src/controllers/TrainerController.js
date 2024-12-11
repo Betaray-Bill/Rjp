@@ -448,6 +448,22 @@ const lockResume = asyncHandler(async(req, res) => {
     }
 })
 
+
+
+// Add working Dates
+const addWorkingDates = asyncHandler(async(req, res) => {
+    const { id } = req.params;
+    // const { startDate, endDate, position } = req.body;
+    console.log(req.body)
+
+    try {
+
+    } catch (err) {
+        console.log(err)
+        next(err);
+    }
+})
+
 export {
     trainerLogin,
     acceptNDA,

@@ -128,7 +128,7 @@ function ResumeDisplay() {
                   className='py-2 flex justify-between align-top items-start border border-gray-200 px-2 my-2 rounded-md'>
                   <Textarea
                       value=""
-                    //   readOnly={!isEdit}
+                      readOnly={resume.isLocked}
                       onChange={(e) => handleChange(e, fieldName, 0)}
                       placeholder={`Type your ${fieldName}`}
                       className=" text-gray-800 text-sm outline-none border-collapse border-none"/>
@@ -142,7 +142,7 @@ function ResumeDisplay() {
             className='py-2 flex justify-between align-top items-start border    border-gray-200 p-2 my-2 rounded-md'>
             <Textarea
                 value={value}
-                // readOnly={!isEdit}
+                readOnly={resume.isLocked}
                 onChange={(e) => handleChange(e, fieldName, index)}
                 placeholder={`Type your ${fieldName}`}
                 className="text-gray-800 text-sm outline-none border-collapse border-none"/>
@@ -159,7 +159,7 @@ function ResumeDisplay() {
           className='py-2 flex justify-between align-top items-start border    border-gray-200 px-2 my-2 rounded-md'>
           <Textarea
               value={fieldArray}
-            //   readOnly={!isEdit}
+              readOnly={resume.isLocked}
               onChange={(e) => handleChange(e, fieldName, index)}
               placeholder={`Type your ${fieldName}`}
               className="text-gray-800 text-sm outline-none border-collapse border-none h-max"/>

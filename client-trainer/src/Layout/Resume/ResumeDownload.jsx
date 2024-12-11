@@ -96,13 +96,17 @@ function ResumeDownload() {
     
     const allContent = [
         { title: "PROFESSIONAL SUMMARY", content: data['professionalSummary'] },
-        { title: "TECHNICAL SKILLS", content: data['technicalSkills'] },
-        { title: "CLIENTELE", content: data['clientele'] },
-        { title: "CAREER HISTORY", content: data['careerHistory'] },
-        { title: "TRAININGS DELIVERED", content: data['trainingsDelivered'] },
         { title: "EXPERIENCE", content: data['experience'] },
-        { title: "CERTIFICATIONS", content: data['certifications'] },
+        { title: "TECHNICAL SKILLS", content: data['technicalSkills'] },
         { title: "EDUCATION", content: data['education'] },
+        { title: "CERTIFICATIONS", content: data['certifications'] },
+        { title: "CLIENTELE", content: data['clientele'] },
+        { title: "TRAININGS DELIVERED", content: data['trainingsDelivered'] },
+        { title: "CAREER HISTORY", content: data['careerHistory'] },
+        // { title: "TRAININGS DELIVERED", content: data['trainingsDelivered'] },
+        // { title: "EXPERIENCE", content: data['experience'] },
+        // { title: "CERTIFICATIONS", content: data['certifications'] },
+        // { title: "EDUCATION", content: data['education'] },
     ].filter(item => item.content.length > 0);  // Filter out empty sections
     
  
@@ -132,11 +136,12 @@ function ResumeDownload() {
                                 <img src={ResumeLogo} alt="Logo" className="mb-8  w-[40vw]"/>
                             </div>
                         </div>
-                        <div className="">
+                        <div className="flex items-center justify-between">
                             <h1 className="text-3xl font-bold text-resumeText mb-10">{data && data.trainer_id
                                     .generalDetails
                                     .name
                                     .toUpperCase()}</h1>
+                            <img src="https://avatars.githubusercontent.com/u/124599?v=4" alt="" className='w-[100px] object-contain mr-6'/>
                         </div>
                         
                         {/* Resume content */}

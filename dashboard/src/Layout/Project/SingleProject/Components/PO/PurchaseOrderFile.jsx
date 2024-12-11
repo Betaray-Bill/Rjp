@@ -42,6 +42,8 @@ function PurchaseOrderFile({
 
     const poRef = useRef();
 
+    const [canSend, setCanSend] = useState(false)
+
     const handleSavePO = async() => {
         // if (!isPurchased) {
             try {
@@ -75,6 +77,7 @@ function PurchaseOrderFile({
                     variant: "success",
                     // duration: 5000
                 })
+                setCanSend(true)
                 // const sendDataToBackend = await axios.put const res console.log("FOrm Data",
                 // tableRows, terms) }
             } catch (err) {
@@ -164,7 +167,7 @@ function PurchaseOrderFile({
                         {userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) &&
                         <Button 
                             className="rounded-none ml-4 bg-white border-black border text-black hover:bg-blue-700 hover:text-white" 
-                            onClick={handleSendPO}
+                            onClick={handleSendPO} disabled={!canSend}
                         >
                             Send
                         </Button>}

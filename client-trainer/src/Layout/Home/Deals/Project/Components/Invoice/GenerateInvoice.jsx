@@ -7,9 +7,10 @@ import {useParams} from 'react-router-dom';
 import {useQueryClient} from 'react-query';
 import {useToast} from '@/hooks/use-toast';
 import axios from 'axios';
+import UploadInvoice from './UploadInvoice';
 // import { convertToIndianWords } from 'number-to-words'
 
-function GenerateInvoice({purchaseOrder, formData, inVoice, index}) {
+function GenerateInvoice({purchaseOrder, formData, inVoice, index, projectName}) {
 
     function convertToIndianWords(number) {
         if (number === 0) return 'Zero';
@@ -139,13 +140,11 @@ function GenerateInvoice({purchaseOrder, formData, inVoice, index}) {
                 ? <div className='flex items-end justify-end my-8'>
                         <Button onClick={handleSendToRJP}>Save and Send</Button>
                     </div> */}
-                <div className='flex items-center justify-between'>
+                <div className='flex items-center justify-between mt-5'>
                     <div className='text-red-600'>
                         *Download and Re-upload the Invoice with your signature on the bottom.*
                     </div>
-                    <div className='flex items-end justify-end my-8'>
-                        <Button onClick={handleDownload}>Download</Button>
-                    </div>
+
                 </div>
 {/* } */}
             <div
@@ -489,6 +488,21 @@ function GenerateInvoice({purchaseOrder, formData, inVoice, index}) {
 
                 </div>
             </div>
+            {/* <div className='text-red-600 text-center mt-5 border-t pt-4'>
+                        *Download and Re-upload the Invoice with your signature on the bottom.*
+                    </div> */}
+
+            <div className='flex items-center justify-between my-8'>
+                <h2 className='text-lg font-semibold'>2.) Download The Invoice</h2>
+                <Button onClick={handleDownload} className="rounded-none">Download</Button>
+            </div>
+
+
+            <div className='flex items-center justify-between my-8'>
+                <h2 className='text-lg font-semibold'>2.) Upload The Invoice with you sign</h2>
+                <UploadInvoice index={index} projectName={projectName}/> 
+            </div>
+                    
         </Fragment>
     )
 }

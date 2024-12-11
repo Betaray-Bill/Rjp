@@ -11,7 +11,7 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select"
-function GenerateInvoiceForm({purchaseOrder, inVoice, index}) {
+function GenerateInvoiceForm({purchaseOrder, inVoice, index , projectName}) {
 
     const [formData,
         setFormData] = useState({inVoiceNumber: '', GST: ''})
@@ -21,7 +21,7 @@ function GenerateInvoiceForm({purchaseOrder, inVoice, index}) {
             {/* GenerateInvoiceForm */}
 
             <Fragment>
-                <h2 className='font-semibold text-xl mb-5'>Generate Invoice</h2>
+                <h2 className='font-semibold text-xl mb-5'>1.) Generate Invoice</h2>
                 <form className='border p-4 rounded-lg'>
                     <h4 className='font-semibold underline  '>Fill the Details</h4>
                     <div className='grid grid-cols-2 gap-4 my-4'>
@@ -61,6 +61,7 @@ function GenerateInvoiceForm({purchaseOrder, inVoice, index}) {
                 inVoice={inVoice}
                 purchaseOrder={purchaseOrder}
                 index={index}
+                projectName={projectName}
                 formData={formData}/>
         </div>
     )

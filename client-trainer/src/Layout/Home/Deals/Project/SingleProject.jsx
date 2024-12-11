@@ -105,7 +105,7 @@ function SingleProject() {
                 <div className='mt-10'>
                     {
                         data.trainingDates.specialTimings?.length > 0 &&
-                        <div className='font-semibold text-md text-blue-900'>Special Timings:</div>
+                        <div className='font-semibold text-md text-blue-900'>Exceptional Date and Time:</div>
                     }
                     {data.trainingDates.specialTimings
                         ?.map((e, i) => (

@@ -31,7 +31,7 @@ function GetTrainer() {
     const [page,
         setPage] = useState(1)
     const [limit,
-        setLimit] = useState(5)
+        setLimit] = useState(10)
 
     const dispatch = useDispatch()
     const {currentUser} = useSelector(state => state.auth)

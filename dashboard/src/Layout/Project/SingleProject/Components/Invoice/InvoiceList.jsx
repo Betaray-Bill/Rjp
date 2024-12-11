@@ -46,17 +46,22 @@ function InvoiceList({trainers, projectName}) {
                                     </div>
                                     <div>
 
+
+
                                         {/* <Button className="rounded-none"> */}
                                         {invoice.InvoiceUrl
-                                            ? <a
+                                            ? <div>
+                                                {/* <Button>Paid</Button> */}
+                                                <a
                                                     href={invoice.InvoiceUrl}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className='rounded-none bg-blue-700 text-white px-4 py-2 cursor-pointer'>Download</a>
+                                            </div>
                                             : <div className='text-gray-500 text-sm italic'>
                                                 Invoice not generated
                                             </div>
-}
+                                        }
 
                                     </div>
                                 </div>
