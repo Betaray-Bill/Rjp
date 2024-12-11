@@ -408,12 +408,37 @@ const addRemark = async(req, res) => {
             (remark) => remark.id === id
         );
 
-        if (existingRemarkIndex !== -1) {
-            // If remark exists, update it
-            trainer.Rating.Remarks[existingRemarkIndex].description = description;
-            trainer.Rating.Remarks[existingRemarkIndex].date = new Date().toISOString();
+
+        console.log("Index,", existingRemarkIndex)
+
+        if (trainer.Rating.Remarks.length > 0) {
+            console.log("no")
+                // If remark exists, update it
+            for (let i = 0; i < trainer.Rating.Remarks.length; i++) {
+                if (trainer.Rating.Remarks[i].id == id) {
+                    // trainer.Rating.star = rating;
+                    trainer.Rating.Remarks[i].description = description;
+                    trainer.Rating.Remarks[i].date = new Date().toISOString();
+                    await trainer.save();
+                    return res.status(200).json({
+                        message: "Remark updated successfully",
+                        remarks: trainer.Rating.Remarks,
+                    });
+                }
+            }
+
+            console.log("1")
+
+            // If remark doesn't exist, add a new one
+            trainer.Rating.Remarks.push({
+                id,
+                name,
+                description,
+                date: new Date().toISOString(),
+            });
         } else {
             // If remark doesn't exist, add a new one
+            console.log("push")
             trainer.Rating.Remarks.push({
                 id,
                 name,
@@ -439,4 +464,34 @@ const addRemark = async(req, res) => {
 };
 
 
-export { registerTrainer, updateResume, addRemark, uploadResumeToAzureAndExtractText, getTrainerByEmpId }
+// Remarks
+const addRating = async(req, res) => {
+    try {
+        const trainerId = req.params.trainerId;
+        const { rating } = req.body;
+        console.log(rating)
+
+        console.log(req.body)
+            // Find the trainer
+        const trainer = await Trainer.findById(trainerId);
+        if (!trainer) {
+            return res.status(404).json({ message: "Trainer not found" });
+        }
+
+        // Update the star rating
+        trainer.Rating.star = rating;
+
+        // Save changes to the database
+        await trainer.save();
+
+        res.status(200).json({
+            message: "Remark added or updated successfully",
+            remarks: trainer.Rating.Remarks,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+export { registerTrainer, updateResume, addRemark, addRating, uploadResumeToAzureAndExtractText, getTrainerByEmpId }

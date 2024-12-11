@@ -1,8 +1,8 @@
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar'
 import {Button} from '@/components/ui/button'
 import {TableCell} from '@/components/ui/table'
-import React, {Fragment, useState} from 'react'
-import {Link} from 'react-router-dom'
+import React, {Fragment, useEffect, useState} from 'react'
+import {Link, useParams} from 'react-router-dom'
 import {
     Dialog,
     DialogContent,
@@ -26,20 +26,26 @@ import {
     SelectValue
 } from "@/components/ui/select"
 import {Input} from '@/components/ui/input'
+import {useQueryClient} from 'react-query'
 
 function SingleTrainerCell({trainer, limit, page, index}) {
-
+    const params = useParams()
     const {currentUser} = useSelector((state) => state.auth);
-
+    const queryClient = useQueryClient()
+    const [isEdit,
+        setIsEdit] = useState(false);
     const [rating,
         setRating] = useState(trainer.Rating.star);
     const [data,
-        setData] = useState(trainer.Rating.Remarks);
+        setData] = useState([]);
+    useEffect(() => {
+        setData(trainer.Rating.Remarks)
+    }, [])
     const [showEdit,
         setShowEdit] = useState(false); // Toggle for editing remarks
     const [editRemark,
         setEditRemark] = useState(null); // Current remark being edited
-
+    console.log(data)
     const [remarks,
         setRemarks] = useState({
         name: currentUser.employee && currentUser.employee.name,
@@ -58,6 +64,9 @@ function SingleTrainerCell({trainer, limit, page, index}) {
     };
 
     const submitEditedRemark = async() => {
+        // check for duplication
+        console.log(data)
+
         const updatedData = {
             ...remarks,
             rating
@@ -82,10 +91,44 @@ function SingleTrainerCell({trainer, limit, page, index}) {
 
             setEditRemark(null);
             setShowEdit(false); // Close the edit modal
+            // queryClient(["getTrainerById", currentUser.employee._id])
+            window.location.reload()
+
+            setIsEdit(false)
         } catch (err) {
             console.error(err);
         }
     };
+
+    const ratingSubmitHandler = async() => {
+        // check for duplication
+        console.log(data)
+
+        const updatedData = {
+            remarks:data,
+            rating
+        };
+
+        try {
+            const res = await axios.put(`http://localhost:5000/api/trainersourcer/rating/${trainer._id}`, {rating}, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            console.log(res.data);
+
+            setEditRemark(null);
+            setShowEdit(false); // Close the edit modal
+            // queryClient(["getTrainerById", currentUser.employee._id])
+            setIsEdit(false)
+
+            window.location.reload()
+        } catch (err) {
+            console.error(err);
+        }
+    };
+    console.log(data)
 
     return (
         <Fragment>
@@ -103,11 +146,17 @@ function SingleTrainerCell({trainer, limit, page, index}) {
             <TableCell>
                 <Dialog>
                     <DialogTrigger>{trainer.Rating.star
-                            ? trainer.Rating.star
-                            : "open"}</DialogTrigger>
+                            ? <div className='flex items-center'>
+                                    <span className='mx-1 font-semibold'>{trainer.Rating.star}</span>
+                                    <ion-icon name="star-outline"></ion-icon>
+                                </div>
+                            : "0"}</DialogTrigger>
                     <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Trainer Rating Section</DialogTitle>
+                        <DialogHeader className="mt-5">
+                            <DialogTitle className="flex items-center justify-between">
+                                <h2>Trainer Rating Section</h2>
+                                {/* <Button onClick={ratingSubmitHandler}>Edit</Button> */}
+                            </DialogTitle>
                             <DialogDescription></DialogDescription>
                             <div
                                 className="mt-10"
@@ -117,12 +166,17 @@ function SingleTrainerCell({trainer, limit, page, index}) {
                                 <div className='flex items-center'>
 
                                     <DialogTitle>Rating</DialogTitle>
-                                    <div className='flex w-[200px] ml-3'>
+                                    <div className='flex justify-between ml-3'>
                                         <Input
-                                            type="text"
+                                            type="number"
                                             placeholder="Enter ratings"
                                             value={rating}
+                                            min={0}
+                                            max={5}
+                                            className="w-max mr-7"
                                             onChange={(e) => setRating(e.target.value)}/>
+                                            <Button onClick={ratingSubmitHandler}>Save Rating</Button>
+
                                     </div>
                                 </div>
                                 {/* Remarks */}
@@ -163,16 +217,19 @@ function SingleTrainerCell({trainer, limit, page, index}) {
                                     <div className="mt-4">
                                         <Textarea
                                             value={remarks.description}
+                                            className="border border-gray-500"
                                             onChange={(e) => setRemarks((p) => ({
                                             ...p,
                                             description: e.target.value
                                         }))}/>
-                                        <div className="my-4">
-                                            <Button onClick={submitEditedRemark}>Save</Button>
-                                        </div>
                                     </div>
+
                                 </div>
                             )}
+                            <div className="my-4">
+                                <Button onClick={submitEditedRemark}>Save</Button>
+                            </div>
+
                         </DialogHeader>
                     </DialogContent>
                 </Dialog>

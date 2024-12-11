@@ -98,7 +98,7 @@ function GetTrainer() {
                                         <TableRow
                                             key={index}
                                             onClick={() => {
-                                            console.log(`${index + 1}.) ${trainer.email} `)
+                                            // console.log(`${index + 1}.) ${trainer.email} `)
                                         }}
                                             className="cursor-pointer rounded-md">
                                                 <SingleTrainerCell trainer={trainer} limit={limit} page={page} index={index} />
