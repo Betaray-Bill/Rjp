@@ -48,7 +48,7 @@ function IndividualInvoice({po, index, inVoice, projectName}) {
                             : <div className='flex items-center'>
                                     {/* <UploadInvoice index={index} projectName={projectName}/> */}
                                     <div className='ml-4'>
-                                        <Button onClick={() => setShowInvoice(!showInvoice)} className="rounded-none">Generate</Button>
+                                        <Button onClick={() => setShowInvoice(!showInvoice)} className="rounded-none">View and Generate</Button>
                                     </div>
                                 </div>
                     }
@@ -61,7 +61,7 @@ function IndividualInvoice({po, index, inVoice, projectName}) {
                 <div className='grid place-items-end'>
                     <Button onClick={() => setShowInvoice(false)}
                         className="rounded-none bg-white text-red-600 border hover:bg-red-600 border-red-600 hover:text-white"
-                    >Close</Button>
+                    >Close View</Button>
                 </div>
                 <GenerateInvoiceForm inVoice={inVoice} purchaseOrder={po} index={index} projectName={projectName}/>
             </div>

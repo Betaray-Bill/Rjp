@@ -20,197 +20,99 @@ import {Button} from "@/components/ui/button";
 // momentLocalizer(moment);
 
 const CalendarComp = ({eventsDate}) => {
-
-    const [events,
-        setEvents] = useState([]);
+    const [events, setEvents] = useState([]);
 
     useEffect(() => {
         // Transform the eventsDate into FullCalendar events
-        const transformedEvents = eventsDate
-            ?.flatMap((event) => {
-                const {startDate, endDate, projectName, specialTimings} = event;
-                const eventInstances = [];
-                const currentDate = moment(startDate);
+        const transformedEvents = eventsDate?.flatMap((event) => {
+            const { startDate, endDate, projectName, specialTimings } = event;
+            console.log(event)
+            const eventInstances = [];
+            const currentDate = moment(startDate);
 
-                while (currentDate.isSameOrBefore(moment(endDate), "day")) {
-                    const isSpecialDate = specialTimings.find((special) => moment(special.date).isSame(currentDate, "day"));
+            while (currentDate.isSameOrBefore(moment(endDate), "day")) {
+                const isSpecialDate = specialTimings.find((special) =>
+                    moment(special.date).isSame(currentDate, "day")
+                );
 
-                    // Determine start and end times for the event
-                    const eventStart = isSpecialDate
-                        ? moment(isSpecialDate.date).set({
-                            hour: moment(isSpecialDate.startTime).hours(),
-                            minute: moment(isSpecialDate.startTime).minutes()
-                        }).toISOString()
-                        : moment(currentDate).set({
-                            hour: moment(startDate).hours(),
-                            minute: moment(startDate).minutes()
-                        }).toISOString();
+                const eventStart = isSpecialDate
+                    ? moment(isSpecialDate.date)
+                          .set({
+                              hour: moment(isSpecialDate.startTime).hours(),
+                              minute: moment(isSpecialDate.startTime).minutes(),
+                          })
+                          .toISOString()
+                    : moment(currentDate)
+                          .set({
+                              hour: moment(startDate).hours(),
+                              minute: moment(startDate).minutes(),
+                          })
+                          .toISOString();
 
-                    const eventEnd = isSpecialDate
-                        ? moment(isSpecialDate.date).set({
-                            hour: moment(isSpecialDate.endTime).hours(),
-                            minute: moment(isSpecialDate.endTime).minutes()
-                        }).toISOString()
-                        : moment(currentDate).set({
-                            hour: moment(endDate).hours(),
-                            minute: moment(endDate).minutes()
-                        }).toISOString();
+                const eventEnd = isSpecialDate
+                    ? moment(isSpecialDate.date)
+                          .set({
+                              hour: moment(isSpecialDate.endTime).hours(),
+                              minute: moment(isSpecialDate.endTime).minutes(),
+                          })
+                          .toISOString()
+                    : moment(currentDate)
+                          .set({
+                              hour: moment(endDate).hours(),
+                              minute: moment(endDate).minutes(),
+                          })
+                          .toISOString();
 
-                    eventInstances.push({
-                        title: projectName || "Untitled Event",
-                        start: eventStart,
-                        end: eventEnd
-                    });
+                eventInstances.push({
+                    title: `${projectName} (${moment(eventStart).format(
+                        "h:mm A"
+                    )} - ${moment(eventEnd).format("h:mm A")})`,
+                    start: eventStart,
+                    end: eventEnd,
+                    extendedProps: {
+                        projectName,
+                        startDate: eventStart,
+                        endDate: eventEnd,
+                    },
+                });
 
-                    currentDate.add(1, "day");
-                }
+                currentDate.add(1, "day");
+            }
 
-                return eventInstances;
-            });
+            return eventInstances;
+        });
 
         setEvents(transformedEvents);
     }, [eventsDate]);
 
-    const [formValues,
-        setFormValues] = useState({
-        title: "",
-        startDate: null,
-        endDate: null,
-        startTime: null,
-        endTime: null,
-        specialTimings: []
-    });
-    const [specialTimingInput,
-        setSpecialTimingInput] = useState({date: null, startTime: null, endTime: null});
-
-    const handleInputChange = (name, value) => {
-        setFormValues({
-            ...formValues,
-            [name]: value
-        });
+    const handleEventClick = (info) => {
+        const { extendedProps } = info.event;
+        alert(`Project: ${extendedProps.projectName}\nStart: ${moment(extendedProps.startDate).format("LLLL")}\nEnd: ${moment(extendedProps.endDate).format("LLLL")}`);
     };
-
-    const handleSpecialTimingInputChange = (name, value) => {
-        setSpecialTimingInput({
-            ...specialTimingInput,
-            [name]: value
-        });
-    };
-
-    const addSpecialTiming = () => {
-        if (specialTimingInput.date && specialTimingInput.startTime && specialTimingInput.endTime) {
-            setFormValues((prev) => ({
-                ...prev,
-                specialTimings: [
-                    ...prev.specialTimings, {
-                        ...specialTimingInput
-                    }
-                ]
-            }));
-            setSpecialTimingInput({date: null, startTime: null, endTime: null});
-        } else {
-            alert("Please fill all fields for special timing!");
-        }
-    };
-
-    console.log(eventsDate)
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const {
-            title,
-            startDate,
-            endDate,
-            startTime,
-            endTime,
-            specialTimings
-        } = formValues;
-
-        if (!title || !startDate || !endDate || !startTime || !endTime) {
-            alert("Please fill all required fields!");
-            return;
-        }
-
-        const eventInstances = [];
-        const currentDate = moment(startDate);
-
-        while (currentDate.isSameOrBefore(endDate, "day")) {
-            const isSpecialDate = specialTimings.find((special) => moment(special.date).isSame(currentDate, "day"));
-
-            const eventStart = moment(currentDate).set({
-                hour: isSpecialDate
-                    ? isSpecialDate
-                        .startTime
-                        .getHours()
-                    : startTime.getHours(),
-                minute: isSpecialDate
-                    ? isSpecialDate
-                        .startTime
-                        .getMinutes()
-                    : startTime.getMinutes()
-            }).toDate();
-
-            const eventEnd = moment(currentDate).set({
-                hour: isSpecialDate
-                    ? isSpecialDate
-                        .endTime
-                        .getHours()
-                    : endTime.getHours(),
-                minute: isSpecialDate
-                    ? isSpecialDate
-                        .endTime
-                        .getMinutes()
-                    : endTime.getMinutes()
-            }).toDate();
-
-            eventInstances.push({
-                title,
-                start: eventStart.toISOString(),
-                end: eventEnd.toISOString()
-            });
-
-            currentDate.add(1, "day");
-        }
-
-        setEvents([
-            ...events,
-            ...eventInstances
-        ]);
-
-        setFormValues({
-            title: "",
-            startDate: null,
-            endDate: null,
-            startTime: null,
-            endTime: null,
-            specialTimings: []
-        });
-    };
-
     const [show,
         setShow] = useState(false)
 
-    console.log(events)
+    // console.log(events)
     return (
         <div className="  h-max p-3">
             <div>
                 {/* h2 */}
             </div>
-            <div style={{
-                padding: "20px"
-            }}>
-                {/* <h2>Event Scheduler with Special Timing</h2> */}
+            <div className="h-max p-3">
+            <div style={{ padding: "20px" }}>
                 <FullCalendar
                     plugins={[timeGridPlugin, interactionPlugin]}
                     initialView="timeGridWeek"
                     events={events}
                     slotMinTime="00:00:00"
                     slotMaxTime="24:00:00"
-                    height="100vh"/>
+                    height="100vh"
+                    eventClick={handleEventClick}
+                />
             </div>
+        </div>
 
-            <div className="p-4">
+            {/* <div className="p-4">
                 <div className="flex justify-end">
                     <Button className="rounded-none" onClick={() => setShow(p => !p)}>Add Events</Button>
                 </div>
@@ -337,7 +239,7 @@ const CalendarComp = ({eventsDate}) => {
                 </div>
 }
 
-            </div>
+            </div> */}
         </div>
     );
 };

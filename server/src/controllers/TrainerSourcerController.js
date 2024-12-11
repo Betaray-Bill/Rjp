@@ -99,7 +99,7 @@ const registerTrainer = asyncHandler(async(req, res) => {
             ndaAccepted: req.body.trainingDetails.trainerType === "Internal" ?
                 true : false,
             // password: req.body.generalDetails.dateOfBirth,
-            trainerId: await generateTrainerId(),
+            trainerId: await generateTrainerId(req.body.trainingDetails.trainerType),
             password: await argon2.hash("P@ssw0rd")
         });
 
@@ -249,12 +249,18 @@ const uploadResumeToAzureAndExtractText = asyncHandler(async(req, res) => {
 })
 
 //Send PO to the Trainer for the respective deal Generate Unique Id
-const generateTrainerId = async() => {
+const generateTrainerId = async(type) => {
     // let trainerId; let existingTrainer; do {     trainerId = Math.floor(1000 +
     // Math.random() * 9000).toString(); // Generate 4-digit random ID
     // existingTrainer = await Trainer.findOne({ trainerId: trainerId }); } while
     // (existingTrainer); // Loop until a unique ID is found
     const prefix = "RJP";
+    let a;
+    if (type === "Internal") {
+        a = "I"
+    } else {
+        a = "E"
+    }
     let newId;
     const trainers = await Trainer
         .find({})
@@ -272,7 +278,7 @@ const generateTrainerId = async() => {
             .padStart(4, "0"); // Increment and pad to 4 digits
     }
 
-    const trainerId = prefix + newId;
+    const trainerId = prefix + a + newId;
     // array.push(trainerId);
 
     return trainerId;
@@ -365,7 +371,7 @@ const getTrainerByEmpId = asyncHandler(async(req, res) => {
             if (Emp.role[i].name == 'ADMIN') {
                 const trainers = await Trainer
                     .find()
-                    .select("generalDetails trainerId trainingDetails")
+                    .select("generalDetails trainerId trainingDetails Rating")
 
                 // Return the Result
                 res
@@ -383,4 +389,54 @@ const getTrainerByEmpId = asyncHandler(async(req, res) => {
 
 })
 
-export { registerTrainer, updateResume, uploadResumeToAzureAndExtractText, getTrainerByEmpId }
+
+// Remarks
+const addRemark = async(req, res) => {
+    try {
+        const trainerId = req.params.trainerId;
+        const { id, name, description, rating } = req.body;
+
+        console.log(req.body)
+            // Find the trainer
+        const trainer = await Trainer.findById(trainerId);
+        if (!trainer) {
+            return res.status(404).json({ message: "Trainer not found" });
+        }
+
+        // Check if the remark for this user already exists
+        const existingRemarkIndex = trainer.Rating.Remarks.findIndex(
+            (remark) => remark.id === id
+        );
+
+        if (existingRemarkIndex !== -1) {
+            // If remark exists, update it
+            trainer.Rating.Remarks[existingRemarkIndex].description = description;
+            trainer.Rating.Remarks[existingRemarkIndex].date = new Date().toISOString();
+        } else {
+            // If remark doesn't exist, add a new one
+            trainer.Rating.Remarks.push({
+                id,
+                name,
+                description,
+                date: new Date().toISOString(),
+            });
+        }
+
+        // Update the star rating
+        trainer.Rating.star = rating;
+
+        // Save changes to the database
+        await trainer.save();
+
+        res.status(200).json({
+            message: "Remark added or updated successfully",
+            remarks: trainer.Rating.Remarks,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+export { registerTrainer, updateResume, addRemark, uploadResumeToAzureAndExtractText, getTrainerByEmpId }

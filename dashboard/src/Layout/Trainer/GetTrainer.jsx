@@ -23,6 +23,7 @@ import {
     PaginationNext,
     PaginationPrevious
 } from "@/components/ui/pagination"
+import SingleTrainerCell from './Components/SingleTrainerCell';
 
 function GetTrainer() {
     const [trainer,
@@ -84,6 +85,8 @@ function GetTrainer() {
                         <TableHead className="">Trainer ID</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Type</TableHead>
+                        <TableHead>Rating</TableHead>
+                        <TableHead> </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -98,23 +101,7 @@ function GetTrainer() {
                                             console.log(`${index + 1}.) ${trainer.email} `)
                                         }}
                                             className="cursor-pointer rounded-md">
-                                            <TableCell className="font-medium">{(limit*(page - 1)) + 1 + index}</TableCell>
-                                            <TableCell className="font-medium flex items-center">
-                                                <Avatar>
-                                                    <AvatarImage src="https://github.com/shadcn.png"/>
-                                                    <AvatarFallback>CN</AvatarFallback>
-                                                </Avatar>
-                                                <span className='ml-2'>{trainer.generalDetails.name}</span>
-                                            </TableCell>
-                                            <TableCell>{trainer.trainerId}</TableCell>
-                                            <TableCell>{trainer.generalDetails.email}</TableCell>
-                                            <TableCell>{trainer.trainingDetails.trainerType}</TableCell>
-                                            <TableCell>
-                                                <Link to={`/home/trainer/view/${trainer._id}`} target='_blank'>
-                                                    <Button
-                                                        className="bg-transparent border text-black rounded-none hover:bg-blue-200">View</Button>
-                                                </Link>
-                                            </TableCell>
+                                                <SingleTrainerCell trainer={trainer} limit={limit} page={page} index={index} />
                                         </TableRow>
                                     ))}
                 </TableBody>

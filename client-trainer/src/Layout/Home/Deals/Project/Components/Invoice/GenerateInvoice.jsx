@@ -499,7 +499,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice, index, projectName})
 
 
             <div className='flex items-center justify-between my-8'>
-                <h2 className='text-lg font-semibold'>2.) Upload The Invoice with you sign</h2>
+                <h2 className='text-lg font-semibold'>3.) Upload Invoice with signature</h2>
                 <UploadInvoice index={index} projectName={projectName}/> 
             </div>
                     

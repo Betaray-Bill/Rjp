@@ -206,6 +206,21 @@ const trainerSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    Rating: {
+        star: {
+            type: Number,
+            default: 0
+        },
+        Remarks: [{
+            name: String,
+            id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Employee'
+            },
+            description: String,
+            date: Date
+        }]
+    },
     workingDates: [{
         name: {
             type: String,
