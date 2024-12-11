@@ -13,39 +13,28 @@ function IndividualInvoice({po, index, inVoice, projectName}) {
     return (
       <div className='border-b border-gray-300 py-2'> 
         <div className='  flex items-center justify-between  '>
-            <div className='py-3 flex items-center justify-between'>
+            <div className='py-3 flex-col items-center justify-between'>
                 <h2 className='font-semibold'>Invoice {index + 1}</h2>
-                <div className='flex items-center'></div>
+                <div className='flex items-center'>
+                    {
+                        inVoice && 
+                        <div className='flex items-center mt-3'>
+                            <span className='font-medium text-blue-700'>
+                                {
+                                     inVoice.isPaid ? "Paid" : "Not Paid Yet"
+                                }
+                            </span>
+                            <p className='ml-3'>
+                                {
+                                    inVoice.description ?` - ${inVoice.description}`  : null
+                                }
+                            </p>
+                        </div>
+                    }
+                </div>
             </div>
 
             <div>
-                {/* {po && po
-                    ?.details
-                        ?.description.length > 0
-                            ? <Fragment>
-                                    {inVoice && inVoice.InvoiceUrl
-                                        ? null
-                                        : <div className='flex items-center'>
-                                            <UploadInvoice index={index} projectName={projectName}/>
-                                            <div className='ml-4'>
-                                                <Button onClick={() => setShowInvoice(!showInvoice)} className="rounded-none">Generate</Button>
-                                            </div>
-                                        </div>
-}
-                                    {inVoice && inVoice.InvoiceUrl && <a
-                                        href={inVoice
-                                        ? inVoice.InvoiceUrl
-                                        : null}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className='rounded-none px-4 py-2 font-medium text-md bg-black text-white'>
-                                        Download
-                                    </a>
-}
-
-                                </Fragment>
-                            : <p className='text-sm italic'>PO not issued yet</p>
-} */}
                     {
                         inVoice && (inVoice.InvoiceUrl !== undefined &&      inVoice.InvoiceUrl !== "")
                             ? <a href={inVoice

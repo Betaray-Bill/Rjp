@@ -1,5 +1,8 @@
 import {Button} from '@/components/ui/button'
+import {Input} from '@/components/ui/input'
+import {Textarea} from '@/components/ui/textarea'
 import React, {Fragment} from 'react'
+import InvoiceContent from './InvoiceContent'
 
 function InvoiceList({trainers, projectName}) {
     return (
@@ -40,30 +43,8 @@ function InvoiceList({trainers, projectName}) {
                     <div>
                         {trainer && trainer.inVoice.length > 0
                             ? (trainer.inVoice.map((invoice, invoiceIndex) => (
-                                <div key={invoiceIndex} className='flex items-center justify-between py-4'>
-                                    <div className='flex items-center font-medium text-md'>
-                                        Invoice {invoiceIndex + 1}
-                                    </div>
-                                    <div>
-
-
-
-                                        {/* <Button className="rounded-none"> */}
-                                        {invoice.InvoiceUrl
-                                            ? <div>
-                                                {/* <Button>Paid</Button> */}
-                                                <a
-                                                    href={invoice.InvoiceUrl}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className='rounded-none bg-blue-700 text-white px-4 py-2 cursor-pointer'>Download</a>
-                                            </div>
-                                            : <div className='text-gray-500 text-sm italic'>
-                                                Invoice not generated
-                                            </div>
-                                        }
-
-                                    </div>
+                                <div key={invoiceIndex} className='flex items-start justify-between py-4'>
+                                    <InvoiceContent key={invoiceIndex} index={invoiceIndex} id={trainer.trainer._id} invoice={invoice}/>
                                 </div>
                             )))
                             : null

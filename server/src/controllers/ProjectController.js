@@ -1147,6 +1147,62 @@ const upload_Invoice_Content_Trainer = asyncHandler(async(req, res) => {
 
 })
 
+
+// // Invoice Upload to the
+const updateInvoice_by_paid = asyncHandler(async(req, res) => {
+    const { trainerId } = req.params;
+    const { projectId } = req.params;
+    console.log(trainerId)
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+    console.log("-----------------------------------")
+
+    console.log(req.body)
+
+    try {
+        const project = await Project.findById(projectId)
+            // console.log(project) Find the trainer
+        const trainer = project
+            .trainers
+            .find((t) => t.trainer.toString() === trainerId);
+
+        if (!trainer) {
+            return res
+                .status(404)
+                .json({ message: "Trainer not found in the project" });
+        }
+
+
+        // Update the specific purchase order
+        if (!trainer.inVoice[req.body.index]) {
+            // Add a new entry if the index doesn't exist
+            trainer.inVoice[req.body.index] = {
+                isPaid: req.body.isPaid,
+                description: req.body.description,
+                // isPaid: req.body.isPaid,
+            };
+        } else {
+            const inVoice = trainer.inVoice[req.body.index];
+            inVoice.isPaid = req.body.isPaid
+            inVoice.description = req.body.description
+        };
+        // }
+
+        await project.save();
+
+        res.json({ message: " Done", project: project });
+
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: "Error uploading file URL." });
+    }
+
+})
+
+
 export {
     createProject,
     getProjectDetails,
@@ -1166,5 +1222,6 @@ export {
     upload_Invoice_Url_Trainer,
     savePurchaseOrder,
     upload_Invoice_Content_Trainer,
-    acceptOrDecline
+    acceptOrDecline,
+    updateInvoice_by_paid
 }
