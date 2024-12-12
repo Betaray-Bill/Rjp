@@ -213,9 +213,9 @@ function ViewSingleProject() {
           <ion-icon name="arrow-back-outline"></ion-icon>
           <span className='ml-2'>Go Back</span>
         </button>
-        {/* <div>
-          <Button className="rounded-none">Edit</Button>
-        </div> */}
+        <div>
+          <Button className="rounded-none bg-red-500">Remainder</Button>
+        </div>
       </div>
 
       {/* <div className='flex items-center justify-start mb-3 border-b'>

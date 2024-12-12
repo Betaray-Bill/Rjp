@@ -546,8 +546,8 @@ function AddProject() {
                         <div>
                             <h2 className='font-semibold '>Training Dates</h2>
                         </div>
-                        <div className="grid grid-cols-2 gap-8 mt-8">
-                            <div className="flex items-center ">
+                        <div className="grid grid-cols-4 gap-8 mt-8">
+                            <div className="flex flex-col">
                                 <Label>Training start Date</Label>
                                     <DatePicker
                                     // selected={formValues.startDate}
@@ -561,7 +561,7 @@ function AddProject() {
                                    
                             </div>
 
-                            <div className="flex items-center ">
+                            <div className="flex flex-col">
                                 <Label>Training End Date</Label>
                                  <DatePicker
                                     // selected={formValues.endDate}

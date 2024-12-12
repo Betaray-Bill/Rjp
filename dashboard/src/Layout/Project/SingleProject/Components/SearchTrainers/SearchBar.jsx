@@ -39,7 +39,7 @@ function SearchBar({domain, id, trainingDates}) {
     const [endDate,
         setEndDate] = useState(trainingDates && trainingDates.endDate.split("T")[0]);
     const [rating,
-        setRating] = useState('asc');
+        setRating] = useState(null);
     const [mode, setMode] = useState('');
     const [type, setType] = useState('');
     const [filter, setFilter] = useState(false)
@@ -239,7 +239,7 @@ function SearchBar({domain, id, trainingDates}) {
                                 <div className='border w-max px-4 py-[3px]  rounded-full'>
                                     <Popover>
                                         <PopoverTrigger asChild>
-                                            <span  className="border-none cursor-pointer">Rate (₹)</span>
+                                            <span  className="border-none cursor-pointer">Price (₹)</span>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-80">
                                             <div className="grid gap-4">

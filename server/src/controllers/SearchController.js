@@ -150,7 +150,7 @@ const searchTrainer = asyncHandler(async(req, res) => {
         pipeline.push({
             $sort: {
                 "Rating.star": -1
-            }
+            },
 
         })
 

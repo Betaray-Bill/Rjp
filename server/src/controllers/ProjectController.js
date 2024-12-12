@@ -575,11 +575,23 @@ const addTrainer = asyncHandler(async(req, res) => {
         console.log(project._id)
         for (let i = 0; i < trainersList.length; i++) {
             console.log("1", trainersList[i])
-            await Trainer.findByIdAndUpdate(trainersList[i], {
-                $addToSet: {
-                    projects: project._id
-                }
-            }, { new: true });
+            await Trainer.findByIdAndUpdate(
+                trainersList[i], {
+                    $addToSet: {
+                        projects: project._id,
+                        workingDates: {
+                            startDate: project.trainingDates.startDate,
+                            endDate: project.trainingDates.endDate,
+                            startTime: project.trainingDates.startTime,
+                            endTime: project.trainingDates.endTime,
+                            specialTimings: project.trainingDates.specialTimings,
+                            name: project.projectName,
+                            id: project._id,
+                        },
+                    },
+                }, { new: true }
+            );
+
             // console.log("Trainer updated", trainer)
         }
 

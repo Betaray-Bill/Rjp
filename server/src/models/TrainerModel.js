@@ -226,6 +226,10 @@ const trainerSchema = mongoose.Schema({
             type: String,
             // required: true,
         },
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Project'
+        },
         startDate: {
             type: Date,
             // required: true,

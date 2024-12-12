@@ -40,7 +40,7 @@
                         <span className='ml-4 text-xl'>Training dates</span>
                       </span>
                     </div>
-                    <CalendarComp  eventsDate={events} /> 
+                    <CalendarComp  eventsDate={events} workingDates={user && user.workingDates}/> 
                   </div>
                 </Fragment>
                 {/* : null
