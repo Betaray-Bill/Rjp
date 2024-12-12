@@ -39,7 +39,7 @@ function SearchBar({domainSearch}) {
     const [endDate,
         setEndDate] = useState('');
     const [rating,
-        setRating] = useState('asc');
+        setRating] = useState(null);
     const [mode, setMode] = useState('');
     const [type, setType] = useState('');
     const [isNot, setIsNot] = useState(false);
@@ -51,9 +51,11 @@ function SearchBar({domainSearch}) {
     
     const handleReset = () => {
         dispatch(resetDomainResultsAndSearch())
-        setRating('asc')
+        setRating(null)
         setStartPrice('')
         setEndPrice('')
+        setStartDate('')
+        setEndDate('')
         setMode('')
         setType('')
         setQuery('')
@@ -99,6 +101,7 @@ function SearchBar({domainSearch}) {
         if (type) req_query += `&type=${encodeURIComponent(type)}`;
         if (startDate) req_query += `&startDate=${startDate}`;
         if (endDate) req_query += `&endDate=${endDate}`;
+        if(rating) req_query += `&rating=${rating}`;
     
         console.log(req_query);
         
@@ -207,7 +210,7 @@ function SearchBar({domainSearch}) {
                                             <Select onValueChange={(e) => {
                                                 console.log(e)
                                                 setMode(e)
-                                            }} className="rounded-full border-none">
+                                            }} className="rounded-full border-none" value={mode}>
                                                 <SelectTrigger className="w-max rounded-full">
                                                     <SelectValue placeholder="Select Training Mode" />
                                                 </SelectTrigger>
@@ -225,12 +228,12 @@ function SearchBar({domainSearch}) {
                                 <div className='border w-max px-4 py-[3px]  rounded-full'>
                                     <Popover>
                                         <PopoverTrigger asChild>
-                                            <span  className="border-none cursor-pointer">Rate (₹)</span>
+                                            <span  className="border-none cursor-pointer">Price (₹)</span>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-80">
                                             <div className="grid gap-4">
                                             <div className="space-y-2">
-                                                <h4 className="font-medium leading-none">Rate Per Session</h4>
+                                                <h4 className="font-medium leading-none">Price Per Session</h4>
                                                 {/* <p className="text-sm text-muted-foreground">
                                                 Set the dimensions for the layer.
                                                 </p> */}
@@ -297,13 +300,39 @@ function SearchBar({domainSearch}) {
                                     </Popover>
                                 </div>
 
+                                 {/* Rating */}
+                                <div className='border w-max mx-2 px-4 py-[3px]  rounded-full'>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <span  className="border-none cursor-pointer flex items-center"><ion-icon name="star-outline" style={{marginRight:"8px"}}></ion-icon> <span>Rating</span></span>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-max">
+                                            {/* <div className="grid gap-4"> */}
+                                            <div className="flex items-center justify-between">
+                                                        <Label>Rating</Label>
+                                                        <input
+                                                            type="number"
+                                                            value={rating}
+                                                            min={1}
+                                                            max={5}
+                                                            onChange={(e) => setRating(e.target.value)}
+                                                            className="w-max py-1 ml-4 px-2 border mt-2 rounded-sm border-gray-700"/>
+                                                {/* </div> */}
+
+                                                
+                                            {/* </div> */}
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+
 
                                 {/* Type Of Students */}
                                 <div className='mx-4'>
                                             <Select onValueChange={(e) => {
                                                 console.log(e)
                                                 setType(e)
-                                            }} className="rounded-full border-none">
+                                            }} className="rounded-full border-none" value={type}>
                                                 <SelectTrigger className="w-max rounded-full">
                                                     <SelectValue placeholder="Select Type" />
                                                 </SelectTrigger>
@@ -324,7 +353,7 @@ function SearchBar({domainSearch}) {
             </form>
 
             <div className='flex justify-between '>
-                <h1 className='font-medium text-black-600'>Search Results for - {searchDomain}</h1>
+                <h1 className='font-medium text-black-600'>Search Results for - {searchDomain} {mode}</h1>
                 <p
                     onClick={() => handleReset()}
                     className='bg-blue-100 border  border-blue-700 hover:bg-blue-300 rounded-full py-[4px] px-3 flex items-center cursor-pointer'>

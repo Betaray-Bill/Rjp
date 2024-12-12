@@ -2,6 +2,7 @@ import {resetDomainResultsAndSearch} from '@/features/searchTrainerSlice'
 import React, { Fragment } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
+import { Link } from 'react-router-dom'
 
 function SearchResult() {
     const {domainResults, searchDomain, isSearching} = useSelector(state => state.searchTrainer)
@@ -40,7 +41,7 @@ function SearchResult() {
                                                     <AvatarImage src="https://github.com/shadcn.png"/>
                                                     <AvatarFallback>CN</AvatarFallback>
                                                 </Avatar>
-                                                <p className='ml-2 font-medium'>{res.generalDetails?.name}</p>
+                                                <p className='ml-2 font-medium'>{res.generalDetails?.name} - <span className='flex items-center ml-2'><span>{res?.Rating?.star}</span><ion-icon name="star-outline" style={{color:"gold"}}></ion-icon></span></p>
                                             </div>
                                             <div>
                                                 <p className='text-gray-600 mt-2'>
@@ -93,7 +94,7 @@ function SearchResult() {
                                             </div>
                                         </div>
 
-                                        <span className='text-blue-600 cursor-pointer'>View More...</span>
+                                        <Link to={`/home/trainer/view/${res._id}`} target='_blank'  className='text-blue-600 cursor-pointer px-3 py-2 border border-blue-400'>View</Link>
                                     </div>
                                 ))
                             }

@@ -18,6 +18,7 @@ import {
 import {Label} from '@/components/ui/label';
 import { useQuery, useQueryClient } from 'react-query';
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
+import { Link } from 'react-router-dom';
 
 function SearchBar({domain, id, trainingDates}) {
     const queryClient = useQueryClient();
@@ -69,6 +70,7 @@ function SearchBar({domain, id, trainingDates}) {
         if (type) req_query += `&type=${encodeURIComponent(type)}`;
         if (startDate) req_query += `&startDate=${startDate}`;
         if (endDate) req_query += `&endDate=${endDate}`;
+        if(rating) req_query += `&rating=${rating}`;
     
         console.log(req_query);
         
@@ -173,7 +175,7 @@ function SearchBar({domain, id, trainingDates}) {
     }
     const handleReset = () => {
         // dispatch(resetDomainResultsAndSearch())
-        setRating('asc')
+        setRating(null)
         setStartPrice('')
         setEndPrice('')
         setMode('')
@@ -272,7 +274,7 @@ function SearchBar({domain, id, trainingDates}) {
                                 </div>
                                 
                                                                  {/* Dates */}
-                                                                 <div className='border w-max mx-4 px-4 py-[3px]  rounded-full'>
+                                <div className='border w-max mx-4 px-4 py-[3px]  rounded-full'>
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <span  className="border-none cursor-pointer flex items-center"><ion-icon name="calendar-outline" style={{marginRight:"8px"}}></ion-icon> <span>Dates</span></span>
@@ -304,6 +306,32 @@ function SearchBar({domain, id, trainingDates}) {
                                                 </div>
                                                 
                                             </div>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+
+
+                                <div className='border w-max mx-2 px-4 py-[3px]  rounded-full'>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <span  className="border-none cursor-pointer flex items-center"><ion-icon name="star-outline" style={{marginRight:"8px"}}></ion-icon> <span>Rating</span></span>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-max">
+                                            {/* <div className="grid gap-4"> */}
+                                            <div className="flex items-center justify-between">
+                                                        <Label>Rating</Label>
+                                                        <input
+                                                            type="number"
+                                                            value={rating}
+                                                            min={1}
+                                                            max={5}
+                                                            onChange={(e) => setRating(e.target.value)}
+                                                            className="w-max py-1 ml-4 px-2 border mt-2 rounded-sm border-gray-700"/>
+                                                {/* </div> */}
+
+                                                
+                                            {/* </div> */}
                                             </div>
                                         </PopoverContent>
                                     </Popover>
@@ -383,12 +411,12 @@ function SearchBar({domain, id, trainingDates}) {
                                                     <AvatarImage src="https://github.com/shadcn.png"/>
                                                     <AvatarFallback>CN</AvatarFallback>
                                                 </Avatar>
-                                                <p className='ml-2 font-medium text-md'>{res.generalDetails?.name}</p>
+                                                <p className='ml-2 font-medium text-sm'>{res.generalDetails?.name} - <span className='flex items-center ml-2'><span>{res?.Rating?.star}</span><ion-icon name="star-outline" style={{color:"gold"}}></ion-icon></span></p>
                                             </div>
                                             <div>
                                                 <p className='text-gray-600 mt-2'>
                                                     ID:
-                                                    <span className='text-black font-semibold'>{res.trainerId}</span>
+                                                    <span className='text-black text-sm font-semibold'>{res.trainerId}</span>
                                                 </p>
                                             </div>
 
@@ -398,9 +426,9 @@ function SearchBar({domain, id, trainingDates}) {
                                             className='flex flex-col justify-start'>
                                             <div className='flex items-center justify-between'>
                                                 <div className=' items-center'>
-                                                    <h2 className='text-gray-600'>Training Domain</h2>
+                                                    <h2 className='text-gray-600 text-sm'>Training Domain</h2>
                                                     <p>
-                                                        <span className='text-black font-medium ml-2'> {res.trainingDomain[0].domain}</span>
+                                                        <span className='text-black font-medium ml-2 text-sm'> {res.trainingDomain[0].domain}</span>
                                                     </p>
                                                 </div>
                                             </div>
@@ -410,13 +438,13 @@ function SearchBar({domain, id, trainingDates}) {
                                                 <div>
                                                     <h2 className='text-gray-600'>Session Taken</h2>
                                                     <p>
-                                                        <span className='text-black font-medium'>{res.trainingDomain[0].paymentSession}</span>
+                                                        <span className='text-black font-medium text-sm'>{res.trainingDomain[0].paymentSession}</span>
                                                     </p>
                                                 </div>
                                                 <div className='ml-4'>
                                                     <h2 className='text-gray-600'>Price</h2>
                                                     <p>
-                                                        <span className='text-black font-medium'>₹{res.trainingDomain[0].price}</span>
+                                                        <span className='text-black font-medium text-sm'>₹{res.trainingDomain[0].price}</span>
                                                     </p>
                                                 </div>
                                         </div>
@@ -427,20 +455,21 @@ function SearchBar({domain, id, trainingDates}) {
                                             <div className='flex flex-col items-start gap-[20px]'>
                                                 <p className='flex items-center'>
                                                     <ion-icon style={{fontSize:"20px", color:"gray", marginRight:"5px"}}  name="call-outline"></ion-icon>
-                                                    <span className='font-medium'>{res.generalDetails?.phoneNumber}</span>
+                                                    <span className='font-medium text-sm'>{res.generalDetails?.phoneNumber}</span>
                                                 </p>
                                                 <p className='flex  items-center'>
                                                     <ion-icon style={{fontSize:"20px", color:"gray", marginRight:"5px"}}  name="mail-outline"></ion-icon>
-                                                    <span className='font-semibold'>{res.generalDetails?.email}</span>
+                                                    <span className='font-semibold text-sm'>{res.generalDetails?.email}</span>
                                                 </p>
                                             </div>
                                         </div>
 
                                <div className='flex flex-col items-center justify-between' >
-                                    <div className='bg-blue-800 text-white px-3 py-2 cursor-pointer' onClick={() => addTrainerToProject(res)}> 
+                                    <div className='bg-blue-800 text-white text-sm px-3 py-2 cursor-pointer' onClick={() => addTrainerToProject(res)}> 
                                         Add Trainer
                                     </div>
-                                    <span className='text-blue-600 mt-2 cursor-pointer'>View More...</span>
+                                    <Link to={`/home/trainer/view/${res._id}`} target='_blank'  className='text-blue-600 text-sm cursor-pointer mt-2'>View</Link>
+
                                </div>
                            </div>
                        ))

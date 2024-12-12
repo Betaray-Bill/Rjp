@@ -2,7 +2,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { Trainer } from "../models/TrainerModel.js";
 
 // Build Search Project
-const buildProjectStage = (domain, minPrice, maxPrice, mode, type, startDate, endDate) => {
+const buildProjectStage = (domain, minPrice, maxPrice, mode, type, startDate, endDate, rating) => {
     let conditions = [];
 
     if (domain) {
@@ -26,6 +26,10 @@ const buildProjectStage = (domain, minPrice, maxPrice, mode, type, startDate, en
     if (type) {
         conditions.push({ $eq: ["$$td.type", type] });
     }
+    // if (rating !== undefined) {
+    //     let star = Number(rating);
+    //     conditions.push({ $gte: ["$$td.Rating.star", star] });
+    // }
     const projectStages = [];
     if (startDate && endDate) {
         projectStages.push({
@@ -87,6 +91,7 @@ const buildProjectStage = (domain, minPrice, maxPrice, mode, type, startDate, en
                     cond: { $and: conditions },
                 },
             },
+            Rating: 1,
             generalDetails: 1,
             trainerId: 1,
         },
@@ -95,7 +100,7 @@ const buildProjectStage = (domain, minPrice, maxPrice, mode, type, startDate, en
 
 // Search Function
 const searchTrainer = asyncHandler(async(req, res) => {
-    const { domain, price, mode, type, startDate, endDate } = req.query;
+    const { domain, price, mode, type, startDate, endDate, rating } = req.query;
     console.log(req.query)
     try {
         let minPrice, maxPrice;
@@ -120,14 +125,32 @@ const searchTrainer = asyncHandler(async(req, res) => {
         }
 
         // Add the project stages to the pipeline
-        let a = buildProjectStage(domain, minPrice, maxPrice, mode, type, startDate, endDate)
-        console.log(a)
+        let a = buildProjectStage(domain, minPrice, maxPrice, mode, type, startDate, endDate, rating)
+            // console.log("PIpeline", a)
         pipeline.push(a);
+
+        if (rating !== undefined) {
+            pipeline.push({
+                $match: {
+                    "Rating.star": { $gte: Number(rating) }
+                },
+
+            })
+        }
+
+        console.log(pipeline)
 
         pipeline.push({
             $match: {
                 trainingDomain: { $ne: [] }
             },
+
+        })
+
+        pipeline.push({
+            $sort: {
+                "Rating.star": -1
+            }
 
         })
 
