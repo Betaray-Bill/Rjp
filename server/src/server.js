@@ -9,12 +9,41 @@ import trainerSourcerRoutes from "./routes/TrainerSourcerRoutes.js";
 import trainerRoutes from "./routes/TrainerRoutes.js";
 import projectRoutes from "./routes/ProjectRoutes.js"
 import azureRoutes from "./routes/azureRoutes.js";
-import http from "http";
+import helmet from "helmet";
 import azureBlobRoutes from "./routes/azureBlobRoutes.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
 const app = express();
+
+// Use Helmet for securing HTTP headers
+app.use(helmet())
+
+// Helmet configuration
+app.use(helmet.contentSecurityPolicy({
+    directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", 'trusted.com', "http://localhost:5173", "http://localhost:5174", ],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: []
+    }
+}));
+app.use(helmet.noSniff());
+app.use(helmet.frameguard({ action: 'deny' }));
+app.use(helmet.xssFilter());
+app.use(helmet.hsts({
+    maxAge: 31536000 * 100, // One year in seconds
+    includeSubDomains: true
+}));
+app.use(helmet.referrerPolicy({ policy: 'no-referrer' }));
+
+// if (process.env.NODE_ENV === 'production') {
+//     app.use(helmet());
+// } else {
+//     app.use(helmet({
+//         contentSecurityPolicy: false // Disable CSP for development
+//     }));
+// }
 
 const corsOptions = {
     origin: ["http://localhost:5173", "http://localhost:5174", "https://rjp-demo-dashboard.netlify.app/"],

@@ -23,11 +23,11 @@ import {Button} from "@/components/ui/button";
 // Localizer for React Big Calendar
 const localizer = momentLocalizer(moment);
 
-const generateEvents = (workingDates) => {
+const generateEvents = (eventsDate) => {
     const events = [];
 
-    workingDates.forEach((work) => {
-        const {startDate, endDate, startTime, endTime, specialTimings} = work;
+    eventsDate?.forEach((work) => {
+        const {startDate, endDate, startTime, endTime, specialTimings, projectName} = work;
 
         // Add regular intervals
         let currentDate = new Date(startDate);
@@ -40,7 +40,7 @@ const generateEvents = (workingDates) => {
             startDateTime.setHours(new Date(startTime).getHours(), new Date(startTime).getMinutes());
             endDateTime.setHours(new Date(endTime).getHours(), new Date(endTime).getMinutes());
 
-            events.push({title: "Regular Timing", start: startDateTime, end: endDateTime, allDay: false});
+            events.push({title: projectName, start: startDateTime, end: endDateTime, allDay: false});
 
             currentDate.setDate(currentDate.getDate() + 1);
         }
@@ -55,7 +55,7 @@ const generateEvents = (workingDates) => {
             specialStartDateTime.setHours(new Date(specialStart).getHours(), new Date(specialStart).getMinutes());
             specialEndDateTime.setHours(new Date(specialEnd).getHours(), new Date(specialEnd).getMinutes());
 
-            events.push({title: "Special Timing", start: specialStartDateTime, end: specialEndDateTime, allDay: false});
+            events.push({title: projectName, start: specialStartDateTime, end: specialEndDateTime, allDay: false});
         });
     });
 
@@ -65,7 +65,7 @@ const generateEvents = (workingDates) => {
 // Localizer for react-big-calendar using npm run dev.js const localizer =
 // momentLocalizer(moment);
 
-const CalendarComp = ({workingDates}) => {
+const CalendarComp = ({eventsDate}) => {
     // const [events, setEvents] = useState([]); useEffect(() => {     // Transform
     // the eventsDate into FullCalendar events     const transformedEvents =
     // eventsDate?.flatMap((event) => {         const { startDate, endDate,
@@ -103,7 +103,9 @@ const CalendarComp = ({workingDates}) => {
     // ${moment(extendedProps.endDate).format("LLLL")}`); }; const [show,
     // setShow] = useState(false) console.log(events)
 
-    const events = generateEvents(workingDates);
+    const events = generateEvents(eventsDate);
+
+    console.log(eventsDate)
 
     return (
         <div className="  h-max p-3">
@@ -130,7 +132,7 @@ const CalendarComp = ({workingDates}) => {
                         endAccessor="end"
                         style={{
                         height: "80vh",
-                        margin: "50px"
+                        // margin: "50px"
                     }}
                         views={["month", "week", "day"]}
                         step={15}

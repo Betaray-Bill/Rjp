@@ -56,13 +56,13 @@ function Home() {
         dispatch(setCredentials(res.data))
         return res.data;
     };
- 
+
     const {data, refetch, isLoading} = useQuery({
         queryKey: [
-            "user", user._id,
+            "user", user._id
         ],
         queryFn: fetchUser,
-        enabled:!!user._id,
+        enabled: !!user._id,
         staleTime: 1000 * 60 * 5, // data stays    fresh for 5 minutes
         cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
 
@@ -242,9 +242,11 @@ function Home() {
                         {/* Main Section Nav */}
                         <div
                             className='w-full h-14 border-b border-gray-400  flex items-center justify-between px-4'>
-                            <Link to="/home/dashboard" className='text-sm text-gray-600'>
-                                <img src={logo} alt="Rjp Logo" className='w-18 h-9 mx-4'/>
-                            </Link>
+                            <div>
+                                <Link to="/home/dashboard" className='text-sm text-gray-600 lg:hidden'>
+                                    <img src={logo} alt="Rjp Logo" className='w-18 h-9 mx-4'/>
+                                </Link>
+                            </div>
                             <div className='flex items-center justify-end'>
                                 <div className='flex items-center'>
                                     <p className='font-light text-sm'>Welcome {data && data.generalDetails.name}</p>

@@ -17,6 +17,7 @@ import TrainerPurchaseList from './Components/PO/TrainerPurchaseList'
 import { userAccess } from '@/utils/CheckUserAccess'
 import { RolesEnum } from '@/utils/constants'
 import InvoiceList from './Components/Invoice/InvoiceList'
+import Remainder from './Components/Remainder'
 
 const state = {
   ParticipantList: "Participant List",
@@ -214,7 +215,8 @@ function ViewSingleProject() {
           <span className='ml-2'>Go Back</span>
         </button>
         <div>
-          <Button className="rounded-none bg-red-500">Remainder</Button>
+          {/* <Button className="rounded-none bg-red-500">Remainder</Button> */}
+          <Remainder stages={stages}/>
         </div>
       </div>
 
