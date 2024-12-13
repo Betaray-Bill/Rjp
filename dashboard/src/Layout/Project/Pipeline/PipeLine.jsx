@@ -5,15 +5,11 @@ import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import CardProject from '@/Layout/Project/Pipeline/Components/CardProject';
-const stages = [
-    "Training Requirement ",
-    "Reply",
-    "Proposal Sent",
-    "PO received / Invoice Raised",
-    "Training Delivery",
-    "Invoice Sent",
-    "Payment",
-]
+
+
+// Example usage
+// console.log(StagesEnum.TRAINING_REQUIREMENT); // Output: "Training Requirement"
+
 function PipeLine() {
 
     const { currentUser } = useSelector(state => state.auth)

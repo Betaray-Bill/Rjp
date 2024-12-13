@@ -187,7 +187,7 @@ function ViewSingleProject() {
   if (isLoading) return <div><Loading /></div>
   if (error) return <div>Error: {error.message}</div>
   console.log(projects)
-  const {_id, notes, company, stages, contactDetails,amount,employees, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
+  const {_id, notes, company, stages, contactDetails, remainders,amount,employees, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
 
 
   const fileUpload = async(e) => {
@@ -216,7 +216,7 @@ function ViewSingleProject() {
         </button>
         <div>
           {/* <Button className="rounded-none bg-red-500">Remainder</Button> */}
-          <Remainder stages={stages}/>
+          <Remainder stages={stages} projectId={projectId} remainders={remainders}/>
         </div>
       </div>
 

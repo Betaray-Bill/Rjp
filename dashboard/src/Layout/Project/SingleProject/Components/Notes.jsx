@@ -81,7 +81,7 @@ function Notes({projectName, projectId}) {
         'notes', projectId
     ], // Unique key for this query
             fetchNotes, {
-        enabled: true,
+        enabled: !!projectId,
         staleTime: 1000 * 60 * 5, // data stays fresh for 5 minutes
         cacheTime: 1000 * 60 * 10 // cache data for 10 minutes
     });

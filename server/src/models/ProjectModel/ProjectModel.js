@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { stages } from "../../utils/constants.js";
 
 // Notes Schema
 const notesSchema = new mongoose.Schema({
@@ -31,6 +32,33 @@ const notesSchema = new mongoose.Schema({
         default: 'https://example.com/photos/alice.jpg'
     }
 })
+
+// Remainder Schema
+const remainderSchema = new mongoose.Schema({
+    // remainders: [{
+    date: {
+        type: Date,
+        // default: Date.now
+    },
+    stages: {
+        type: String,
+        default: '',
+        // enum: Object.values(stages)
+    },
+    description: {
+        type: String,
+        default: ''
+    },
+    isCompleted: {
+        type: Boolean,
+        default: false
+    },
+    projectId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Project'
+    },
+    // }],
+}, { timestamps: true })
 
 // Project Schema
 const projectSchema = new mongoose.Schema({
@@ -107,6 +135,7 @@ const projectSchema = new mongoose.Schema({
             }
         }]
     },
+    remainders: [remainderSchema],
     modeOfTraining: {
         type: String,
         enum: ['Virtual', 'In-Person', 'Hybrid']

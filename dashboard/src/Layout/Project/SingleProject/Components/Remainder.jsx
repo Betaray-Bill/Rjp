@@ -1,19 +1,82 @@
-import React from 'react'
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
-} from "@/components/ui/dialog"
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
-import {Button} from '@/components/ui/button'
-import {Input} from '@/components/ui/input'
-import {Label} from '@/components/ui/label'
-import {Textarea} from '@/components/ui/textarea'
+import React, {Fragment, useEffect, useState} from 'react';
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import {Button} from '@/components/ui/button';
+import {Textarea} from '@/components/ui/textarea';
+import {Checkbox} from "@/components/ui/checkbox";
+import {Label} from '@/components/ui/label';
+import axios from 'axios';
+import {useToast} from '@/hooks/use-toast';
+import {useQueryClient} from 'react-query';
 
-function Remainder({stages}) {
+function Remainder({stages, projectId, remainders}) {
+    const [date,
+        setDate] = useState("");
+    const [remarks,
+        setRemarks] = useState("");
+    const [isCompleted,
+        setIsCompleted] = useState(false);
+    const [loading,
+        setLoading] = useState(false);
+    const {toast} = useToast()
+    const queryClient = useQueryClient()
+    // Assign Remainder as per the Stage
+    console.log(remainders)
+    useEffect(() => {
+        const remainderStageData = remainders.filter((item) => {
+            return item.stages == stages;
+        })
+
+        console.log(remainderStageData)
+        if (remainderStageData.length > 0) {
+            setDate(new Date(remainderStageData[0].date).toISOString().split("T")[0]);
+            setRemarks(remainderStageData[0].description);
+            setIsCompleted(remainderStageData[0].isCompleted);
+        }else{
+            setDate("");
+            setRemarks("");
+            setIsCompleted(false);
+        }
+    }, [stages])
+
+    // Function to handle form submission
+    const handleSave = async() => {
+        if (!date || !remarks) {
+            alert("Please fill out all required fields.");
+            return;
+        }
+
+        const requestData = {
+            projectId: projectId.projectId,
+            date,
+            stages,
+            description: remarks,
+            isCompleted
+        };
+
+        console.log("Data ", requestData)
+
+        setLoading(true);
+        try {
+            const response = await axios.put(`http://localhost:5000/api/project/remainder/${projectId.projectId}`, {
+                ...requestData
+            })
+            const result = await response.data
+            console.log(result)
+            queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
+            toast({
+                title: "Remainder saved successfully", variant: "success",
+                // duration: 5000
+            })
+            // alert("Remainder saved successfully!"); setDate(""); setRemarks("");
+            // setIsCompleted(false); if (onSuccess) onSuccess(result);
+        } catch (error) {
+            console.error(error);
+            alert("An error occurred while saving the remainder.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div>
             <Dialog>
@@ -28,19 +91,9 @@ function Remainder({stages}) {
                         <DialogTitle>
                             <h2 className='font-semibold text-md'>Remainder - {stages}</h2>
                         </DialogTitle>
-                        {/* <DialogDescription> */}
-                        {/* Remainder Section */}
-
-                        {/* Select Date to end tis Remainder */}
-
-                        {/* Remarks */}
-
-                        {/* is Done or Not */}
-
-                        {/* Submit/Save */}
-
                         <div>
-                            <div className='mt-4 w-max'>
+                            <div className='mt-8 w-[450px]'>
+                                {/* Date Input */}
                                 <div className='flex'>
                                     <Label className="flex items-center">
                                         <ion-icon
@@ -50,36 +103,64 @@ function Remainder({stages}) {
                                         }}></ion-icon>
                                         <span className='mx-2 text-md'>End Date</span>
                                     </Label>
-                                    <input type="date" className='text-md ml-3 border px-4 py-1 rounded-md w-max'/>
+                                    <input
+                                        type="date"
+                                        value={date}
+                                        onChange={(e) => setDate(e.target.value)}
+                                        className='text-md ml-3 border px-4 py-1 rounded-md w-max'/>
                                 </div>
 
-                                <div>
-
-                                    <div className='mt-4 w-max'>
-                                        <Label className="flex items-center">
-                                            <ion-icon
-                                                name="chatbubbles-outline"
-                                                style={{
-                                                fontSize: "20px"
-                                            }}></ion-icon>
-                                            <span className='mx-2 text-md'>Remarks</span>
-                                        </Label>
-                                        <Textarea
-                                            className='text-md my-3 w-[30vw] h-20 border border-gray-600 px-4 py-1 rounded-md'></Textarea>
-                                    </div>
+                                {/* Remarks Input */}
+                                <div className='mt-4 w-max'>
+                                    <Label className="flex items-center">
+                                        <ion-icon
+                                            name="chatbubbles-outline"
+                                            style={{
+                                            fontSize: "20px"
+                                        }}></ion-icon>
+                                        <span className='mx-2 text-md'>Remarks</span>
+                                    </Label>
+                                    <Textarea
+                                        value={remarks}
+                                        onChange={(e) => setRemarks(e.target.value)}
+                                        className='text-md my-3 w-[450px] h-20 border border-gray-600 px-4 py-1 rounded-md'></Textarea>
                                 </div>
+
+                                {/* Completed Checkbox */}
+                                <div className='flex items-center justify-end'>
+                                    {remainders && isCompleted
+                                        ? <div className='flex items-center '>
+                                            <ion-icon name="checkmark-done-outline" style={{color:"green", fontSize:"22px"}}></ion-icon>
+                                            <span className='font-semibold ml-2'>Completed</span>
+                                        </div>
+                                        : <Fragment>
+                                            <div className='flex items-center'>
+                                                <Checkbox
+                                                    checked={isCompleted}
+                                                    onCheckedChange={(checked) => setIsCompleted(checked)}/>
+                                            </div>
+                                            <Label className="flex items-center">
+                                                <span className='mx-2 text-md'>Completed</span>
+                                            </Label>
+                                        </Fragment>
+}
+                                </div>
+
+                                {/* Save Button */}
                                 <div>
-                                    <Button>Save</Button>
+                                    <Button onClick={handleSave} disabled={loading}>
+                                        {loading
+                                            ? "Saving..."
+                                            : "Save"}
+                                    </Button>
                                 </div>
                             </div>
                         </div>
-                        {/* </DialogDescription> */}
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
-
         </div>
-    )
+    );
 }
 
-export default Remainder
+export default Remainder;

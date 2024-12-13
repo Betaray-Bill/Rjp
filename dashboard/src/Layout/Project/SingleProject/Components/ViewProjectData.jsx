@@ -11,6 +11,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import { Button } from '@/components/ui/button';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import {stages} from "../../../../utils/constants.js"
 
 
 function ViewProjectData({projects}) {
@@ -202,7 +203,7 @@ function ViewProjectData({projects}) {
                             // disabled={!is}
                             className='ml-3 font-semibold'
                             value={stages || ''}>
-                                <option value="Training Requirement">Training Requirement</option>
+                                <option value="Training Enquiry">Training Enquiry</option>
                                 <option value="Reply">Reply</option>
                                 <option value="Proposal Sent">Proposal Sent</option>
                                 <option value="PO received / Invoice Raised">PO received / Invoice Raised</option>

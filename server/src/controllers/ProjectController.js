@@ -10,6 +10,7 @@ import TrainerSourcer from "../models/RoleModels/TrainerSourcerModel.js";
 import { Resume, Trainer } from "../models/TrainerModel.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { stages } from "../utils/constants.js";
 
 // Create a New Project - KA, Admin
 const createProject = asyncHandler(async(req, res) => {
@@ -56,7 +57,7 @@ const createProject = asyncHandler(async(req, res) => {
     console.log("-------------")
     console.log("-------------")
 
-    const stage = "Training Requirement"
+    const stage = stages.TRAINING_ENQUIRY
 
     // Validate required fields
     if (!projectName || !domain || !company || !trainingDates || !modeOfTraining) {
@@ -106,7 +107,7 @@ const createProject = asyncHandler(async(req, res) => {
             // Pipeline.getSingletonPipeline(); console.log(pipeline)
         const updatedPipeline = await Pipeline.findOneAndUpdate({
             // _id: pipeline._id,
-            "stages.name": "Training Requirement"
+            "stages.name": stages.TRAINING_ENQUIRY
         }, {
             $push: {
                 "stages.$.projects": newProject._id
@@ -1215,6 +1216,78 @@ const updateInvoice_by_paid = asyncHandler(async(req, res) => {
 })
 
 
+// Remainders
+// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+
+
+const addRemainders = asyncHandler(async(req, res) => {
+    const { projectId, date, stages, description, isCompleted } = req.body;
+    console.log(req.body)
+        // Validate input
+    if (!projectId || !date || !stages || !description) {
+        return res.status(400).json({ message: 'All fields are required.' });
+    }
+    // console.log(project.remainders)
+
+    // Find the project by ID
+    const project = await Project.findById(projectId);
+    console.log(project.remainders)
+
+    if (!project) {
+        return res.status(404).json({ message: 'Project not found.' });
+    }
+
+    // Check if the project has remainders
+    if (project.remainders && project.remainders.length > 0) {
+        console.log("1")
+            // Check if the current project stage already has a remainder
+        const existingRemainder = project.remainders.find(
+            (rem) => rem.stages === stages
+        );
+
+        if (existingRemainder) {
+            console.log("2")
+                // Update the existing remainder
+            existingRemainder.date = date;
+            existingRemainder.description = description;
+            existingRemainder.isCompleted = isCompleted;
+        } else {
+            console.log("3")
+                // Add a new remainder object to the array
+            project.remainders.push({
+                date,
+                stages,
+                description,
+                isCompleted,
+                projectId,
+            });
+        }
+    } else {
+        console.log("4", project.remainders.remainders.length)
+            // No remainders exist, create a new one
+        project.remainders = {
+            date,
+            stages,
+            description,
+            isCompleted,
+            projectId,
+        }
+    }
+
+    // Save the updated project
+    const updatedProject = await project.save();
+
+    res.status(200).json({
+        message: 'Remainder added/updated successfully.',
+        // data: updatedProject,
+    });
+});
+
+
+
 export {
     createProject,
     getProjectDetails,
@@ -1235,5 +1308,6 @@ export {
     savePurchaseOrder,
     upload_Invoice_Content_Trainer,
     acceptOrDecline,
-    updateInvoice_by_paid
+    updateInvoice_by_paid,
+    addRemainders
 }

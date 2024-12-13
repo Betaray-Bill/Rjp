@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { stages } from "../../utils/constants.js";
 
 const stageSchema = new mongoose.Schema({
     name: {
@@ -17,26 +18,26 @@ const pipelineSchema = new mongoose.Schema({
     stages: {
         type: [stageSchema],
         default: [{
-            name: 'Training Requirement',
+            name: stages.TRAINING_ENQUIRY,
             projects: []
         }, {
-            name: 'Reply',
+            name: stages.REPLY,
             projects: []
         }, {
-            name: 'Proposal Sent',
+            name: stages.PROPOSAL_SENT,
             projects: []
         }, {
-            name: 'PO received / Invoice Raised',
+            name: stages.PO_RECEIVED_OR_INVOICE_RAISED,
             projects: []
         }, {
-            name: 'Training Delivery',
+            name: stages.TRAINING_DELIVERY,
             projects: [],
 
         }, {
-            name: 'Invoice Sent',
+            name: stages.INVOICE_SENT,
             projects: []
         }, {
-            name: 'Payment',
+            name: stages.PAYMENT,
             projects: []
         }]
     }
