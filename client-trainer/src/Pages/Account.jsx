@@ -215,7 +215,10 @@ function Account() {
                     <h2 className='font-semibold'>Personal Info</h2>
                     {
                         isEdit ?
-                        <Button className="rounded-none" onClick={handleSubmit}>Submit</Button>:
+                            <div>
+                                <Button className="rounded-none border border-red-600 bg-white text-red-600 mx-4 hover:bg-red-200" onClick={() => setIsEdit(false)}>Cancel</Button>
+                                <Button className="rounded-none" onClick={handleSubmit}>Submit</Button>
+                            </div>:
                         <Button className="rounded-none" onClick={() => setIsEdit(true)}>Edit</Button>
                     }
                 </div>

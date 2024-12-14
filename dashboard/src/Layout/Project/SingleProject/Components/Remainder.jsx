@@ -31,7 +31,7 @@ function Remainder({stages, projectId, remainders}) {
             setDate(new Date(remainderStageData[0].date).toISOString().split("T")[0]);
             setRemarks(remainderStageData[0].description);
             setIsCompleted(remainderStageData[0].isCompleted);
-        }else{
+        } else {
             setDate("");
             setRemarks("");
             setIsCompleted(false);
@@ -77,14 +77,68 @@ function Remainder({stages, projectId, remainders}) {
         }
     };
 
+    const isDatePassed = () => {
+        // Get today's date (formatted to YYYY-MM-DD)
+        const todayDate = new Date()
+            .toISOString()
+            .split("T")[0];
+
+        console.log(date)
+
+        // Compare dates
+        if (todayDate > date) {
+            // return true
+            console.log("Today's date is greater than the date.");
+            return true
+        } else if (todayDate === date) {
+            console.log("Today's date is equal to the setDate.");
+            return true
+        } else {
+            console.log("Today's date is less than the setDate.");
+            return false
+        }
+
+    }
+
     return (
         <div>
             <Dialog>
                 <DialogTrigger>
-                    <Button className="rounded-none bg-red-500 flex items-center">
+                    {/* {
+                        isDatePassed() ? "yes" : "mo"
+                    } */}
+                    {isDatePassed()
+                        ? (
+                            <Fragment>
+                                {isCompleted
+                                    ? <Button className="rounded-none bg-green-500 flex items-center">
+                                            <span>Remainder - Done</span>
+                                            <ion-icon name="chevron-down-outline"></ion-icon>
+                                        </Button>
+                                    : <Button className="rounded-none bg-red-500 flex items-center">
+                                        <span>Remainder</span>
+                                        <ion-icon name="chevron-down-outline"></ion-icon>
+                                    </Button>
+}
+                            </Fragment>
+                        )
+                        : <Fragment>
+                            {isCompleted
+                                ? <Button className="rounded-none bg-green-500 flex items-center">
+                                        <span>Remainder - Done</span>
+                                        <ion-icon name="chevron-down-outline"></ion-icon>
+                                    </Button>
+                                : <Button className="rounded-none bg-red-500 flex items-center">
+                                    <span>Remainder</span>
+                                    <ion-icon name="chevron-down-outline"></ion-icon>
+                                </Button>
+}
+                        </Fragment>
+}
+                    {/* <Button className="rounded-none bg-red-500 flex items-center">
                         <span>Remainder</span>
                         <ion-icon name="chevron-down-outline"></ion-icon>
-                    </Button>
+                    </Button> */}
                 </DialogTrigger>
                 <DialogContent className="mr-10 border border-gray-300 drop-shadow-md">
                     <DialogHeader>
@@ -130,9 +184,14 @@ function Remainder({stages, projectId, remainders}) {
                                 <div className='flex items-center justify-end'>
                                     {remainders && isCompleted
                                         ? <div className='flex items-center '>
-                                            <ion-icon name="checkmark-done-outline" style={{color:"green", fontSize:"22px"}}></ion-icon>
-                                            <span className='font-semibold ml-2'>Completed</span>
-                                        </div>
+                                                <ion-icon
+                                                    name="checkmark-done-outline"
+                                                    style={{
+                                                    color: "green",
+                                                    fontSize: "22px"
+                                                }}></ion-icon>
+                                                <span className='font-semibold ml-2'>Completed</span>
+                                            </div>
                                         : <Fragment>
                                             <div className='flex items-center'>
                                                 <Checkbox

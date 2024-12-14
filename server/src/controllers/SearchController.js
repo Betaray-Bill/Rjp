@@ -26,82 +26,90 @@ const buildProjectStage = (domain, minPrice, maxPrice, mode, type, startDate, en
     if (type) {
         conditions.push({ $eq: ["$$td.type", type] });
     }
-    // if (rating !== undefined) {
-    //     let star = Number(rating);
-    //     conditions.push({ $gte: ["$$td.Rating.star", star] });
-    // }
+
     const projectStages = [];
+
     if (startDate && endDate) {
+        // const startDate = new Date(startDate)
+        // const endDate = new Date(endDate)
+
         projectStages.push({
             $lookup: {
-                from: "projects", // Assuming the projects collection is named 'projects'
+                from: "Project", // Assuming the projects collection is named 'projects'
                 localField: "projects",
                 foreignField: "_id",
                 as: "projects",
             },
         }, {
             $addFields: {
-                filteredProjects: {
-                    $filter: {
-                        input: "$projects",
-                        as: "project",
-                        cond: {
-                            $or: [
-                                { $lt: ["$$project.trainingDates.endDate", new Date(startDate)] }, // Ends before the range
-                                { $gt: ["$$project.trainingDates.startDate", new Date(endDate)] }, // Starts after the range
-                            ],
+                hasConflict: {
+                    $anyElementTrue: {
+                        $map: {
+                            input: "$projects",
+                            as: "project",
+                            in: {
+                                $or: [{
+                                        // Check for overlap in trainingDates
+                                        $and: [
+                                            { $lte: ["$$project.trainingDates.startDate", new Date(endDate)] },
+                                            { $gte: ["$$project.trainingDates.endDate", new Date(startDate)] },
+                                        ],
+                                    },
+                                    {
+                                        // Check for overlap in specialTimings (with $ifNull to handle null cases)
+                                        $anyElementTrue: {
+                                            $map: {
+                                                input: { $ifNull: ["$$project.trainingDates.specialTimings", []] },
+                                                as: "special",
+                                                in: {
+                                                    $and: [
+                                                        { $lte: ["$$special.date", new Date(endDate)] },
+                                                        { $gte: ["$$special.date", new Date(startDate)] },
+                                                    ],
+                                                },
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
                         },
                     },
                 },
             },
         }, {
             $match: {
-                filteredProjects: { $ne: [] }, // Ensure there are projects that satisfy the condition
+                hasConflict: { $ne: true }, // Only include trainers without conflicts
             },
         });
     }
-    console.log(conditions)
-        // return [
-        //     // ...projectStages,
-        //     {
-        //         $project: {
-        //             trainingDomain: {
-        //                 $filter: {
-        //                     input: "$trainingDomain",
-        //                     as: "td",
-        //                     cond: { $and: conditions },
-        //                 },
-        //             },
-        //             generalDetails: 1,
-        //             trainerId: 1,
-        //             // trainingDomain: 1,
-        //             filteredProjects: 1,
-        //         },
-        //     },
-        // ];
 
+    console.log(projectStages)
 
-    return {
-        // ...projectStages,
-        $project: {
-            trainingDomain: {
-                $filter: {
-                    input: "$trainingDomain",
-                    as: "td",
-                    cond: { $and: conditions },
+    return [
+        ...projectStages,
+        {
+            $project: {
+                trainingDomain: {
+                    $filter: {
+                        input: "$trainingDomain",
+                        as: "td",
+                        cond: { $and: conditions },
+                    },
                 },
+                Rating: 1,
+                generalDetails: 1,
+                trainerId: 1,
+                filteredProjects: "$projects",
             },
-            Rating: 1,
-            generalDetails: 1,
-            trainerId: 1,
         },
-    };
+    ];
 };
+
 
 // Search Function
 const searchTrainer = asyncHandler(async(req, res) => {
     const { domain, price, mode, type, startDate, endDate, rating } = req.query;
-    console.log(req.query)
+
     try {
         let minPrice, maxPrice;
         if (price) {
@@ -114,6 +122,8 @@ const searchTrainer = asyncHandler(async(req, res) => {
         }
 
         let pipeline = [];
+
+        // Add domain filter if applicable
         if (domain) {
             pipeline.push({
                 $match: {
@@ -124,42 +134,47 @@ const searchTrainer = asyncHandler(async(req, res) => {
             });
         }
 
-        // Add the project stages to the pipeline
-        let a = buildProjectStage(domain, minPrice, maxPrice, mode, type, startDate, endDate, rating)
-            // console.log("PIpeline", a)
-        pipeline.push(a);
+        if (startDate && endDate) {
+            const parsedStartDate = new Date(startDate);
+            const parsedEndDate = new Date(endDate);
 
+            // Check if dates are valid
+            if (isNaN(parsedStartDate) || isNaN(parsedEndDate)) {
+                return res.status(400).json({ message: "Invalid date format" });
+            }
+        }
+
+        // Add the project filtering stages to the pipeline
+        pipeline.push(...buildProjectStage(domain, minPrice, maxPrice, mode, type, startDate, endDate, rating));
+
+        // Add a match stage for Rating if provided
         if (rating !== undefined) {
             pipeline.push({
                 $match: {
-                    "Rating.star": { $gte: Number(rating) }
+                    "Rating.star": { $gte: Number(rating) },
                 },
-
-            })
+            });
         }
 
-        console.log(pipeline)
-
+        // Filter out trainers with no training domains
         pipeline.push({
             $match: {
-                trainingDomain: { $ne: [] }
+                trainingDomain: { $ne: [] },
             },
+        });
 
-        })
-
+        // Sort by Rating
         pipeline.push({
             $sort: {
-                "Rating.star": -1
+                "Rating.star": -1,
             },
-
-        })
+        });
 
         // Execute the pipeline
         const result = await Trainer.aggregate(pipeline);
-        // console.log(result)
 
         if (!result.length) {
-            return res.status(200).json({ message: "No trainers found matching the criteria" });
+            return res.status(200).json({ message: "No trainers found matching the criteria", result });
         }
 
         res.status(200).json(result);
@@ -168,5 +183,6 @@ const searchTrainer = asyncHandler(async(req, res) => {
         res.status(500).json({ message: "Trainer not available", error: err });
     }
 });
+
 
 export { searchTrainer };
