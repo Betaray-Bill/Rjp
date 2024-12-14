@@ -110,15 +110,19 @@ router.post("/upload-aadhar-pan/trainer/:trainer", upload.fields([
     const trainer = req.params.trainer
     console.log(" uploaded ", trainer)
     const files = req.files;
-
+    let pancard, aadharCard;
     console.log(files)
 
+    if (files.pancard[0].fieldname) {
+        pancard = files.pancard[0]
+    }
 
-    const pancard = files.pancard[0]
-    const aadharCard = files.aadharCard[0]
+    if (files.aadharCard && files.aadharCard[0].fieldname) {
+        aadharCard = files.aadharCard[0]
+    }
 
-    console.log("pancard file:", pancard); // Details of uploaded pancard
-    console.log("AadharCard file:", aadharCard); // Details of uploaded aadhar card
+    // console.log("pancard file:", pancard); // Details of uploaded pancard
+    // console.log("AadharCard file:", aadharCard); // Details of uploaded aadhar card
 
     if (!req.files) {
         return res
@@ -127,15 +131,24 @@ router.post("/upload-aadhar-pan/trainer/:trainer", upload.fields([
     }
 
     try {
-        const resultPan = await uploadPanAndAadharToBlob(pancard, "pancard", trainer);
-        const resultAadhar = await uploadPanAndAadharToBlob(aadharCard, "aadharCard", trainer);
+        let resultPan, resultAadhar;
+        if (files.pancard[0]) {
+            resultPan = await uploadPanAndAadharToBlob(pancard, "pancard", trainer);
+        }
+
+        if (files.aadharCard && files.aadharCard[0].fieldname) {
+            resultAadhar = await uploadPanAndAadharToBlob(aadharCard, "aadharCard", trainer);
+        }
+
+        // const resultPan = await uploadPanAndAadharToBlob(pancard, "pancard", trainer);
+        // const resultAadhar = await uploadPanAndAadharToBlob(aadharCard, "aadharCard", trainer);
 
         res
             .status(200)
             .json({
                 message: "Files uploaded successfully",
-                pancard: resultPan.url,
-                aadharCard: resultAadhar.url
+                pancard: resultPan ? resultPan.url : null,
+                aadharCard: resultAadhar ? resultAadhar.url : null
             });
     } catch (error) {
         res

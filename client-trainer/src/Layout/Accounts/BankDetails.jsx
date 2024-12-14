@@ -83,15 +83,21 @@ function BankDetails() {
         const response = result.data;
         console.log("Connection check result:", response);
 
-        if( bankDetails.aadharCard && bankDetails.pancard ){
+        if( bankDetails.aadharCard || bankDetails.pancard ){
             
         if (result.status == 200) {
             console.log("File is present. Sending data to another API...");
-
+            // console.log(object)
             // Call another POST API Create a FormData object to handle file upload
             const formData = new FormData();
-            formData.append("aadharCard", bankDetails.aadharCard);
-            formData.append("pancard", bankDetails.pancard);
+            // formData.append("aadharCard", bankDetails.aadharCard);
+            // if(bankDetails.pancard){
+                formData.append("pancard", bankDetails.pancard);
+            // }
+            // if(bankDetails.aadharCard){
+                formData.append("aadharCard", bankDetails.aadharCard);
+            // }
+            // formData.append("pancard", bankDetails.pancard);
             console.log(formData)
             // Additional metadata Call the POST API to upload the file
             const uploadResult = await axios.post(`http://localhost:5000/api/filestorage/upload-aadhar-pan/trainer/${user._id}`, formData, {
@@ -152,6 +158,7 @@ function BankDetails() {
                         id="account_Name"
                         name="accountName"
                         value={bankDetails.accountName}
+                        required
                         onChange={handleChange}/>
                 </div>
 
@@ -163,6 +170,7 @@ function BankDetails() {
                         id="account_Number"
                         name="accountNumber"
                         value={bankDetails.accountNumber}
+                        required
                         onChange={handleChange}/>
                 </div>
 
@@ -173,6 +181,7 @@ function BankDetails() {
                         id="bankName"
                         name="bankName"
                         value={bankDetails.bankName}
+                        required
                         onChange={handleChange}/>
                 </div>
 
@@ -183,6 +192,7 @@ function BankDetails() {
                         id="bank_Branch"
                         name="bankBranch"
                         value={bankDetails.bankBranch}
+                        required
                         onChange={handleChange}/>
                 </div>
 
@@ -193,6 +203,7 @@ function BankDetails() {
                         id="bank_IFSC_code"
                         name="bankIFSCCode"
                         value={bankDetails.bankIFSCCode}
+                        required
                         onChange={handleChange}/>
                 </div>
 
@@ -203,6 +214,7 @@ function BankDetails() {
                         id="pancard_Number"
                         name="pancardNumber"
                         value={bankDetails.pancardNumber}
+                        required
                         onChange={handleChange}/>
                 </div>
 
@@ -213,6 +225,7 @@ function BankDetails() {
                         id="aadharcard_Number"
                         name="aadharCardNumber"
                         value={bankDetails.aadharCardNumber}
+                        required
                         onChange={handleChange}/>
                 </div>
 
@@ -223,6 +236,7 @@ function BankDetails() {
                         id="vendorName"
                         name="vendorName"
                         value={bankDetails.vendorName}
+                        // required
                         onChange={handleChange}/>
                 </div>
                 <div>
@@ -232,6 +246,7 @@ function BankDetails() {
                         id="gstNumber"
                         name="gstNumber"
                         value={bankDetails.gstNumber}
+                        // required
                         onChange={handleChange}/>
                 </div>
 
@@ -242,7 +257,7 @@ function BankDetails() {
 
             <div className='grid grid-cols-2 gap-5 border rounded-md mt-7 p-4'>
                 <div>
-                    <Label htmlFor="account_Name">Aadhar Card</Label>
+                    <Label htmlFor="account_Name">Aadhar Card (optional)</Label>
                     {/* <Input type="text" id="account_Card" name="accountName" onChange={(e) => handleChange(e)}/> */}
                     {
                         user.bankDetails.aadharCard? 
