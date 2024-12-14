@@ -273,7 +273,7 @@ function ResumeDetails({data}) {
             <p className='text-slate-700'>Processing your resume...</p>
           </div>
           :
-          <div className='grid grid-cols-1 md:grid-cols-2 items-start '>
+          <div className='grid grid-cols-1 md:grid-cols-1 items-start '>
                 <div className='mt-4 rounded-sm p-2'>
                     <h3 className='font-semibold flex justify-between items-center'>
                         <span>Professional Summary:</span>
@@ -285,6 +285,20 @@ function ResumeDetails({data}) {
                             onClick={() => handleAdd('professionalSummary')}></ion-icon>
                     </h3>
                     {renderTextareas(resume.professionalSummary, 'professionalSummary')}
+                </div>
+
+                                {/* Experience */}
+                                <div className='mt-4 p-3'>
+                    <h3 className='font-semibold flex justify-between items-center'>
+                        <span>Experience:</span>
+                        <ion-icon
+                            name="add-outline"
+                            style={{
+                            fontSize: "18px"
+                        }}
+                            onClick={() => handleAdd('experience')}></ion-icon>
+                    </h3>
+                    {renderTextareas(resume.experience, 'experience')}
                 </div>
 
                 {/* Technical Skills */}
@@ -301,6 +315,20 @@ function ResumeDetails({data}) {
                     {renderTextareas(resume.technicalSkills, 'technicalSkills')}
                 </div>
 
+                {/* Education */}
+                <div className='mt-4 p-3'>
+                    <h3 className='font-semibold flex justify-between items-center'>
+                        <span>Education:</span>
+                        <ion-icon
+                            name="add-outline"
+                            style={{
+                            fontSize: "18px"
+                        }}
+                            onClick={() => handleAdd('education')}></ion-icon>
+                    </h3>
+                    {renderTextareas(resume.education, 'education')}
+                </div>
+                
                 {/* Career History */}
                 <div className='mt-4 p-3'>
                     <h3 className='font-semibold flex justify-between items-center'>
@@ -329,19 +357,6 @@ function ResumeDetails({data}) {
                     {renderTextareas(resume.certifications, 'certifications')}
                 </div>
 
-                {/* Education */}
-                <div className='mt-4 p-3'>
-                    <h3 className='font-semibold flex justify-between items-center'>
-                        <span>Education:</span>
-                        <ion-icon
-                            name="add-outline"
-                            style={{
-                            fontSize: "18px"
-                        }}
-                            onClick={() => handleAdd('education')}></ion-icon>
-                    </h3>
-                    {renderTextareas(resume.education, 'education')}
-                </div>
 
                 {/* Trainings Delivered */}
                 <div className='mt-4 p-3'>
@@ -371,19 +386,7 @@ function ResumeDetails({data}) {
                     {renderTextareas(resume.clientele, 'clientele')}
                 </div>
 
-                {/* Experience */}
-                <div className='mt-4 p-3'>
-                    <h3 className='font-semibold flex justify-between items-center'>
-                        <span>Experience:</span>
-                        <ion-icon
-                            name="add-outline"
-                            style={{
-                            fontSize: "18px"
-                        }}
-                            onClick={() => handleAdd('experience')}></ion-icon>
-                    </h3>
-                    {renderTextareas(resume.experience, 'experience')}
-                </div>
+
 
           </div>
 

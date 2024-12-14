@@ -421,7 +421,7 @@ function    ViewNewResume({data, projects}) {
                     </Popover>
                 </div>
 
-                <div className='grid grid-cols-1 md:grid-cols-2 items-start '>
+                <div className='grid grid-cols-1 md:grid-cols-1 items-start '>
                     <div className='mt-4 rounded-sm p-2'>
                         <h3 className='font-semibold flex justify-between items-center'>
                             <span>Professional Summary:</span>
@@ -435,103 +435,104 @@ function    ViewNewResume({data, projects}) {
                         {renderTextareas(resume?.professionalSummary, 'professionalSummary')}
                     </div>
     
-                    {/* Technical Skills */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Technical Skills:</span>
-                            <ion-icon
-                                name="add-outline"
-                                style={{
-                                fontSize: "18px"
-                            }}
-                                onClick={() => handleAdd('technicalSkills')}></ion-icon>
-                        </h3>
-                        {renderTextareas(resume?.technicalSkills, 'technicalSkills')}
-                    </div>
-    
-                    {/* Career History */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Career History:</span>
-                            <ion-icon
-                                name="add-outline"
-                                style={{
-                                fontSize: "18px"
-                            }}
-                                onClick={() => handleAdd('careerHistory')}></ion-icon>
-                        </h3>
-                        {renderTextareas(resume?.careerHistory, 'careerHistory')}
-                    </div>
-    
-                    {/* Certifications */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Certifications:</span>
-                            <ion-icon
-                                name="add-outline"
-                                style={{
-                                fontSize: "18px"
-                            }}
-                                onClick={() => handleAdd('certifications')}></ion-icon>
-                        </h3>
-                        {renderTextareas(resume?.certifications, 'certifications')}
-                    </div>
-    
-                    {/* Education */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Education:</span>
-                            <ion-icon
-                                name="add-outline"
-                                style={{
-                                fontSize: "18px"
-                            }}
-                                onClick={() => handleAdd('education')}></ion-icon>
-                        </h3>
-                        {renderTextareas(resume?.education, 'education')}
-                    </div>
-    
-                    {/* Trainings Delivered */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Training Delivered:</span>
-                            <ion-icon
-                                name="add-outline"
-                                style={{
-                                fontSize: "18px"
-                            }}
-                                onClick={() => handleAdd('trainingsDelivered')}></ion-icon>
-                        </h3>
-                        {renderTextareas(resume?.trainingsDelivered, 'trainingsDelivered')}
-                    </div>
-    
-                    {/* Clientele */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Clientele:</span>
-                            <ion-icon
-                                name="add-outline"
-                                style={{
-                                fontSize: "18px"
-                            }}
-                                onClick={() => handleAdd('clientele')}></ion-icon>
-                        </h3>
-                        {renderTextareas(resume?.clientele, 'clientele')}
-                    </div>
-    
-                    {/* Experience */}
-                    <div className='mt-4 p-3'>
-                        <h3 className='font-semibold flex justify-between items-center'>
-                            <span>Experience:</span>
-                            <ion-icon
-                                name="add-outline"
-                                style={{
-                                fontSize: "18px"
-                            }}
-                                onClick={() => handleAdd('experience')}></ion-icon>
-                        </h3>
-                        {renderTextareas(resume?.experience, 'experience')}
-                    </div>
+                                                    {/* Experience */}
+                                                    <div className='mt-4 p-3'>
+                    <h3 className='font-semibold flex justify-between items-center'>
+                        <span>Experience:</span>
+                        <ion-icon
+                            name="add-outline"
+                            style={{
+                            fontSize: "18px"
+                        }}
+                            onClick={() => handleAdd('experience')}></ion-icon>
+                    </h3>
+                    {renderTextareas(resume.experience, 'experience')}
+                </div>
+
+                {/* Technical Skills */}
+                <div className='mt-4 p-3'>
+                    <h3 className='font-semibold flex justify-between items-center'>
+                        <span>Technical Skills:</span>
+                        <ion-icon
+                            name="add-outline"
+                            style={{
+                            fontSize: "18px"
+                        }}
+                            onClick={() => handleAdd('technicalSkills')}></ion-icon>
+                    </h3>
+                    {renderTextareas(resume.technicalSkills, 'technicalSkills')}
+                </div>
+
+                {/* Education */}
+                <div className='mt-4 p-3'>
+                    <h3 className='font-semibold flex justify-between items-center'>
+                        <span>Education:</span>
+                        <ion-icon
+                            name="add-outline"
+                            style={{
+                            fontSize: "18px"
+                        }}
+                            onClick={() => handleAdd('education')}></ion-icon>
+                    </h3>
+                    {renderTextareas(resume.education, 'education')}
+                </div>
+                
+                {/* Career History */}
+                <div className='mt-4 p-3'>
+                    <h3 className='font-semibold flex justify-between items-center'>
+                        <span>Career History:</span>
+                        <ion-icon
+                            name="add-outline"
+                            style={{
+                            fontSize: "18px"
+                        }}
+                            onClick={() => handleAdd('careerHistory')}></ion-icon>
+                    </h3>
+                    {renderTextareas(resume.careerHistory, 'careerHistory')}
+                </div>
+
+                {/* Certifications */}
+                <div className='mt-4 p-3'>
+                    <h3 className='font-semibold flex justify-between items-center'>
+                        <span>Certifications:</span>
+                        <ion-icon
+                            name="add-outline"
+                            style={{
+                            fontSize: "18px"
+                        }}
+                            onClick={() => handleAdd('certifications')}></ion-icon>
+                    </h3>
+                    {renderTextareas(resume.certifications, 'certifications')}
+                </div>
+
+
+                {/* Trainings Delivered */}
+                <div className='mt-4 p-3'>
+                    <h3 className='font-semibold flex justify-between items-center'>
+                        <span>Training Delivered:</span>
+                        <ion-icon
+                            name="add-outline"
+                            style={{
+                            fontSize: "18px"
+                        }}
+                            onClick={() => handleAdd('trainingsDelivered')}></ion-icon>
+                    </h3>
+                    {renderTextareas(resume.trainingsDelivered, 'trainingsDelivered')}
+                </div>
+
+                {/* Clientele */}
+                <div className='mt-4 p-3'>
+                    <h3 className='font-semibold flex justify-between items-center'>
+                        <span>Clientele:</span>
+                        <ion-icon
+                            name="add-outline"
+                            style={{
+                            fontSize: "18px"
+                        }}
+                            onClick={() => handleAdd('clientele')}></ion-icon>
+                    </h3>
+                    {renderTextareas(resume.clientele, 'clientele')}
+                </div>
     
                 </div>
                 <div className='justify-center flex mt-8'>
