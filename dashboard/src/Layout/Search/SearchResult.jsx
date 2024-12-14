@@ -65,12 +65,14 @@ function SearchResult() {
                                         </div>
 
                                         <div className='flex items-center justify-between '>
-                                                <div>
-                                                    <h2 className='text-gray-600'>Session Taken</h2>
-                                                    <p>
-                                                        <span className='text-black font-medium'>{res.trainingDomain[0]?.paymentSession}</span>
+                                                {
+                                                    
+                                                    res.trainingDomain[0]?.paymentSession &&
+                                                    <p className='flex items-center'>
+                                                        <ion-icon style={{fontSize:"20px", color:"gray", marginRight:"5px"}}  name="calendar-outline"></ion-icon>
+                                                        <span className='font-medium'>{res.trainingDomain[0]?.paymentSession}</span>
                                                     </p>
-                                                </div>
+                                                }
                                                 <div className='ml-4'>
                                                     <h2 className='text-gray-600'>Price</h2>
                                                     <p>
