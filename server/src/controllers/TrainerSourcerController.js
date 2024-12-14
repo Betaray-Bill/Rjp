@@ -24,9 +24,9 @@ const registerTrainer = asyncHandler(async(req, res) => {
         // (existingTrainer) {     return res.status(400).json({ message: "Trainer
         // already registered" }); } Register the Main Resume and get its Id from its
         // collections
-        let resumeId
+        let resumeId, mainResume
         if (req.body.mainResume && req.body.mainResume.technicalSkills.length > 0) {
-            const mainResume = new Resume({
+            mainResume = new Resume({
                 professionalSummary: req.body.mainResume.professionalSummary,
                 technicalSkills: req.body.mainResume.technicalSkills,
                 careerHistory: req.body.mainResume.careerHistory,
@@ -93,7 +93,7 @@ const registerTrainer = asyncHandler(async(req, res) => {
                         domain.paymentSession : "",
                     type: domain.type
                 })),
-            resumeVersion: resumeId ? [] : [resumeId],
+            resumeVersion: resumeId ? [resumeId] : [],
             trainer_sourcer: trainerId,
             isFirstLogin: true,
             ndaAccepted: req.body.trainingDetails.trainerType === "Internal" ?
@@ -272,7 +272,7 @@ const generateTrainerId = async(type) => {
         newId = "0001";
     } else {
         const lastId = trainers[0].trainerId;
-        const numericPart = parseInt(lastId.split('P')[1], 10); // Extract numeric part after 'RJP'
+        const numericPart = lastId.includes("I") ? parseInt(lastId.split('I')[1], 10) : parseInt(lastId.split('E')[1], 10); // Extract numeric part after 'RJP'
         newId = (numericPart + 1)
             .toString()
             .padStart(4, "0"); // Increment and pad to 4 digits

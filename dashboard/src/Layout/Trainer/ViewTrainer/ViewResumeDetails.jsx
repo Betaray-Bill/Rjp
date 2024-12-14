@@ -330,7 +330,7 @@ function ViewResumeDetails({data, isNew}) {
                         }}
                             onClick={() => handleAdd('experience')}></ion-icon>
                     </h3>
-                    {renderTextareas(resume.experience, 'experience')}
+                    {renderTextareas(resume?.experience, 'experience')}
                 </div>
 
                 {/* Technical Skills */}
@@ -344,7 +344,7 @@ function ViewResumeDetails({data, isNew}) {
                         }}
                             onClick={() => handleAdd('technicalSkills')}></ion-icon>
                     </h3>
-                    {renderTextareas(resume.technicalSkills, 'technicalSkills')}
+                    {renderTextareas(resume?.technicalSkills, 'technicalSkills')}
                 </div>
 
                 {/* Education */}
@@ -358,7 +358,7 @@ function ViewResumeDetails({data, isNew}) {
                         }}
                             onClick={() => handleAdd('education')}></ion-icon>
                     </h3>
-                    {renderTextareas(resume.education, 'education')}
+                    {renderTextareas(resume?.education, 'education')}
                 </div>
                 
                 {/* Career History */}
@@ -372,7 +372,7 @@ function ViewResumeDetails({data, isNew}) {
                         }}
                             onClick={() => handleAdd('careerHistory')}></ion-icon>
                     </h3>
-                    {renderTextareas(resume.careerHistory, 'careerHistory')}
+                    {renderTextareas(resume?.careerHistory, 'careerHistory')}
                 </div>
 
                 {/* Certifications */}
@@ -386,7 +386,7 @@ function ViewResumeDetails({data, isNew}) {
                         }}
                             onClick={() => handleAdd('certifications')}></ion-icon>
                     </h3>
-                    {renderTextareas(resume.certifications, 'certifications')}
+                    {renderTextareas(resume?.certifications, 'certifications')}
                 </div>
 
 
@@ -401,7 +401,7 @@ function ViewResumeDetails({data, isNew}) {
                         }}
                             onClick={() => handleAdd('trainingsDelivered')}></ion-icon>
                     </h3>
-                    {renderTextareas(resume.trainingsDelivered, 'trainingsDelivered')}
+                    {renderTextareas(resume?.trainingsDelivered, 'trainingsDelivered')}
                 </div>
 
                 {/* Clientele */}
@@ -415,7 +415,7 @@ function ViewResumeDetails({data, isNew}) {
                         }}
                             onClick={() => handleAdd('clientele')}></ion-icon>
                     </h3>
-                    {renderTextareas(resume.clientele, 'clientele')}
+                    {renderTextareas(resume?.clientele, 'clientele')}
                 </div>
             </div>
             <div className="justify-center flex mt-8">

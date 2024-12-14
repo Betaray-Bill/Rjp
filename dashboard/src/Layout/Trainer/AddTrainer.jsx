@@ -119,8 +119,11 @@ const AddTrainer = () => {
                         dispatch(resetTrainerDetails())
                     }
 
-                    navigate("/home/trainer")
+                    // navigate("/home/trainer")
                 }
+
+            //    await navigate("/home/trainer")
+
 
             } catch (error) {
                 console.log(error);
