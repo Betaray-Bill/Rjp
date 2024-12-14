@@ -556,7 +556,7 @@ function AddProject() {
                                     name="trainingDates.startDate"
                                     selected={projectData.trainingDates.startDate}
                                      onChange={(date) => handleDateChange(date, "trainingDates.startDate")}
-                                    className="px-3 py-2 border border-black"
+                                    className="px-3 py-2 border border-gray-400 mt-1 rounded-md"
                                     required/>
                                    
                             </div>
@@ -569,7 +569,7 @@ function AddProject() {
                                     selected={projectData.trainingDates.endDate}
                                      onChange={(date) => handleDateChange(date, "trainingDates.endDate")}
                                     dateFormat="dd/MM/yyyy"
-                                    className="px-3 py-2 border border-black ml-2"
+                                    className="px-3 py-2 border border-gray-400 mt-1 rounded-md ml-2"
                                     required/>
                             </div>
                             <div>
@@ -583,7 +583,7 @@ function AddProject() {
                                     showTimeSelectOnly
                                     timeIntervals={15}
                                     timeCaption="Time"
-                                    className="px-3 py-2 border border-black ml-2"
+                                    className="px-3 py-2 border border-gray-400 mt-1 rounded-md ml-2"
                                     dateFormat="h:mm aa"
                                     required/>
                             </div>
@@ -598,7 +598,7 @@ function AddProject() {
                                     showTimeSelectOnly
                                     timeIntervals={15}
                                     timeCaption="Time"
-                                    className="px-3 py-2 border border-black ml-2"
+                                    className="px-3 py-2 border border-gray-400 mt-1 rounded-md ml-2"
                                     dateFormat="h:mm aa"
                                     required/>
                             </div>
@@ -618,7 +618,7 @@ function AddProject() {
                                 <div>
                                     <Label>Date:</Label>
                                     <DatePicker
-                                        className="px-3 py-2 border border-black ml-2"
+                                        className="px-3 py-2 border border-gray-400 mt-1 rounded-md ml-2"
                                         selected={specialTimingInput.date}
                                         onChange={(date) => handleSpecialTimingInputChange("date", date)}
                                         dateFormat="dd/MM/yyyy"/>
@@ -626,7 +626,7 @@ function AddProject() {
                                 <div>
                                     <Label>Start Time:</Label>
                                     <DatePicker
-                                        className="px-3 py-2 border border-black ml-2"
+                                        className="px-3 py-2 border border-gray-400 mt-1 rounded-md ml-2"
                                         selected={specialTimingInput.startTime}
                                         onChange={(time) => handleSpecialTimingInputChange("startTime", time)}
                                         showTimeSelect
@@ -638,7 +638,7 @@ function AddProject() {
                                 <div>
                                     <Label>End Time:</Label>
                                     <DatePicker
-                                        className="px-3 py-2 border border-black ml-2"
+                                        className="px-3 py-2 border border-gray-400 mt-1 rounded-md ml-2"
                                         selected={specialTimingInput.endTime}
                                         onChange={(time) => handleSpecialTimingInputChange("endTime", time)}
                                         showTimeSelect

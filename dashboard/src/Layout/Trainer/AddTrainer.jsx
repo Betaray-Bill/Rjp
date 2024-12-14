@@ -70,7 +70,7 @@ const AddTrainer = () => {
         event.preventDefault();
         // console.log(formData)
         console.log("Submit Handler")
-        if(trainerDetails.trainingDetails.trainerType){
+        if(trainerDetails.trainingDetails.trainerType && trainerDetails.generalDetails.name && trainerDetails.generalDetails.phoneNumber) {
             // if()
             try {
                 console.log("1")
