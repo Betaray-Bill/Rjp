@@ -26,10 +26,23 @@ import { useQueryClient } from "react-query";
 // Localizer for React Big Calendar
 const localizer = momentLocalizer(moment);
 
-const generateEvents = (eventsDate) => {
-    const events = [];
-
-    eventsDate?.forEach((work) => {
+const generateEvents = (eventsDate, workingDates) => {
+    const events = []
+    console.log(eventsDate)
+    let array = []
+    if(eventsDate && workingDates){
+        console.log(1)
+         array = [...eventsDate, ...workingDates]
+    }else if(eventsDate){
+        console.log(2)
+        array = [...eventsDate]
+    }else{
+        console.log(3)
+        array = [...workingDates]
+    }
+    // let array =else if [...eventsDate, ...workingDates]
+    console.log(array)
+    array?.forEach((work) => {
         const {startDate, endDate, startTime, endTime, specialTimings, projectName} = work;
 
         // Add regular intervals
@@ -43,13 +56,13 @@ const generateEvents = (eventsDate) => {
             startDateTime.setHours(new Date(startTime).getHours(), new Date(startTime).getMinutes());
             endDateTime.setHours(new Date(endTime).getHours(), new Date(endTime).getMinutes());
 
-            events.push({title: projectName, start: startDateTime, end: endDateTime, allDay: false});
+            events.push({title: projectName ? projectName : work.name, start: startDateTime, end: endDateTime, allDay: false});
 
             currentDate.setDate(currentDate.getDate() + 1);
         }
 
         // Add special timings
-        specialTimings.forEach((special) => {
+        specialTimings?.forEach((special) => {
             const {date, startTime: specialStart, endTime: specialEnd} = special;
 
             const specialStartDateTime = new Date(date);
@@ -72,7 +85,8 @@ const CalendarComp = ({eventsDate, workingDates}) => {
     const {user} = useSelector((state) => state.auth)
     const queryClient = useQueryClient()
     const {toast} = useToast()
-    const events = generateEvents(eventsDate);
+    console.log(eventsDate)
+    const events = generateEvents(eventsDate, workingDates);
 
     const [workingDatesData, setWorkingDatesData] = useState(workingDates && workingDates)
 
@@ -184,6 +198,7 @@ const CalendarComp = ({eventsDate, workingDates}) => {
 
                     {show && 
                     <div className="mt-6 border p-4 rounded-md">
+                        <h2 className="font-semibold my-2">Add Events</h2>
                         <form
                             onSubmit={handleSubmit}
                             className="border border-gray-300  px-3 py-2 rounded-md"
