@@ -452,15 +452,24 @@ const lockResume = asyncHandler(async(req, res) => {
 
 // Add working Dates
 const addWorkingDates = asyncHandler(async(req, res) => {
-    const { id } = req.params;
+    const { trainerId } = req.params;
     // const { startDate, endDate, position } = req.body;
     console.log(req.body)
 
     try {
+        await Trainer.findByIdAndUpdate(trainerId, {
+            $push: {
+                workingDates: req.body
+            }
+        }, { new: true })
+
+        res
+            .status(200)
+            .json({ message: "Working dates added successfully" });
 
     } catch (err) {
         console.log(err)
-        next(err);
+        res.status(500).json({ message: err.message })
     }
 })
 
@@ -478,5 +487,6 @@ export {
     lockResume,
     // updateData,
     addMainResume,
-    resetPassword
+    resetPassword,
+    addWorkingDates
 }

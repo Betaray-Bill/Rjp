@@ -19,6 +19,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import {Label} from "@/components/ui/Label";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
+import { useSelector } from "react-redux";
+import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "react-query";
 
 // Localizer for React Big Calendar
 const localizer = momentLocalizer(moment);
@@ -65,47 +68,81 @@ const generateEvents = (eventsDate) => {
 // Localizer for react-big-calendar using npm run dev.js const localizer =
 // momentLocalizer(moment);
 
-const CalendarComp = ({eventsDate}) => {
-    // const [events, setEvents] = useState([]); useEffect(() => {     // Transform
-    // the eventsDate into FullCalendar events     const transformedEvents =
-    // eventsDate?.flatMap((event) => {         const { startDate, endDate,
-    // projectName, specialTimings } = event;         console.log(event)
-    // const eventInstances = [];         const currentDate = moment(startDate);
-    //     while (currentDate.isSameOrBefore(moment(endDate), "day")) {
-    // const isSpecialDate = specialTimings.find((special) =>
-    // moment(special.date).isSame(currentDate, "day")             );
-    // const eventStart = isSpecialDate                 ? moment(isSpecialDate.date)
-    //                       .set({                           hour:
-    // moment(isSpecialDate.startTime).hours(),                           minute:
-    // moment(isSpecialDate.startTime).minutes(),                       })
-    //             .toISOString()                 : moment(currentDate)
-    //          .set({                           hour: moment(startDate).hours(),
-    //                        minute: moment(startDate).minutes(),
-    //     })                       .toISOString();             const eventEnd =
-    // isSpecialDate                 ? moment(isSpecialDate.date)
-    //    .set({                           hour:
-    // moment(isSpecialDate.endTime).hours(),                           minute:
-    // moment(isSpecialDate.endTime).minutes(),                       })
-    //           .toISOString()                 : moment(currentDate)
-    //        .set({                           hour: moment(endDate).hours(),
-    //                    minute: moment(endDate).minutes(),
-    // })                       .toISOString();             eventInstances.push({
-    //              title: `${projectName} (${moment(eventStart).format(
-    //         "h:mm A"                 )} - ${moment(eventEnd).format("h:mm A")})`,
-    //                 start: eventStart,                 end: eventEnd,
-    //     extendedProps: {                     projectName,
-    // startDate: eventStart,                     endDate: eventEnd,
-    // },             });             currentDate.add(1, "day");         }
-    // return eventInstances;     });     setEvents(transformedEvents); },
-    // [eventsDate]); const handleEventClick = (info) => {     const { extendedProps
-    // } = info.event;     alert(`Project: ${extendedProps.projectName}\nStart:
-    // ${moment(extendedProps.startDate).format("LLLL")}\nEnd:
-    // ${moment(extendedProps.endDate).format("LLLL")}`); }; const [show,
-    // setShow] = useState(false) console.log(events)
-
+const CalendarComp = ({eventsDate, workingDates}) => {
+    const {user} = useSelector((state) => state.auth)
+    const queryClient = useQueryClient()
+    const {toast} = useToast()
     const events = generateEvents(eventsDate);
 
-    console.log(eventsDate)
+    const [workingDatesData, setWorkingDatesData] = useState(workingDates && workingDates)
+
+    console.log(workingDates)
+
+
+    const [show, setShow] = useState(false)
+    const [formValues,
+        setFormValues] = useState({
+        name: "",
+        startDate: null,
+        endDate: null,
+        startTime: null,
+        endTime: null,
+        // specialTimings: []
+    });
+ 
+    const handleInputChange = (name, value) => {
+        setFormValues({
+            ...formValues,
+            [name]: value
+        });
+    };
+
+    const handleSpecialTimingInputChange = (name, value) => {
+        setSpecialTimingInput({
+            ...specialTimingInput,
+            [name]: value
+        });
+    };
+
+    const handleSubmit  = async(e) => {
+        //
+
+        e.preventDefault();
+        setWorkingDatesData(p => [...p, formValues])
+        const sendData = [...workingDatesData, formValues]
+        try{
+
+            const data = await  axios.put(`http://localhost:5000/api/trainer/workingDates/${user._id}`, {...formValues})
+            const res = await data.data
+
+            console.log(res)
+
+            toast({
+                title: "Event Created",
+                description: "New event has been successfully created",
+                variant: "success",
+                duration: 3000
+            })
+
+            queryClient([
+                "user", user._id
+            ],)
+
+
+        }catch(err){
+            toast({
+                title: "Error",
+                description: "Failed to create event",
+                variant: "error",
+                duration: 3000
+            })
+        }
+        
+    }
+
+    const deleteEvent = async(index) => {
+
+    }
 
     return (
         <div className="  h-max p-3">
@@ -140,46 +177,48 @@ const CalendarComp = ({eventsDate}) => {
                 </div>
             </div>
 
-            {/* <div className="p-4">
+            <div className="p-4">
                     <div className="flex justify-end">
-                        <Button className="rounded-none" onClick={() => setShow(p => !p)}>Add Events</Button>
+                        <Button className="rounded-none" onClick={() => setShow(p => !p)}>Events</Button>
                     </div>
 
-                    {show && <div className="mt-6 border p-4 rounded-md">
+                    {show && 
+                    <div className="mt-6 border p-4 rounded-md">
                         <form
                             onSubmit={handleSubmit}
+                            className="border border-gray-300  px-3 py-2 rounded-md"
                             style={{
                             marginBottom: "20px"
                         }}>
-                            <div className="grid grid-cols-3 gap-4 place-content-center">
-                                <div className="flex items-center">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 place-content-center">
+                                <div className="flex flex-col">
                                     <Label>Title:</Label>
                                     <Input
                                         type="text"
                                         value={formValues.title}
-                                        className="px-3 py-2 border border-gray-400 rounded-sm ml-3"
-                                        onChange={(e) => handleInputChange("title", e.target.value)}
+                                        className="px-3 py-2 border border-gray-400 rounded-sm mt-1"
+                                        onChange={(e) => handleInputChange("name", e.target.value)}
                                         required/>
                                 </div>
-                                <div>
+                                <div className="flex flex-col">
                                     <Label>Start Date:</Label>
                                     <DatePicker
                                         selected={formValues.startDate}
                                         onChange={(date) => handleInputChange("startDate", date)}
                                         dateFormat="P"
-                                        className="px-3 py-2 border border-gray-400 rounded-sm  ml-2"
+                                        className="px-3 py-2 border border-gray-400 rounded-sm  mt-1"
                                         required/>
                                 </div>
-                                <div>
+                                <div className="flex flex-col">
                                     <Label>End Date:</Label>
                                     <DatePicker
                                         selected={formValues.endDate}
                                         onChange={(date) => handleInputChange("endDate", date)}
                                         dateFormat="P"
-                                        className="px-3 py-2 border border-gray-400 rounded-sm  ml-2"
+                                        className="px-3 py-2 border border-gray-400 rounded-sm  mt-1"
                                         required/>
                                 </div>
-                                <div>
+                                <div className="flex flex-col">
                                     <Label>Start Time:</Label>
                                     <DatePicker
                                         selected={formValues.startTime}
@@ -188,11 +227,11 @@ const CalendarComp = ({eventsDate}) => {
                                         showTimeSelectOnly
                                         timeIntervals={15}
                                         timeCaption="Time"
-                                        className="px-3 py-2 border border-gray-400 rounded-sm  ml-2"
+                                        className="px-3 py-2 border border-gray-400 rounded-sm  mt-1"
                                         dateFormat="h:mm aa"
                                         required/>
                                 </div>
-                                <div>
+                                <div className="flex flex-col">
                                     <Label>End Time:</Label>
                                     <DatePicker
                                         selected={formValues.endTime}
@@ -201,12 +240,12 @@ const CalendarComp = ({eventsDate}) => {
                                         showTimeSelectOnly
                                         timeIntervals={15}
                                         timeCaption="Time"
-                                        className="px-3 py-2 border border-gray-400 rounded-sm  ml-2"
+                                        className="px-3 py-2 border border-gray-400 rounded-sm  m-2"
                                         dateFormat="h:mm aa"
                                         required/>
                                 </div>
                             </div>
-                            <div className="  mt-10">
+                            {/* <div className="  mt-10">
                                 <h4 className="font-semibold my-4">Exceptional Date and Timings</h4>
                                 <div className="grid grid-cols-3 gap-5">
                                     <div>
@@ -258,16 +297,43 @@ const CalendarComp = ({eventsDate}) => {
                                             </li>
                                         ))}
                                 </ul>
-                            </div>
-                            <div className="flex items-center justify-center">
+                            </div> */}
+                            <div className="flex items-center mt-5 justify-center">
                                 <Button type="submit">Add Event</Button>
                             </div>
                         </form>
 
+                        {
+                            workingDatesData.length > 0 && (
+                                <div className="mt-6  py-4 rounded-md">
+                                    <h4 className="font-semibold my-4">Working Dates</h4>
+                                    <div> 
+                                        {workingDatesData.map((data, index) => (
+                                            <div key={index} className="border border-gray-300 rounded-md px-4 py-2">
+                                                <div className="flex items-center justify-between">
+                                                    <div>
+                                                        Title : {data?.name}
+                                                    </div>
+                                                    <div className="cursor-pointer" onClick={() => deleteEvent(index)}>
+                                                        <ion-icon name="trash-outline" style={{color:"red"}}></ion-icon>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <span>From : {moment(data.startDate).format("YYYY-MM-DD")}</span>
+                                                    <span className="ml-5">End : {moment(data.endDate).format("YYYY-MM-DD")}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    
+                                </div>
+                            )
+                        }
+
                     </div>
     }
 
-                </div> */}
+                </div>
         </div>
     );
 };

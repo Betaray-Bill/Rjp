@@ -246,21 +246,21 @@ const trainerSchema = mongoose.Schema({
             type: String, // e.g., "05:00 PM"
             // required: true,
         },
-        specialTimings: [{
-            date: {
-                type: Date,
-                // required: true,
-            },
-            startTime: {
-                type: String, // e.g., "09:00 AM"
-                // required: true,
-            },
-            endTime: {
-                type: String, // e.g., "05:00 PM"
-                // required: true,
-            },
+        // specialTimings: [{
+        //     date: {
+        //         type: Date,
+        //         // required: true,
+        //     },
+        //     startTime: {
+        //         type: String, // e.g., "09:00 AM"
+        //         // required: true,
+        //     },
+        //     endTime: {
+        //         type: String, // e.g., "05:00 PM"
+        //         // required: true,
+        //     },
 
-        }],
+        // }],
     }],
     projects: [{
         type: mongoose.Schema.Types.ObjectId,
