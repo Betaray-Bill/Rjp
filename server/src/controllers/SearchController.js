@@ -64,10 +64,10 @@ const buildProjectStage = (domain, minPrice, maxPrice, mode, type, startDate, en
                                 // }, {     // Check for overlap in specialTimings (with $ifNull to handle null
                                 // cases)     $anyElementTrue: {         $map: {             input: { $ifNull:
                                 // ["$$project.trainingDates.specialTimings", []] },             as: "special",
-                                //            in: {                 $and: [                     { $lte:
+                                //           in: {                 $and: [                     { $lte:
                                 // ["$$special.date", new Date(endDate)] },                     { $gte:
                                 // ["$$special.date", new Date(startDate)] },                 ],             },
-                                //        },     }, }, ],
+                                //       },     }, }, ],
                             }
                         }
                     }
@@ -210,9 +210,8 @@ const searchTrainer = asyncHandler(async(req, res) => {
         if (startDate && endDate) {
 
             result = await result.filter((trainer) => {
-                // Check if the trainer is in the given domain
-
-                // Check if the trainer has any projects with conflicting training dates
+                // Check if the trainer is in the given domain Check if the trainer has any
+                // projects with conflicting training dates
                 const hasConflictingDates = trainer
                     .projects
                     .some((project) => {
@@ -232,11 +231,38 @@ const searchTrainer = asyncHandler(async(req, res) => {
                         return ((start_Date > projectStartDate && start_Date < projectEndDate) || // Input start date overlaps
                             (end_Date > projectStartDate && end_Date < projectEndDate) || // Input end date overlaps
                             (projectStartDate > start_Date && projectStartDate < end_Date) || // Project start date overlaps
-                            (projectEndDate > start_Date && projectEndDate < end_Date) // Project end date overlaps
-                        );
+                            (projectEndDate > start_Date && projectEndDate < end_Date) || // Project end date overlaps
+                            (projectStartDate > start_Date && projectStartDate < end_Date) || // Project start date overlaps
+                            (projectEndDate > start_Date && projectEndDate < end_Date));
                     });
 
-                return !hasConflictingDates;
+                // working Dates
+                let hasWorkingDates
+                if (Array.isArray(trainer.workingDates)) {
+                    hasWorkingDates = trainer
+                        .workingDates
+                        .some((dates) => {
+                            // const trainingDates = project.trainingDates;
+
+                            if (!dates || !dates.startDate || !dates.endDate) {
+                                return false;
+                            }
+
+                            const projectStartDate = new Date(dates.startDate);
+                            const projectEndDate = new Date(dates.endDate);
+
+                            let start_Date = new Date(startDate)
+                            let end_Date = new Date(endDate)
+
+                            return ((start_Date > projectStartDate && start_Date < projectEndDate) || // Input start date overlaps
+                                (end_Date > projectStartDate && end_Date < projectEndDate) || // Input end date overlaps
+                                (projectStartDate > start_Date && projectStartDate < end_Date) || // Project start date overlaps
+                                (projectEndDate > start_Date && projectEndDate < end_Date))
+
+                        })
+                }
+
+                return !hasConflictingDates && !hasWorkingDates;
             });
         }
 
