@@ -146,11 +146,11 @@ function SingleTrainerCell({trainer, limit, page, index}) {
             <TableCell>
                 <Dialog>
                     <DialogTrigger>{trainer.Rating.star
-                            ? <div className='flex items-center'>
+                            ? <div className='flex items-center px-2 py-1 bg-gray-100'>
                                     <span className='mx-1 font-semibold'>{trainer.Rating.star}</span>
                                     <ion-icon name="star-outline"></ion-icon>
                                 </div>
-                            : "0"}</DialogTrigger>
+                            : <div>Not Rated</div>}</DialogTrigger>
                     <DialogContent>
                         <DialogHeader className="mt-5">
                             <DialogTitle className="flex items-center justify-between">
