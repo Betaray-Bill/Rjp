@@ -116,7 +116,7 @@ function Remainder({stages, projectId, remainders}) {
                                             <ion-icon name="chevron-down-outline"></ion-icon>
                                         </Button>
                                     : <Button className="rounded-none bg-red-500 flex items-center">
-                                        <span>Remainder</span>
+                                        <span>{date ? date.split("-").reverse().join() :"Remainder"}</span>
                                         <ion-icon name="chevron-down-outline"></ion-icon>
                                     </Button>
 }
@@ -129,7 +129,7 @@ function Remainder({stages, projectId, remainders}) {
                                         <ion-icon name="chevron-down-outline"></ion-icon>
                                     </Button>
                                 : <Button className="rounded-none bg-red-500 flex items-center">
-                                    <span>Remainder</span>
+                                    <span>{date ? date.split("-").reverse().join("-") : "Remainder"}</span>
                                     <ion-icon name="chevron-down-outline"></ion-icon>
                                 </Button>
 }

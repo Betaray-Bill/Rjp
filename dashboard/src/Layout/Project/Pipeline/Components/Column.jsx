@@ -13,8 +13,8 @@ function Column({index, stage, projects}) {
 
             {/* Project Card */}
             {projects && projects?.map((project) => (
-                    <Link to={`/home/projects/view/${project._id}`} key={project._id} >
-                        <CardProject projects={project}/>
+                    <Link to={`/home/projects/view/${project._id}`} key={project._id} > 
+                        <CardProject projects={project} stage={stage}/>
                     </Link>
                 ))
             }

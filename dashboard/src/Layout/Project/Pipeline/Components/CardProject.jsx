@@ -1,12 +1,62 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 
-function CardProjects({projects}) {
+function CardProjects({projects, stage}) {
     console.log(projects)
+    const [date,
+        setDate] = useState(null)
+   const [isCompleted,
+        setIsCompleted] = useState(false);
+
+    useEffect(() => {
+        const remainderStageData = projects && projects
+            .remainders
+            .filter((item) => {
+                return item.stages == stage;
+            })
+            console.log( projects
+                .remainders)
+        console.log(remainderStageData)
+        if (remainderStageData.length > 0) {
+            setDate(new Date(remainderStageData[0].date).toISOString().split("T")[0]);
+            // setRemarks(remainderStageData[0].description);
+            setIsCompleted(remainderStageData[0].isCompleted);
+        } else {
+            setDate("");
+            // setRemarks("");
+             setIsCompleted(false);
+        }
+    }, [stage])
+
+    const isDatePassed = () => {
+        // Get today's date (formatted to YYYY-MM-DD)
+        const todayDate = new Date()
+            .toISOString()
+            .split("T")[0];
+
+        console.log(date, todayDate)
+
+        // Compare dates
+        if (todayDate > date) {
+            // return true
+            console.log("Today's date is greater than the date.");
+            return true
+        } else if (todayDate === date && isCompleted) {
+            console.log("Today's date is equal to the setDate.");
+            return true
+        } else {
+            console.log("Today's date is less than the setDate.");
+            return (todayDate < date && isCompleted)
+        }
+
+    }
     return (
         <div
-            className='border border-gray-200 w-[350px] rounded-sm p-4 py-3 my-5 cursor-pointer bg-white'>
+            className='border border-gray-200 w-[350px] rounded-sm p-4 py-3 my-5 cursor-pointer bg-white relative'>
+            {!isDatePassed() && <div
+                className='bg-red-600  rounded-lg absolute top-0 -m-3 text-sm  px-2 py-0.5 text-teal-50  drop-shadow-lg right-1'>{date && date.split("-").reverse().join("-")   }</div>
+}
 
-            <div className='flex items-start justify-between'>
+            <div className='flex items-start justify-between mt-3'>
                 <h4 className='font-semibold text-sm'>{projects.projectName}</h4>
                 <div className='grid place-content-end'>
                     <span className='rounded-md px-2 bg-blue-100 text-sm'>{projects.company.name}</span>

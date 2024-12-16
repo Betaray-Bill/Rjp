@@ -316,7 +316,7 @@ const getProject = asyncHandler(async(req, res) => {
                 .find()
                 .populate({
                     path: 'stages.projects', // Populate 'projects' within each stage
-                    select: 'projectName domain company.name contactDetails trainingDates', // Select specific fields from 'Project'
+                    select: 'projectName domain company.name contactDetails trainingDates remainders', // Select specific fields from 'Project'
                     populate: {
                         path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
                         select: 'name  email contactDetails.phone', // Select specific fields from 'projectOwner'
@@ -333,7 +333,7 @@ const getProject = asyncHandler(async(req, res) => {
 
             const pipelines = await Pipeline.find({}, "stages").populate({
                 path: 'stages.projects', // Populate 'projects' within each stage
-                select: 'projectName domain company.name trainingDates', // Select specific fields from 'Project'
+                select: 'projectName domain company.name trainingDates remainders', // Select specific fields from 'Project'
                 populate: {
                     path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
                     select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
