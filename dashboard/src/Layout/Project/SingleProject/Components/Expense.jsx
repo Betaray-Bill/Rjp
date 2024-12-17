@@ -59,7 +59,7 @@ function Expense({ expensesList }) {
 
   // Initial transformation of expensesList
   useEffect(() => {
-    const transformedArray = Object.entries(expensesList).map(([key, value]) => ({
+    const transformedArray = Object.entries(expensesList).map(([key, value]) => ( {
       category: key,
       ...value,
     }));
