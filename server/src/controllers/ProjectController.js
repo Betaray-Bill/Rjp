@@ -39,23 +39,6 @@ const createProject = asyncHandler(async(req, res) => {
         employees,
         // stage:"Training Requirement"
     } = req.body;
-    console.log("-------------")
-    console.log("-------------")
-    console.log("-------------")
-    console.log("-------------")
-    console.log("-------------")
-    console.log("-------------")
-    console.log("-------------")
-
-    console.log(req.body)
-
-    console.log("-------------")
-    console.log("-------------")
-    console.log("-------------")
-    console.log("-------------")
-    console.log("-------------")
-    console.log("-------------")
-    console.log("-------------")
 
     const stage = stages.TRAINING_ENQUIRY
 
