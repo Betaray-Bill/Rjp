@@ -336,6 +336,68 @@ const projectSchema = new mongoose.Schema({
         }
 
     },
+    expenses: {
+        Trainer: {
+            amount: {
+                type: Number
+            },
+            dueDate: {
+                type: Date
+            },
+            isPaid: {
+                type: Boolean,
+                default: false
+            }
+        },
+        Venue: {
+            amount: {
+                type: Number
+            },
+            dueDate: {
+                type: Date
+            },
+            isPaid: {
+                type: Boolean,
+                default: false
+            }
+        },
+        Travel: {
+            amount: {
+                type: Number
+            },
+            dueDate: {
+                type: Date
+            },
+            isPaid: {
+                type: Boolean,
+                default: false
+            }
+        },
+        Boarding_Lodging: {
+            amount: {
+                type: Number
+            },
+            dueDate: {
+                type: Date
+            },
+            isPaid: {
+                type: Boolean,
+                default: false
+            }
+        },
+        cw_lab: {
+            amount: {
+                type: Number
+            },
+            dueDate: {
+                type: Date
+            },
+            isPaid: {
+                type: Boolean,
+                default: false
+            }
+        }
+    }
     // required: function() {     return this.stages === "Training Delivery" }
 }, { timestamps: true });
 

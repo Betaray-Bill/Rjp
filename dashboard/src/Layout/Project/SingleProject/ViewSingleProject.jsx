@@ -18,6 +18,7 @@ import { userAccess } from '@/utils/CheckUserAccess'
 import { RolesEnum } from '@/utils/constants'
 import InvoiceList from './Components/Invoice/InvoiceList'
 import Remainder from './Components/Remainder'
+import Client from './Components/Client'
 
 const state = {
   ParticipantList: "Participant List",
@@ -187,7 +188,7 @@ function ViewSingleProject() {
   if (isLoading) return <div><Loading /></div>
   if (error) return <div>Error: {error.message}</div>
   console.log(projects)
-  const {_id, notes, company, stages, contactDetails, remainders,amount,employees, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
+  const {_id, notes, company, stages, contactDetails,expenses, remainders,amount,employees, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
 
 
   const fileUpload = async(e) => {
@@ -270,8 +271,9 @@ function ViewSingleProject() {
 
       {/* Invoice */}
       <InvoiceList trainers={trainers} projectName={projectName} />
-
-
+      
+      {/* Client */}
+      <Client expenses={expenses}/>
 
       {/* Training Delivery Section - showcase all the conditions */}
       <Fragment>

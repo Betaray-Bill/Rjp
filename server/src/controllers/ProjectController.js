@@ -169,9 +169,8 @@ const createProject = asyncHandler(async(req, res) => {
     } catch (err) {
         console.log(err)
         next(err);
-        // return res
-        //     .status(500)
-        //     .json({ message: 'Error creating project.', error: err.message });
+        // return res     .status(500)     .json({ message: 'Error creating project.',
+        // error: err.message });
     }
 })
 
@@ -439,13 +438,14 @@ const updateTraining = asyncHandler(async(req, res) => {
     const { projectId, trainerId } = req.params;
     // const { trainerType, resumeVersion } = req.body;
     console.log(req.body)
-    const project = await Project
-        .findByIdAndUpdate(projectId, {
-            $set: {
-                ...req.body
-            },
-            arrayFilters: [{ "_id": trainerId }]
-        }, { new: true });
+    const project = await Project.findByIdAndUpdate(projectId, {
+        $set: {
+            ...req.body
+        },
+        arrayFilters: [{
+            "_id": trainerId
+        }]
+    }, { new: true });
 
     if (!project) {
         return res
@@ -574,27 +574,18 @@ const addTrainer = asyncHandler(async(req, res) => {
         }, { new: true });
 
         console.log(project._id)
-            // for (let i = 0; i < trainersList.length; i++) {
-            //     console.log("1", trainersList[i])
-            //     await Trainer.findByIdAndUpdate(
-            //         trainersList[i], {
-            //             $addToSet: {
-            //                 projects: project._id,
-            //                 workingDates: {
-            //                     startDate: project.trainingDates.startDate,
-            //                     endDate: project.trainingDates.endDate,
-            //                     startTime: project.trainingDates.startTime,
-            //                     endTime: project.trainingDates.endTime,
-            //                     specialTimings: project.trainingDates.specialTimings,
-            //                     name: project.projectName,
-            //                     id: project._id,
-            //                 },
-            //             },
-            //         }, { new: true }
-            //     );
-
-        //     // console.log("Trainer updated", trainer)
-        // }
+            // for (let i = 0; i < trainersList.length; i++) {     console.log("1",
+            // trainersList[i])     await Trainer.findByIdAndUpdate(
+            // trainersList[i], {             $addToSet: {                 projects:
+            // project._id,                 workingDates: {                     startDate:
+            // project.trainingDates.startDate,                     endDate:
+            // project.trainingDates.endDate,                     startTime:
+            // project.trainingDates.startTime,                     endTime:
+            // project.trainingDates.endTime,                     specialTimings:
+            // project.trainingDates.specialTimings,                     name:
+            // project.projectName,                     id: project._id,                 },
+            //            },         }, { new: true }     );     // console.log("Trainer
+            // updated", trainer) }
 
         res.json({ message: "Trainers added to the project." });
     } catch (err) {
@@ -815,8 +806,7 @@ const getProjectForTrainer = asyncHandler(async(req, res) => {
             .select('projectName company.name trainers domain modeOfTraining trainingDates')
             .populate({ path: 'projectOwner', select: 'name email' })
             .lean();
-        // console.log(projects)
-        // projects.trainers
+        // console.log(projects) projects.trainers
 
         projects.trainers = projects
             .trainers
@@ -879,7 +869,8 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
             // Add a new entry if the index doesn't exist
             trainer.purchaseOrder[req.body.poNumber] = {
                 poNumber: req.body.poNumber,
-                isReIssue: trainer.purchaseOrder[req.body.poNumber].isDeclined ? true : false,
+                isReIssue: trainer.purchaseOrder[req.body.poNumber].isDeclined ?
+                    true : false,
                 isDeclined: false,
                 isAccepted: false,
                 // isReIssue: false,
@@ -894,9 +885,12 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
         } else {
             const purchaseOrder = trainer.purchaseOrder[req.body.poNumber];
             purchaseOrder.canSend = true;
-            purchaseOrder.isReIssue = trainer.purchaseOrder[req.body.poNumber].isDeclined ? true : false;
+            purchaseOrder.isReIssue = trainer.purchaseOrder[req.body.poNumber].isDeclined ?
+                true :
+                false;
             purchaseOrder.isDeclined = false;
-            // purchaseOrder.isReIssue = trainer.purchaseOrder[req.body.poNumber].isDeclined ? true : false;
+            // purchaseOrder.isReIssue = trainer.purchaseOrder[req.body.poNumber].isDeclined
+            // ? true : false;
             purchaseOrder.isAccepted = false;
             purchaseOrder.poNumber = req.body.poNumber;
             purchaseOrder.name = req.body.name;
@@ -1014,7 +1008,6 @@ const acceptOrDecline = asyncHandler(async(req, res) => {
                 .json({ message: "Trainer not found in the project" });
         }
 
-
         if (!trainer.purchaseOrder) {
             trainer.purchaseOrder = [];
         }
@@ -1022,7 +1015,7 @@ const acceptOrDecline = asyncHandler(async(req, res) => {
         // Update the specific purchase order
         if (req.body.isAccepted) {
             if (!trainer.purchaseOrder[req.body.poNumber]) {
-                // Add a new entry if the index doesn't exist 
+                // Add a new entry if the index doesn't exist
                 trainer.purchaseOrder[req.body.poNumber] = {
                     isAccepted: req.body.isAccepted,
                     isDeclined: false
@@ -1035,7 +1028,7 @@ const acceptOrDecline = asyncHandler(async(req, res) => {
         } else {
             console.log("DEclined Section")
             if (!trainer.purchaseOrder[req.body.poNumber]) {
-                // Add a new entry if the index doesn't exist 
+                // Add a new entry if the index doesn't exist
                 trainer.purchaseOrder[req.body.poNumber] = {
                     isAccepted: false,
                     canSend: false,
@@ -1091,7 +1084,6 @@ const upload_Invoice_Url_Trainer = asyncHandler(async(req, res) => {
         if (!trainer.inVoice) {
             trainer.inVoice = [];
         }
-
 
         // Update the specific purchase order
         if (!trainer.inVoice[req.body.index]) {
@@ -1160,7 +1152,6 @@ const upload_Invoice_Content_Trainer = asyncHandler(async(req, res) => {
 
 })
 
-
 // // Invoice Upload to the
 const updateInvoice_by_paid = asyncHandler(async(req, res) => {
     const { trainerId } = req.params;
@@ -1185,7 +1176,6 @@ const updateInvoice_by_paid = asyncHandler(async(req, res) => {
                 .status(404)
                 .json({ message: "Trainer not found in the project" });
         }
-
 
         // Update the specific purchase order
         if (!trainer.inVoice[req.body.index]) {
@@ -1215,38 +1205,37 @@ const updateInvoice_by_paid = asyncHandler(async(req, res) => {
 
 })
 
-
-// Remainders
+// Remainders ----------------------------------------------------------------
 // ----------------------------------------------------------------
 // ----------------------------------------------------------------
 // ----------------------------------------------------------------
-// ----------------------------------------------------------------
-
 
 const addRemainders = asyncHandler(async(req, res) => {
     const { projectId, date, stages, description, isCompleted } = req.body;
     console.log(req.body)
         // Validate input
     if (!projectId || !date || !stages || !description) {
-        return res.status(400).json({ message: 'All fields are required.' });
+        return res
+            .status(400)
+            .json({ message: 'All fields are required.' });
     }
-    // console.log(project.remainders)
-
-    // Find the project by ID
+    // console.log(project.remainders) Find the project by ID
     const project = await Project.findById(projectId);
     console.log(project.remainders)
 
     if (!project) {
-        return res.status(404).json({ message: 'Project not found.' });
+        return res
+            .status(404)
+            .json({ message: 'Project not found.' });
     }
 
     // Check if the project has remainders
     if (project.remainders && project.remainders.length > 0) {
         console.log("1")
             // Check if the current project stage already has a remainder
-        const existingRemainder = project.remainders.find(
-            (rem) => rem.stages === stages
-        );
+        const existingRemainder = project
+            .remainders
+            .find((rem) => rem.stages === stages);
 
         if (existingRemainder) {
             console.log("2")
@@ -1257,13 +1246,9 @@ const addRemainders = asyncHandler(async(req, res) => {
         } else {
             console.log("3")
                 // Add a new remainder object to the array
-            project.remainders.push({
-                date,
-                stages,
-                description,
-                isCompleted,
-                projectId,
-            });
+            project
+                .remainders
+                .push({ date, stages, description, isCompleted, projectId });
         }
     } else {
         console.log("4", project.remainders.remainders.length)
@@ -1273,20 +1258,61 @@ const addRemainders = asyncHandler(async(req, res) => {
             stages,
             description,
             isCompleted,
-            projectId,
+            projectId
         }
     }
 
     // Save the updated project
     const updatedProject = await project.save();
 
-    res.status(200).json({
-        message: 'Remainder added/updated successfully.',
-        // data: updatedProject,
-    });
+    res
+        .status(200)
+        .json({
+            message: 'Remainder added/updated successfully.',
+            // data: updatedProject,
+        });
 });
 
+// Expenses
+const addExpenses = asyncHandler(async(req, res) => {
+    const { date, stages, description, isCompleted } = req.body;
+    const projectId = req.params
+    console.log(req.body)
+        // Validate input
+        // if (!projectId || !date || !stages || !description) {
+        //     return res
+        //         .status(400)
+        //         .json({ message: 'All fields are required.' });
+        // }
+        // console.log(project.remainders) Find the project by ID
+    const project = await Project.findById(projectId.projectId);
+    // console.log(project.expenses)
 
+    if (!project) {
+        return res
+            .status(404)
+            .json({ message: 'Project not found.' });
+    }
+
+    try {
+        // 
+        project.expenses = {...req.body };
+        // Save the updated project
+        const updatedProject = await project.save();
+
+        res
+            .status(200)
+            .json({
+                message: 'Remainder added/updated successfully.',
+                // data: updatedProject,
+            });
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: "Error uploading file URL." });
+    }
+});
 
 export {
     createProject,
@@ -1309,5 +1335,6 @@ export {
     upload_Invoice_Content_Trainer,
     acceptOrDecline,
     updateInvoice_by_paid,
+    addExpenses,
     addRemainders
 }
