@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./db/db.js";
 import adminRoutes from "./routes/AdminRoutes.js";
 import companyRoutes from "./routes/CompanyRoutes.js";
+import reportRoutes from "./routes/ReportRoutes.js";
 import trainerSourcerRoutes from "./routes/TrainerSourcerRoutes.js";
 import trainerRoutes from "./routes/TrainerRoutes.js";
 import projectRoutes from "./routes/ProjectRoutes.js"
@@ -74,6 +75,8 @@ app.use("/api/trainer", trainerRoutes);
 app.use("/api/resumeextractor", azureRoutes); // Azure routes for checking connection and file upload
 app.use("/api/filestorage", azureBlobRoutes);
 app.use("/api/project", projectRoutes)
+app.use("/api/reports", reportRoutes)
+
 
 app.use((err, req, res, next) => {
     console.error(err.stack); // Log the error for debugging

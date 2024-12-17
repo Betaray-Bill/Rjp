@@ -23,6 +23,7 @@ function RemainderSection() {
         if (startDate && endDate && startDate < endDate) {
             fetchData()
         }else{
+            console.log("object")
           fetchData()
         }
 
@@ -36,7 +37,11 @@ function RemainderSection() {
             return
 
         try {
-            const response = await axios.get(`http://localhost:5000/api/project/remainders?startDate=${startDate}&endDate=${endDate}`)
+            let query = ""
+            if(startDate) query = query + `startDate=${startDate}`
+            if(endDate) query = query + `&endDate=${endDate}`
+            console.log(query)
+            const response = await axios.get(`http://localhost:5000/api/project/remainders?${query}`)
             const data = await response.data
             console.log(data)
             setData(data)

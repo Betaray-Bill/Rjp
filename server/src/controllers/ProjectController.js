@@ -1316,7 +1316,7 @@ const getRemainders = asyncHandler(async(req, res) => {
         console.log(req.query)
         const startDate = req.query.startDate
         const endDate = req.query.endDate
-
+        console.log(1)
         let projects = []
 
         if (startDate && endDate) {
@@ -1355,38 +1355,46 @@ const getRemainders = asyncHandler(async(req, res) => {
                 }
             }]);
 
-        } else {
+        } else if (startDate) {
+            console.log(startDate)
             projects = await Project.aggregate([{
-                $match: {
-                    "remainders": {
-                        $elemMatch: {
-                            date: {
-                                $eq: new Date(startDate),
-                            },
-                            isCompleted: false
-                        }
-                    }
-                }
-            }, {
-                $project: {
-                    _id: 1, // Include project name if needed
-                    stages: 1,
-                    projectName: 1,
-                    remainders: {
-                        $filter: {
-                            input: "$remainders",
-                            as: "remainder",
-                            cond: {
-                                $and: [{
-                                    $eq: ["$$remainder.date", new Date(startDate)]
-                                }, {
-                                    $eq: ["$$remainder.isCompleted", false]
-                                }]
+                    $match: {
+                        "remainders": {
+                            $elemMatch: {
+                                date: {
+                                    $eq: new Date(startDate),
+                                },
+                                isCompleted: false
                             }
                         }
                     }
+                },
+                {
+                    $project: {
+                        _id: 1, // Include project name if needed
+                        stages: 1,
+                        projectName: 1,
+                        remainders: {
+                            $filter: {
+                                input: "$remainders",
+                                as: "remainder",
+                                cond: {
+                                    $and: [{
+                                        $eq: ["$$remainder.date", new Date(startDate)]
+                                    }, {
+                                        $eq: ["$$remainder.isCompleted", false]
+                                    }]
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    $sort: {
+                        "remainders.date": -1
+                    }
                 }
-            }]);
+            ]);
         }
         res.json(projects);
 
