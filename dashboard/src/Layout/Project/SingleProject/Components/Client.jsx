@@ -8,6 +8,8 @@ function Client({expenses}) {
 
     const handleCheckboxChange = (checked) => {
         setIsChecked(checked);
+
+        console.log(checked)
     };
     return (
         <div

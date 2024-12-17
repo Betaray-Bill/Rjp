@@ -575,16 +575,15 @@ const addTrainer = asyncHandler(async(req, res) => {
 
         console.log(project._id)
             // for (let i = 0; i < trainersList.length; i++) {     console.log("1",
-            // trainersList[i])     await Trainer.findByIdAndUpdate(
-            // trainersList[i], {             $addToSet: {                 projects:
-            // project._id,                 workingDates: {                     startDate:
-            // project.trainingDates.startDate,                     endDate:
-            // project.trainingDates.endDate,                     startTime:
+            // trainersList[i])     await Trainer.findByIdAndUpdate( trainersList[i], {
+            //   $addToSet: {                 projects: project._id, workingDates: {
+            //             startDate: project.trainingDates.startDate,
+            // endDate: project.trainingDates.endDate,                     startTime:
             // project.trainingDates.startTime,                     endTime:
             // project.trainingDates.endTime,                     specialTimings:
             // project.trainingDates.specialTimings,                     name:
             // project.projectName,                     id: project._id,                 },
-            //            },         }, { new: true }     );     // console.log("Trainer
+            //          },         }, { new: true }     );     // console.log("Trainer
             // updated", trainer) }
 
         res.json({ message: "Trainers added to the project." });
@@ -1231,8 +1230,7 @@ const addRemainders = asyncHandler(async(req, res) => {
 
     // Check if the project has remainders
     if (project.remainders && project.remainders.length > 0) {
-        console.log("1")
-            // Check if the current project stage already has a remainder
+        // console.log("1") Check if the current project stage already has a remainder
         const existingRemainder = project
             .remainders
             .find((rem) => rem.stages === stages);
@@ -1244,15 +1242,14 @@ const addRemainders = asyncHandler(async(req, res) => {
             existingRemainder.description = description;
             existingRemainder.isCompleted = isCompleted;
         } else {
-            console.log("3")
-                // Add a new remainder object to the array
+            // console.log("3") Add a new remainder object to the array
             project
                 .remainders
                 .push({ date, stages, description, isCompleted, projectId });
         }
     } else {
-        console.log("4", project.remainders.remainders.length)
-            // No remainders exist, create a new one
+        // console.log("4", project.remainders.remainders.length) No remainders exist,
+        // create a new one
         project.remainders = {
             date,
             stages,
@@ -1278,13 +1275,9 @@ const addExpenses = asyncHandler(async(req, res) => {
     const { date, stages, description, isCompleted } = req.body;
     const projectId = req.params
     console.log(req.body)
-        // Validate input
-        // if (!projectId || !date || !stages || !description) {
-        //     return res
-        //         .status(400)
-        //         .json({ message: 'All fields are required.' });
-        // }
-        // console.log(project.remainders) Find the project by ID
+        // Validate input if (!projectId || !date || !stages || !description) { return
+        // res         .status(400)         .json({ message: 'All fields are required.'
+        // }); } console.log(project.remainders) Find the project by ID
     const project = await Project.findById(projectId.projectId);
     // console.log(project.expenses)
 
@@ -1295,8 +1288,10 @@ const addExpenses = asyncHandler(async(req, res) => {
     }
 
     try {
-        // 
-        project.expenses = {...req.body };
+        //
+        project.expenses = {
+            ...req.body
+        };
         // Save the updated project
         const updatedProject = await project.save();
 
@@ -1311,6 +1306,95 @@ const addExpenses = asyncHandler(async(req, res) => {
         return res
             .status(500)
             .json({ message: "Error uploading file URL." });
+    }
+});
+
+// GET Remainder
+
+const getRemainders = asyncHandler(async(req, res) => {
+    try {
+        console.log(req.query)
+        const startDate = req.query.startDate
+        const endDate = req.query.endDate
+
+        let projects = []
+
+        if (startDate && endDate) {
+            projects = await Project.aggregate([{
+                $match: {
+                    "remainders": {
+                        $elemMatch: {
+                            date: {
+                                $gte: new Date(startDate),
+                                $lte: new Date(endDate)
+                            },
+                            isCompleted: false
+                        }
+                    }
+                }
+            }, {
+                $project: {
+                    _id: 1, // Include project name if needed
+                    stages: 1,
+                    projectName: 1,
+                    remainders: {
+                        $filter: {
+                            input: "$remainders",
+                            as: "remainder",
+                            cond: {
+                                $and: [{
+                                    $gte: ["$$remainder.date", new Date(startDate)]
+                                }, {
+                                    $lte: ["$$remainder.date", new Date(endDate)]
+                                }, {
+                                    $eq: ["$$remainder.isCompleted", false]
+                                }]
+                            }
+                        }
+                    }
+                }
+            }]);
+
+        } else {
+            projects = await Project.aggregate([{
+                $match: {
+                    "remainders": {
+                        $elemMatch: {
+                            date: {
+                                $eq: new Date(startDate),
+                            },
+                            isCompleted: false
+                        }
+                    }
+                }
+            }, {
+                $project: {
+                    _id: 1, // Include project name if needed
+                    stages: 1,
+                    projectName: 1,
+                    remainders: {
+                        $filter: {
+                            input: "$remainders",
+                            as: "remainder",
+                            cond: {
+                                $and: [{
+                                    $eq: ["$$remainder.date", new Date(startDate)]
+                                }, {
+                                    $eq: ["$$remainder.isCompleted", false]
+                                }]
+                            }
+                        }
+                    }
+                }
+            }]);
+        }
+        res.json(projects);
+
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: "Error getting remainders." });
     }
 });
 
@@ -1336,5 +1420,6 @@ export {
     acceptOrDecline,
     updateInvoice_by_paid,
     addExpenses,
-    addRemainders
+    addRemainders,
+    getRemainders
 }

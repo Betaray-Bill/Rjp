@@ -18,28 +18,32 @@ const pipelineSchema = new mongoose.Schema({
     stages: {
         type: [stageSchema],
         default: [{
-            name: stages.TRAINING_ENQUIRY,
-            projects: []
-        }, {
-            name: stages.REPLY,
-            projects: []
-        }, {
-            name: stages.PROPOSAL_SENT,
-            projects: []
-        }, {
-            name: stages.PO_RECEIVED_OR_INVOICE_RAISED,
-            projects: []
-        }, {
-            name: stages.TRAINING_DELIVERY,
-            projects: [],
-
-        }, {
-            name: stages.INVOICE_SENT,
-            projects: []
-        }, {
-            name: stages.PAYMENT,
-            projects: []
-        }]
+                name: stages.TRAINING_ENQUIRY,
+                projects: []
+            }, {
+                name: stages.REPLY,
+                projects: []
+            }, {
+                name: stages.PROPOSAL_SENT,
+                projects: []
+            }, {
+                name: stages.OPEN__WON_LOST,
+                projects: []
+            },
+            {
+                name: stages.PO_RECEIVED_OR_INVOICE_RAISED,
+                projects: []
+            }, {
+                name: stages.TRAINING_DELIVERY,
+                projects: [],
+            }, {
+                name: stages.INVOICE_SENT,
+                projects: []
+            }, {
+                name: stages.PAYMENT,
+                projects: []
+            }
+        ]
     }
 });
 pipelineSchema.statics.getSingletonPipeline = async function() {

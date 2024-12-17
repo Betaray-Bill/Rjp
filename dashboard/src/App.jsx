@@ -30,6 +30,7 @@ import ViewSingleProject from './Layout/Project/SingleProject/ViewSingleProject'
 import Resume from './Layout/Resume/Resume'
 import ViewCompany from './Layout/Company/ViewCompany'
 import AddContact from './Layout/Company/AddContact'
+import RemainderSection from './Layout/Home/Remainders/RemainderSection'
 
 
 function App() {
@@ -43,8 +44,12 @@ function App() {
         <Route path='/' index element={<Navigate to="/home" replace />}></Route>
 
         <Route element={<ProtectedRoute />}>
-          <Route path='/' index element={<Home />} />
+          <Route path='/' element={<Home />} />
           <Route path='/home' element={<Home />}>
+            {
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && 
+              <Route path='' element={<RemainderSection /> } />
+            }
             {
               userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && 
               <Route path='search' element={<Search />} />
