@@ -103,7 +103,7 @@ function RemainderSection() {
                                 <TableRow>
                                     <TableCell className="font-medium">{_i + 1}</TableCell>
                                     <TableCell>{item.projectName}</TableCell>
-                                    <TableCell className="flex-wrap">{item.remainders[0].description}</TableCell>
+                                    <TableCell className="flex-wrap">{item.stages}</TableCell>
                                     <TableCell>{item
                                             .remainders[0]
                                             .date
@@ -112,7 +112,7 @@ function RemainderSection() {
                                             .reverse()
                                             .join("-")}
                                     </TableCell>
-                                    <TableCell>{item.stages}</TableCell>
+                                    <TableCell>{item.remainders[0].description}</TableCell>
                                     <TableCell>
                                       <Link to={`/home/projects/view/${item._id}`} target='_blank' className='border border-blue-800 bg-blue-800 text-white px-3 py-2'>Open</Link>
                                     </TableCell>

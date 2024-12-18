@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import { useNavigate } from 'react-router-dom'
 import Revenue from './Components/Revenue/Revenue'
+import TrainingCalendar from './Components/TrainingCalendar/TrainingCalendar'
 
 function Deals() {
     const navigate = useNavigate()
@@ -38,8 +39,10 @@ function Deals() {
 
             {
                 selectType === "Revenue" && <Revenue />
-                // selectType === "Forecast" && <ForecastReport />
-                // selectType === "Training Calendar" && <TrainingCalendarReport />
+            }
+            {
+               // selectType === "Forecast" && <ForecastReport />
+                selectType === "Training Calendar" && <TrainingCalendar />
                 // selectType === "Payment Due" && <PaymentDueReport />
                 
                 // Add more Reports as needed

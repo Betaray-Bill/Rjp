@@ -42,13 +42,22 @@ const getRevenueByEmployees = asyncHandler(async(req, res) => {
             projects = await Project.aggregate([
                 { $match: query },
                 {
+                    $lookup: {
+                        from: 'employees', // Collection name for employees
+                        localField: 'projectOwner',
+                        foreignField: '_id',
+                        as: 'ownerDetails'
+                    }
+                },
+                {
                     $project: {
                         _id: 1,
                         amount: 1,
                         expenses: 1,
                         projectName: 1,
                         trainingDates: 1,
-                        'company.name': 1
+                        'company.name': 1,
+                        'ownerDetails.name': 1
                     }
                 }
             ]);
@@ -65,13 +74,22 @@ const getRevenueByEmployees = asyncHandler(async(req, res) => {
                     }
                 },
                 {
+                    $lookup: {
+                        from: 'employees', // Collection name for employees
+                        localField: 'projectOwner',
+                        foreignField: '_id',
+                        as: 'ownerDetails'
+                    }
+                },
+                {
                     $project: {
                         _id: 1,
                         amount: 1,
                         expenses: 1,
                         projectName: 1,
                         trainingDates: 1,
-                        'company.name': 1
+                        'company.name': 1,
+                        'ownerDetails.name': 1
                     }
                 }
             ]);
@@ -146,6 +164,14 @@ const getRevenueByClients = asyncHandler(async(req, res) => {
                 }
             },
             {
+                $lookup: {
+                    from: 'employees', // Collection name for employees
+                    localField: 'projectOwner',
+                    foreignField: '_id',
+                    as: 'ownerDetails'
+                }
+            },
+            {
                 $project: {
                     _id: 1,
                     amount: 1,
@@ -153,7 +179,7 @@ const getRevenueByClients = asyncHandler(async(req, res) => {
                     projectName: 1,
                     trainingDates: 1,
                     'company.name': 1,
-                    // projectOwner: 1
+                    'ownerDetails.name': 1
                 }
             }
         ]);
@@ -196,14 +222,98 @@ const getRevenueByClients = asyncHandler(async(req, res) => {
 const trainingCalendar = asyncHandler(async(req, res) => {
     try {
         const employeeId = req.params.employeeId;
+        const startDate = req.query.startDate;
+        const endDate = req.query.endDate;
 
+        console.log(req.query, employeeId)
+
+        // Fetch the employee by ID
+        const employee = await Employee.findById(employeeId);
+        if (!employee) {
+            throw new Error("Employee not found");
+        }
+
+        const adminRole = employee.role.find(r => r.name === "ADMIN");
+        const keyAccountsRole = employee.role.find(r => r.name === "KeyAccounts");
+
+        let projects;
+        let query = {};
+
+        if (startDate && endDate) {
+            query = {
+                'trainingDates.startDate': { $gte: new Date(startDate), $lte: new Date(endDate) },
+                'trainingDates.endDate': { $gte: new Date(startDate), $lte: new Date(endDate) }
+            };
+        }
+
+        if (adminRole) {
+            console.log("ADMIn")
+                // If ADMIN, fetch all projects
+            console.log(query)
+            projects = await Project.aggregate([
+                { $match: query },
+                {
+                    $lookup: {
+                        from: 'employees', // Collection name for employees
+                        localField: 'projectOwner',
+                        foreignField: '_id',
+                        as: 'ownerDetails'
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        amount: 1,
+                        projectName: 1,
+                        trainingDates: 1,
+                        'ownerDetails.name': 1,
+                        'company.name': 1
+                    }
+                }
+            ]);
+            console.log(projects)
+        } else if (keyAccountsRole) {
+            // If KeyAccounts, fetch projects linked to their role
+            const keyAccounts = await KeyAccounts.findById(keyAccountsRole.roleId);
+
+            projects = await Project.aggregate([{
+                    $match: {
+                        $and: [
+                            { _id: { $in: keyAccounts.Projects } }, // Match specific project IDs
+                            query // Include the date filter query
+                        ]
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'employees', // Collection name for employees
+                        localField: 'projectOwner',
+                        foreignField: '_id',
+                        as: 'ownerDetails'
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        amount: 1,
+                        expenses: 1,
+                        projectName: 1,
+                        trainingDates: 1,
+                        'company.name': 1,
+                        'ownerDetails.name': 1
+                    }
+                }
+            ]);
+        } else {
+            throw new Error("Employee role does not have access to projects");
+        }
+
+
+        return res.status(200).json(projects);
     } catch (err) {
-        return res
-            .status(500)
-            .json({ message: 'Error getting training calendar.', error: err.message });
+        return res.status(500).json({ message: "Error getting revenue by employees.", error: err.message });
     }
-
 })
 
 
-export { getRevenueByEmployees, getRevenueByClients }
+export { getRevenueByEmployees, getRevenueByClients, trainingCalendar }
