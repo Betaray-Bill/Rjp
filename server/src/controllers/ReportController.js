@@ -15,10 +15,8 @@ import { Company } from "../models/CompanyAndDealModels/CompanyModel.js";
 const getRevenueByEmployees = asyncHandler(async(req, res) => {
     try {
         const employeeId = req.params.employeeId;
-        console.log(employeeId);
-        const startDate = req.query.startDate
-        const endDate = req.query.endDate
-        console.log(req.query)
+        const startDate = req.query.startDate;
+        const endDate = req.query.endDate;
 
         // Fetch the employee by ID
         const employee = await Employee.findById(employeeId);
@@ -26,88 +24,68 @@ const getRevenueByEmployees = asyncHandler(async(req, res) => {
             throw new Error("Employee not found");
         }
 
-        const adminRole = employee
-            .role
-            .find(r => r.name === "ADMIN");
-        const keyAccountsRole = employee
-            .role
-            .find(r => r.name === "KeyAccounts");
+        const adminRole = employee.role.find(r => r.name === "ADMIN");
+        const keyAccountsRole = employee.role.find(r => r.name === "KeyAccounts");
 
         let projects;
-
-        let query = ""
+        let query = {};
 
         if (startDate && endDate) {
             query = {
-                'trainingDates.startDate': {
-                    $gte: new Date(startDate),
-                    $lte: new Date(endDate)
-                },
-                'trainingDates.endDate': {
-                    $gte: new Date(startDate),
-                    $lte: new Date(endDate)
-                }
-            }
-        } else {
-            query = {}
+                'trainingDates.startDate': { $gte: new Date(startDate), $lte: new Date(endDate) },
+                'trainingDates.endDate': { $gte: new Date(startDate), $lte: new Date(endDate) }
+            };
         }
 
         if (adminRole) {
             // If ADMIN, fetch all projects
-            projects = await Project.aggregate([{
-                $match: query
-            }, {
-                $project: {
-                    _id: 1,
-                    amount: 1,
-                    expenses: 1,
-                    projectName: 1,
-                    trainingDates: 1,
-                    'company.name': 1
-
+            projects = await Project.aggregate([
+                { $match: query },
+                {
+                    $project: {
+                        _id: 1,
+                        amount: 1,
+                        expenses: 1,
+                        projectName: 1,
+                        trainingDates: 1,
+                        'company.name': 1
+                    }
                 }
-            }]);
-            console.log("Projects ", projects)
+            ]);
         } else if (keyAccountsRole) {
-            console.log(keyAccountsRole)
-                // If KeyAccounts, fetch projects linked to their role const projectIds =
-                // keyAccountsRole.projectIds; // Assuming this holds an array of project IDs
-            const keyAccounts = await KeyAccounts.findById(keyAccountsRole.roleId)
+            // If KeyAccounts, fetch projects linked to their role
+            const keyAccounts = await KeyAccounts.findById(keyAccountsRole.roleId);
+
             projects = await Project.aggregate([{
-                $match: {
-                    _id: {
-                        $in: keyAccounts.Projects
-                    }, // Match projects with specific IDs,
-                    query
+                    $match: {
+                        $and: [
+                            { _id: { $in: keyAccounts.Projects } }, // Match specific project IDs
+                            query // Include the date filter query
+                        ]
+                    }
                 },
-                $project: {
-                    _id: 1,
-                    amount: 1,
-                    expenses: 1,
-                    projectName: 1,
-                    trainingDates: 1,
-                    'company.name': 1
+                {
+                    $project: {
+                        _id: 1,
+                        amount: 1,
+                        expenses: 1,
+                        projectName: 1,
+                        trainingDates: 1,
+                        'company.name': 1
+                    }
                 }
-            }]);
+            ]);
         } else {
             throw new Error("Employee role does not have access to projects");
         }
 
         // Calculate the total revenue for each project
         const projectRevenue = projects.map(project => {
-            // check if the Invoice is sent total amount
             const totalAmount = Number(project.amount) || 0;
-            console.log("totalAmount ", totalAmount)
+            const totalExpenses = Object.values(project.expenses || {}).reduce((sum, expense) => {
+                return sum + (Number(expense.amount) || 0);
+            }, 0);
 
-            // Calculate total expenses
-            const totalExpenses = Object
-                .values(project.expenses || {})
-                .reduce((sum, expense) => {
-                    return sum + (Number(expense.amount) || 0);
-                }, 0);
-            console.log("totalAmount ", totalAmount)
-
-            // Net revenue calculation
             const netRevenue = totalAmount - totalExpenses;
 
             return {
@@ -120,18 +98,11 @@ const getRevenueByEmployees = asyncHandler(async(req, res) => {
             };
         });
 
-        // Return response
-        return res
-            .status(200)
-            .json(projectRevenue)
-
+        return res.status(200).json(projectRevenue);
     } catch (err) {
-
-        return res
-            .status(500)
-            .json({ message: 'Error getting revenue by employees.', error: err.message });
+        return res.status(500).json({ message: "Error getting revenue by employees.", error: err.message });
     }
-})
+});
 
 // Get Revenue by CLients
 const getRevenueByClients = asyncHandler(async(req, res) => {
