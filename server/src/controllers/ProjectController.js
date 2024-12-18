@@ -267,123 +267,122 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
 
 // Get All Projects from pipeline
 const getProject = asyncHandler(async(req, res) => {
-    const empId = req.params.empId
-    console.log("INsodee")
-    const employee = await Employee
-        .findById(empId)
-        .populate('role.roleId')
-    console.log("EMP", employee.role[0].roleId)
-    console.log(1)
+    const { empId } = req.params;
+    const { companyId, startDate, endDate } = req.query; // Extracting filters from query params
+    let assignedProjects = [];
 
-    // Extract the projects assigned to the employee
-    let assignedProjects = []
-    for (let i = 0; i < employee.role.length; i++) {
-        console.log(employee.role[i].name)
-        console.log(2)
-        if (employee.role[i].name === 'KeyAccounts') {
-            // console.log("Key acc", employee.role.populate('roleId'))
-            assignedProjects = employee
-                .role[i]
-                .roleId
-                .Projects
-                .map((project) => project.toString());
-            console.log(assignedProjects)
-
-            break;
+    try {
+        // Fetch the employee and their roles
+        const employee = await Employee.findById(empId).populate('role.roleId');
+        if (!employee) {
+            return res.status(404).json({ message: "Employee not found" });
         }
 
-        if (employee.role[i].name == 'ADMIN') {
-            console.log('Admin is present')
-            const projects = await Pipeline
-                .find()
-                .populate({
-                    path: 'stages.projects', // Populate 'projects' within each stage
-                    select: 'projectName domain company.name contactDetails trainingDates remainders', // Select specific fields from 'Project'
+        // Loop through roles to identify the employee's responsibilities
+        for (let i = 0; i < employee.role.length; i++) {
+            const role = employee.role[i];
+
+            if (role.name === 'KeyAccounts') {
+                // Extract projects assigned to Key Accounts
+                assignedProjects = role.roleId.Projects.map((project) => project.toString());
+                break;
+            }
+
+            if (role.name === 'ADMIN') {
+                // Admin can access all projects in the pipeline
+                const pipelines = await Pipeline.find().populate({
+                    path: 'stages.projects',
+                    select: 'projectName domain company trainingDates',
                     populate: {
-                        path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
-                        select: 'name  email contactDetails.phone', // Select specific fields from 'projectOwner'
-                    }
+                        path: 'projectOwner',
+                        select: 'name email contactDetails.phone',
+                    },
                 });
 
-            console.log(projects)
-            return res.json({ projects: projects[0].stages });
+                // Flatten all projects into a single array
+                assignedProjects = pipelines.flatMap((pipeline) =>
+                    pipeline.stages.flatMap((stage) => stage.projects.map((project) => project._id.toString()))
+                );
+                break;
+            }
 
-            break;
+            if (role.name === 'Finance') {
+                // Finance can access specific stages only
+                const pipelines = await Pipeline.find({}, 'stages').populate({
+                    path: 'stages.projects',
+                    select: 'projectName domain company trainingDates',
+                    populate: {
+                        path: 'projectOwner',
+                        select: 'name email contactDetails.phone',
+                    },
+                });
+
+                assignedProjects = pipelines.flatMap((pipeline) =>
+                    pipeline.stages
+                    .filter((stage) => ["Payment", "PO received / Invoice Raised", "Invoice Sent"].includes(stage.name))
+                    .flatMap((stage) => stage.projects.map((project) => project._id.toString()))
+                );
+                break;
+            }
         }
 
-        if (employee.role[i].name === 'Finance') {
+        // Step 1: Filter by companyId (if provided)
+        if (companyId) {
+            const company = await Company.findById(companyId).populate('Projects');
+            if (!company) {
+                return res.status(404).json({ message: "Company not found" });
+            }
 
-            const pipelines = await Pipeline.find({}, "stages").populate({
-                path: 'stages.projects', // Populate 'projects' within each stage
-                select: 'projectName domain company.name trainingDates remainders', // Select specific fields from 'Project'
-                populate: {
-                    path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
-                    select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
-                }
-            });;
-            const projects = pipelines.map((pipeline) => {
-                return {
-                    ...pipeline,
-                    stages: pipeline
-                        .stages
-                        .map((stage) => {
-                            if (["Payment", "PO received / Invoice Raised", "Invoice Sent"].includes(stage.name)) {
-                                return { name: stage.name, projects: stage.projects };
-                            }
-                            return {
-                                name: stage.name,
-                                projects: [] // Empty array for other stages
-                            };
-                        })
-                };
-            });
-
-            console.log("PRojects ", projects)
-            return res.json({ projects: projects[0].stages });
-            // assignedProjects = employee     .role[i]     .roleId     .Projects
-            // .map((project) => project.toString()); console.log(assignedProjects)
-
-            break;
+            // Retain only projects belonging to the given company
+            assignedProjects = assignedProjects.filter((projectId) =>
+                company.Projects.some((companyProject) => companyProject._id.toString() === projectId)
+            );
         }
-    }
 
-    // Only for Key Accounts
-    try {
-        const projects = await Pipeline
-            .find()
-            .populate({
-                path: 'stages.projects', // Populate 'projects' within each stage
-                select: 'projectName domain company.name trainingDates', // Select specific fields from 'Project'
-                populate: {
-                    path: 'projectOwner', // Populate the 'projectOwner' field within 'projects'
-                    select: 'name contactDetails.email contactDetails.phone', // Select specific fields from 'projectOwner'
-                }
-            });
-        // console.log("PRojectss ", projects[0].stages) Filter out projects not
-        // assigned to the employee
-        const filteredPipeline = projects[0]
-            .stages
-            .map((stage) => {
-                // console.log(stage)
-                const filteredProjects = stage
-                    .projects
-                    .filter((project) => assignedProjects.includes(project._id.toString()));
-                return {
-                    ...stage.toObject(),
-                    projects: filteredProjects, // Replace with filtered projects
-                };
-            });
+        // Step 2: Filter by dates (if provided)
+        if (startDate && endDate) {
+            assignedProjects = await Project.find({
+                _id: { $in: assignedProjects },
+                $or: [{
+                        'trainingDates.startDate': { $lte: endDate },
+                        'trainingDates.endDate': { $gte: startDate },
+                    },
+                    {
+                        'trainingDates.startDate': { $gte: startDate, $lte: endDate },
+                    },
+                    {
+                        'trainingDates.endDate': { $gte: startDate, $lte: endDate },
+                    },
+                ],
+            }).populate('projectOwner', 'name email contactDetails.phone');
+        } else {
+            // If no date filters are provided, fetch projects directly
+            assignedProjects = await Project.find({ _id: { $in: assignedProjects } }).populate(
+                'projectOwner',
+                'name email contactDetails.phone'
+            );
+        }
 
-        console.log("FINAL ------------", filteredPipeline)
+        // Step 3: Group projects by pipeline stages
+        const pipelines = await Pipeline.find().populate({
+            path: 'stages.projects',
+            match: { _id: { $in: assignedProjects.map((p) => p._id) } },
+        });
 
-        res.json({ projects: filteredPipeline });
+        const result = pipelines.flatMap((pipeline) =>
+            pipeline.stages.map((stage) => ({
+                name: stage.name,
+                projects: stage.projects,
+            }))
+        );
+
+        res.json({ projects: result });
     } catch (err) {
-        console.log(err.message);
-        return res
-            .status(404)
-            .json({ message: err });
+        console.error(err.message);
+        res.status(500).json({ message: "Server error" });
     }
-})
+});
+
 
 // Get Projects By Id
 const getProjectDetails = asyncHandler(async(req, res) => {

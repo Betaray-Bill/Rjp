@@ -22,7 +22,7 @@ function ViewProjects() {
 
       {/* View All prev Projects */}
     
-      <div className='mt-8'>
+      <div className='mt-2'>
         <PipeLine />
       </div>
     </div>

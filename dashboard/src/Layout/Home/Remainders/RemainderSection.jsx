@@ -58,9 +58,9 @@ function RemainderSection() {
                     <ion-icon
                         name="time-outline"
                         style={{
-                        fontSize: "20px"
+                        fontSize: "23px"
                     }}></ion-icon>
-                    <span className='ml-2'>Remainders</span>
+                    <span className='ml-2 text-lg'>Remainders</span>
                 </div>
 
                 <div className='flex items-center'>

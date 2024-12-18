@@ -31,6 +31,9 @@ import Resume from './Layout/Resume/Resume'
 import ViewCompany from './Layout/Company/ViewCompany'
 import AddContact from './Layout/Company/AddContact'
 import RemainderSection from './Layout/Home/Remainders/RemainderSection'
+import Reports from './Layout/Reports/Reports'
+import HomeWrapper from './Layout/Home/HomeWrapper'
+import Deals from './Layout/Reports/Deals/Deals'
 
 
 function App() {
@@ -47,9 +50,18 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/home' element={<Home />}>
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && 
-              <Route path='' element={<RemainderSection /> } />
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && (
+              <Route path='' element={<HomeWrapper /> } />
+              )
             }
+
+
+            {
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && (
+              <Route path='reports/deals' element={<Deals /> } />
+              )
+            }
+
             {
               userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && 
               <Route path='search' element={<Search />} />
