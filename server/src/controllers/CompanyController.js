@@ -121,4 +121,21 @@ const getAllCompanyNamesAndIds = asyncHandler(async(req, res) => {
     }
 })
 
-export { createCompany, getCompanyDetails, getAllCompanyNamesAndIds, createContact }
+// get Company Name and Id
+const getCompanyAndId = asyncHandler(async(req, res) => {
+    // const { companyId } = req.params;
+    try {
+        const company = await Company.find().select('companyName _id');
+        console.log(company)
+        if (!company) {
+            return res.status(404).json({ message: 'Company not found' });
+        }
+        res.json(company);
+    } catch (error) {
+        console.error("Error retrieving company:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+})
+
+export { createCompany, getCompanyDetails, getAllCompanyNamesAndIds, createContact, getCompanyAndId }

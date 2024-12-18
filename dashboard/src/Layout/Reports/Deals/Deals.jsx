@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import { useNavigate } from 'react-router-dom'
+import Revenue from './Components/Revenue/Revenue'
 
 function Deals() {
     const navigate = useNavigate()
+    const [selectType, setSelectType] = useState("")
     return (
         <div className=''>
             <div>
@@ -17,21 +19,31 @@ function Deals() {
                     Deals
                 </div>
                 <div>
-                    <Select>
+                    <Select onValueChange={(e) => setSelectType(e)}>
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Select Reports"/>
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="Revenue">Revenue</SelectItem>
-                            <SelectItem value="Deals Status">Deals Status</SelectItem>
                             <SelectItem value="Forecast">Forecast</SelectItem>
+                            <SelectItem value="Training Calendar">Training Calendar</SelectItem>
+                            <SelectItem value="Payment Due">Payment Due</SelectItem>
                         </SelectContent>
                     </Select>
 
                 </div>
             </div>
 
-            {/* Display the respective Report from Deals */}
+            {/* Display the respective Report from Deals     */}
+
+            {
+                selectType === "Revenue" && <Revenue />
+                // selectType === "Forecast" && <ForecastReport />
+                // selectType === "Training Calendar" && <TrainingCalendarReport />
+                // selectType === "Payment Due" && <PaymentDueReport />
+                
+                // Add more Reports as needed
+            }
 
         </div>
     )

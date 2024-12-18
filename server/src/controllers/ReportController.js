@@ -181,7 +181,8 @@ const getRevenueByClients = asyncHandler(async(req, res) => {
                     expenses: 1,
                     projectName: 1,
                     trainingDates: 1,
-                    'company.name': 1
+                    'company.name': 1,
+                    // projectOwner: 1
                 }
             }
         ]);
@@ -214,6 +215,24 @@ const getRevenueByClients = asyncHandler(async(req, res) => {
             .json({ message: "Error getting revenue by clients.", error: err.message });
     }
 });
+
+
+
+
+
+
+// Training Calendar
+const trainingCalendar = asyncHandler(async(req, res) => {
+    try {
+        const employeeId = req.params.employeeId;
+
+    } catch (err) {
+        return res
+            .status(500)
+            .json({ message: 'Error getting training calendar.', error: err.message });
+    }
+
+})
 
 
 export { getRevenueByEmployees, getRevenueByClients }
