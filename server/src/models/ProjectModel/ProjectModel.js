@@ -396,6 +396,18 @@ const projectSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false
             }
+        },
+        miscellaneous: {
+            amount: {
+                type: Number
+            },
+            dueDate: {
+                type: Date
+            },
+            isPaid: {
+                type: Boolean,
+                default: false
+            }
         }
     }
     // required: function() {     return this.stages === "Training Delivery" }

@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { useQueryClient } from "react-query";
 import { useToast } from "@/hooks/use-toast";
 
-const expenseOptions = ["Trainer", "Venue", "Travel", "Boarding_Lodging", "cw_lab"];
+const expenseOptions = ["Trainer", "Venue", "Travel", "Boarding_Lodging", "cw_lab", "miscellaneous"];
 
 const ExpenseCard = ({ type, onUpdate }) => {
   return (

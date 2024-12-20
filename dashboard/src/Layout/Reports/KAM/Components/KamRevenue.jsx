@@ -38,10 +38,11 @@ function KamRevenue() {
             ?.employee.role)) {
             // fetchCompany()
             fetchKAM()
+            // fetchCompany()
         }else{
             setKam(currentUser
                 ?.employee._id)
-
+                // fetchCompany()
             submitKamRevenueHandler(currentUser
                 ?.employee._id)
         }
@@ -77,29 +78,6 @@ function KamRevenue() {
     console.log(kam)
     console.log(company)
 
-    const submitHandler = async() => {
-        // Fetch client data from API
-        try {
-            const params = new URLSearchParams();
-
-            if (company && company !== "All") 
-                params.append("company", company);
-            if (startDate) 
-                params.append("startDate", startDate);
-            if (endDate) 
-                params.append("endDate", endDate);
-            if (company) 
-                params.append("company", company);
-
-            const response = await axios.get(`http://localhost:5000/api/reports/get-revenue/company/${company}?${params.toString()}`);
-            const data = await response.data;
-            console.log(data)
-            setResult(data);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
     const submitKamRevenueHandler = async(id) => {
         try {
             if (!kam && !id) {
@@ -134,6 +112,7 @@ function KamRevenue() {
 
     return (
         <div className='mt-5'>
+            <h2 className='my-3 font-semibold ml-2'>KAM Revenue</h2>
             {userAccess([RolesEnum.ADMIN], currentUser
                 ?.employee.role) && (
                 <Fragment>
