@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {useNavigate} from 'react-router-dom'
 import KamRevenue from './Components/KamRevenue'
+import GeneralReports from './Components/GeneralReports'
 
 function KAM() {
     const navigate = useNavigate()
@@ -41,6 +42,10 @@ function KAM() {
             {/* Section Display */}
             {
                 selectType === "Revenue" && <KamRevenue />
+            }
+
+            {
+                selectType === "General_Reports" && <GeneralReports />
             }
 
         </div>
