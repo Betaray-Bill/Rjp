@@ -13,6 +13,7 @@ import {
     TableHeader,
     TableRow
 } from "@/components/ui/table"
+import { Link } from 'react-router-dom';
 
 function TrainingCalendar() {
     const [startDate,
@@ -80,6 +81,7 @@ function TrainingCalendar() {
                             <TableHead>Owner</TableHead>
                             <TableHead>Start</TableHead>
                             <TableHead>End</TableHead>
+                            <TableHead>View</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -92,6 +94,9 @@ function TrainingCalendar() {
                                     <TableCell>{e.ownerDetails[0].name}</TableCell>
                                     <TableCell >{e.trainingDates.startDate.split("T")[0].split("-").reverse().join("-")}</TableCell>
                                     <TableCell >{e.trainingDates.endDate.split("T")[0].split("-").reverse().join("-")}</TableCell>
+                                    <TableCell>
+                                        <Link to={`/home/projects/view/${e._id}`} target='_blank' className='px-3 py-2 bg-blue-300'>View</Link>
+                                    </TableCell>
                                 </TableRow>
                             ))
 }

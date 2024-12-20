@@ -59,10 +59,10 @@ function PipeLine() {
                 params.append("startDate", startDate);
             if (endDate) 
                 params.append("endDate", endDate);
-            
             const response = await axios.get(`http://localhost:5000/api/project/projects-employees/${currentUser.employee._id}?${params.toString()}`);
             setProjects(response.data.projects);
-
+            
+         
         } catch (error) {
             setError(error);
         } finally {

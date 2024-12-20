@@ -17,6 +17,7 @@ const getRevenueByEmployees = asyncHandler(async(req, res) => {
         const employeeId = req.params.employeeId;
         const startDate = req.query.startDate;
         const endDate = req.query.endDate;
+        const company = req.query.company;
 
         // Fetch the employee by ID
         const employee = await Employee.findById(employeeId);
@@ -30,15 +31,19 @@ const getRevenueByEmployees = asyncHandler(async(req, res) => {
         let projects;
         let query = {};
 
+        // Add date filtering to the query
         if (startDate && endDate) {
-            query = {
-                'trainingDates.startDate': { $gte: new Date(startDate), $lte: new Date(endDate) },
-                'trainingDates.endDate': { $gte: new Date(startDate), $lte: new Date(endDate) }
-            };
+            query['trainingDates.startDate'] = { $gte: new Date(startDate), $lte: new Date(endDate) };
+            query['trainingDates.endDate'] = { $gte: new Date(startDate), $lte: new Date(endDate) };
+        }
+
+        // Add company filtering to the query if a company is passed
+        if (company) {
+            query['company.name'] = company;
         }
 
         if (adminRole) {
-            // If ADMIN, fetch all projects
+            // If ADMIN, fetch all projects but filter by company if provided
             projects = await Project.aggregate([
                 { $match: query },
                 {
@@ -62,14 +67,19 @@ const getRevenueByEmployees = asyncHandler(async(req, res) => {
                 }
             ]);
         } else if (keyAccountsRole) {
-            // If KeyAccounts, fetch projects linked to their role
+            // If KeyAccounts, fetch projects mapped to this employee and filter by company
             const keyAccounts = await KeyAccounts.findById(keyAccountsRole.roleId);
 
+            if (!keyAccounts) {
+                throw new Error("KeyAccounts role data not found");
+            }
+
+            // Only include projects linked to this KeyAccounts role and filter by company
             projects = await Project.aggregate([{
                     $match: {
                         $and: [
                             { _id: { $in: keyAccounts.Projects } }, // Match specific project IDs
-                            query // Include the date filter query
+                            query // Include the date and company filter query
                         ]
                     }
                 },

@@ -13,22 +13,22 @@ function Reports() {
 
                 <Link to="reports/deals" className='border border-gray-300 rounded-sm p-3  hover:ease-in-out transition-all hover:drop-shadow-md'>
                     <h3 className='text-black text-lg font-semibold'>Deals</h3>
-                    <p className='font-normal mt-2'>View the performance of your trainers and clients</p>
+                    <p className='font-normal text-sm mt-2'>View the performance of your KAM and clients</p>
                 </Link>
 
-                <Link className='border border-gray-300 rounded-sm p-3  hover:ease-in-out transition-all hover:drop-shadow-md'>
+                <Link to="reports/trainers" className='border border-gray-300 rounded-sm p-3  hover:ease-in-out transition-all hover:drop-shadow-md'>
                     <h3 className='text-black text-lg font-semibold'>Trainers</h3>
-                    <p className='font-normal mt-2'>View the Trainers Performance</p>
+                    <p className='font-normal text-sm mt-2'>View the Trainers Performance</p>
+                </Link>
+
+                <Link to="reports/key-accounts" className='border border-gray-300 rounded-sm p-3  hover:ease-in-out transition-all hover:drop-shadow-md'>
+                    <h3 className='text-black text-lg font-semibold'>Key Accounts Manager</h3>
+                    <p className='font-normal text-sm mt-2'>View the performance of your trainers and clients</p>
                 </Link>
 
                 <Link className='border border-gray-300 rounded-sm p-3  hover:ease-in-out transition-all hover:drop-shadow-md'>
                     <h3 className='text-black text-lg font-semibold'>Deals</h3>
-                    <p className='font-normal mt-2'>View the performance of your trainers and clients</p>
-                </Link>
-
-                <Link className='border border-gray-300 rounded-sm p-3  hover:ease-in-out transition-all hover:drop-shadow-md'>
-                    <h3 className='text-black text-lg font-semibold'>Deals</h3>
-                    <p className='font-normal mt-2'>View the performance of your trainers and clients</p>
+                    <p className='font-normal text-sm mt-2'>View the performance of your trainers and clients</p>
                 </Link>
 
             </div>

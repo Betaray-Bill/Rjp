@@ -34,6 +34,8 @@ import RemainderSection from './Layout/Home/Remainders/RemainderSection'
 import Reports from './Layout/Reports/Reports'
 import HomeWrapper from './Layout/Home/HomeWrapper'
 import Deals from './Layout/Reports/Deals/Deals'
+import Trainers from './Layout/Reports/Trainers/Trainers'
+import KAM from './Layout/Reports/KAM/KAM'
 
 
 function App() {
@@ -56,11 +58,23 @@ function App() {
             }
 
 
+            {/* Reports */}
             {
               userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && (
               <Route path='reports/deals' element={<Deals /> } />
               )
             }
+            {
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && (
+              <Route path='reports/trainers' element={<Trainers /> } />
+              )
+            }
+            {
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && (
+              <Route path='reports/key-accounts' element={<KAM /> } />
+              )
+            }
+            {/* trainers */}
 
             {
               userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && 
