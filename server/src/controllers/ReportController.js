@@ -2,12 +2,7 @@ import Employee from "../models/EmployeeModel.js";
 import Admin from "../models/RoleModels/AdminModel.js";
 import Finance from "../models/RoleModels/FinanceModel.js";
 import KeyAccounts from "../models/RoleModels/KeyAccountsModel.js";
-import argon2 from 'argon2';
-import Manager from "../models/RoleModels/ManagerModel.js";
-import TrainerSourcer from "../models/RoleModels/TrainerSourcerModel.js";
-import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import { generateEmpToken, generateToken } from "../utils/generateToken.js";
 import Project from "../models/ProjectModel/ProjectModel.js";
 import { Company } from "../models/CompanyAndDealModels/CompanyModel.js";
 
@@ -51,6 +46,8 @@ const getRevenueByEmployees = asyncHandler(async(req, res) => {
         if (company) {
             query['company.name'] = company;
         }
+
+        query['invoiceSentClient'] = true
 
         if (adminRole) {
             // If ADMIN, fetch all projects but filter by company if provided
@@ -161,7 +158,6 @@ const getRevenueByClients = asyncHandler(async(req, res) => {
                 $regex: new RegExp(`^${company}$`, 'i')
             }
         });
-
         if (!client) {
             console.log("Error");
             throw new Error("Company not found");
@@ -169,6 +165,7 @@ const getRevenueByClients = asyncHandler(async(req, res) => {
         console.log(client);
 
         let query = {};
+        query['invoiceSentClient'] = true
 
         if (startDate && endDate) {
             query = {
@@ -375,6 +372,7 @@ const getTrainingDetailsByKAM = asyncHandler(async(req, res) => {
 
         let projects;
         let query = {};
+        query['invoiceSentClient'] = true
 
         // Add date filtering to the query
         if (startDate && endDate) {

@@ -136,6 +136,10 @@ const projectSchema = new mongoose.Schema({
         }]
     },
     remainders: [remainderSchema],
+    invoiceSentClient: {
+        type: Boolean,
+        default: false
+    },
     modeOfTraining: {
         type: String,
         enum: ['Virtual', 'In-Person', 'Hybrid']

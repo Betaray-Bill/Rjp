@@ -38,13 +38,13 @@ app.use(helmet.hsts({
 }));
 app.use(helmet.referrerPolicy({ policy: 'no-referrer' }));
 
-// if (process.env.NODE_ENV === 'production') {
-//     app.use(helmet());
-// } else {
-//     app.use(helmet({
-//         contentSecurityPolicy: false // Disable CSP for development
-//     }));
-// }
+if (process.env.NODE_ENV === 'production') {
+    app.use(helmet());
+} else {
+    app.use(helmet({
+        contentSecurityPolicy: false // Disable CSP for development
+    }));
+}
 
 const corsOptions = {
     origin: ["http://localhost:5173", "http://localhost:5174"],
@@ -59,6 +59,7 @@ app.use((req, res, next) => {
     console.log(`Request Method: ${req.method}`);
     next();
 });
+
 
 app.use(cors(corsOptions));
 // app.options("*", cors(corsOptions)); // Allow preflight requests for all routes
