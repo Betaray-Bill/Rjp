@@ -10,12 +10,14 @@ import { Trainer } from "../models/TrainerModel.js";
 // Get Revenue by Employees
 const getRevenueByEmployees = asyncHandler(async(req, res) => {
     try {
+        console.log(req.query)
         const employeeId = req.params.employeeId;
         const startDate = req.query.startDate;
         const endDate = req.query.endDate;
         const company = req.query.company;
 
         // Fetch the employee by ID
+        console.log(employeeId)
         const employee = await Employee.findById(employeeId);
         if (!employee) {
             throw new Error("Employee not found");
@@ -75,12 +77,13 @@ const getRevenueByEmployees = asyncHandler(async(req, res) => {
         } else if (keyAccountsRole) {
             // If KeyAccounts, fetch projects mapped to this employee and filter by company
             const keyAccounts = await KeyAccounts.findById(keyAccountsRole.roleId);
-
+            console.log("key  ", keyAccounts)
             if (!keyAccounts) {
                 throw new Error("KeyAccounts role data not found");
             }
 
             // Only include projects linked to this KeyAccounts role and filter by company
+            console.log(query)
             projects = await Project.aggregate([{
                 $match: {
                     $and: [{
@@ -109,6 +112,7 @@ const getRevenueByEmployees = asyncHandler(async(req, res) => {
                     'ownerDetails.name': 1
                 }
             }]);
+            console.log("PRojects ", projects)
         } else {
             throw new Error("Employee role does not have access to projects");
         }
@@ -138,6 +142,8 @@ const getRevenueByEmployees = asyncHandler(async(req, res) => {
             .status(200)
             .json(projectRevenue);
     } catch (err) {
+        // clg
+        console.log(err);
         return res
             .status(500)
             .json({ message: "Error getting revenue by employees.", error: err.message });
@@ -570,4 +576,67 @@ const pendingPO = asyncHandler(async(req, res) => {
     }
 })
 
-export { getRevenueByEmployees, getRevenueByClients, trainingCalendar, getTrainingDetailsByKAM, pendingPO }
+
+
+// Pending PO
+const pendingPayment = asyncHandler(async(req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+
+        if (!startDate || !endDate) {
+            return res.status(400).json({ message: "Start date and end date are required." });
+        }
+
+        // Parse dates
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        // Build query with date filtering
+        const query = {};
+        query['trainingDates.startDate'] = {
+            $gte: start,
+            $lte: end
+        };
+        query['trainingDates.endDate'] = {
+            $gte: start,
+            $lte: end
+        };
+
+        // Fetch projects within the specified dates
+        const projects = await Project.find(query);
+
+        console.log("Projects: " + projects)
+
+        const result = [];
+
+
+        for (const project of projects) {
+            const { projectName, projectOwner, _id: projectId } = project;
+
+            for (const trainerObj of project.trainers) {
+                // Check if any invoice in the trainer object is unpaid
+                const hasUnpaidInvoices = trainerObj.inVoice.some(invoice => !invoice.isPaid);
+
+                if (hasUnpaidInvoices) {
+                    // Fetch trainer details
+                    const trainerDetails = await Trainer.findById(trainerObj.trainer._id).select('generalDetails.name');
+
+                    if (trainerDetails) {
+                        result.push({
+                            trainingName: projectName,
+                            trainerName: trainerDetails.generalDetails.name || 'Unknown',
+                            projectOwner: await Employee.findById(project.projectOwner).select('name'),
+                            projectId: projectId.toString(),
+                        });
+                    }
+                }
+            }
+        }
+
+        return res.json(result);
+    } catch (error) {
+        console.error('Error fetching trainers with due payments:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
+    }
+})
+export { getRevenueByEmployees, getRevenueByClients, trainingCalendar, getTrainingDetailsByKAM, pendingPayment, pendingPO }

@@ -226,7 +226,10 @@ const projectSchema = new mongoose.Schema({
                 type: String
             },
             invoiceIndex: Number,
-            isPaid: Boolean,
+            isPaid: {
+                type: Boolean,
+                default: false
+            },
             description: {
                 type: String
             }

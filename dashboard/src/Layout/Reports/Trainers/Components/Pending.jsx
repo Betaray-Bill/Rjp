@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import PendingPO from './PendingPO'
+import PendingPayment from './PendingPayment'
 
 function Pending() {
     const [selectType,
@@ -26,8 +27,8 @@ function Pending() {
             {selectType === "Purchase Order" && <PendingPO />
 }
 
-            {selectType === "Payment" && <div>Payment Pending</div>
-}
+            {selectType === "Payment" && <PendingPayment />
+}   
         </div>
 
     )
