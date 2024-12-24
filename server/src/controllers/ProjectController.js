@@ -151,9 +151,10 @@ const createProject = asyncHandler(async(req, res) => {
 
     } catch (err) {
         console.log(err)
-        next(err);
-        // return res     .status(500)     .json({ message: 'Error creating project.',
-        // error: err.message });
+            // next(err);
+        return res
+            .status(500)
+            .json({ message: 'Error creating project.', error: err.message });
     }
 })
 
@@ -273,9 +274,13 @@ const getProject = asyncHandler(async(req, res) => {
 
     try {
         // Fetch the employee and their roles
-        const employee = await Employee.findById(empId).populate('role.roleId');
+        const employee = await Employee
+            .findById(empId)
+            .populate('role.roleId');
         if (!employee) {
-            return res.status(404).json({ message: "Employee not found" });
+            return res
+                .status(404)
+                .json({ message: "Employee not found" });
         }
 
         // Loop through roles to identify the employee's responsibilities
@@ -284,25 +289,28 @@ const getProject = asyncHandler(async(req, res) => {
 
             if (role.name === 'KeyAccounts') {
                 // Extract projects assigned to Key Accounts
-                assignedProjects = role.roleId.Projects.map((project) => project.toString());
+                assignedProjects = role
+                    .roleId
+                    .Projects
+                    .map((project) => project.toString());
                 break;
             }
 
             if (role.name === 'ADMIN') {
                 // Admin can access all projects in the pipeline
-                const pipelines = await Pipeline.find().populate({
-                    path: 'stages.projects',
-                    select: 'projectName domain company trainingDates',
-                    populate: {
-                        path: 'projectOwner',
-                        select: 'name email contactDetails.phone',
-                    },
-                });
+                const pipelines = await Pipeline
+                    .find()
+                    .populate({
+                        path: 'stages.projects',
+                        select: 'projectName domain company trainingDates',
+                        populate: {
+                            path: 'projectOwner',
+                            select: 'name email contactDetails.phone'
+                        }
+                    });
 
                 // Flatten all projects into a single array
-                assignedProjects = pipelines.flatMap((pipeline) =>
-                    pipeline.stages.flatMap((stage) => stage.projects.map((project) => project._id.toString()))
-                );
+                assignedProjects = pipelines.flatMap((pipeline) => pipeline.stages.flatMap((stage) => stage.projects.map((project) => project._id.toString())));
                 break;
             }
 
@@ -313,76 +321,88 @@ const getProject = asyncHandler(async(req, res) => {
                     select: 'projectName domain company trainingDates',
                     populate: {
                         path: 'projectOwner',
-                        select: 'name email contactDetails.phone',
-                    },
+                        select: 'name email contactDetails.phone'
+                    }
                 });
 
-                assignedProjects = pipelines.flatMap((pipeline) =>
-                    pipeline.stages
-                    .filter((stage) => ["Payment", "PO received / Invoice Raised", "Invoice Sent"].includes(stage.name))
-                    .flatMap((stage) => stage.projects.map((project) => project._id.toString()))
-                );
+                assignedProjects = pipelines.flatMap((pipeline) => pipeline.stages.filter((stage) => ["Payment", "PO received / Invoice Raised", "Invoice Sent"].includes(stage.name)).flatMap((stage) => stage.projects.map((project) => project._id.toString())));
                 break;
             }
         }
 
         // Step 1: Filter by companyId (if provided)
         if (companyId) {
-            const company = await Company.findById(companyId).populate('Projects');
+            const company = await Company
+                .findById(companyId)
+                .populate('Projects');
             if (!company) {
-                return res.status(404).json({ message: "Company not found" });
+                return res
+                    .status(404)
+                    .json({ message: "Company not found" });
             }
 
             // Retain only projects belonging to the given company
-            assignedProjects = assignedProjects.filter((projectId) =>
-                company.Projects.some((companyProject) => companyProject._id.toString() === projectId)
-            );
+            assignedProjects = assignedProjects.filter((projectId) => company.Projects.some((companyProject) => companyProject._id.toString() === projectId));
         }
 
         // Step 2: Filter by dates (if provided)
         if (startDate && endDate) {
             assignedProjects = await Project.find({
-                _id: { $in: assignedProjects },
+                _id: {
+                    $in: assignedProjects
+                },
                 $or: [{
-                        'trainingDates.startDate': { $lte: endDate },
-                        'trainingDates.endDate': { $gte: startDate },
+                    'trainingDates.startDate': {
+                        $lte: endDate
                     },
-                    {
-                        'trainingDates.startDate': { $gte: startDate, $lte: endDate },
-                    },
-                    {
-                        'trainingDates.endDate': { $gte: startDate, $lte: endDate },
-                    },
-                ],
+                    'trainingDates.endDate': {
+                        $gte: startDate
+                    }
+                }, {
+                    'trainingDates.startDate': {
+                        $gte: startDate,
+                        $lte: endDate
+                    }
+                }, {
+                    'trainingDates.endDate': {
+                        $gte: startDate,
+                        $lte: endDate
+                    }
+                }]
             }).populate('projectOwner', 'name email contactDetails.phone');
         } else {
             // If no date filters are provided, fetch projects directly
-            assignedProjects = await Project.find({ _id: { $in: assignedProjects } }).populate(
-                'projectOwner',
-                'name email contactDetails.phone'
-            );
+            assignedProjects = await Project
+                .find({
+                    _id: {
+                        $in: assignedProjects
+                    }
+                })
+                .populate('projectOwner', 'name email contactDetails.phone');
         }
 
         // Step 3: Group projects by pipeline stages
-        const pipelines = await Pipeline.find().populate({
-            path: 'stages.projects',
-            match: { _id: { $in: assignedProjects.map((p) => p._id) } },
-        });
+        const pipelines = await Pipeline
+            .find()
+            .populate({
+                path: 'stages.projects',
+                match: {
+                    _id: {
+                        $in: assignedProjects.map((p) => p._id)
+                    }
+                }
+            });
 
-        const result = pipelines.flatMap((pipeline) =>
-            pipeline.stages.map((stage) => ({
-                name: stage.name,
-                projects: stage.projects,
-            }))
-        );
+        const result = pipelines.flatMap((pipeline) => pipeline.stages.map((stage) => ({ name: stage.name, projects: stage.projects })));
 
         res.json({ projects: result });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: "Server error" });
+        res
+            .status(500)
+            .json({ message: "Server error" });
     }
 });
-
 
 // Get Projects By Id
 const getProjectDetails = asyncHandler(async(req, res) => {
@@ -556,19 +576,27 @@ const addTrainer = asyncHandler(async(req, res) => {
         }, { new: true });
 
         console.log(project._id)
-            // for (let i = 0; i < trainersList.length; i++) {     console.log("1",
-            // trainersList[i])     await Trainer.findByIdAndUpdate( trainersList[i], {
-            //   $addToSet: {                 projects: project._id, workingDates: {
-            //             startDate: project.trainingDates.startDate,
-            // endDate: project.trainingDates.endDate,                     startTime:
-            // project.trainingDates.startTime,                     endTime:
-            // project.trainingDates.endTime,                     specialTimings:
-            // project.trainingDates.specialTimings,                     name:
-            // project.projectName,                     id: project._id,                 },
-            //          },         }, { new: true }     );     // console.log("Trainer
-            // updated", trainer) }
+        for (let i = 0; i < trainersList.length; i++) {
+            console.log("1", trainersList[i])
+            await Trainer.findByIdAndUpdate(trainersList[i], {
+                $addToSet: {
+                    projects: project._id,
+                    workingDates: {
+                        startDate: project.trainingDates.startDate,
+                        endDate: project.trainingDates.endDate,
+                        startTime: project.trainingDates.startTime,
+                        endTime: project.trainingDates.endTime,
+                        specialTimings: project.trainingDates.specialTimings,
+                        name: project.projectName,
+                        id: project._id
+                    }
+                }
+            }, { new: true });
+            // console.log("Trainer updated ", trainer) 
+        }
 
-        res.json({ message: "Trainers added to the project." });
+        return res.json({ message: "Trainers added to the project." });
+
     } catch (err) {
         console.log(err)
         return res
@@ -1340,43 +1368,40 @@ const getRemainders = asyncHandler(async(req, res) => {
         } else if (startDate) {
             console.log(startDate)
             projects = await Project.aggregate([{
-                    $match: {
-                        "remainders": {
-                            $elemMatch: {
-                                date: {
-                                    $eq: new Date(startDate),
-                                },
-                                isCompleted: false
-                            }
+                $match: {
+                    "remainders": {
+                        $elemMatch: {
+                            date: {
+                                $eq: new Date(startDate)
+                            },
+                            isCompleted: false
                         }
-                    }
-                },
-                {
-                    $project: {
-                        _id: 1, // Include project name if needed
-                        stages: 1,
-                        projectName: 1,
-                        remainders: {
-                            $filter: {
-                                input: "$remainders",
-                                as: "remainder",
-                                cond: {
-                                    $and: [{
-                                        $eq: ["$$remainder.date", new Date(startDate)]
-                                    }, {
-                                        $eq: ["$$remainder.isCompleted", false]
-                                    }]
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    $sort: {
-                        "remainders.date": -1
                     }
                 }
-            ]);
+            }, {
+                $project: {
+                    _id: 1, // Include project name if needed
+                    stages: 1,
+                    projectName: 1,
+                    remainders: {
+                        $filter: {
+                            input: "$remainders",
+                            as: "remainder",
+                            cond: {
+                                $and: [{
+                                    $eq: ["$$remainder.date", new Date(startDate)]
+                                }, {
+                                    $eq: ["$$remainder.isCompleted", false]
+                                }]
+                            }
+                        }
+                    }
+                }
+            }, {
+                $sort: {
+                    "remainders.date": -1
+                }
+            }]);
         }
         res.json(projects);
 
@@ -1388,8 +1413,7 @@ const getRemainders = asyncHandler(async(req, res) => {
     }
 });
 
-
-// Client INvoice Sent 
+// Client INvoice Sent
 const client_invoice_sent = asyncHandler(async(req, res) => {
     const { projectId } = req.params;
     console.log(req.body)
@@ -1403,7 +1427,9 @@ const client_invoice_sent = asyncHandler(async(req, res) => {
 
     } catch (err) {
         console.log(err)
-        return res.status(500).json({ message: "Error updating client invoice sent status." });
+        return res
+            .status(500)
+            .json({ message: "Error updating client invoice sent status." });
     }
 })
 

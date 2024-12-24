@@ -155,6 +155,7 @@ const projectSchema = new mongoose.Schema({
             ref: 'Resume'
         },
         purchaseOrder: [{
+            // isPO_generated: false,
             poNumber: Number,
             isAccepted: {
                 type: Boolean,
@@ -234,6 +235,10 @@ const projectSchema = new mongoose.Schema({
     notes: [notesSchema],
     stages: {
         type: String
+    },
+    isLost: {
+        type: Boolean,
+        default: false
     },
     trainingDelivery: {
         Travel: {

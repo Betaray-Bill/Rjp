@@ -182,6 +182,10 @@ function ViewProjectData({projects}) {
     }
 
     console.log(projectData)
+    const [wonLost, setWonLost] = useState("")
+    const handleStageWonLost = async(e) => {
+        setWonLost(e)
+    }
 
     return (
 
@@ -200,18 +204,27 @@ function ViewProjectData({projects}) {
                             onChange={(e) => {
                                 changeStage(e)
                             }}
-                            // disabled={!is}
+                            disabled={wonLost === "Won" ? false : true}
                             className='ml-3 font-semibold'
                             value={stages || ''}>
                                 <option value="Training Enquiry">Training Enquiry</option>
                                 <option value="Reply">Reply</option>
                                 <option value="Proposal Sent">Proposal Sent</option>
+                                <option value="Open - Won/Lost">Open - Won/Lost</option>
                                 <option value="PO received / Invoice Raised">PO received / Invoice Raised</option>
                                 <option value="Training Delivery">Training Delivery</option>
                                 <option value="Invoice Sent">Invoice Sent</option>
                                 <option value="Payment">Payment</option>
                         </select>
                     </div>
+                    {
+                        stages === "Open - Won/Lost" && <div className='ml-3'>
+                            <select name="" id="" onChange={(e) => handleStageWonLost(e.target.value)}>
+                                <option value="Lost">Lost</option>
+                                <option value="Won">Won</option>
+                            </select>
+                        </div>
+                    }
                     <div className='ml-3'>
                        {
                         isEdit ?  <div>

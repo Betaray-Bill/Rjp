@@ -1,20 +1,9 @@
 import React, {useState, useEffect} from "react";
-// import {Calendar, momentLocalizer} from "react-big-calendar"; import moment
-// from "moment"; import "react-big-calendar/lib/css/react-big-calendar.css";
-import axios from "axios";
-// import {useDispatch, useSelector} from "react-redux"; import {setCredentials}
-// from "@/features/authSlice";
-import CalendarDate from "./CalendarDate";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid"; // For month view
-import timeGridPlugin from "@fullcalendar/timegrid"; // For week/day views
-import interactionPlugin from "@fullcalendar/interaction"; // For interaction
+import axios from "axios";// For interaction
 import DatePicker from "react-datepicker";
-// import React from "react";
 import {Calendar, momentLocalizer} from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-
 import "react-datepicker/dist/react-datepicker.css";
 import {Label} from "@/components/ui/Label";
 import {Input} from "@/components/ui/input";

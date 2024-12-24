@@ -5,6 +5,7 @@ import KeyAccounts from "../models/RoleModels/KeyAccountsModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import Project from "../models/ProjectModel/ProjectModel.js";
 import { Company } from "../models/CompanyAndDealModels/CompanyModel.js";
+import { Trainer } from "../models/TrainerModel.js";
 
 // Get Revenue by Employees
 const getRevenueByEmployees = asyncHandler(async(req, res) => {
@@ -494,4 +495,79 @@ const getTrainingDetailsByKAM = asyncHandler(async(req, res) => {
     }
 })
 
-export { getRevenueByEmployees, getRevenueByClients, trainingCalendar, getTrainingDetailsByKAM }
+
+// Pending
+
+// Pending PO
+const pendingPO = asyncHandler(async(req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+
+        if (!startDate || !endDate) {
+            return res.status(400).json({ message: "Start date and end date are required." });
+        }
+
+        // Parse dates
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        // Build query with date filtering
+        const query = {};
+        query['trainingDates.startDate'] = {
+            $gte: start,
+            $lte: end
+        };
+        query['trainingDates.endDate'] = {
+            $gte: start,
+            $lte: end
+        };
+
+        // Fetch projects within the specified dates
+        const projects = await Project.find(query);
+
+        console.log("Projects: " + projects)
+
+        const result = [];
+
+        for (const project of projects) {
+            console.log(`Processing project: ${project.projectName}`);
+
+            const pendingTrainers = project.trainers.filter(trainer => {
+                // Skip if no purchaseOrder exists
+                if (!trainer.purchaseOrder || trainer.purchaseOrder.length === 0) return true;
+
+                // Check if any PO is incomplete
+                return trainer.purchaseOrder.some(po => {
+                    const { type, description, terms } = po.details || {};
+                    return !type || !description || description.length === 0 || !terms || terms.length === 0;
+                });
+            });
+
+            console.log(`Pending Trainers: ${JSON.stringify(pendingTrainers, null, 2)}`);
+
+            // Push relevant trainer data into result array
+            for (const trainer of pendingTrainers) {
+                const trainerDetails = await Trainer.findById(trainer.trainer._id).select('generalDetails.name');
+
+                // Add to result if trainer details exist
+                if (trainerDetails) {
+                    result.push({
+                        projectId: project._id,
+                        projectName: project.projectName,
+                        trainerName: trainerDetails.generalDetails.name || 'Unknown',
+                        projectOwner: await Employee.findById(project.projectOwner).select('name') || 'Unknown'
+                    });
+                }
+            }
+        }
+
+        console.log(result)
+
+        return res.json(result);
+    } catch (error) {
+        console.error('Error fetching trainers with pending POs:', error);
+        return res.status(500).json({ message: "Internal server error." });
+    }
+})
+
+export { getRevenueByEmployees, getRevenueByClients, trainingCalendar, getTrainingDetailsByKAM, pendingPO }

@@ -200,12 +200,7 @@ function ViewSingleProject() {
     console.log(res)
   }
 
-  // Check if the part time or full time is checked
-  // useEffect(() => {
-  //   if(formData.PartTime){
-
-  //   }
-  // }, [formData.PartTime])
+ 
 
   return (
     <div className=''>

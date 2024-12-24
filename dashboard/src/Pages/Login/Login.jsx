@@ -39,9 +39,9 @@ function Login() {
         e.preventDefault()
         try {
             const res = await axios.post('http://localhost:5000/api/employee/login', formData,  {
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                // headers: {
+                //     "Content-Type": "application/json",
+                // },
                 withCredentials: true, // Ensures cookies are sent
             })  
 
