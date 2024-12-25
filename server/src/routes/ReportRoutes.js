@@ -3,7 +3,7 @@ import { addEmployee, getEmployeeById, getAllEmployees, updateEmployeeRole, getA
 import { login, signOut, updatePassword } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
-import { getRevenueByClients, getRevenueByEmployees, getTrainingDetailsByKAM, pendingPayment, pendingPO, trainingCalendar } from '../controllers/ReportController.js';
+import { getRevenueByClients, getRevenueByEmployees, getTrainerDates, getTrainingDetailsByKAM, pendingPayment, pendingPO, searchTrainer, trainingCalendar } from '../controllers/ReportController.js';
 const router = express.Router();
 
 
@@ -21,6 +21,9 @@ router.get("/pending/po", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAc
 router.get("/pending/payment", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts", "Finance"]), pendingPayment)
 
 
+// Search Trainer
+router.get("/search", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), searchTrainer)
+router.get("/trainer/:trainerId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), getTrainerDates)
 
 
 

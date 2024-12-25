@@ -1433,6 +1433,23 @@ const client_invoice_sent = asyncHandler(async(req, res) => {
     }
 })
 
+// LOST/WON
+const updateLost_Won = asyncHandler(async(req, res) => {
+    const { projectId } = req.params;
+    console.log(req.body)
+
+    try {
+        await Project.findByIdAndUpdate(projectId, {
+            isLost: req.body.isLost
+        }, { new: true })
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: "Error updating project status." });
+    }
+})
+
 export {
     createProject,
     getProjectDetails,
@@ -1457,5 +1474,6 @@ export {
     addExpenses,
     addRemainders,
     getRemainders,
-    client_invoice_sent
+    client_invoice_sent,
+    updateLost_Won
 }

@@ -31,7 +31,7 @@ function Trainers() {
                         <SelectContent>
                             <SelectItem value="Pending">Pending</SelectItem>
                             <SelectItem value="Revenue">Revenue</SelectItem>
-                            <SelectItem value="Trainer Calendar">Trainer Calendar</SelectItem>
+                            {/* <SelectItem value="Trainer Calendar">Trainer Calendar</SelectItem> */}
                             <SelectItem value="Calendar View">Calendar View</SelectItem>
                         </SelectContent>
                     </Select>
@@ -44,7 +44,7 @@ function Trainers() {
                 selectType === "Pending" && <Pending />
             }
             {
-                selectType === "Trainer Calendar" && <TrainerCalendar />
+                selectType === "Calendar View" && <TrainerCalendar />
             }
             {/* {
                 selectType === "Revenue" && <Revenue />

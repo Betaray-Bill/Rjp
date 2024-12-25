@@ -639,4 +639,63 @@ const pendingPayment = asyncHandler(async(req, res) => {
         return res.status(500).json({ message: 'Internal server error.' });
     }
 })
-export { getRevenueByEmployees, getRevenueByClients, trainingCalendar, getTrainingDetailsByKAM, pendingPayment, pendingPO }
+
+
+// Search Trainer By name, gmail, Id
+const searchTrainer = async(req, res) => {
+    try {
+        const { query } = req.query;
+
+        // Ensure query is provided
+        if (!query) {
+            return res.status(400).json({ message: "Search query is required." });
+        }
+
+        // MongoDB search with regex for case-insensitive partial matches
+        const results = await Trainer.find({
+            $or: [
+                { "generalDetails.name": { $regex: query, $options: "i" } },
+                { trainerId: { $regex: query, $options: "i" } },
+                { "generalDetails.email": { $regex: query, $options: "i" } },
+            ],
+        }).select("generalDetails.name trainerId generalDetails.email");
+
+        return res.status(200).json(results);
+    } catch (error) {
+        console.error("Error searching trainers:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+//  Get trainer Dates   
+const getTrainerDates = async(req, res) => {
+    try {
+        const { trainerId } = req.params;
+
+        if (!trainerId) {
+            return res.status(400).json({ message: "Trainer ID is required." });
+        }
+
+        // Find the trainer by ID
+        const trainer = await Trainer.findOne({ trainerId })
+            .populate({
+                path: "projects", // Assuming projects is an array of ObjectIds in the trainer schema
+                select: "projectName trainingDates", // Only fetch projectName and trainingDates
+            })
+            .select("generalDetails.name trainerId workingDates projects");
+
+        if (!trainer) {
+            return res.status(404).json({ message: "Trainer not found." });
+        }
+
+        res.status(200).json(trainer);
+    } catch (error) {
+        console.error("Error fetching trainer details:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+
+
+
+export { getRevenueByEmployees, getRevenueByClients, trainingCalendar, getTrainingDetailsByKAM, pendingPayment, pendingPO, searchTrainer, getTrainerDates }

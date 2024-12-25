@@ -3,7 +3,7 @@ import { addEmployee, getEmployeeById, getAllEmployees, updateEmployeeRole, getA
 import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { authEmployeeMiddleware, authMiddleware } from '../middleware/authMiddleware.js';
-import { acceptOrDecline, addChatToProject, addExpenses, addRemainders, addResumeToProject, addTrainer, checkListUpdate, client_invoice_sent, createProject, deleteTrainer, getAllNotes, getProject, getProjectDetails, getProjectForTrainer, getProjectsByEmp, getRemainders, isClientCallDone, savePurchaseOrder, updateInvoice_by_paid, updateStage, updateTraining, upload_Invoice_Url_Trainer, uploadPOUrl_Trainer } from '../controllers/ProjectController.js';
+import { acceptOrDecline, addChatToProject, addExpenses, addRemainders, addResumeToProject, addTrainer, checkListUpdate, client_invoice_sent, createProject, deleteTrainer, getAllNotes, getProject, getProjectDetails, getProjectForTrainer, getProjectsByEmp, getRemainders, isClientCallDone, savePurchaseOrder, updateInvoice_by_paid, updateLost_Won, updateStage, updateTraining, upload_Invoice_Url_Trainer, uploadPOUrl_Trainer } from '../controllers/ProjectController.js';
 import { uploadPOToBlob } from '../controllers/AzureUploadController.js';
 
 const router = express.Router();
@@ -44,6 +44,9 @@ router.put('/expense/:projectId', authEmployeeMiddleware, authorizeRole(["ADMIN"
 // router.put("/purchaseOrder/:prsojectId/trainer/:trainerId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), upload_Invoice_Url_Trainer)
 
 // upload_Invoice_Url_Trainer
+
+// Lost/Won stage update
+router.put("/updateLostWon/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), updateLost_Won)
 
 router.get("/:projectId/trainer/:trainerId", authMiddleware, getProjectForTrainer)
 
