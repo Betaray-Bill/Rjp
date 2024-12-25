@@ -138,6 +138,45 @@ const getAllKeysAccounts = asyncHandler(async(req, res) => {
 
 })
 
+// Get ALl getAllKeysAccounts
+const getAllTrainerSourcer = asyncHandler(async(req, res) => {
+    try {
+        const employees = await Employee.aggregate([{
+                $unwind: "$role" // Break down the role array into individual documents
+            },
+            {
+                $match: {
+                    "role.name": "Trainer Sourcer" // Match documents where the role name is KeyAccounts
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id", // Group back the documents by employee
+                    name: { $first: "$name" },
+                    email: { $first: "$email" },
+                    password: { $first: "$password" },
+                    roles: { $push: "$role" }, // Restore the roles array
+                    roleIds: { $first: "$roleId" },
+                    createdAt: { $first: "$createdAt" },
+                    updatedAt: { $first: "$updatedAt" }
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    email: 1,
+                }
+            }
+        ]);
+
+        res.json(employees);
+    } catch (error) {
+        throw new ApiError(500, error.message);
+    }
+
+})
+
 // Get Individual Employee
 const getEmployee = asyncHandler(async(req, res) => {
     const empId = req.params.empId;
@@ -263,7 +302,7 @@ const getAllTrainers = asyncHandler(async(req, res) => {
 
         res
             .status(200)
-            .json({ message: "Trainers retrieved successfully", trainers });
+            .json(trainers);
     } catch (error) {
         console.error("Error retrieving trainers:", error);
         res
@@ -280,5 +319,6 @@ export {
     getAllEmployees,
     getEmployeeById,
     getEmployee,
+    getAllTrainerSourcer,
     getAllKeysAccounts
 }

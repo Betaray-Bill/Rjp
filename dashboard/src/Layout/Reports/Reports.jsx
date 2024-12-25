@@ -26,9 +26,9 @@ function Reports() {
                     <p className='font-normal text-sm mt-2'>View the performance of your trainers and clients</p>
                 </Link>
 
-                <Link className='border border-gray-300 rounded-sm p-3  hover:ease-in-out transition-all hover:drop-shadow-md'>
-                    <h3 className='text-black text-lg font-semibold'>Deals</h3>
-                    <p className='font-normal text-sm mt-2'>View the performance of your trainers and clients</p>
+                <Link to="reports/trainer-sourcer" className='border border-gray-300 rounded-sm p-3  hover:ease-in-out transition-all hover:drop-shadow-md'>
+                    <h3 className='text-black text-lg font-semibold'>Trainer Sourcer</h3>
+                    <p className='font-normal text-sm mt-2'>View the performance of your trainers sourcer</p>
                 </Link>
 
             </div>

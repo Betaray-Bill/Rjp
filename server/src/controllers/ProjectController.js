@@ -302,7 +302,7 @@ const getProject = asyncHandler(async(req, res) => {
                     .find()
                     .populate({
                         path: 'stages.projects',
-                        select: 'projectName domain company trainingDates',
+                        select: 'projectName domain company trainingDates isLost',
                         populate: {
                             path: 'projectOwner',
                             select: 'name email contactDetails.phone'
@@ -318,7 +318,7 @@ const getProject = asyncHandler(async(req, res) => {
                 // Finance can access specific stages only
                 const pipelines = await Pipeline.find({}, 'stages').populate({
                     path: 'stages.projects',
-                    select: 'projectName domain company trainingDates',
+                    select: 'projectName domain isLost company trainingDates',
                     populate: {
                         path: 'projectOwner',
                         select: 'name email contactDetails.phone'
@@ -1442,6 +1442,8 @@ const updateLost_Won = asyncHandler(async(req, res) => {
         await Project.findByIdAndUpdate(projectId, {
             isLost: req.body.isLost
         }, { new: true })
+
+        return res.status(200).json({ message: "Client Lost" })
     } catch (err) {
         console.log(err)
         return res

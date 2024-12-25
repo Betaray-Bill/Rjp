@@ -188,7 +188,7 @@ function ViewSingleProject() {
   if (isLoading) return <div><Loading /></div>
   if (error) return <div>Error: {error.message}</div>
   console.log(projects)
-  const {_id, notes, company, stages, contactDetails, invoiceSentClient,expenses, remainders,amount,employees, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
+  const {_id, notes, company, stages, isLost ,contactDetails, invoiceSentClient,expenses, remainders,amount,employees, trainers,trainingDates, projectName, domain, description, modeOfTraining } = projects;
 
 
   const fileUpload = async(e) => {
@@ -226,7 +226,7 @@ function ViewSingleProject() {
       </div> */}
 
       {/* PRoject Data */}
-      <ViewProjectData projects={projects}/>
+      <ViewProjectData projects={projects} isLost={isLost}/>
 
       {/* Company Contact Person - default Hidden */}
       <ViewCompanyContact data={company} contact={contactDetails}/>  

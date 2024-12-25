@@ -14,7 +14,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import {stages} from "../../../../utils/constants.js"
 
 
-function ViewProjectData({projects}) {
+function ViewProjectData({projects, isLost}) {
     const projectId = useParams()
     const queryClient = useQueryClient();
     const {toast} = useToast()
@@ -185,6 +185,24 @@ function ViewProjectData({projects}) {
     const [wonLost, setWonLost] = useState("")
     const handleStageWonLost = async(e) => {
         setWonLost(e)
+        try {
+            // console.log(projectData)
+            const res = await axios.put(`http://localhost:5000/api/project/updateLostWon/${projectId.projectId}`, {isLost: e !== "Won" ? true : false})
+            const data = await res.data
+            // console.log(data)
+            // queryClient.invalidateQueries(['projects', currentUser.employee._id]);
+            queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
+
+            toast({
+                title: `${projectName}  Updated`,
+                // description: `${projectName} S`,
+                variant:"success"
+            })
+        } catch (error) {
+            console.error(error)
+        }
+
+        setIsEdit(false)
     }
 
     return (
@@ -204,7 +222,7 @@ function ViewProjectData({projects}) {
                             onChange={(e) => {
                                 changeStage(e)
                             }}
-                            disabled={wonLost === "Won" ? false : true}
+                            // disabled={wonLost === "Won" ? false : true}
                             className='ml-3 font-semibold'
                             value={stages || ''}>
                                 <option value="Training Enquiry">Training Enquiry</option>
@@ -219,7 +237,8 @@ function ViewProjectData({projects}) {
                     </div>
                     {
                         stages === "Open - Won/Lost" && <div className='ml-3'>
-                            <select name="" id="" onChange={(e) => handleStageWonLost(e.target.value)}>
+                            <select name="" id="" onChange={(e) => handleStageWonLost(e.target.value)} value={isLost ? "Lost" : "Won"} className='ml-3 font-semibold'>
+                                <option value="Select Stage" disabled={true}>Select Stage</option>
                                 <option value="Lost">Lost</option>
                                 <option value="Won">Won</option>
                             </select>

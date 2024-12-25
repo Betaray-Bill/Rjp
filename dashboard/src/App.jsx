@@ -36,6 +36,7 @@ import HomeWrapper from './Layout/Home/HomeWrapper'
 import Deals from './Layout/Reports/Deals/Deals'
 import Trainers from './Layout/Reports/Trainers/Trainers'
 import KAM from './Layout/Reports/KAM/KAM'
+import TrainerSOurcer from './Layout/Reports/TrainerSourcer/TrainerSOurcer'
 
 
 function App() {
@@ -72,6 +73,12 @@ function App() {
             {
               userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && (
               <Route path='reports/key-accounts' element={<KAM /> } />
+              )
+            }
+
+{
+              userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) && (
+              <Route path='reports/trainer-sourcer' element={<TrainerSOurcer /> } />
               )
             }
             {/* trainers */}
