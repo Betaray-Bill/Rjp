@@ -1420,7 +1420,31 @@ const client_invoice_sent = asyncHandler(async(req, res) => {
 
     try {
         await Project.findByIdAndUpdate(projectId, {
-            invoiceSentClient: true
+            'clientDetails.invoiceSentClient': true,
+            // 'clientDetails.amount': req.body.amount,
+            // 'clientDetails.dueDate': req.body.dueDate
+        }, { new: true })
+
+        res.json({ message: "Client Invoice Sent" });
+
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: "Error updating client invoice sent status." });
+    }
+})
+
+// Client INvoice Sent
+const client_amount_dueDate = asyncHandler(async(req, res) => {
+    const { projectId } = req.params;
+    console.log(req.body)
+
+    try {
+        await Project.findByIdAndUpdate(projectId, {
+            // 'clientDetails.invoiceSentClient': true,
+            'clientDetails.amount': req.body.amount,
+            'clientDetails.dueDate': req.body.dueDate
         }, { new: true })
 
         res.json({ message: "Client Invoice Sent" });
@@ -1477,5 +1501,6 @@ export {
     addRemainders,
     getRemainders,
     client_invoice_sent,
-    updateLost_Won
+    updateLost_Won,
+    client_amount_dueDate
 }

@@ -3,6 +3,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import { useNavigate } from 'react-router-dom'
 import Revenue from './Components/Revenue/Revenue'
 import TrainingCalendar from './Components/TrainingCalendar/TrainingCalendar'
+import PaymentDue from './Components/PaymentDue'
 
 function Deals() {
     const navigate = useNavigate()
@@ -46,6 +47,9 @@ function Deals() {
                 // selectType === "Payment Due" && <PaymentDueReport />
                 
                 // Add more Reports as needed
+            }
+            {
+                selectType === "Payment Due" && <PaymentDue />
             }
 
         </div>

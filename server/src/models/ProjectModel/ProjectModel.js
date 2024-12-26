@@ -136,9 +136,17 @@ const projectSchema = new mongoose.Schema({
         }]
     },
     remainders: [remainderSchema],
-    invoiceSentClient: {
-        type: Boolean,
-        default: false
+    clientDetails: {
+        invoiceSentClient: {
+            type: Boolean,
+            default: false
+        },
+        amount: {
+            type: Number
+        },
+        dueDate: {
+            type: Date
+        }
     },
     modeOfTraining: {
         type: String,

@@ -51,7 +51,7 @@ const getRevenueByEmployees = asyncHandler(async(req, res) => {
             query['company.name'] = company;
         }
 
-        query['invoiceSentClient'] = true
+        query['clientDetails.invoiceSentClient'] = true
 
         if (adminRole) {
             // If ADMIN, fetch all projects but filter by company if provided
@@ -173,7 +173,7 @@ const getRevenueByClients = asyncHandler(async(req, res) => {
         console.log(client);
 
         let query = {};
-        query['invoiceSentClient'] = true
+        query['clientDetails.invoiceSentClient'] = true
 
         if (startDate && endDate) {
             query = {
@@ -243,6 +243,174 @@ const getRevenueByClients = asyncHandler(async(req, res) => {
             .json({ message: "Error getting revenue by clients.", error: err.message });
     }
 });
+
+// Payment Due
+const paymentDuePayable = asyncHandler(async(req, res) => {
+    try {
+        // Get employee ID, startDate, and endDate from request
+        const employeeId = req.params.employeeId;
+        const startDate = req.query.startDate;
+        const endDate = req.query.endDate;
+
+        if (!startDate || !endDate) {
+            return res.status(400).json({ message: "Start date and end date are required" });
+        }
+
+        // Fetch the employee by ID
+        const employee = await Employee.findById(employeeId);
+        if (!employee) {
+            throw new Error("Employee not found");
+        }
+
+        // Check roles
+        const adminRole = employee.role.find(r => r.name === "ADMIN");
+        const keyAccountsRole = employee.role.find(r => r.name === "KeyAccounts");
+
+        let projects = [];
+
+        if (adminRole) {
+            // If Admin, fetch all projects
+            projects = await Project.aggregate([{
+                    $lookup: {
+                        from: 'employees',
+                        localField: 'projectOwner',
+                        foreignField: '_id',
+                        as: 'ownerDetails'
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        amount: 1,
+                        expenses: 1,
+                        projectName: 1,
+                        trainingDates: 1,
+                        'ownerDetails.name': 1
+                    }
+                }
+            ]);
+        } else if (keyAccountsRole) {
+            // If KeyAccounts, fetch projects only from their own KeyAccounts model
+            const keyAccounts = await KeyAccounts.findById(keyAccountsRole.roleId).populate('projects');
+            if (!keyAccounts) {
+                throw new Error("KeyAccounts role data not found");
+            }
+
+            projects = keyAccounts.projects;
+        } else {
+            return res.status(403).json({ message: "Unauthorized role" });
+        }
+
+        // Check for unpaid expenses within the due date range
+        const dueExpenses = projects.flatMap(project => {
+            const dueEntries = [];
+            for (const [expenseName, expenseDetails] of Object.entries(project.expenses)) {
+                if (
+                    expenseDetails &&
+                    !expenseDetails.isPaid &&
+                    expenseDetails.dueDate &&
+                    new Date(expenseDetails.dueDate) >= new Date(startDate) &&
+                    new Date(expenseDetails.dueDate) <= new Date(endDate)
+                ) {
+                    dueEntries.push({
+                        projectName: project.projectName,
+                        // projectOwner: project.ownerDetails ? .[0] ? .name || "Unknown",
+                        expenseName,
+                        amount: expenseDetails.amount,
+                        dueDate: expenseDetails.dueDate
+                    });
+                }
+            }
+            return dueEntries;
+        });
+
+        return res.status(200).json(dueExpenses);
+    } catch (err) {
+        return res.status(500).json({ message: "Error getting dues", error: err.message });
+    }
+});
+
+// Payment Receivable
+const paymentDueReceivable = asyncHandler(async(req, res) => {
+    try {
+        // Get employee ID, startDate, and endDate from request
+        const employeeId = req.params.employeeId;
+        const startDate = req.query.startDate;
+        const endDate = req.query.endDate;
+
+        if (!startDate || !endDate) {
+            return res.status(400).json({ message: "Start date and end date are required" });
+        }
+
+        // Fetch the employee by ID
+        const employee = await Employee.findById(employeeId);
+        if (!employee) {
+            throw new Error("Employee not found");
+        }
+
+        // Check roles
+        const adminRole = employee.role.find(r => r.name === "ADMIN");
+        const keyAccountsRole = employee.role.find(r => r.name === "KeyAccounts");
+
+        let projects = [];
+
+        if (adminRole) {
+            // If Admin, fetch all projects
+            projects = await Project.aggregate([{
+                    $lookup: {
+                        from: 'employees',
+                        localField: 'projectOwner',
+                        foreignField: '_id',
+                        as: 'ownerDetails'
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        projectName: 1,
+                        clientDetails: 1,
+                        'company.name': 1
+                    }
+                }
+            ]);
+        } else if (keyAccountsRole) {
+            // If KeyAccounts, fetch projects only from their own KeyAccounts model
+            const keyAccounts = await KeyAccounts.findById(keyAccountsRole.roleId).populate('projects');
+            if (!keyAccounts) {
+                throw new Error("KeyAccounts role data not found");
+            }
+
+            projects = keyAccounts.projects;
+        } else {
+            return res.status(403).json({ message: "Unauthorized role" });
+        }
+
+        // Check for client payments due within the due date range
+        const duePayments = projects.flatMap(project => {
+            if (
+                project.clientDetails &&
+                project.clientDetails.invoiceSentClient &&
+                project.clientDetails.dueDate &&
+                new Date(project.clientDetails.dueDate) >= new Date(startDate) &&
+                new Date(project.clientDetails.dueDate) <= new Date(endDate)
+            ) {
+                return [{
+                    projectName: project.projectName,
+                    dueDate: project.clientDetails.dueDate,
+                    amount: project.clientDetails.amount,
+                    companyName: project.company.name || "Unknown"
+                }];
+            }
+            return [];
+        });
+
+        return res.status(200).json(duePayments);
+    } catch (err) {
+        return res.status(500).json({ message: "Error getting receivables", error: err.message });
+    }
+});
+
+
 
 // Training Calendar
 const trainingCalendar = asyncHandler(async(req, res) => {
@@ -380,7 +548,7 @@ const getTrainingDetailsByKAM = asyncHandler(async(req, res) => {
 
         let projects;
         let query = {};
-        query['invoiceSentClient'] = true
+        query['clientDetails.invoiceSentClient'] = true
 
         // Add date filtering to the query
         if (startDate && endDate) {
@@ -745,7 +913,9 @@ const trainersSourced = asyncHandler(async(req, res) => {
 
     // Validate the required date parameters
     if (!startDate || !endDate) {
-        return res.status(400).json({ message: "Start date and end date are required." });
+        return res
+            .status(400)
+            .json({ message: "Start date and end date are required." });
     }
 
     // Parse the dates for filtering
@@ -772,36 +942,49 @@ const trainersSourced = asyncHandler(async(req, res) => {
 
         let trainers = [];
 
-
         if (adminRole) {
             // If ADMIN, fetch all projects but filter by company if provided
-            const admin = await Admin.findById(adminRole.roleId).populate({
-                path: "registeredTrainers",
-                select: {
-                    generalDetails: 1,
-                    trainerId: 1
-                },
-                match: {
-                    createdAt: { $gte: start, $lte: end }
-                }
-            });
+            const admin = await Admin
+                .findById(adminRole.roleId)
+                .populate({
+                    path: "registeredTrainers",
+                    select: {
+                        generalDetails: 1,
+                        trainerId: 1
+                    },
+                    match: {
+                        createdAt: {
+                            $gte: start,
+                            $lte: end
+                        }
+                    }
+                });
 
             if (!admin) {
-                return res.status(404).json({ message: "Admin data not found." });
+                return res
+                    .status(404)
+                    .json({ message: "Admin data not found." });
             }
 
             trainers = admin.registeredTrainers;
         } else if (trainerSourcerRole) {
             // If KeyAccounts, fetch projects mapped to this employee and filter by company
-            const trainerSourcer = await TrainerSourcer.findById(trainerSourcerRole.roleId).populate({
-                path: "registeredTrainers",
-                match: {
-                    createdAt: { $gte: start, $lte: end }
-                }
-            });
+            const trainerSourcer = await TrainerSourcer
+                .findById(trainerSourcerRole.roleId)
+                .populate({
+                    path: "registeredTrainers",
+                    match: {
+                        createdAt: {
+                            $gte: start,
+                            $lte: end
+                        }
+                    }
+                });
 
             if (!trainerSourcer) {
-                return res.status(404).json({ message: "Trainer Sourcer data not found." });
+                return res
+                    .status(404)
+                    .json({ message: "Trainer Sourcer data not found." });
             }
 
             trainers = trainerSourcer.registeredTrainers;
@@ -810,7 +993,9 @@ const trainersSourced = asyncHandler(async(req, res) => {
         }
 
         // Return the filtered trainers
-        return res.status(200).json(trainers);
+        return res
+            .status(200)
+            .json(trainers);
 
     } catch (err) {
         return res
@@ -820,7 +1005,6 @@ const trainersSourced = asyncHandler(async(req, res) => {
 
 })
 
-
 // Trainer Sourcer No of trainer methods Sourced in a period
 const trainersDeployed = asyncHandler(async(req, res) => {
     const { startDate, endDate } = req.query;
@@ -828,7 +1012,9 @@ const trainersDeployed = asyncHandler(async(req, res) => {
 
     // Validate the required date parameters
     if (!startDate || !endDate) {
-        return res.status(400).json({ message: "Start date and end date are required." });
+        return res
+            .status(400)
+            .json({ message: "Start date and end date are required." });
     }
 
     // Parse the dates for filtering
@@ -855,36 +1041,55 @@ const trainersDeployed = asyncHandler(async(req, res) => {
 
         let trainers = [];
 
-
         if (adminRole) {
             // If ADMIN, fetch all projects but filter by company if provided
-            const admin = await Admin.findById(adminRole.roleId).populate({
-                path: "registeredTrainers",
-                select: {
-                    generalDetails: 1,
-                    trainerId: 1
-                },
-                match: {
-                    $expr: { $gt: [{ $size: "$projects" }, 0] }
-                }
-            });
+            const admin = await Admin
+                .findById(adminRole.roleId)
+                .populate({
+                    path: "registeredTrainers",
+                    select: {
+                        generalDetails: 1,
+                        trainerId: 1
+                    },
+                    match: {
+                        $expr: {
+                            $gt: [{
+                                    $size: "$projects"
+                                },
+                                0
+                            ]
+                        }
+                    }
+                });
 
             if (!admin) {
-                return res.status(404).json({ message: "Admin data not found." });
+                return res
+                    .status(404)
+                    .json({ message: "Admin data not found." });
             }
 
             trainers = admin.registeredTrainers;
         } else if (trainerSourcerRole) {
             // If KeyAccounts, fetch projects mapped to this employee and filter by company
-            const trainerSourcer = await TrainerSourcer.findById(trainerSourcerRole.roleId).populate({
-                path: "registeredTrainers",
-                match: {
-                    $expr: { $gt: [{ $size: "$projects" }, 0] }
-                }
-            });
+            const trainerSourcer = await TrainerSourcer
+                .findById(trainerSourcerRole.roleId)
+                .populate({
+                    path: "registeredTrainers",
+                    match: {
+                        $expr: {
+                            $gt: [{
+                                    $size: "$projects"
+                                },
+                                0
+                            ]
+                        }
+                    }
+                });
 
             if (!trainerSourcer) {
-                return res.status(404).json({ message: "Trainer Sourcer data not found." });
+                return res
+                    .status(404)
+                    .json({ message: "Trainer Sourcer data not found." });
             }
 
             trainers = trainerSourcer.registeredTrainers;
@@ -893,7 +1098,9 @@ const trainersDeployed = asyncHandler(async(req, res) => {
         }
 
         // Return the filtered trainers
-        return res.status(200).json(trainers);
+        return res
+            .status(200)
+            .json(trainers);
 
     } catch (err) {
         return res
@@ -913,5 +1120,7 @@ export {
     searchTrainer,
     trainersSourced,
     getTrainerDates,
-    trainersDeployed
+    trainersDeployed,
+    paymentDuePayable,
+    paymentDueReceivable
 }

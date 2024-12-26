@@ -3,7 +3,7 @@ import { addEmployee, getEmployeeById, getAllEmployees, updateEmployeeRole, getA
 import { login, signOut, updatePassword } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
-import { getRevenueByClients, getRevenueByEmployees, getTrainerDates, getTrainingDetailsByKAM, pendingPayment, pendingPO, searchTrainer, trainersSourced, trainingCalendar } from '../controllers/ReportController.js';
+import { getRevenueByClients, getRevenueByEmployees, getTrainerDates, getTrainingDetailsByKAM, paymentDuePayable, paymentDueReceivable, pendingPayment, pendingPO, searchTrainer, trainersSourced, trainingCalendar } from '../controllers/ReportController.js';
 const router = express.Router();
 
 
@@ -13,6 +13,10 @@ router.get("/get-revenue/company/:company", authEmployeeMiddleware, authorizeRol
 router.get("/calendar-view/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), trainingCalendar)
 
 router.get("/get-general-reports/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), getTrainingDetailsByKAM)
+router.get("/payment-due/payable/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), paymentDuePayable)
+router.get("/payment-due/receivable/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), paymentDueReceivable)
+
+
 
 
 
