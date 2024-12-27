@@ -3,6 +3,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import { useNavigate } from 'react-router-dom'
 import Pending from './Components/Pending'
 import TrainerCalendar from './Components/TrainerCalendar'
+import Revenue from './Components/Revenue'
 // import Revenue from './Components/Revenue/Revenue'
 // import TrainingCalendar from './Components/TrainingCalendar/TrainingCalendar'
 
@@ -45,6 +46,9 @@ function Trainers() {
             }
             {
                 selectType === "Calendar View" && <TrainerCalendar />
+            }
+            {
+                selectType === "Revenue" && <Revenue />
             }
             {/* {
                 selectType === "Revenue" && <Revenue />

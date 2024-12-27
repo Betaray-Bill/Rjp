@@ -18,36 +18,36 @@ const PORT = process.env.PORT || 4000;
 const app = express();
 
 // Use Helmet for securing HTTP headers
-app.use(helmet())
+// app.use(helmet())
 
 // Helmet configuration
-app.use(helmet.contentSecurityPolicy({
-    directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", 'trusted.com', "http://localhost:5173", "http://localhost:5174", ],
-        objectSrc: ["'none'"],
-        upgradeInsecureRequests: []
-    }
-}));
-app.use(helmet.noSniff());
-app.use(helmet.frameguard({ action: 'deny' }));
-app.use(helmet.xssFilter());
-app.use(helmet.hsts({
-    maxAge: 31536000 * 100, // One year in seconds
-    includeSubDomains: true
-}));
-app.use(helmet.referrerPolicy({ policy: 'no-referrer' }));
+// app.use(helmet.contentSecurityPolicy({
+//     directives: {
+//         defaultSrc: ["'self'"],
+//         scriptSrc: ["'self'", 'trusted.com', "http://localhost:5173", "http://localhost:5174", ],
+//         objectSrc: ["'none'"],
+//         upgradeInsecureRequests: []
+//     }
+// }));
+// app.use(helmet.noSniff());
+// app.use(helmet.frameguard({ action: 'deny' }));
+// app.use(helmet.xssFilter());
+// app.use(helmet.hsts({
+//     maxAge: 31536000 * 100, // One year in seconds
+//     includeSubDomains: true
+// }));
+// app.use(helmet.referrerPolicy({ policy: 'no-referrer' }));
 
-if (process.env.NODE_ENV === 'production') {
-    app.use(helmet());
-} else {
-    app.use(helmet({
-        contentSecurityPolicy: false // Disable CSP for development
-    }));
-}
+// if (process.env.NODE_ENV === 'production') {
+//     app.use(helmet());
+// } else {
+//     app.use(helmet({
+//         contentSecurityPolicy: false // Disable CSP for development
+//     }));
+// }
 
 const corsOptions = {
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5000/api/employee/login"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
@@ -86,15 +86,15 @@ app.use("/api/project", projectRoutes)
 app.use("/api/reports", reportRoutes)
 
 
-app.use((err, req, res, next) => {
-    console.error(err.stack); // Log the error for debugging
+// app.use((err, req, res, next) => {
+//     console.error(err.stack); // Log the error for debugging
 
-    const statusCode = err.status || 500;
-    res.status(statusCode).json({
-        success: false,
-        message: err.message || 'Internal Server Error',
-    });
-});
+//     const statusCode = err.status || 500;
+//     res.status(statusCode).json({
+//         success: false,
+//         message: err.message || 'Internal Server Error',
+//     });
+// });
 
 
 

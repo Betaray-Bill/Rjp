@@ -100,7 +100,7 @@ function Client({expenses, clientDetails}) {
                     </div>
                     <div className='ml-4'>
                         <Label>Due Date</Label>
-                        <Input type="date" value={new Date(data?.dueDate) ? new Date(data?.dueDate) : null}  onChange={(e) => setData({...data, dueDate:e.target.value})}/>
+                        <Input type="date" value={new Date(data?.dueDate) ? new Date(data?.dueDate).toISOString().split('T')[0] : null}  onChange={(e) => setData({...data, dueDate:e.target.value})}/>
                     </div>
                 </div>
                 <Button className="mt-3" onClick={handleSubmitChange}>Submit</Button>

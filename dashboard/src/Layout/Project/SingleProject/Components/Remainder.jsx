@@ -112,11 +112,11 @@ function Remainder({stages, projectId, remainders}) {
                             <Fragment>
                                 {isCompleted
                                     ? <Button className="rounded-none bg-green-500 flex items-center">
-                                            <span>Remainder - Done</span>
+                                            <span>Reminders - Done</span>
                                             <ion-icon name="chevron-down-outline"></ion-icon>
                                         </Button>
                                     : <Button className="rounded-none bg-red-500 flex items-center">
-                                        <span>{date ? date.split("-").reverse().join() :"Remainder"}</span>
+                                        <span>{date ? date.split("-").reverse().join('-') :"Reminders"}</span>
                                         <ion-icon name="chevron-down-outline"></ion-icon>
                                     </Button>
 }
@@ -125,7 +125,7 @@ function Remainder({stages, projectId, remainders}) {
                         : <Fragment>
                             {isCompleted
                                 ? <Button className="rounded-none bg-green-500 flex items-center">
-                                        <span>Remainder - Done</span>
+                                        <span>Reminders - Done</span>
                                         <ion-icon name="chevron-down-outline"></ion-icon>
                                     </Button>
                                 : <Button className="rounded-none bg-red-500 flex items-center">
@@ -143,7 +143,7 @@ function Remainder({stages, projectId, remainders}) {
                 <DialogContent className="mr-10 border border-gray-300 drop-shadow-md">
                     <DialogHeader>
                         <DialogTitle>
-                            <h2 className='font-semibold text-md'>Remainder - {stages}</h2>
+                            <h2 className='font-semibold text-md'>Reminders - {stages}</h2>
                         </DialogTitle>
                         <div>
                             <div className='mt-8 w-[450px]'>

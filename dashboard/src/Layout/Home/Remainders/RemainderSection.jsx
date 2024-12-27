@@ -60,7 +60,7 @@ function RemainderSection() {
                         style={{
                         fontSize: "23px"
                     }}></ion-icon>
-                    <span className='ml-2 text-lg'>Remainders</span>
+                    <span className='ml-2 text-lg'>Reminders</span>
                 </div>
 
                 <div className='flex items-center'>
@@ -123,7 +123,7 @@ function RemainderSection() {
                     </TableBody>
                 </Table>
 
-            ) : <div className='text-center italic text-gray-600 font-light mt-5'>No Remainders Today</div>
+            ) : <div className='text-center italic text-gray-600 font-light mt-5'>No Reminders Today</div>
 }
         </div>
     )

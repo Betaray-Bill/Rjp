@@ -182,7 +182,7 @@ function ViewProjectData({projects, isLost}) {
     }
 
     console.log(projectData)
-    const [wonLost, setWonLost] = useState("")
+    const [wonLost, setWonLost] = useState(isLost)
     const handleStageWonLost = async(e) => {
         setWonLost(e)
         try {
@@ -215,6 +215,9 @@ function ViewProjectData({projects, isLost}) {
                     <div
                         className='flex  items-center justify-between'
                         >
+                            {/* {
+                                wonLost == "Won" && <div className='bg-green-500 text-white px-2 py-1 rounded-md'>Won</div>
+                            } */}
                         <Label>Stage</Label>
                         <select
                             name="pipeline"
@@ -222,7 +225,7 @@ function ViewProjectData({projects, isLost}) {
                             onChange={(e) => {
                                 changeStage(e)
                             }}
-                            // disabled={wonLost === "Won" ? false : true}
+                            // disabled={wonLost == "Won" ? false : true}
                             className='ml-3 font-semibold'
                             value={stages || ''}>
                                 <option value="Training Enquiry">Training Enquiry</option>

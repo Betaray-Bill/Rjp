@@ -7,6 +7,7 @@ import Project from "../models/ProjectModel/ProjectModel.js";
 import { Company } from "../models/CompanyAndDealModels/CompanyModel.js";
 import { Trainer } from "../models/TrainerModel.js";
 import TrainerSourcer from "../models/RoleModels/TrainerSourcerModel.js";
+import mongoose from "mongoose";
 
 // Get Revenue by Employees
 const getRevenueByEmployees = asyncHandler(async(req, res) => {
@@ -1110,6 +1111,128 @@ const trainersDeployed = asyncHandler(async(req, res) => {
 
 })
 
+// Trainer wise report
+const trainerRevenueReport = asyncHandler(async(req, res) => {
+    const { startDate, endDate } = req.query;
+    const trainerId = req.params.trainerId;
+    try {
+        // if (!startDate || !endDate) {
+        //     return res
+        //         .status(400)
+        //         .json({ message: "Start date and end date are required." });
+        // }
+
+        // Parse the dates for filtering
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        let query = {};
+
+        if (startDate && endDate) {
+            query = {
+                'trainingDates.startDate': {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                },
+                'trainingDates.endDate': {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                }
+            };
+        }
+
+        // Find the trainer by ID
+        const trainer = await Trainer.aggregate([{
+                $match: {
+                    _id: new mongoose.Types.ObjectId(trainerId),
+                    ...query
+                }
+            },
+            {
+                $lookup: {
+                    from: "projects",
+                    localField: "projects",
+                    foreignField: "_id",
+                    as: "projects"
+                }
+            },
+            {
+                $addFields: {
+                    projects: {
+                        $map: {
+                            input: "$projects",
+                            as: "project",
+                            in: {
+                                projectId: "$$project._id",
+                                projectName: "$$project.projectName",
+                                company: "$$project.company.name",
+                                projectStartDate: "$$project.trainingDates.startDate",
+                                projectEndDate: "$$project.trainingDates.endDate",
+                                amount: "$$project.amount",
+                                totalExpenses: {
+                                    $sum: [
+                                        "$$project.expenses.Trainer.amount",
+                                        "$$project.expenses.Venue.amount",
+                                        "$$project.expenses.Travel.amount",
+                                        "$$project.expenses.Boarding_Lodging.amount",
+                                        "$$project.expenses.cw_lab.amount",
+                                        "$$project.expenses.miscellaneous.amount"
+                                    ]
+                                },
+                                profit: {
+                                    $subtract: [
+                                        "$$project.amount",
+                                        {
+                                            $sum: [
+                                                "$$project.expenses.Trainer.amount",
+                                                "$$project.expenses.Venue.amount",
+                                                "$$project.expenses.Travel.amount",
+                                                "$$project.expenses.Boarding_Lodging.amount",
+                                                "$$project.expenses.cw_lab.amount",
+                                                "$$project.expenses.miscellaneous.amount"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                trainingDays: {
+                                    $dateDiff: {
+                                        startDate: "$$project.trainingDates.startDate",
+                                        endDate: "$$project.trainingDates.endDate",
+                                        unit: "day"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    // trainerId: 1,
+                    // "generalDetails.name": 1,
+                    // "generalDetails.email": 1,
+                    // "generalDetails.phoneNumber": 1,
+                    projects: 1
+                }
+            }
+        ]);
+
+        if (!trainer) {
+            return res
+                .status(404)
+                .json({ message: "Trainer not found." });
+        }
+
+        return res.status(200).json(trainer)
+
+    } catch (err) {
+        console.error("Error parsing dates:", err);
+        return res
+            .status(500)
+            .json({ message: "Internal Server Error" });
+    }
+})
+
 export {
     getRevenueByEmployees,
     getRevenueByClients,
@@ -1122,5 +1245,6 @@ export {
     getTrainerDates,
     trainersDeployed,
     paymentDuePayable,
-    paymentDueReceivable
+    paymentDueReceivable,
+    trainerRevenueReport
 }
