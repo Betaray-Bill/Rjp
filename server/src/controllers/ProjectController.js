@@ -1464,7 +1464,7 @@ const updateLost_Won = asyncHandler(async(req, res) => {
 
     try {
         await Project.findByIdAndUpdate(projectId, {
-            isLost: req.body.isLost
+            lost_won_open_status: req.body.status
         }, { new: true })
 
         return res.status(200).json({ message: "Client Lost" })

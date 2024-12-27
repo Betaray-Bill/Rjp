@@ -251,6 +251,10 @@ const projectSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    lost_won_open_status: {
+        type: String,
+        enum: ['lost', 'won', 'open']
+    },
     trainingDelivery: {
         Travel: {
             type: Boolean,

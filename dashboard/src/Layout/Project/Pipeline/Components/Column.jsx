@@ -12,10 +12,12 @@ function Column({index, stage, projects}) {
         if (stage === stages.OPEN__WON_LOST) {
             if (type === "All") {
                 setFilteredProjects(projects);
-            } else if (type === "Lost") {
-                setFilteredProjects(projects.filter(project => project.isLost === true));
-            } else if (type === "Won") {
-                setFilteredProjects(projects.filter(project => project.isLost === false));
+            } else if (type === "lost") {
+                setFilteredProjects(projects.filter(project => project.lost_won_open_status === "lost"));
+            } else if (type === "won") {
+                setFilteredProjects(projects.filter(project => project.lost_won_open_status === "won"));
+            }else if (type === "open") {
+                setFilteredProjects(projects.filter(project => project.lost_won_open_status === "open"));
             }
         } else {
             setFilteredProjects(projects); // Default for stages other than OPEN__WON_LOST
@@ -33,8 +35,9 @@ function Column({index, stage, projects}) {
                             <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="Lost">Lost</SelectItem>
-                            <SelectItem value="Won">Won</SelectItem>
+                            <SelectItem value="lost">Lost</SelectItem>
+                            <SelectItem value="won">Won</SelectItem>
+                            <SelectItem value="open">Open</SelectItem>
                             <SelectItem value="All">All</SelectItem>
                         </SelectContent>
                     </Select>
