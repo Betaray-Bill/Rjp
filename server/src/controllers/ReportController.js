@@ -1139,21 +1139,52 @@ const trainerRevenueReport = asyncHandler(async(req, res) => {
                 }
             };
         }
+        query['clientDetails.invoiceSentClient'] = true
 
         // Find the trainer by ID
         const trainer = await Trainer.aggregate([{
                 $match: {
                     _id: new mongoose.Types.ObjectId(trainerId),
-                    ...query
-                }
+                },
             },
             {
                 $lookup: {
                     from: "projects",
                     localField: "projects",
                     foreignField: "_id",
-                    as: "projects"
-                }
+                    as: "projects",
+                },
+            },
+            {
+                $addFields: {
+                    projects: {
+                        $filter: {
+                            input: "$projects",
+                            as: "project",
+                            cond: {
+                                $or: [{
+                                        $and: [
+                                            { $gte: ["$$project.trainingDates.startDate", start] },
+                                            { $lte: ["$$project.trainingDates.startDate", end] },
+                                        ],
+                                    },
+                                    {
+                                        $and: [
+                                            { $gte: ["$$project.trainingDates.endDate", start] },
+                                            { $lte: ["$$project.trainingDates.endDate", end] },
+                                        ],
+                                    },
+                                    {
+                                        $and: [
+                                            { $lte: ["$$project.trainingDates.startDate", start] },
+                                            { $gte: ["$$project.trainingDates.endDate", end] },
+                                        ],
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                },
             },
             {
                 $addFields: {
@@ -1175,8 +1206,8 @@ const trainerRevenueReport = asyncHandler(async(req, res) => {
                                         "$$project.expenses.Travel.amount",
                                         "$$project.expenses.Boarding_Lodging.amount",
                                         "$$project.expenses.cw_lab.amount",
-                                        "$$project.expenses.miscellaneous.amount"
-                                    ]
+                                        "$$project.expenses.miscellaneous.amount",
+                                    ],
                                 },
                                 profit: {
                                     $subtract: [
@@ -1188,34 +1219,31 @@ const trainerRevenueReport = asyncHandler(async(req, res) => {
                                                 "$$project.expenses.Travel.amount",
                                                 "$$project.expenses.Boarding_Lodging.amount",
                                                 "$$project.expenses.cw_lab.amount",
-                                                "$$project.expenses.miscellaneous.amount"
-                                            ]
-                                        }
-                                    ]
+                                                "$$project.expenses.miscellaneous.amount",
+                                            ],
+                                        },
+                                    ],
                                 },
                                 trainingDays: {
                                     $dateDiff: {
                                         startDate: "$$project.trainingDates.startDate",
                                         endDate: "$$project.trainingDates.endDate",
-                                        unit: "day"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                                        unit: "day",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
             },
             {
                 $project: {
                     _id: 0,
-                    // trainerId: 1,
-                    // "generalDetails.name": 1,
-                    // "generalDetails.email": 1,
-                    // "generalDetails.phoneNumber": 1,
-                    projects: 1
-                }
-            }
+                    projects: 1,
+                },
+            },
         ]);
+
 
         if (!trainer) {
             return res

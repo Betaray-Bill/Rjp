@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {Input} from "@/components/ui/input";
 // import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
@@ -18,8 +18,10 @@ import {
 } from "@/components/ui/table"
 import {Button} from '@/components/ui/button'
 import * as XLSX from 'xlsx';
+import {useToast} from "@/hooks/use-toast";
 
 function Revenue() {
+    const {toast} = useToast()
     const [searchQuery,
         setSearchQuery] = useState("");
     const [recommendations,
@@ -28,9 +30,14 @@ function Revenue() {
         setSelectedTrainer] = useState(null);
     const [debouncedQuery,
         setDebouncedQuery] = useState("");
-
+    const [startDate,
+        setStartDate] = useState("");
+    const [endDate,
+        setEndDate] = useState("");
     const [projects,
         setProjects] = useState([]);
+
+    const [id, setId] = useState("")
 
     // Debounce logic
     useEffect(() => {
@@ -66,14 +73,51 @@ function Revenue() {
     };
 
     const fetchTrainerDetails = async(trainerId) => {
-        try {
-            const response = await axios.get(`http://localhost:5000/api/reports/trainer/get-revenue/${trainerId}`);
-            const data = await response.data
-            // setSelectedTrainer(data);
-            setProjects(data[0].projects)
-            console.log(data[0].projects)
-        } catch (error) {
-            console.error("Error fetching trainer details:", error);
+        console.log(trainerId)
+        if (trainerId !== "" && trainerId !== undefined || trainerId !== null) {
+            try {
+                const params = new URLSearchParams();
+
+                if (startDate) 
+                    params.append("startDate", startDate);
+                if (endDate) 
+                    params.append("endDate", endDate);
+                
+                const response = await axios.get(`http://localhost:5000/api/reports/trainer/get-revenue/${trainerId}?${params.toString()}`);
+                const data = await response.data
+                // setSelectedTrainer(data);
+                setProjects(data[0].projects)
+                console.log(data[0].projects)
+            } catch (error) {
+                console.error("Error fetching trainer details:", error);
+            }
+        } else {
+            toast({title: "Select Trainer", variant:"primary"})
+        }
+    };
+
+
+    const getData = async( ) => {
+        console.log(id._id)
+        if (id._id !== "" && id._id !== undefined || id._id !== null) {
+            try {
+                const params = new URLSearchParams();
+
+                if (startDate) 
+                    params.append("startDate", startDate);
+                if (endDate) 
+                    params.append("endDate", endDate);
+                
+                const response = await axios.get(`http://localhost:5000/api/reports/trainer/get-revenue/${id._id}?${params.toString()}`);
+                const data = await response.data
+                // setSelectedTrainer(data);
+                setProjects(data[0].projects)
+                console.log(data[0].projects)
+            } catch (error) {
+                console.error("Error fetching trainer details:", error);
+            }
+        } else {
+            toast({title: "Select Trainer", variant:"primary"})
         }
     };
 
@@ -127,7 +171,7 @@ function Revenue() {
 
     return (
         <div className=" mt-5">
-
+            <h2 className="my-4 font-medium">Revenue Report for Trainers</h2>
             <div className="flex justify-start ">
                 <div
                     className="flex w-[400px] justify-between items-center border px-2 border-gray-400 rounded-sm">
@@ -152,6 +196,30 @@ function Revenue() {
                         }}></ion-icon>
                     </div>
                 </div>
+                <Fragment>
+                    <div className="mx-2">
+                        <Input
+                            className="w-max"
+                            type="date"
+                            id="startDate"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}/>
+                    </div>
+
+                    <div className="mx-2">
+                        <Input
+                            className="w-max"
+                            type="date"
+                            id="endDate"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}/>
+                    </div>
+
+                    <div className="mx-2">
+                        <Button onClick={getData}>Submit</Button>
+                    </div>
+
+                </Fragment>
             </div>
             {recommendations.length > 0 && (
                 <div className="mt-2 border rounded-md py-2 px-1 w-[400px]">
@@ -162,6 +230,7 @@ function Revenue() {
                             onClick={() => {
                             fetchTrainerDetails(trainer._id);
                             setRecommendations([])
+                            setId(trainer)
                         }}>
                             {trainer.trainerId}
                             - {trainer.generalDetails.name}
@@ -171,68 +240,66 @@ function Revenue() {
             )}
 
             {projects && projects !== null && projects
-                ?.length > 0 &&
-                    (
-                        <div className="my-5">
-                            <div>
-                                <div className="flex items-center justify-end">
-                                    <Button onClick={handleDownload}>Download</Button>
-                                </div>
+                ?.length > 0 && (
+                    <div className="my-5">
+                        <div>
+                            <div className="flex items-center justify-end">
+                                <Button onClick={handleDownload}>Download</Button>
                             </div>
-                            <Table>
-                                {/* Table Header */}
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableCell>S.No</TableCell>
-                                        <TableCell>Project Name</TableCell>
-                                        <TableCell>Company</TableCell>
-                                        <TableCell>Training Days</TableCell>
-                                        <TableCell>Revenue</TableCell>
-                                        <TableCell>Expenses</TableCell>
-                                        <TableCell>Profit</TableCell>
-                                    </TableRow>
-                                </TableHeader>
-
-                                {/* Table Body */}
-                                <TableBody>
-                                    {projects
-                                        ?.map((project, index) => (
-                                            <TableRow key={project.projectId}>
-                                                <TableCell>{index + 1}</TableCell>
-                                                <TableCell>{project.projectName}</TableCell>
-                                                <TableCell>{project.company}</TableCell>
-                                                <TableCell>{project.trainingDays}</TableCell>
-                                                <TableCell>{project.amount
-}</TableCell>
-                                                <TableCell>{project.totalExpenses
-}</TableCell>
-                                                <TableCell>{project.profit
-}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    <TableRow className="font-semibold">
-                                        <TableCell>Total
-                                        </TableCell>
-                                        <TableCell></TableCell>
-
-                                        <TableCell></TableCell>
-
-                                        <TableCell>{projects
-                                                ?.reduce((a, c) => a + c.trainingDays, 0)}</TableCell>
-
-                                        <TableCell>{projects
-                                                ?.reduce((a, c) => a + c.amount, 0)}</TableCell>
-                                        <TableCell>{projects
-                                                ?.reduce((a, c) => a + c.totalExpenses, 0)}</TableCell>
-                                        <TableCell>{projects
-                                                ?.reduce((a, c) => a + c.profit, 0)}</TableCell>
-
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
                         </div>
-                    )
-                     
+                        <Table>
+                            {/* Table Header */}
+                            <TableHeader>
+                                <TableRow>
+                                    <TableCell>S.No</TableCell>
+                                    <TableCell>Project Name</TableCell>
+                                    <TableCell>Company</TableCell>
+                                    <TableCell>Training Days</TableCell>
+                                    <TableCell>Revenue</TableCell>
+                                    <TableCell>Expenses</TableCell>
+                                    <TableCell>Profit</TableCell>
+                                </TableRow>
+                            </TableHeader>
+
+                            {/* Table Body */}
+                            <TableBody>
+                                {projects
+                                    ?.map((project, index) => (
+                                        <TableRow key={project.projectId}>
+                                            <TableCell>{index + 1}</TableCell>
+                                            <TableCell>{project.projectName}</TableCell>
+                                            <TableCell>{project.company}</TableCell>
+                                            <TableCell>{project.trainingDays}</TableCell>
+                                            <TableCell>{project.amount
+}</TableCell>
+                                            <TableCell>{project.totalExpenses
+}</TableCell>
+                                            <TableCell>{project.profit
+}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                <TableRow className="font-semibold">
+                                    <TableCell>Total
+                                    </TableCell>
+                                    <TableCell></TableCell>
+
+                                    <TableCell></TableCell>
+
+                                    <TableCell>{projects
+                                            ?.reduce((a, c) => a + c.trainingDays, 0)}</TableCell>
+
+                                    <TableCell>{projects
+                                            ?.reduce((a, c) => a + c.amount, 0)}</TableCell>
+                                    <TableCell>{projects
+                                            ?.reduce((a, c) => a + c.totalExpenses, 0)}</TableCell>
+                                    <TableCell>{projects
+                                            ?.reduce((a, c) => a + c.profit, 0)}</TableCell>
+
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </div>
+                )
 }
 
         </div>
