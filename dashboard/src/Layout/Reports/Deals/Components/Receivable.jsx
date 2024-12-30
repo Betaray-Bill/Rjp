@@ -78,6 +78,7 @@ function Receivable() {
                                 <TableHead>company Name</TableHead>
                                 <TableHead>Amount</TableHead>
                                 <TableHead>Due Date</TableHead>
+                                <TableHead>Ageing</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -88,6 +89,7 @@ function Receivable() {
                                     <TableCell>{expense.companyName}</TableCell>
                                     <TableCell>{expense.amount}</TableCell>
                                     <TableCell>{new Date(expense.dueDate).toLocaleDateString()}</TableCell>
+                                    <TableCell>{Math.ceil((new Date() - new Date(expense.dueDate)) / (1000 * 60 * 60 * 24))}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

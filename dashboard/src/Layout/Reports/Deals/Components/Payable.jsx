@@ -78,16 +78,20 @@ function Payable() {
                                 <TableHead>Expense Name</TableHead>
                                 <TableHead>Amount</TableHead>
                                 <TableHead>Due Date</TableHead>
+                                <TableHead>Ageing
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {expenses.map((expense, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{index+1}</TableCell>
+                                    <TableCell>{index + 1}</TableCell>
                                     <TableCell>{expense.projectName}</TableCell>
                                     <TableCell>{expense.expenseName}</TableCell>
                                     <TableCell>{expense.amount}</TableCell>
                                     <TableCell>{new Date(expense.dueDate).toLocaleDateString()}</TableCell>
+                                    <TableCell>{Math.ceil((new Date() - new Date(expense.dueDate)) / (1000 * 60 * 60 * 24))}</TableCell>
+
                                 </TableRow>
                             ))}
                         </TableBody>
