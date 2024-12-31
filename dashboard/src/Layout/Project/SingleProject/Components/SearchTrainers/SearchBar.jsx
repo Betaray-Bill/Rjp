@@ -183,6 +183,14 @@ function SearchBar({domain, id, trainingDates}) {
         // setQuery('')
     }
 
+    const getTrainerType = (trainerId) => {
+        if (trainerId.startsWith("RJPI")) 
+            return "Internal";
+        if (trainerId.startsWith("RJPE")) 
+            return "External";
+        return "Unknown";
+    };
+
 
     return (
         <div className=''>
@@ -411,7 +419,31 @@ function SearchBar({domain, id, trainingDates}) {
                                                     <AvatarImage src="https://github.com/shadcn.png"/>
                                                     <AvatarFallback>CN</AvatarFallback>
                                                 </Avatar>
-                                                <p className='ml-2 font-medium text-sm'>{res.generalDetails?.name} - <span className='flex items-center ml-2'><span>{res?.Rating?.star}</span><ion-icon name="star-outline" style={{color:"gold"}}></ion-icon></span></p>
+                                                <p className='ml-2 font-medium text-sm'>{res.generalDetails?.name}
+                                                    {/* <span>{res?.Rating?.star}</span><ion-icon name="star-outline" style={{color:"gold"}}></ion-icon></span> */}
+                                                    </p>
+
+                                                    <div className='flex items-center'>
+                                                    <span className='flex items-center ml-2'>
+                                                        <span>{res
+                                                                ?.Rating
+                                                                    ?.star}</span>
+                                                        <ion-icon
+                                                            name="star-outline"
+                                                            style={{
+                                                            color: "gold"
+                                                        }}></ion-icon>
+                                                    </span>
+                                                    <span
+                                                        className={`ml-2 px-2 py-1 text-xs rounded ${getTrainerType(res.trainerId) === "Internal"
+                                                        ? "bg-green-200 text-green-700"
+                                                        : "bg-blue-200 text-blue-700"}`}>
+                                                        {getTrainerType(res.trainerId)}
+                                                        Trainer
+                                                    </span>
+                                                </div>
+
+
                                             </div>
                                             <div>
                                                 <p className='text-gray-600 mt-2'>
