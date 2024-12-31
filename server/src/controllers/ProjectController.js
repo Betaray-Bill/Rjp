@@ -1320,99 +1320,197 @@ const addExpenses = asyncHandler(async(req, res) => {
 });
 
 // GET Remainder
-
 const getRemainders = asyncHandler(async(req, res) => {
     try {
-        console.log(req.query)
-        const startDate = req.query.startDate
-        const endDate = req.query.endDate
-        console.log(1)
-        let projects = []
+        console.log(req.query);
 
+        const startDate = req.query.startDate ? new Date(req.query.startDate) : null;
+        const endDate = req.query.endDate ? new Date(req.query.endDate) : null;
+        const userRole = req.user.role; // Assuming `req.user` contains the logged-in user's details
+        const userId = req.user._id; // Logged-in user's ID
+
+        let projects = [];
+        let matchQuery = {};
+
+        // Filter projects based on user role
+        if (userRole === 'ADMIN') {
+            // Admin can access all projects
+            matchQuery = {};
+        } else if (userRole === 'KEY_ACCOUNTS') {
+            // Fetch projects the KeyAccounts user is involved in
+            const keyAccount = await KeyAccounts.findOne({ user: userId }).select('projects');
+            if (!keyAccount) {
+                return res.status(404).json({ message: "No projects found for the user." });
+            }
+            matchQuery = { _id: { $in: keyAccount.projects } };
+        }
+
+        // Handle reminders based on date range
         if (startDate && endDate) {
             projects = await Project.aggregate([{
-                $match: {
-                    "remainders": {
-                        $elemMatch: {
-                            date: {
-                                $gte: new Date(startDate),
-                                $lte: new Date(endDate)
+                    $match: {
+                        ...matchQuery,
+                        $or: [
+                            // Reminders within the specified date range
+                            {
+                                remainders: {
+                                    $elemMatch: {
+                                        date: {
+                                            $gte: startDate,
+                                            $lte: endDate
+                                        },
+                                        isCompleted: false
+                                    }
+                                }
                             },
-                            isCompleted: false
-                        }
+                            // Overdue reminders
+                            {
+                                remainders: {
+                                    $elemMatch: {
+                                        date: { $lt: new Date() },
+                                        isCompleted: false
+                                    }
+                                }
+                            }
+                        ]
                     }
-                }
-            }, {
-                $project: {
-                    _id: 1, // Include project name if needed
-                    stages: 1,
-                    projectName: 1,
-                    remainders: {
-                        $filter: {
-                            input: "$remainders",
-                            as: "remainder",
-                            cond: {
-                                $and: [{
-                                    $gte: ["$$remainder.date", new Date(startDate)]
-                                }, {
-                                    $lte: ["$$remainder.date", new Date(endDate)]
-                                }, {
-                                    $eq: ["$$remainder.isCompleted", false]
-                                }]
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        stages: 1,
+                        projectName: 1,
+                        remainders: {
+                            $filter: {
+                                input: "$remainders",
+                                as: "remainder",
+                                cond: {
+                                    $or: [{
+                                            $and: [
+                                                { $gte: ["$$remainder.date", startDate] },
+                                                { $lte: ["$$remainder.date", endDate] },
+                                                { $eq: ["$$remainder.isCompleted", false] }
+                                            ]
+                                        },
+                                        {
+                                            $and: [
+                                                { $lt: ["$$remainder.date", new Date()] },
+                                                { $eq: ["$$remainder.isCompleted", false] }
+                                            ]
+                                        }
+                                    ]
+                                }
                             }
                         }
                     }
                 }
-            }]);
-
+            ]);
         } else if (startDate) {
-            console.log(startDate)
             projects = await Project.aggregate([{
-                $match: {
-                    "remainders": {
-                        $elemMatch: {
-                            date: {
-                                $eq: new Date(startDate)
+                    $match: {
+                        ...matchQuery,
+                        $or: [
+                            // Reminders starting from startDate
+                            {
+                                remainders: {
+                                    $elemMatch: {
+                                        date: { $gte: startDate },
+                                        isCompleted: false
+                                    }
+                                }
                             },
-                            isCompleted: false
-                        }
+                            // Overdue reminders
+                            {
+                                remainders: {
+                                    $elemMatch: {
+                                        date: { $lt: new Date() },
+                                        isCompleted: false
+                                    }
+                                }
+                            }
+                        ]
                     }
-                }
-            }, {
-                $project: {
-                    _id: 1, // Include project name if needed
-                    stages: 1,
-                    projectName: 1,
-                    remainders: {
-                        $filter: {
-                            input: "$remainders",
-                            as: "remainder",
-                            cond: {
-                                $and: [{
-                                    $eq: ["$$remainder.date", new Date(startDate)]
-                                }, {
-                                    $eq: ["$$remainder.isCompleted", false]
-                                }]
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        stages: 1,
+                        projectName: 1,
+                        remainders: {
+                            $filter: {
+                                input: "$remainders",
+                                as: "remainder",
+                                cond: {
+                                    $or: [{
+                                            $and: [
+                                                { $gte: ["$$remainder.date", startDate] },
+                                                { $eq: ["$$remainder.isCompleted", false] }
+                                            ]
+                                        },
+                                        {
+                                            $and: [
+                                                { $lt: ["$$remainder.date", new Date()] },
+                                                { $eq: ["$$remainder.isCompleted", false] }
+                                            ]
+                                        }
+                                    ]
+                                }
                             }
                         }
                     }
+                },
+                {
+                    $sort: {
+                        "remainders.date": -1
+                    }
                 }
-            }, {
-                $sort: {
-                    "remainders.date": -1
+            ]);
+        } else {
+            // Fetch overdue reminders by default
+            projects = await Project.aggregate([{
+                    $match: {
+                        ...matchQuery,
+                        remainders: {
+                            $elemMatch: {
+                                date: { $lt: new Date() },
+                                isCompleted: false
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        stages: 1,
+                        projectName: 1,
+                        remainders: {
+                            $filter: {
+                                input: "$remainders",
+                                as: "remainder",
+                                cond: {
+                                    $and: [
+                                        { $lt: ["$$remainder.date", new Date()] },
+                                        { $eq: ["$$remainder.isCompleted", false] }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    $sort: {
+                        "remainders.date": -1
+                    }
                 }
-            }]);
+            ]);
         }
-        res.json(projects);
 
+        res.json(projects);
     } catch (err) {
-        console.log(err)
-        return res
-            .status(500)
-            .json({ message: "Error getting remainders." });
+        console.log(err);
+        return res.status(500).json({ message: "Error getting remainders." });
     }
 });
-
 // Client INvoice Sent
 const client_invoice_sent = asyncHandler(async(req, res) => {
     const { projectId } = req.params;
