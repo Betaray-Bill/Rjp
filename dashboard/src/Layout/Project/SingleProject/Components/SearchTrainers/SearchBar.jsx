@@ -189,7 +189,7 @@ function SearchBar({domain, id, trainingDates}) {
         if (trainerId.startsWith("RJPE")) 
             return "External";
         return "Unknown";
-    };
+    };  
 
 
     return (

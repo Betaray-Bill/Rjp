@@ -47,6 +47,14 @@ const searchTrainer = asyncHandler(async(req, res) => {
         if (mode) conditions.push({ $eq: ["$$td.paymentSession", mode] });
         if (type) conditions.push({ $eq: ["$$td.type", type] });
 
+        // Apply the rating filter globally
+        if (rating !== undefined) {
+            pipeline.push({
+                $match: {
+                    "Rating.star": { $gte: Number(rating) }
+                }
+            });
+        }
         const pipeline = [];
 
         // Separate internal trainers
@@ -112,13 +120,15 @@ const searchTrainer = asyncHandler(async(req, res) => {
             },
         });
 
+
+
         // Merge internal and external trainers, and sort them
         pipeline.push({
             $project: {
                 trainers: {
                     $concatArrays: ["$internal", "$external"],
                 },
-                // 'generalDetails.name': 1
+                'generalDetails.name': 1
             },
         });
 
