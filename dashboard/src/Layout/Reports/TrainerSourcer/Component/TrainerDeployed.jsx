@@ -194,11 +194,13 @@ function TrainerDeployed() {
        
            </div>
 
-                       <div className='flex items-center justify-end my-4'>
-                           <Button onClick={handleDownload}>Download</Button>
-                       </div>
        
-           {result && 
+           {result &&  
+           
+           <Fragment>
+            <div className='flex items-center justify-end  '>
+           <Button onClick={handleDownload}>Download</Button>
+       </div>
             <Table>
             <TableHeader>
                 <TableRow>
@@ -217,6 +219,7 @@ function TrainerDeployed() {
                 </TableRow>
             </TableBody>
             </Table>
+           </Fragment>
          }
        
        </div>
