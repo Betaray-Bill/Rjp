@@ -1,11 +1,31 @@
 import express from 'express';
-import { addEmployee, getEmployeeById, getAllEmployees, updateEmployeeRole, getAllTrainers, getEmployee } from '../controllers/AdminController.js';
+import {
+    addEmployee,
+    getEmployeeById,
+    getAllEmployees,
+    updateEmployeeRole,
+    getAllTrainers,
+    getEmployee
+} from '../controllers/AdminController.js';
 import { login, signOut, updatePassword } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
-import { getRevenueByClients, getRevenueByEmployees, getTrainerDates, getTrainingDetailsByKAM, paymentDuePayable, paymentDueReceivable, pendingPayment, pendingPO, searchTrainer, trainerRevenueReport, trainersSourced, trainingCalendar } from '../controllers/ReportController.js';
+import {
+    getRevenueByClients,
+    getRevenueByEmployees,
+    getTrainerDates,
+    getTrainingDetailsByKAM,
+    paymentDuePayable,
+    paymentDueReceivable,
+    pendingPayment,
+    pendingPO,
+    searchTrainer,
+    trainerRevenueReport,
+    trainersDeployed,
+    trainersSourced,
+    trainingCalendar
+} from '../controllers/ReportController.js';
 const router = express.Router();
-
 
 // Revenue Reports
 router.get("/get-revenue/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), getRevenueByEmployees)
@@ -16,14 +36,9 @@ router.get("/get-general-reports/:employeeId", authEmployeeMiddleware, authorize
 router.get("/payment-due/payable/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), paymentDuePayable)
 router.get("/payment-due/receivable/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), paymentDueReceivable)
 
-
-
-
-
-// 
+//
 router.get("/pending/po", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts", "Finance"]), pendingPO)
 router.get("/pending/payment", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts", "Finance"]), pendingPayment)
-
 
 // Search Trainer
 router.get("/search", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), searchTrainer)
@@ -32,12 +47,6 @@ router.get('/trainer/get-revenue/:trainerId', authEmployeeMiddleware, authorizeR
 
 // Trainer SOurcer
 router.get("/trainer-sourcer/sourced/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), trainersSourced)
-    // router.get("/trainer-sourcer/deployed/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), trainersSourced)
-
-
-
-
-
-
+router.get("/trainer-sourcer/deployed/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), trainersDeployed)
 
 export default router

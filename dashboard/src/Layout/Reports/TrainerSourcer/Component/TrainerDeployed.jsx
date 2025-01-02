@@ -7,7 +7,17 @@ import {Label} from '@/components/ui/label'
 import {useSelector} from 'react-redux'
 import {userAccess} from '@/utils/CheckUserAccess'
 import {RolesEnum} from '@/utils/constants'
-
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table"
+import * as XLSX from 'xlsx';
+  
 function TrainerDeployed() {
     const {currentUser} = useSelector(state => state.auth)
 
@@ -80,7 +90,7 @@ function TrainerDeployed() {
 
 
             // Construct URL dynamically based on params
-            const url = `http://localhost:5000/api/reports/trainer-sourcer/sourced/${ID}${params.toString()
+            const url = `http://localhost:5000/api/reports/trainer-sourcer/deployed/${ID}${params.toString()
                 ? `?${params.toString()}`
                 : ""}`;
 
@@ -92,6 +102,37 @@ function TrainerDeployed() {
             console.error("Error:", error);
         }
     };
+
+
+        const handleDownload = () => {
+            // Prepare data for Excel
+            const data = result.map((e, index) => ({
+                "S.no": index + 1,
+                "Trainer Sourcer": e.projectName.toUpperCase(),
+                "₹ Total Amount": e.totalAmount,
+                "₹ Expenses": e.totalExpenses,
+                "₹ Profit": e.netRevenue,
+            }));
+    
+            // Add a row for totals
+            data.push({
+                "S.no": "Total",
+                "Training Name": "",
+                "₹ Total Amount": result.reduce((a, c) => a + c.totalAmount, 0),
+                "₹ Expenses": result.reduce((a, c) => a + c.totalExpenses, 0),
+                "₹ Profit": result.reduce((a, c) => a + c.netRevenue, 0),
+            });
+    
+            // Create a worksheet
+            const worksheet = XLSX.utils.json_to_sheet(data);
+    
+            // Create a workbook and add the worksheet
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Revenue");
+    
+            // Export to Excel
+            XLSX.writeFile(workbook, "Revenue_Report.xlsx");
+        };
 
   return (
        <div className='mt-5'>
@@ -152,9 +193,32 @@ function TrainerDeployed() {
        
        
            </div>
+
+                       <div className='flex items-center justify-end my-4'>
+                           <Button onClick={handleDownload}>Download</Button>
+                       </div>
        
-           {/* {result && result.length > 0 && <RevenueResult result={result}/>
-       } */}
+           {result && 
+            <Table>
+            <TableHeader>
+                <TableRow>
+                <TableHead >Trainer Sourcer</TableHead>
+                <TableHead>Start Date</TableHead>
+                <TableHead>End Date</TableHead>
+                <TableHead className="text-right">Deployed</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                <TableRow>
+                <TableCell className="font-medium">{kam}</TableCell>
+                <TableCell>{startDate}</TableCell>
+                <TableCell>{endDate}</TableCell>
+                <TableCell className="text-right">{result.totalTrainersDeployed}</TableCell>
+                </TableRow>
+            </TableBody>
+            </Table>
+         }
+       
        </div>
   )
 }

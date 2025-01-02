@@ -7,7 +7,18 @@ import {Label} from '@/components/ui/label'
 import {useSelector} from 'react-redux'
 import {userAccess} from '@/utils/CheckUserAccess'
 import {RolesEnum} from '@/utils/constants'
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table"
 
+  
+  
 function TrainerSourced() {
     const {currentUser} = useSelector(state => state.auth)
 
@@ -31,6 +42,7 @@ function TrainerSourced() {
     const [result,
         setResult] = useState([])
 
+    const [name, setName] = useState('')
     useEffect(() => {
         if (userAccess([RolesEnum.ADMIN], currentUser
             ?.employee.role)) {
@@ -99,7 +111,7 @@ function TrainerSourced() {
     {userAccess([RolesEnum.ADMIN], currentUser
         ?.employee.role) && (
         <Fragment>
-            {< div className = "mx-2" > <Select onValueChange={(e) => setKam(e)} value={kam}>
+            {< div className = "mx-2" > <Select onValueChange={(e) =>{ setKam(e); setName(e)}} value={kam}>
                 <SelectTrigger className="w-max ">
                     <SelectValue
                         placeholder={kam
@@ -152,9 +164,26 @@ function TrainerSourced() {
 
 
     </div>
-
-    {/* {result && result.length > 0 && <RevenueResult result={result}/>
-} */}
+   {result && 
+            <Table>
+            <TableHeader>
+                <TableRow>
+                <TableHead >Trainer Sourcer</TableHead>
+                <TableHead>Start Date</TableHead>
+                <TableHead>End Date</TableHead>
+                <TableHead className="text-right">Sourced</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                <TableRow>
+                <TableCell className="font-medium">{kam}</TableCell>
+                <TableCell>{startDate}</TableCell>
+                <TableCell>{endDate}</TableCell>
+                <TableCell className="text-right">{result?.trainers?.length}</TableCell>
+                </TableRow>
+            </TableBody>
+            </Table>
+         }
 </div>
   )
 }

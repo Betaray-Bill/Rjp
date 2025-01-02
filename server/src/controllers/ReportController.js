@@ -1028,102 +1028,114 @@ const trainersDeployed = asyncHandler(async(req, res) => {
     const { startDate, endDate } = req.query;
     const employeeId = req.params.employeeId;
 
-    // Validate the required date parameters
-    if (!startDate || !endDate) {
-        return res
-            .status(400)
-            .json({ message: "Start date and end date are required." });
-    }
-
-    // Parse the dates for filtering
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
     try {
-        // Find the employee by ID
-        const employee = await Employee
-            .findById(employeeId)
-            .select('name role');
-
+        // Fetch employee and role
+        const employee = await Employee.findById(employeeId).select("name role");
         if (!employee) {
-            return res
-                .status(404)
-                .json({ message: "Employee not found." });
+            return res.status(404).json({ message: "Employee not found." });
         }
-        const adminRole = employee
-            .role
-            .find(r => r.name === "ADMIN");
-        const trainerSourcerRole = employee
-            .role
-            .find(r => r.name === "Trainer Sourcer");
 
-        let trainers = [];
+        const isAdmin = employee.role.some(r => r.name === "ADMIN");
+        const isTrainerSourcer = employee.role.some(r => r.name === "Trainer Sourcer");
 
-        if (adminRole) {
-            // If ADMIN, fetch all projects but filter by company if provided
-            const admin = await Admin
-                .findById(adminRole.roleId)
-                .populate({
-                    path: "registeredTrainers",
-                    select: {
-                        generalDetails: 1,
-                        trainerId: 1
-                    },
-                    match: {
-                        $expr: {
-                            $gt: [{
-                                    $size: "$projects"
-                                },
-                                0
-                            ]
-                        }
-                    }
-                });
+        if (!isAdmin && !isTrainerSourcer) {
+            return res
+                .status(403)
+                .json({ message: "Employee role does not have access to trainers." });
+        }
+
+        let totalTrainersDeployed = 0;
+
+        if (isAdmin) {
+            // Fetch all trainers registered by the Admin
+            const adminRole = employee.role.find(r => r.name === "ADMIN");
+            const admin = await Admin.findById(adminRole.roleId).populate({
+                path: "registeredTrainers",
+                select: { generalDetails: 1, trainerId: 1 },
+            });
 
             if (!admin) {
-                return res
-                    .status(404)
-                    .json({ message: "Admin data not found." });
+                return res.status(404).json({ message: "Admin data not found." });
             }
 
-            trainers = admin.registeredTrainers;
-        } else if (trainerSourcerRole) {
-            // If KeyAccounts, fetch projects mapped to this employee and filter by company
-            const trainerSourcer = await TrainerSourcer
-                .findById(trainerSourcerRole.roleId)
-                .populate({
-                    path: "registeredTrainers",
-                    match: {
-                        $expr: {
-                            $gt: [{
-                                    $size: "$projects"
-                                },
-                                0
-                            ]
-                        }
-                    }
-                });
+            const registeredTrainers = admin.registeredTrainers.map(tr => tr._id);
+
+            // Aggregate projects and count trainers
+            const result = await Project.aggregate([{
+                    $match: {
+                        "trainers.trainer": { $in: registeredTrainers },
+                        ...(startDate && endDate && {
+                            "trainingDates.startDate": { $gte: new Date(startDate) },
+                            "trainingDates.endDate": { $lte: new Date(endDate) }, // Filter projects ending within the date range
+                        }),
+                    },
+                },
+                { $unwind: "$trainers" }, // Unwind trainers to count them individually
+                {
+                    $match: {
+                        "trainers.trainer": { $in: registeredTrainers },
+                        "trainers.isFinalized": true,
+                    },
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalTrainers: { $sum: 1 }, // Sum up the number of trainers
+                    },
+                },
+            ]);
+
+            totalTrainersDeployed = result.length > 0 ? result[0].totalTrainers : 0;
+        } else if (isTrainerSourcer) {
+            // Fetch trainers registered by the Trainer Sourcer
+            const trainerSourcerRole = employee.role.find(r => r.name === "Trainer Sourcer");
+            const trainerSourcer = await TrainerSourcer.findById(trainerSourcerRole.roleId).populate({
+                path: "registeredTrainers",
+                select: { generalDetails: 1, trainerId: 1 },
+            });
 
             if (!trainerSourcer) {
-                return res
-                    .status(404)
-                    .json({ message: "Trainer Sourcer data not found." });
+                return res.status(404).json({ message: "Trainer Sourcer data not found." });
             }
 
-            trainers = trainerSourcer.registeredTrainers;
-        } else {
-            throw new Error("Employee role does not have access to projects");
+            const registeredTrainers = trainerSourcer.registeredTrainers.map(tr => tr._id);
+
+            // Aggregate projects and count trainers
+            const result = await Project.aggregate([{
+                    $match: {
+                        "trainers.trainer": { $in: registeredTrainers },
+                        ...(startDate && endDate && {
+                            "trainingDates.startDate": { $gte: new Date(startDate) },
+                            "trainingDates.endDate": { $lte: new Date(endDate) }, // Filter projects ending within the date range
+                        }),
+                    },
+                },
+                { $unwind: "$trainers" }, // Unwind trainers to count them individually
+                {
+                    $match: {
+                        "trainers.trainer": { $in: registeredTrainers },
+                        "trainers.isFinalized": true,
+                    },
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalTrainers: { $sum: 1 }, // Sum up the number of trainers
+                    },
+                },
+            ]);
+
+            totalTrainersDeployed = result.length > 0 ? result[0].totalTrainers : 0;
         }
 
-        // Return the filtered trainers
-        return res
-            .status(200)
-            .json(trainers);
-
+        // Respond with the total trainers deployed
+        return res.status(200).json({
+            message: "Total trainers deployed successfully.",
+            totalTrainersDeployed,
+        });
     } catch (err) {
-        return res
-            .status(404)
-            .json({ message: "Employee not found." });
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error.", error: err.message });
     }
 
 })
