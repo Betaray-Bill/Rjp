@@ -32,7 +32,7 @@ router.get('/trainer/get-revenue/:trainerId', authEmployeeMiddleware, authorizeR
 
 // Trainer SOurcer
 router.get("/trainer-sourcer/sourced/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), trainersSourced)
-router.get("/trainer-sourcer/deployed/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), trainersSourced)
+    // router.get("/trainer-sourcer/deployed/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), trainersSourced)
 
 
 

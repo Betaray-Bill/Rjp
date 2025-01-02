@@ -271,7 +271,7 @@ const getProject = asyncHandler(async(req, res) => {
     const { empId } = req.params;
     const { companyId, startDate, endDate } = req.query; // Extracting filters from query params
     let assignedProjects = [];
-
+    console.log("Assigned Projects")
     try {
         // Fetch the employee and their roles
         const employee = await Employee
@@ -699,6 +699,37 @@ const isClientCallDone = asyncHandler(async(req, res) => {
             if (project.trainers[i].trainer.toString() === trainerId) {
                 console.log("Trainer found", project.trainers[i].trainer)
                 project.trainers[i].isClientCallDone = true
+                    // console.log(project.trainers[i].resume)
+                await project.save()
+
+                break
+            }
+        }
+        res.json({ message: " Done" });
+
+    } catch (err) {
+        console.log(err)
+        return res
+            .status(500)
+            .json({ message: 'Error adding resume.', error: err.message });
+    }
+
+})
+
+// Is Client Call Done
+const isFinalizedController = asyncHandler(async(req, res) => {
+    const { projectId } = req.params;
+    console.log(req.body)
+    const { trainerId } = req.body
+    try {
+        const project = await Project.findById(projectId)
+            // console.log(project)
+
+        for (let i = 0; i < project.trainers.length; i++) {
+            console.log(project.trainers[i])
+            if (project.trainers[i].trainer.toString() === trainerId) {
+                console.log("Trainer found", project.trainers[i].trainer)
+                project.trainers[i].isFinalized = true
                     // console.log(project.trainers[i].resume)
                 await project.save()
 
@@ -1589,6 +1620,7 @@ export {
     getProjectForTrainer,
     updateTraining,
     isClientCallDone,
+    isFinalizedController,
     uploadPOUrl_Trainer,
     upload_Invoice_Url_Trainer,
     savePurchaseOrder,

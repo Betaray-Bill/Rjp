@@ -8,13 +8,13 @@ function Company() {
     const {currentUser} = useSelector(state => state.auth)
 
     return (
-        <div className=' h-max min-h-[80vh] py-4 px-3'>
-            <div className='flex items-center text-end justify-end w-full my-3'>
+        <div className=' h-max min-h-[80vh] px-3'>
+            <div className='flex items-center text-end justify-end w-full mb-3'>
                 {userAccess([RolesEnum.ADMIN], currentUser
                     ?.employee.role) && (
                         <Link
                         to="/home/company/add-contact"
-                        className='flex ml-3 items-center w-max justify-between border border-black p-2 px-3 rounded-md hover:bg-blue-100 cursor-pointer'>
+                        className='text-sm flex ml-3 items-center w-max justify-between border border-black p-2 px-3  hover:bg-blue-100 cursor-pointer'>
                         {/* <ion-icon
                         name="add-outline"
                         style={{
@@ -30,14 +30,14 @@ function Company() {
                     ?.employee.role) && (
                     <Link
                         to="/home/company/add-company"
-                        className='flex ml-3 items-center w-max justify-between border border-black p-2 px-3 rounded-md hover:bg-blue-100 cursor-pointer'>
+                        className='text-sm flex ml-3 items-center w-max justify-between border border-black p-2 px-3  hover:bg-blue-100 cursor-pointer'>
                         {/* <ion-icon
                         name="add-outline"
                         style={{
                         fontSize: "20px",
                         marginRight: "10px"
                     }}></ion-icon> */}
-                        Add Company
+                        Add Client
                     </Link>
                 )
 }

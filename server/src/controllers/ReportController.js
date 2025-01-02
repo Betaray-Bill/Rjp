@@ -912,98 +912,115 @@ const trainersSourced = asyncHandler(async(req, res) => {
     const { startDate, endDate } = req.query;
     const employeeId = req.params.employeeId;
 
-    // Validate the required date parameters
-    if (!startDate || !endDate) {
-        return res
-            .status(400)
-            .json({ message: "Start date and end date are required." });
-    }
-
-    // Parse the dates for filtering
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
     try {
-        // Find the employee by ID
-        const employee = await Employee
-            .findById(employeeId)
-            .select('name role');
-
+        // Fetch employee and role
+        const employee = await Employee.findById(employeeId).select("name role");
         if (!employee) {
-            return res
-                .status(404)
-                .json({ message: "Employee not found." });
+            return res.status(404).json({ message: "Employee not found." });
         }
-        const adminRole = employee
-            .role
-            .find(r => r.name === "ADMIN");
-        const trainerSourcerRole = employee
-            .role
-            .find(r => r.name === "Trainer Sourcer");
+
+        const isAdmin = employee.role.some(r => r.name === "ADMIN");
+        const isTrainerSourcer = employee.role.some(r => r.name === "Trainer Sourcer");
+
+        if (!isAdmin && !isTrainerSourcer) {
+            return res
+                .status(403)
+                .json({ message: "Employee role does not have access to trainers." });
+        }
 
         let trainers = [];
 
-        if (adminRole) {
-            // If ADMIN, fetch all projects but filter by company if provided
-            const admin = await Admin
-                .findById(adminRole.roleId)
-                .populate({
-                    path: "registeredTrainers",
-                    select: {
-                        generalDetails: 1,
-                        trainerId: 1
-                    },
-                    match: {
-                        createdAt: {
-                            $gte: start,
-                            $lte: end
-                        }
-                    }
-                });
+        if (isAdmin) {
+            // Fetch all trainers registered by the Admin
+            const adminRole = employee.role.find(r => r.name === "ADMIN");
+            const admin = await Admin.findById(adminRole.roleId).populate({
+                path: "registeredTrainers",
+                select: { generalDetails: 1, trainerId: 1 },
+            });
 
             if (!admin) {
-                return res
-                    .status(404)
-                    .json({ message: "Admin data not found." });
+                return res.status(404).json({ message: "Admin data not found." });
             }
 
-            trainers = admin.registeredTrainers;
-        } else if (trainerSourcerRole) {
-            // If KeyAccounts, fetch projects mapped to this employee and filter by company
-            const trainerSourcer = await TrainerSourcer
-                .findById(trainerSourcerRole.roleId)
-                .populate({
-                    path: "registeredTrainers",
-                    match: {
-                        createdAt: {
-                            $gte: start,
-                            $lte: end
-                        }
-                    }
-                });
+            const registeredTrainers = admin.registeredTrainers.map(tr => tr._id);
+
+            // Filter trainers based on project criteria
+            const result = await Project.aggregate([{
+                    $match: {
+                        "trainers.trainer": { $in: registeredTrainers },
+                        ...(startDate && endDate && {
+                            "trainingDates.startDate": { $gte: new Date(startDate) },
+                            "trainingDates.endDate": { $lte: new Date(endDate) },
+                        }),
+                        "trainers.isFinalized": true,
+                    },
+                },
+                { $unwind: "$trainers" },
+                {
+                    $match: {
+                        "trainers.trainer": { $in: registeredTrainers },
+                        "trainers.isFinalized": true,
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$trainers.trainer",
+                    },
+                },
+            ]);
+
+            trainers = result.map(r => r._id);
+        } else if (isTrainerSourcer) {
+            // Fetch trainers registered by the Trainer Sourcer
+            const trainerSourcerRole = employee.role.find(r => r.name === "Trainer Sourcer");
+            const trainerSourcer = await TrainerSourcer.findById(trainerSourcerRole.roleId).populate({
+                path: "registeredTrainers",
+                select: { generalDetails: 1, trainerId: 1 },
+            });
 
             if (!trainerSourcer) {
-                return res
-                    .status(404)
-                    .json({ message: "Trainer Sourcer data not found." });
+                return res.status(404).json({ message: "Trainer Sourcer data not found." });
             }
 
-            trainers = trainerSourcer.registeredTrainers;
-        } else {
-            throw new Error("Employee role does not have access to projects");
+            const registeredTrainers = trainerSourcer.registeredTrainers.map(tr => tr._id);
+
+            // Filter trainers based on project criteria
+            const result = await Project.aggregate([{
+                    $match: {
+                        "trainers.trainer": { $in: registeredTrainers },
+                        ...(startDate && endDate && {
+                            "trainingDates.startDate": { $gte: new Date(startDate) },
+                            "trainingDates.endDate": { $lte: new Date(endDate) },
+                        }),
+                        "trainers.isFinalized": true,
+                    },
+                },
+                { $unwind: "$trainers" },
+                {
+                    $match: {
+                        "trainers.trainer": { $in: registeredTrainers },
+                        "trainers.isFinalized": true,
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$trainers.trainer",
+                    },
+                },
+            ]);
+
+            trainers = result.map(r => r._id);
         }
 
-        // Return the filtered trainers
-        return res
-            .status(200)
-            .json(trainers);
-
+        // Respond with the filtered or unfiltered trainers
+        return res.status(200).json({
+            message: "Trainers sourced successfully.",
+            trainers,
+        });
     } catch (err) {
-        return res
-            .status(404)
-            .json({ message: "Employee not found." });
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error.", error: err.message });
     }
-
 })
 
 // Trainer Sourcer No of trainer methods Sourced in a period

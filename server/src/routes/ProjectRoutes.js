@@ -3,7 +3,7 @@ import { addEmployee, getEmployeeById, getAllEmployees, updateEmployeeRole, getA
 import { login, signOut } from '../controllers/AuthController.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
 import { authEmployeeMiddleware, authMiddleware } from '../middleware/authMiddleware.js';
-import { acceptOrDecline, addChatToProject, addExpenses, addRemainders, addResumeToProject, addTrainer, checkListUpdate, client_amount_dueDate, client_invoice_sent, createProject, deleteTrainer, getAllNotes, getProject, getProjectDetails, getProjectForTrainer, getProjectsByEmp, getRemainders, isClientCallDone, savePurchaseOrder, updateInvoice_by_paid, updateLost_Won, updateStage, updateTraining, upload_Invoice_Url_Trainer, uploadPOUrl_Trainer } from '../controllers/ProjectController.js';
+import { acceptOrDecline, addChatToProject, addExpenses, addRemainders, addResumeToProject, addTrainer, checkListUpdate, client_amount_dueDate, client_invoice_sent, createProject, deleteTrainer, getAllNotes, getProject, getProjectDetails, getProjectForTrainer, getProjectsByEmp, getRemainders, isClientCallDone, isFinalizedController, savePurchaseOrder, updateInvoice_by_paid, updateLost_Won, updateStage, updateTraining, upload_Invoice_Url_Trainer, uploadPOUrl_Trainer } from '../controllers/ProjectController.js';
 import { uploadPOToBlob } from '../controllers/AzureUploadController.js';
 
 const router = express.Router();
@@ -24,6 +24,7 @@ router.get("/getChat/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN"
 
 router.put("/updateCheckList/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), checkListUpdate)
 router.put("/updateClientCall/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), isClientCallDone)
+router.put("/isFinalized/:projectId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), isFinalizedController)
 router.put("/purchaseOrder/:projectId/trainer/:trainerId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), uploadPOUrl_Trainer)
 router.put("/save-purchaseOrder/:projectId/trainer/:trainerId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts", "Finance"]), savePurchaseOrder)
 router.put("/accept-decline/:projectId/trainer/:trainerId", authMiddleware, acceptOrDecline)

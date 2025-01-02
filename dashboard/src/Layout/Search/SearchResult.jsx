@@ -73,7 +73,7 @@ function SearchResult() {
                                                         className={`ml-2 px-2 py-1 text-xs rounded ${getTrainerType(res.trainerId) === "Internal"
                                                         ? "bg-green-200 text-green-700"
                                                         : "bg-blue-200 text-blue-700"}`}>
-                                                        {getTrainerType(res.trainerId)}
+                                                        {getTrainerType(res.trainerId)} { " "}
                                                         Trainer
                                                     </span>
                                                 </div>

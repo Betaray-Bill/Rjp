@@ -61,7 +61,7 @@ function AddCompany() {
     return (
         <div className='border rounded-md mt-10 text-center'>
             <div className='text-center'>
-              <h2 className='font-semibold   py-5 text-lg'>Register a Company</h2>
+              <h2 className='font-semibold   py-5 text-lg'>Register a Client</h2>
             </div>
             <section className='mt-4 pb-10  grid place-content-center items-center'>
                 <form onSubmit={handleSubmit}>

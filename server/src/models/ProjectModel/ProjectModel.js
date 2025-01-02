@@ -219,6 +219,10 @@ const projectSchema = new mongoose.Schema({
             type: Boolean,
             default: false, // Default to `false`
         },
+        isFinalized: {
+            type: Boolean,
+            default: false, // Default to `false`
+        },
         inVoice: [{
             isInvoice: {
                 type: Boolean,

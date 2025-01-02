@@ -81,6 +81,19 @@ function ViewTrainers({trainers}) {
         });
     }
 
+    const handleIsFinalized = async(id) => {
+        const response = await axios.put(
+            `http://localhost:5000/api/project/isFinalized/${projectId.projectId}`,
+            { trainerId: id }
+        );
+        console.log(response.data)
+        queryClient.invalidateQueries(['ViewProject', projectId.projectId]); // Refetch updated project data
+        toast({
+            variant: "success",
+            title: "Trainer is isFinalized successfully",
+        });
+    }
+
     return (
         <div>
             {trainers.length > 0
@@ -90,8 +103,10 @@ function ViewTrainers({trainers}) {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>S.no</TableHead>
-                                <TableHead>Client Call</TableHead>
                                 <TableHead className="">Name</TableHead>
+                                <TableHead>Client Call</TableHead>
+                                <TableHead>Finalized</TableHead>
+                                {/* <TableHead className="">Name</TableHead> */}
                                 <TableHead>Email</TableHead>
                                 <TableHead>Type</TableHead>
                                 <TableHead className="text-left">Resume</TableHead>
@@ -105,6 +120,13 @@ function ViewTrainers({trainers}) {
                                     ?.map((trainer, index) => (
                                         <TableRow key={index} className="cursor-pointer rounded-md">
                                             <TableCell className="font-medium">{index + 1}</TableCell>
+                                            <TableCell className="font-medium flex items-center">
+                                                <Avatar>
+                                                    <AvatarImage src="https://github.com/shadcn.png"/>
+                                                    <AvatarFallback>CN</AvatarFallback>
+                                                </Avatar>
+                                                <span className='ml-2'>{trainer.trainer.generalDetails?.name}</span>
+                                            </TableCell>
                                             <TableCell className="text-start items-center">
                                                 {
                                                     trainer.isClientCallDone ? 
@@ -114,13 +136,16 @@ function ViewTrainers({trainers}) {
                                                         />
                                                 }
                                             </TableCell>
-                                            <TableCell className="font-medium flex items-center">
-                                                <Avatar>
-                                                    <AvatarImage src="https://github.com/shadcn.png"/>
-                                                    <AvatarFallback>CN</AvatarFallback>
-                                                </Avatar>
-                                                <span className='ml-2'>{trainer.trainer.generalDetails?.name}</span>
+                                            <TableCell className="text-start items-center">
+                                                {
+                                                    trainer?.isFinalized ? 
+                                                    <ion-icon name="checkmark-done-outline" style={{color:"green", fontSize:"20px"}}></ion-icon>
+                                                    :   <Checkbox                           
+                                                            onCheckedChange={() => handleIsFinalized(trainer.trainer._id)}
+                                                        />
+                                                }
                                             </TableCell>
+                                            
                                             <TableCell>{trainer.trainer.generalDetails.email}</TableCell>
                                             <TableCell>{trainer.trainer.trainingDetails.trainerType}</TableCell>
 
