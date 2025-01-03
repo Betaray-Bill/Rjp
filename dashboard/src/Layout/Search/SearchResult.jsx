@@ -99,7 +99,7 @@ function SearchResult() {
                                         </div>
                                     </div>
 
-                                    <div className='flex items-center justify-between'>
+                                    <div className='flex flex-col items-left justify-between'>
                                         {res.trainingDomain
                                             ?.paymentSession && <p className='flex items-center'>
                                                 <ion-icon
@@ -113,10 +113,10 @@ function SearchResult() {
                                                         ?.paymentSession}</span>
                                             </p>
 }
-                                        <div className='ml-4'>
+                                        <div className='ml-4 flex items-center mt-3'>
                                             <h2 className='text-gray-600'>Price</h2>
                                             <p>
-                                                <span className='text-black font-medium'>₹{res.trainingDomain
+                                                <span className='text-black ml-3 font-medium'>₹{res.trainingDomain
                                                         ?.price}</span>
                                             </p>
                                         </div>

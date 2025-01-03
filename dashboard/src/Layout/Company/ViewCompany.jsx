@@ -83,7 +83,7 @@ function ViewCompany() {
                                 <TableHead>Contact Email</TableHead>
                                 <TableHead>Contact Phone</TableHead>
                                 <TableHead>Department</TableHead>
-                                <TableHead>Department</TableHead>
+                                {/* <TableHead>Department</TableHead> */}
                             </TableRow>
                         </TableHeader>
                         <TableBody>

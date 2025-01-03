@@ -59,6 +59,16 @@ function TrainerSourced() {
         // fetchCompany()
     }, [])
 
+
+    useEffect(() => {
+        if(kam){
+            // setOption()
+            const name = kamData.filter(e => e._id === kam)
+            console.log(name)
+            setOption(name)
+        }
+    }, [kam])
+
     const fetchTrainerSourcer = async() => {
         // Fetch client data from API
         try {
@@ -71,6 +81,37 @@ function TrainerSourced() {
             console.error('Error:', error);
         }
     }
+
+    const handleDownload = () => {
+            // Prepare data for Excel
+            const data = []
+            // data.push({
+            //     "S.no": 1,
+            //     "Trainer Sourcer":"",
+            //     "Start Date": startDate,
+            //     "End Date": endDate,
+            //     "Deployed": e.totalTrainersDeployed,
+            // });
+        
+            // Add a row for totals (if applicable)
+            data.push({
+                "S.no": "Total",
+                "Trainer Sourcer": option[0].name,
+                "Start Date": startDate,
+                "End Date": endDate,
+                "Sourced": result. totalTrainersDeployed,
+            });
+        
+            // Create a worksheet
+            const worksheet = XLSX.utils.json_to_sheet(data);
+        
+            // Create a workbook and add the worksheet
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Trainer Deployment");
+        
+            // Export to Excel
+            XLSX.writeFile(workbook, "Trainer_Deployment_Report.xlsx");
+        };
 
 
 
@@ -165,24 +206,29 @@ function TrainerSourced() {
 
     </div>
    {result && 
-            <Table>
-            <TableHeader>
-                <TableRow>
-                <TableHead >Trainer Sourcer</TableHead>
-                <TableHead>Start Date</TableHead>
-                <TableHead>End Date</TableHead>
-                <TableHead className="text-right">Sourced</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                <TableRow>
-                <TableCell className="font-medium">{kam}</TableCell>
-                <TableCell>{startDate}</TableCell>
-                <TableCell>{endDate}</TableCell>
-                <TableCell className="text-right">{result?.trainers?.length}</TableCell>
-                </TableRow>
-            </TableBody>
-            </Table>
+            <Fragment>
+               <div className='flex items-center justify-end  '>
+                    <Button onClick={handleDownload}>Download</Button>
+                </div>
+                <Table>
+                <TableHeader>
+                    <TableRow>
+                    <TableHead >Trainer Sourcer</TableHead>
+                    <TableHead>Start Date</TableHead>
+                    <TableHead>End Date</TableHead>
+                    <TableHead className="text-right">Sourced</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow>
+                    <TableCell className="font-medium">{option && option[0]?.email}</TableCell>
+                    <TableCell>{startDate}</TableCell>
+                    <TableCell>{endDate}</TableCell>
+                    <TableCell className="text-right">{result?.trainers?.length}</TableCell>
+                    </TableRow>
+                </TableBody>
+                </Table>
+            </Fragment>
          }
 </div>
   )
