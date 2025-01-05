@@ -188,7 +188,7 @@ function ViewProjectData({projects, lost_won_open_status}) {
         setWonLost(e)
         try {
             // console.log(projectData)
-            const res = await axios.put(`http://localhost:5000/api/project/updateLostWon/${projectId.projectId}`, {status: e})
+            const res = await api.put(`/project/updateLostWon/${projectId.projectId}`, {status: e})
             const data = await res.data
             // console.log(data)
             // queryClient.invalidateQueries(['projects', currentUser.employee._id]);
