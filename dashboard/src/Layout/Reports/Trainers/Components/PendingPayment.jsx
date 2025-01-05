@@ -14,6 +14,7 @@ import {
     TableRow
 } from "@/components/ui/table"
 import {Link} from 'react-router-dom';
+import api from '@/utils/api';
 
 function PendingPayment() {
     const [startDate,
@@ -33,7 +34,7 @@ function PendingPayment() {
             if (endDate) 
                 params.append("endDate", endDate);
             console.log(params.toString())
-            const response = await axios.get(`http://localhost:5000/api/reports/pending/payment?${params.toString()}`);
+            const response = await api.get(`/reports/pending/payment?${params.toString()}`);
             setProjects(response.data);
 
         } catch (err) {
@@ -77,6 +78,7 @@ function PendingPayment() {
                         <TableHead>Project Name</TableHead>
                         <TableHead>Trainer Name</TableHead>
                         <TableHead>Owner</TableHead>
+                        <TableHead>Due Date</TableHead>
                         <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -89,6 +91,7 @@ function PendingPayment() {
                                 <TableCell>{e.trainerName}</TableCell>
                                 <TableCell>{e.projectOwner
                                         ?.name}</TableCell>
+                                <TableCell>{new Date(e?.dueDate).toISOString().split('T')[0]}</TableCell>
                                 <TableCell>
                                     {/* <Button
                                         onClick={() => console.log(`Project ID: ${e.projectId}`)}

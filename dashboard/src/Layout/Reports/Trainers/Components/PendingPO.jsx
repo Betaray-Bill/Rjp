@@ -14,6 +14,7 @@ import {
     TableRow
 } from "@/components/ui/table"
 import {Link} from 'react-router-dom';
+import api from '@/utils/api';
 
 function PendingPO() {
     const [startDate,
@@ -33,7 +34,7 @@ function PendingPO() {
             if (endDate) 
                 params.append("endDate", endDate);
             console.log(params.toString())
-            const response = await axios.get(`http://localhost:5000/api/reports/pending/po?${params.toString()}`);
+            const response = await api.get(`/reports/pending/po?${params.toString()}`);
             setProjects(response.data);
 
         } catch (err) {

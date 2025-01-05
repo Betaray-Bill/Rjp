@@ -1,6 +1,7 @@
 import {Button} from '@/components/ui/button'
 import {Input} from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import api from '@/utils/api';
 import axios from 'axios';
 import React, {useRef, useState} from 'react'
 import { useQueryClient } from 'react-query';
@@ -25,7 +26,7 @@ function UploadInvoice({projectName, index}) {
             console.log('File uploaded:', file.name);
 
             console.log("Checking blob connection...");
-            const result = await axios.get('http://localhost:5000/api/filestorage/check-blob-connection');
+            const result = await api.get('/filestorage/check-blob-connection');
             const response = result.data;
             console.log("Connection check result:", response);
 
@@ -44,7 +45,7 @@ function UploadInvoice({projectName, index}) {
                 // Additional metadata
                 console.log(formData)
                 // Call the POST API to upload the file
-                const uploadResult = await axios.post('http://localhost:5000/api/filestorage/upload-to-blob/training/invoice', formData, {
+                const uploadResult = await api.post('/filestorage/upload-to-blob/training/invoice', formData, {
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }
@@ -62,7 +63,7 @@ function UploadInvoice({projectName, index}) {
                     }
 
                     // Post the Invoice in Backend 
-                    const sendUrlToDB = await axios.put(`http://localhost:5000/api/trainer/uploadInvoice/project/${params.projectId}/trainer/${user._id}`, {...data}); 
+                    const sendUrlToDB = await api.put(`/trainer/uploadInvoice/project/${params.projectId}/trainer/${user._id}`, {...data}); 
                     const resp = await sendUrlToDB.data
 
                     console.log(resp)

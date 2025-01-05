@@ -11,6 +11,7 @@ import {
     TableRow
 } from "@/components/ui/table"
 import { Link } from 'react-router-dom'
+import api from '@/utils/api'
 
 function RemainderSection() {
 
@@ -41,7 +42,9 @@ function RemainderSection() {
             if(startDate) query = query + `startDate=${startDate}`
             if(endDate) query = query + `&endDate=${endDate}`
             console.log(query)
-            const response = await axios.get(`http://localhost:5000/api/project/remainders?${query}`)
+            const response = await api.get(`/project/remainders?${query}`, {
+                withCredentials:true
+            })
             const data = await response.data
             console.log(data)
             setData(data)
@@ -100,7 +103,7 @@ function RemainderSection() {
                     <TableBody>
                         {data
                             ?.map((item, _i) => (
-                                <TableRow>
+                                <TableRow key={_i}>
                                     <TableCell className="font-medium">{_i + 1}</TableCell>
                                     <TableCell>{item.projectName}</TableCell>
                                     <TableCell className="flex-wrap">{item.stages}</TableCell>

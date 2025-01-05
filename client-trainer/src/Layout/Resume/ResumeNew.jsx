@@ -9,6 +9,7 @@ import {setCredentials} from '@/features/authSlice'
 import {useNavigate} from 'react-router-dom'
 import {useToast} from '@/hooks/use-toast'
 import { useQueryClient } from 'react-query'
+import api from '@/utils/api'
 
 function ResumeNew() {
     const {currentResumeDetails, currentResumeName} = useSelector(state => state.resume)
@@ -168,7 +169,7 @@ function ResumeNew() {
         console.log('Form Data Submitted:', currentResume);
         // Perform API call to save form data
         try {
-            const response = await axios.post(`http://localhost:5000/api/trainer/${user._id}/copy-resume`, currentResume); // Replace with your API endpoint
+            const response = await api.post(`/trainer/${user._id}/copy-resume`, currentResume); // Replace with your API endpoint
             console.log('Registration successful:', response.data);
             getTrainerDetails()
             setIsSubmit(prev => !prev)
@@ -202,7 +203,7 @@ function ResumeNew() {
     const getTrainerDetails = async() => {
 
         try {
-            const res = await axios.get(`http://localhost:5000/api/trainer/details/${user._id}`)
+            const res = await api.get(`/trainer/details/${user._id}`)
             console.log(res.data)
             // setData(res.data)
             dispatch(setCredentials(res.data))

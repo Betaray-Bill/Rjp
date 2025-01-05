@@ -4,6 +4,7 @@ import {Label} from '@/components/ui/label'
 import axios from 'axios'
 import React, {useState} from 'react'
 import { useToast } from "@/hooks/use-toast"
+import api from '@/utils/api'
 
 function AddEmployee() {
     const { toast } = useToast()
@@ -34,7 +35,7 @@ function AddEmployee() {
         event.preventDefault();
         
         try {
-            const response = await axios.post('http://localhost:5000/api/employee/register', empData); // Replace with your API endpoint
+            const response = await api.post('/api/employee/register', empData); // Replace with your API endpoint
             console.log('Registration successful:', response.data);
             toast({
                 title: "Employee Registered",
@@ -70,14 +71,14 @@ function AddEmployee() {
                         name="email"
                         onChange={(e) => handleChange(e)}/>
                 </div> */}
-                    <div>
+                    {/* <div>
                         <Label>Password</Label>
                         <Input required
                             type="password"
                             id="password"
                             name="password"
                             onChange={(e) => handleChange(e)}/>
-                    </div>
+                    </div> */}
                     <div className='flex flex-col'>
                         <Label>Role</Label>
                         <select

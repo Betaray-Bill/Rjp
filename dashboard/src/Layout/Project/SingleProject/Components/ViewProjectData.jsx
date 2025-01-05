@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {stages} from "../../../../utils/constants.js"
+import api from '@/utils/api.js';
 
 
 function ViewProjectData({projects, lost_won_open_status}) {
@@ -42,7 +43,7 @@ function ViewProjectData({projects, lost_won_open_status}) {
     const changeStage = async(e) => {
         try {
             // console.log(e.target.value)
-            const res = await axios.put(`http://localhost:5000/api/project/updateStage/${projectId.projectId}`, {stageName: e.target.value})
+            const res = await api.put(`/project/updateStage/${projectId.projectId}`, {stageName: e.target.value})
             const data = await res.data
             // console.log(data)
             setIsChanging(false)
@@ -77,7 +78,7 @@ function ViewProjectData({projects, lost_won_open_status}) {
     const handleUpdateTraining = async(e) => {
         try {
             // console.log(projectData)
-            const res = await axios.put(`http://localhost:5000/api/project/updateTraining/${projectId.projectId}`, projectData)
+            const res = await api.put(`/project/updateTraining/${projectId.projectId}`, projectData)
             const data = await res.data
             // console.log(data)
             // queryClient.invalidateQueries(['projects', currentUser.employee._id]);

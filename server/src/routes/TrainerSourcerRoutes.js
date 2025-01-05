@@ -1,7 +1,7 @@
 import express from 'express';
 import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
-import { addRating, addRemark, getTrainerByEmpId, registerTrainer, updateResume } from '../controllers/TrainerSourcerController.js';
+import { addRating, addRemark, getResumeById, getTrainerByEmpId, registerTrainer, updateResume } from '../controllers/TrainerSourcerController.js';
 import { signOut } from '../controllers/AuthController.js';
 import { lockResume, resumeCopy, updateTrainerProfile } from '../controllers/TrainerController.js';
 // import multer from 'multer';
@@ -34,6 +34,7 @@ router.get("/getTrainer/:emp_id", authEmployeeMiddleware, authorizeRole(["ADMIN"
 router.put('/updateLockStatus/:id', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer sourcer"]), lockResume)
 
 
+router.get("/resume/:id", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), getResumeById)
 // Rating
 router.put('/remarks/:trainerId', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), addRemark)
 router.put('/rating/:trainerId', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), addRating)

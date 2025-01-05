@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import api from "@/utils/api";
 
 const ResumeExtractor = () => {
   const [file, setFile] = useState(null);
@@ -15,7 +16,7 @@ const ResumeExtractor = () => {
 
   const checkConnection = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/resumeextractor/check-connection");
+      const response = await api.get("/resumeextractor/check-connection");
       setConnectionStatus(response.data.message);
       setModelStatus(response.data.modelStatus);
     } catch (error) {
@@ -39,7 +40,7 @@ const ResumeExtractor = () => {
     formData.append("resume", file);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/resumeextractor/upload", formData, {
+      const response = await api.post("/resumeextractor/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

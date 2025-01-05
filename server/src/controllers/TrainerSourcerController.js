@@ -494,4 +494,26 @@ const addRating = async(req, res) => {
     }
 };
 
-export { registerTrainer, updateResume, addRemark, addRating, uploadResumeToAzureAndExtractText, getTrainerByEmpId }
+const getResumeById = asyncHandler(async(req, res) => {
+    const { id } = req.params;
+    // console.log("Get resume by UD")
+    try {
+        const resume = await Resume
+            .findById(id)
+            .populate({ path: 'trainer_id', select: 'generalDetails.name' })
+        if (!resume) {
+            return res
+                .status(404)
+                .json({ message: "Resume not found" });
+        }
+        res
+            .status(200)
+            .json(resume);
+    } catch (err) {
+        return res
+            .status(404)
+            .json({ message: "Resume not found" });
+    }
+})
+
+export { registerTrainer,getResumeById, updateResume, addRemark, addRating, uploadResumeToAzureAndExtractText, getTrainerByEmpId }

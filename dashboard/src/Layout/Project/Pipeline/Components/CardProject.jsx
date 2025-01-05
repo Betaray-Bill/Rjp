@@ -10,7 +10,7 @@ function CardProjects({projects, stage}) {
     useEffect(() => {
         const remainderStageData = projects && projects
             .remainders
-            .filter((item) => {
+            ?.filter((item) => {
                 return item.stages == stage;
             })
             console.log( projects

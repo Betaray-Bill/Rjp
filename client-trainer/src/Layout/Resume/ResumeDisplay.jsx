@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import api from '@/utils/api';
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useQuery, useQueryClient } from 'react-query';
@@ -30,8 +31,8 @@ function ResumeDisplay() {
   })
 
     const fetchResume = async(id) => {
-        const response = await axios
-            .get(`http://localhost:5000/api/trainer/resume/${id}`)
+        const response = await api
+            .get(`/trainer/resume/${id}`)
       
             setResume(response.data)
             return response.data
@@ -177,12 +178,12 @@ function ResumeDisplay() {
 
     const submitResumeHandler = async(e) => {
         e.preventDefault()
-        // http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/671f1f348706010ba634eb8f
-        // console.log(`http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/${data._id}`)
+        // /trainer/updateResume/671f1f348706010ba634eb92/resume/671f1f348706010ba634eb8f
+        // console.log(`/trainer/updateResume/671f1f348706010ba634eb92/resume/${data._id}`)
         try{
             console.log("object")
             console.log(resume)
-            const r = await axios.put(`http://localhost:5000/api/trainersourcer/updateResume/${user._id}/resume/${params.id}`, resume)
+            const r = await api.put(`/trainersourcer/updateResume/${user._id}/resume/${params.id}`, resume)
             const res= await r.data
             console.log(res)
             toast({

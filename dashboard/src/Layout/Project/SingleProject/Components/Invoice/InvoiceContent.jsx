@@ -1,6 +1,8 @@
 import {Button} from '@/components/ui/button'
 import {Input} from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
+import api from '@/utils/api'
 import axios from 'axios'
 import React, {Fragment, useState} from 'react'
 import { useQueryClient } from 'react-query'
@@ -15,13 +17,13 @@ function InvoiceContent({index, invoice ,id}) {
 
 
     const [paidContent,
-        setPaidContent] = useState({isPaid: invoice.isPaid , index: index, description: invoice.description,  trainerId:id})
+        setPaidContent] = useState({isPaid: invoice.isPaid , index: index, description: invoice.description,  trainerId:id, dueDate: invoice?.dueDate ? invoice.dueDate : new Date() })
 
     console.log(paidContent)
 
     const sendPaidINfoToINvoice = async() => {
         try {
-            await axios.put(`http://localhost:5000/api/project/updateInvoice/project/${projectId.projectId}/trainer/${id}`, {...paidContent})
+            await api.put(`/project/updateInvoice/project/${projectId.projectId}/trainer/${id}`, {...paidContent})
             console.log("Invoice updated successfully")
             setShow(false)
             queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
@@ -65,8 +67,12 @@ function InvoiceContent({index, invoice ,id}) {
                                 </div>
                             </div>
 
-                            {show && <div className='flex items-center mt-6'>
+                            {show && <div className='flex items-end mt-6'>
                                 {/* <Button>Paid</Button> */}
+                                <div>
+                                    <Label>Due Date</Label>
+                                    <Input type="date" className=" w-[max]" onChange={(e) => setPaidContent((p) =>( {...p, dueDate:e.target.value}))} value={invoice.dueDate ? new Date(invoice.dueDate).toISOString().split("T")[0] : paidContent.dueDate}/>
+                                </div>
                                 <Input type="text" className="mx-3" onChange={(e) => setPaidContent((p) =>( {...p, description:e.target.value}))} value={invoice.description ? invoice.description : paidContent.description}/>
                                 <Button className="rounded-none bg-green-600 mx-3" onClick={() => setPaidContent((p) =>( {...p, isPaid:!p.isPaid}))}>{paidContent.isPaid ? "Paid" : "Pay"}</Button>
                                 <Button className="rounded-none bg-black" onClick={sendPaidINfoToINvoice}>Send</Button>

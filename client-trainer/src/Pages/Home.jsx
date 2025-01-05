@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {setCopyResumeDetails} from '@/features/resumeSlice';
 import {useQuery} from 'react-query';
+import api from '@/utils/api';
 
 function Home() {
     const location = useLocation(); // Get the current URL
@@ -51,8 +52,8 @@ function Home() {
     axios.defaults.withCredentials = true;
 
     const fetchUser = async(id) => {
-        const res = await axios.get(`http://localhost:5000/api/trainer/details/${user._id}`)
-        // console.log(res.data)
+        const res = await api.get(`/trainer/details/${user._id}`)
+        console.log(res.data)
         dispatch(setCredentials(res.data))
         return res.data;
     };
@@ -72,7 +73,7 @@ function Home() {
     const handleNdaSubmit = async() => {
         try {
             if (ndaStatus === 'accept') {
-                const res = await axios.post(`http://localhost:5000/api/trainer/accept-nda?trainerId=${data._id}`)
+                const res = await api.post(`/trainer/accept-nda?trainerId=${data._id}`)
                 const resData = res.data
 
                 console.log(resData.trainer)
@@ -91,7 +92,7 @@ function Home() {
     axios.defaults.withCredentials = true;
     const signOut = async() => {
         console.log("signout")
-        await axios.get('http://localhost:5000/api/trainer/signout')
+        await api.get('/trainer/signout')
         dispatch(logout())
         navigate("/login")
     }

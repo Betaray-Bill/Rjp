@@ -8,6 +8,7 @@ import {useToast} from '@/hooks/use-toast';
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import api from '@/utils/api';
 
 function Client({expenses, clientDetails}) {
     const projectId = useParams()
@@ -24,7 +25,7 @@ function Client({expenses, clientDetails}) {
     const handleCheckboxChange = async(checked) => {
         setIsChecked(checked);
         try {
-            const response = await axios.put(`http://localhost:5000/api/project/update-client-invoice/project/${projectId.projectId}`, {
+            const response = await api.put(`/project/update-client-invoice/project/${projectId.projectId}`, {
 
             })
             const result = await response.data
@@ -47,7 +48,7 @@ function Client({expenses, clientDetails}) {
         // setIsChecked(checked);
 
         try {
-            const response = await axios.put(`http://localhost:5000/api/project/update-client-amount/project/${projectId.projectId}`, {
+            const response = await api.put(`/project/update-client-amount/project/${projectId.projectId}`, {
                 ...data
             })
             const result = await response.data
@@ -92,7 +93,7 @@ function Client({expenses, clientDetails}) {
                 </div>
             </div>
 
-            <div className='border border-gray-300 rounded-md my-2 px-3 font-semibold py-2'>
+            <div className='border border-gray-300 rounded-md my-2 px-3  py-2'>
                 <div className='flex items-center'>
                     <div>
                         <Label>Amount</Label>
@@ -100,7 +101,7 @@ function Client({expenses, clientDetails}) {
                     </div>
                     <div className='ml-4'>
                         <Label>Due Date</Label>
-                        <Input type="date" value={new Date(data?.dueDate) ? new Date(data?.dueDate).toISOString().split('T')[0] : null}  onChange={(e) => setData({...data, dueDate:e.target.value})}/>
+                        <Input type="date" className="w-max" value={ data?.dueDate ? new Date(data?.dueDate).toISOString().split('T')[0] : null}  onChange={(e) => setData({...data, dueDate:e.target.value})}/>
                     </div>
                 </div>
                 <Button className="mt-3" onClick={handleSubmitChange}>Submit</Button>

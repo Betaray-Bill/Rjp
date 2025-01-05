@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import api from "@/utils/api";
 // import { c } from "vite/dist/node/types.d-aGj9QkWt";
 
 const AzureBlobUploader = () => {
@@ -42,7 +43,7 @@ const AzureBlobUploader = () => {
     setError(null);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/filestorage/upload-to-blob", formData, {
+      const response = await api.post("/filestorage/upload-to-blob", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setUploadStatus(`File uploaded successfully: ${response.data.url}`);

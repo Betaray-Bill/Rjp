@@ -12,6 +12,7 @@ import BankDetails from '@/Layout/Trainer/AddTrainers/BankDetails';
 import TrainingDomain from '@/Layout/Trainer/AddTrainers/TrainingDomain';
 import ResumeDetails from '@/Layout/Trainer/AddTrainers/Resume/ResumeDetails';
 import {useNavigate} from 'react-router-dom';
+import api from '@/utils/api';
 
 const AddTrainer = () => {
     // console.log("meow", add++)
@@ -32,7 +33,7 @@ const AddTrainer = () => {
     const [isSubmission,
         setIsSubmission] = useState(false)
     const trainerMutation = useMutation((data) => {
-        return axios.post(`http://localhost:5000/api/trainersourcer/register-trainer/${currentUser.employee._id}`, data)
+        return api.post(`/trainersourcer/register-trainer/${currentUser.employee._id}`, data)
     }, {
         onSuccess: (data) => {
             console.log("2")
@@ -85,7 +86,7 @@ const AddTrainer = () => {
                     dispatch(resetTrainerDetails())
                 } else {
                     console.log("Checking blob connection...");
-                    const result = await axios.get('http://localhost:5000/api/filestorage/check-blob-connection');
+                    const result = await api.get('/filestorage/check-blob-connection');
                     const response = result.data;
                     console.log("Connection check result:", response);
 
@@ -98,7 +99,7 @@ const AddTrainer = () => {
                         formData.append("pancard", trainerDetails.bankDetails.pancard);
                         console.log(trainerDetails.generalDetails.name)
                         // Additional metadata Call the POST API to upload the file
-                        const uploadResult = await axios.post(`http://localhost:5000/api/filestorage/upload-aadhar-pan/trainer/${trainerDetails.generalDetails.name}`, formData, {
+                        const uploadResult = await api.post(`/filestorage/upload-aadhar-pan/trainer/${trainerDetails.generalDetails.name}`, formData, {
                             headers: {
                                 "Content-Type": "multipart/form-data"
                             }

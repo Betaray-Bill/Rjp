@@ -19,6 +19,7 @@ import {Label} from '@/components/ui/label';
 import { useQuery, useQueryClient } from 'react-query';
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 import { Link } from 'react-router-dom';
+import api from '@/utils/api';
 
 function SearchBar({domain, id, trainingDates}) {
     const queryClient = useQueryClient();
@@ -63,7 +64,7 @@ function SearchBar({domain, id, trainingDates}) {
     // Search Query
     const fetchSearchResults = async () => {
         let encodedDomain = encodeURIComponent(domain)
-        let req_query = `http://localhost:5000/api/trainer/search?domain=${encodedDomain.trim()}`;
+        let req_query = `/trainer/search?domain=${encodedDomain.trim()}`;
         if (startPrice) req_query += `&price[gte]=${Number(startPrice)}`;
         if (endPrice) req_query += `&price[lte]=${Number(endPrice)}`;
         if (mode) req_query += `&mode=${encodeURIComponent(mode)}`;
@@ -74,7 +75,7 @@ function SearchBar({domain, id, trainingDates}) {
     
         console.log(req_query);
         
-        const response = await axios.get(req_query);
+        const response = await api.get(req_query);
         // console.log(response.data)
         return response.data;
     };
@@ -162,7 +163,7 @@ function SearchBar({domain, id, trainingDates}) {
             let a = []
             selectedTrainers.forEach((e) =>  a.push(e._id))
             console.log(a)
-            const trainerSubmit = await axios.put(`http://localhost:5000/api/project/add-trainers/${id}`, {trainers:a})
+            const trainerSubmit = await api.put(`/project/add-trainers/${id}`, {trainers:a})
             const response = await trainerSubmit.data;
             console.log(response)
             setSelectedTrainers([])
@@ -438,7 +439,7 @@ function SearchBar({domain, id, trainingDates}) {
                                                         className={`ml-2 px-2 py-1 text-xs rounded ${getTrainerType(res.trainerId) === "Internal"
                                                         ? "bg-green-200 text-green-700"
                                                         : "bg-blue-200 text-blue-700"}`}>
-                                                        {getTrainerType(res.trainerId)} { " "}
+                                                        {getTrainerType(res.trainerId)}
                                                         Trainer
                                                     </span>
                                                 </div>

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setResumeDetails } from '@/features/trainerSlice'
 import { useToast } from '@/hooks/use-toast'
 import { useQueryClient } from 'react-query'
+import api from '@/utils/api'
 
 
 function ResumeForm({data}) {
@@ -47,7 +48,7 @@ function ResumeForm({data}) {
 
   const checkConnection = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/resumeextractor/check-connection");
+      const response = await api.get("/resumeextractor/check-connection");
       setConnectionStatus(response.data.message);
       setModelStatus(response.data.modelStatus);
     } catch (error) {
@@ -106,7 +107,7 @@ function ResumeForm({data}) {
     setIsUploading(true)
     try {
         checkConnection()
-      const response = await axios.post("http://localhost:5000/api/resumeextractor/upload ", formData);
+      const response = await api.post("/resumeextractor/upload ", formData);
       setExtractedData(response.data);
       console.log(response.data)
       const newResume = {
@@ -271,7 +272,7 @@ function ResumeForm({data}) {
             console.log('Form Data Submitted:', resume);
             // Perform API call to save form data
             try {
-                const response = await axios.post(`http://localhost:5000/api/trainer/main-resume/${user._id}`, resume); // Replace with your API endpoint
+                const response = await api.post(`/trainer/main-resume/${user._id}`, resume); // Replace with your API endpoint
                 console.log('Registration successful:', response.data);
                 // getTrainerDetails()
                 // setIsSubmit(prev => !prev)
@@ -315,7 +316,7 @@ function ResumeForm({data}) {
           console.log('Form Data Submitted:', resume);
           // Perform API call to save form data
           try {
-              const response = await axios.post(`http://localhost:5000/api/trainer/${user._id}/copy-resume`, {...resume, domain:domainName}); // Replace with your API endpoint
+              const response = await api.post(`/trainer/${user._id}/copy-resume`, {...resume, domain:domainName}); // Replace with your API endpoint
               console.log('Registration successful:', response.data);
               // getTrainerDetails()
               // setIsSubmit(prev => !prev)

@@ -108,7 +108,7 @@ function Expense({ expensesList }) {
   const saveExpenses = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/project/expense/${params.projectId}`,
+        `http://bas.rjpinfotek.com:5000/api/project/expense/${params.projectId}`,
         expenses // Send updated `expenses` object
       );
       const result = await response.data;

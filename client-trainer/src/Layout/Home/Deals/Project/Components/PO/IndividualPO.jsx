@@ -10,6 +10,7 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
 import { useToast } from '@/hooks/use-toast'
+import api from '@/utils/api'
 
 function IndividualPO({purchaseOrder, index}) {
 
@@ -54,7 +55,7 @@ function IndividualPO({purchaseOrder, index}) {
     const handleAcceptDeclinePO = async(val) => {
         try {
             // console.log(a)
-            const response = await axios.put(`http://localhost:5000/api/project/accept-decline/${params.projectId}/trainer/${user._id}`, {
+            const response = await api.put(`/project/accept-decline/${params.projectId}/trainer/${user._id}`, {
                 isAccepted:val,
                 poNumber:index
             });
@@ -66,7 +67,7 @@ function IndividualPO({purchaseOrder, index}) {
                 // variant: "success",
                 // duration: 5000
             })
-            // const sendDataToBackend = await axios.put const res console.log("FOrm Data",
+            // const sendDataToBackend = await api.put const res console.log("FOrm Data",
             // tableRows, terms) }
         } catch (err) {
             console.log(err)

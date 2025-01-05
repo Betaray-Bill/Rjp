@@ -20,6 +20,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {resetDomainResultsAndSearch, setDomainResults, setIsSearching, setSearchDomain} from '@/features/searchTrainerSlice';
 import {Label} from '@/components/ui/label';
 import {    useQuery } from 'react-query';
+import api from '@/utils/api';
 
 function SearchBar({domainSearch}) {
     const [query,
@@ -93,7 +94,7 @@ function SearchBar({domainSearch}) {
     const fetchSearchResults = async () => {
         const q = {};
         
-        let req_query = `http://localhost:5000/api/trainer/search?domain=${encodeURIComponent(query.trim())}`;
+        let req_query = `/trainer/search?domain=${encodeURIComponent(query.trim())}`;
         
         if (startPrice) req_query += `&price[gte]=${Number(startPrice)}`;
         if (endPrice) req_query += `&price[lte]=${Number(endPrice)}`;
@@ -106,7 +107,7 @@ function SearchBar({domainSearch}) {
         console.log(req_query);
         
         try {
-            const response = await axios.get(req_query);
+            const response = await api.get(req_query);
             console.log(response.data);
             return response.data;
         } catch (error) {

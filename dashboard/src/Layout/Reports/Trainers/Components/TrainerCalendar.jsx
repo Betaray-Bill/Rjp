@@ -14,6 +14,7 @@ import {useSelector} from "react-redux";
 import {useToast} from "@/hooks/use-toast";
 import {useQueryClient} from "react-query";
 import CalendarComp from "./CalendarComp";
+import api from "@/utils/api";
 
 
 
@@ -125,7 +126,7 @@ const TrainerCalendar = () => {
     const fetchRecommendations = async(query) => {
       if(query){
         try {
-            const response = await axios.get(`http://localhost:5000/api/reports/search?query=${query}`);
+            const response = await api.get(`/reports/search?query=${query}`);
 
             const data = await response.data;
             setRecommendations(data);
@@ -137,7 +138,7 @@ const TrainerCalendar = () => {
 
     const fetchTrainerDetails = async(trainerId) => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/reports/trainer/${trainerId}`);
+            const response = await api.get(`/reports/trainer/${trainerId}`);
             const data = await response.data
             setSelectedTrainer(data);
         } catch (error) {

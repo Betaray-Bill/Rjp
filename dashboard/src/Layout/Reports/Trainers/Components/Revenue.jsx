@@ -19,6 +19,7 @@ import {
 import {Button} from '@/components/ui/button'
 import * as XLSX from 'xlsx';
 import {useToast} from "@/hooks/use-toast";
+import api from "@/utils/api";
 
 function Revenue() {
     const {toast} = useToast()
@@ -62,7 +63,7 @@ function Revenue() {
     const fetchRecommendations = async(query) => {
         if (query) {
             try {
-                const response = await axios.get(`http://localhost:5000/api/reports/search?query=${query}`);
+                const response = await api.get(`/reports/search?query=${query}`);
 
                 const data = await response.data;
                 setRecommendations(data);
@@ -83,7 +84,7 @@ function Revenue() {
                 if (endDate) 
                     params.append("endDate", endDate);
                 
-                const response = await axios.get(`http://localhost:5000/api/reports/trainer/get-revenue/${trainerId}?${params.toString()}`);
+                const response = await api.get(`/reports/trainer/get-revenue/${trainerId}?${params.toString()}`);
                 const data = await response.data
                 // setSelectedTrainer(data);
                 setProjects(data[0].projects)
@@ -108,7 +109,7 @@ function Revenue() {
                 if (endDate) 
                     params.append("endDate", endDate);
                 
-                const response = await axios.get(`http://localhost:5000/api/reports/trainer/get-revenue/${id._id}?${params.toString()}`);
+                const response = await api.get(`/reports/trainer/get-revenue/${id._id}?${params.toString()}`);
                 const data = await response.data
                 // setSelectedTrainer(data);
                 setProjects(data[0].projects)

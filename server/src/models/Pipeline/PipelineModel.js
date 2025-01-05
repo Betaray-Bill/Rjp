@@ -47,11 +47,19 @@ const pipelineSchema = new mongoose.Schema({
     }
 });
 pipelineSchema.statics.getSingletonPipeline = async function() {
-    let pipeline = await this.findOne();
-    if (!pipeline) {
-        pipeline = await this.create({});
+    try{
+        let pipeline = await this.findOne();
+        if (!pipeline) {
+            pipeline = await this.create({});
+            // return pipeline;
+            return pipeline;
+
+        }
+    
+    }catch(err){
+        console.log(err)
     }
-    return pipeline;
+    // return pipeline;
 };
 
 

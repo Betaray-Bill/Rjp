@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { setResumeDetails } from '@/features/trainerSlice';
 import { useToast } from '@/hooks/use-toast';
+import api from '@/utils/api';
 import axios from 'axios';
 import React, { useRef, useState, useEffect } from 'react'
 import { useQueryClient } from 'react-query';
@@ -186,12 +187,12 @@ function ViewResumeDetails({data, isNew}) {
 
     const submitResumeHandler = async(e) => {
         e.preventDefault()
-        // http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/671f1f348706010ba634eb8f
-        // console.log(`http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/${data._id}`)
+        // /trainer/updateResume/671f1f348706010ba634eb92/resume/671f1f348706010ba634eb8f
+        // console.log(`/trainer/updateResume/671f1f348706010ba634eb92/resume/${data._id}`)
         try{
             console.log("object")
             console.log(resume)
-            await axios.put(`http://localhost:5000/api/trainersourcer/updateResume/${params.id}/resume/${data._id}`, resume)
+            await api.put(`/trainersourcer/updateResume/${params.id}/resume/${data._id}`, resume)
             toast({
                 title:"Resume is Updated",
                 // description:`$ is Updated`
@@ -213,8 +214,8 @@ function ViewResumeDetails({data, isNew}) {
         }
 
         try{
-            console.log(`http://localhost:5000/api/project/add-resume/${projectId}/trainer/${trainerDetails._id}/resume`)
-            await axios.put(`http://localhost:5000/api/project/add-resume/${projectId}/trainer/${trainerDetails._id}/resume`, {resumeId:data._id})
+            console.log(`/project/add-resume/${projectId}/trainer/${trainerDetails._id}/resume`)
+            await api.put(`/project/add-resume/${projectId}/trainer/${trainerDetails._id}/resume`, {resumeId:data._id})
             toast({
                 title:"Resume is Added",
                 // description:`${data.project} is Updated`
@@ -236,13 +237,13 @@ function ViewResumeDetails({data, isNew}) {
             setIsLock(false)
 
             // console.log("unlock it")
-            await axios.put(`http://localhost:5000/api/trainersourcer/updateLockStatus/${data._id}`, {isLock: false})
+            await api.put(`/trainersourcer/updateLockStatus/${data._id}`, {isLock: false})
             
             // queryClient.invalidateQueries(['getTrainerById', params.id]);
         }else{
             // console.log("lock it")
             setIsLock(true)
-            await axios.put(`http://localhost:5000/api/trainersourcer/updateLockStatus/${data._id}`, {isLock: true})
+            await api.put(`/trainersourcer/updateLockStatus/${data._id}`, {isLock: true})
            
             // queryClient.invalidateQueries(['getTrainerById', params.id]);
         }

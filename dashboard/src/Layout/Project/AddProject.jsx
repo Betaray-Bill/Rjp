@@ -37,6 +37,7 @@ import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import api from '@/utils/api'
 // import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
 // import {Label} from '@/components/ui/label'
 // import {Button} from '@/components/ui//button'
@@ -199,9 +200,9 @@ function AddProject() {
     // Fetch the DATA of companies and contact Person
     const fetchCompaniesAndContactPerson = async() => {
         try {
-            const response = await axios.get('http://localhost:5000/api/company/company');
+            const response = await api.get('/company/company');
             const data = await response.data
-            // console.log(data.companies)
+            console.log(data.companies)
             setCompanyData(data.companies);
         } catch (error) {
             // console.error('Error:', error);
@@ -326,7 +327,7 @@ function AddProject() {
         // Submit the form data to the server
         // if(projectD)
         try{
-            const result = await axios.post(`http://localhost:5000/api/project/create/${currentUser.employee._id}`, projectData)
+            const result = await api.post(`/project/create/${currentUser.employee._id}`, projectData)
             const response = await result.data;
             // if(response.data?.project._id){
             //     navigate(`home/projects/view/${response.data?.project._id}`)

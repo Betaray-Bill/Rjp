@@ -34,21 +34,20 @@ function Login() {
         setFormData({...formData, [e.target.name] : e.target.value})
     }
 
+    const token = localStorage.getItem('empToken'); // Get the token from localStorage (or any storage)
+
     axios.defaults.withCredentials = true;
     const loginHandler = async(e) => {
         e.preventDefault()
         try {
-            const res = await axios.post('http://localhost:5000/api/employee/login', formData,  {
-                // headers: {
-                //     "Content-Type": "application/json",
-                // },
-                withCredentials: true, // Ensures cookies are sent
-            })  
+            const res = await axios.post('http://bas.rjpinfotek.com:5000/api/employee/login', formData)  
 
             const data = await res.data;
             console.log(data)
             dispatch(setCredentials(data))
+            localStorage.setItem('empToken', data.token);
             console.log(currentUser)
+            window.location.reload()
             navigate('/home');
         } catch (error) {
             alert("Unable to Login")

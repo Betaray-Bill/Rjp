@@ -86,7 +86,7 @@ function CalendarDate({eventsDate}) {
     }else{
       // post it in the API 
       try{
-        const res = await axios.post(`http://localhost:5000/api/trainer/trainingDates/${data._id}`, newEvent)
+        const res = await axios.post(`http://bas.rjpinfotek.com:5000/api/trainer/trainingDates/${data._id}`, newEvent)
         console.log(res.data)
         if(res){
         //   getTrainerDetails()

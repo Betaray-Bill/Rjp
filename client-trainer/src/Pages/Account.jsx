@@ -20,6 +20,7 @@ import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useQueryClient } from 'react-query';
+import api from '@/utils/api';
 
 const style = {
     position: 'absolute',
@@ -73,7 +74,7 @@ function Account() {
     axios.defaults.withCredentials = true;
     const handleSubmit = async(e) => {
         try {
-            const res = await axios.put(`http://localhost:5000/api/trainer/update/${user._id}`, {generalDetails:{...generalDetails}}  )
+            const res = await api.put(`/trainer/update/${user._id}`, {generalDetails:{...generalDetails}}  )
             const response = await res.data;
             queryClient.invalidateQueries(["user", user._id])
 
@@ -103,7 +104,7 @@ function Account() {
         if (pass.newpassword === pass.confirmnewpassword) {
             console.log("Same")
             try {
-                const response = await axios.put(`http://localhost:5000/api/trainer/change-password/${user._id}`, {
+                const response = await api.put(`/trainer/change-password/${user._id}`, {
                     newpassword: pass.newpassword,
                     currentPassword: pass.currentPassword
                 }); // Replace with your API endpoint
@@ -112,7 +113,7 @@ function Account() {
                 console.error('Password Adding failed:', error);
             }
 
-            // http://localhost:5000/api/trainer/change-password/${user._id}
+            // /trainer/change-password/${user._id}
         } else {
             alert("Not same")
         }

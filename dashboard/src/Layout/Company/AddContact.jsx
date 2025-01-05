@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import api from '@/utils/api';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +13,7 @@ function AddContact() {
     const [companyId, setCompanyId] = useState("");
     const fetchCompaniesAndContactPerson = async() => {
         try {
-            const response = await axios.get('http://localhost:5000/api/company/company');
+            const response = await api.get('/company/company');
             const data = await response.data
             // console.log(data.companies)
             setCompanyData(data.companies);
@@ -39,7 +40,7 @@ function AddContact() {
         console.log(formData)
         e.preventDefault();
         try {
-            const response = await axios.put(`http://localhost:5000/api/company/create-contact/${companyId}`, formData);
+            const response = await api.put(`/company/create-contact/${companyId}`, formData);
             // alert('Contact Added Successfully');
             console.log(response.data)
             setFormData({

@@ -24,6 +24,7 @@ import {
     PaginationPrevious
 } from "@/components/ui/pagination"
 import SingleTrainerCell from './Components/SingleTrainerCell';
+import api from '@/utils/api';
 
 function GetTrainer() {
     const [trainer,
@@ -39,7 +40,14 @@ function GetTrainer() {
     const queryClient = useQueryClient()
 
     const getAll = async(page, limit) => {
-        const response = await axios.get(`http://localhost:5000/api/trainersourcer/getTrainer/${currentUser.employee._id}?page=${page}&limit=${limit}`); // Replace with your API endpoint
+        const token = localStorage.getItem('empToken'); // Get the token from localStorage (or any storage)
+        console.log("TOke is", token)
+        const response = await axios.get(`http://bas.rjpinfotek.com:5000/api/trainersourcer/getTrainer/${currentUser.employee._id}?page=${page}&limit=${limit}`, {
+            withCredentials: true, // Ensures cookies are sent with each request
+            headers: {
+                Authorization: `Bearer ${token}`  // Set the token, if available
+            },
+        }); // Replace with your API endpoint
         console.log(response.data.trainers)
         return response.data
     }

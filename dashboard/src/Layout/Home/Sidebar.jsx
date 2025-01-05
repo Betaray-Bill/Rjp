@@ -46,9 +46,11 @@ function Sidebar() {
     axios.defaults.withCredentials = true;
     const signOutNow = async() => {
         try {
-            const res = axios.get('http://localhost:5000/api/employee/signout')
+            const res = axios.get('http://bas.rjpinfotek.com:5000/api/employee/signout')
             console.log(res.data)
             dispatch(signOut())
+            localStorage.removeItem('empToken');
+
             dispatch(resetDomainResultsAndSearch())
             navigate('/login')
         } catch (err) {

@@ -14,6 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import LoginHero from '../assets/LoginHero.png';
 import logo from '../assets/logo.png';
+import api from '@/utils/api';
 
 
 
@@ -29,19 +30,23 @@ function Login() {
 
     // LOGIN QUERY
     const loginMutation = useMutation((data) => {
-        return axios.post('http://localhost:5000/api/trainer/login', data)
+        return api.post('/trainer/login', data)
       },
       {
         onSuccess: (data) => {
           console.log("login DOnes")
           dispatch(setCredentials(data.data.trainer[0]));
+          localStorage.setItem('jwt', data.data.token);
+
           console.log(data)
-          if (data) {
-            navigate('/home/dashboard');
-          }
+          navigate('/home/dashboard');  
+         
         },
         onSettled: () => {
           console.log("Settled")
+          if (data) {
+            // navigate('/home/dashboard');  
+          }
         },
         onError: (error) => {
           console.log(error);

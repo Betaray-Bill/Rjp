@@ -11,12 +11,13 @@ import {
     TableRow
 } from "@/components/ui/table"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
+import api from '@/utils/api'
 
 function ViewCompany() {
 
     const fetchAllCompanies = async() => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/company/company`)
+            const response = await api.get(`/company/company`)
             console.log(response.data.companies)
             return response.data.companies
         } catch (error) {

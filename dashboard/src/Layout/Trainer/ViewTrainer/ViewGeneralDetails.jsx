@@ -8,6 +8,7 @@ import axios from 'axios';
 import {useParams} from 'react-router-dom';
 import {useQueryClient} from 'react-query';
 import { useToast } from '@/hooks/use-toast';
+import api from '@/utils/api';
 
 function ViewGeneralDetails({data, id, bank}) {
     const trainerId = useParams()
@@ -54,14 +55,14 @@ function ViewGeneralDetails({data, id, bank}) {
     const submitHandler = async(e) => {
         // e.preventDefault()
         console.log("object")
-        // http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resum
+        // http://bas.rjpinfotek.com:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resum
         // e/671f1f348706010ba634eb8f
-        // console.log(`http://localhost:5000/api/trainer/updateResume/671f1f348706010ba
+        // console.log(`http://bas.rjpinfotek.com:5000/api/trainer/updateResume/671f1f348706010ba
         // 6 34eb92/resume/${data._id}`)
         try {
             console.log("object ", trainerDetails)
             // console.log(resume)
-            const res = await axios.put(`http://localhost:5000/api/trainersourcer/update-profile/${trainerId.id}`, {generalDetails: generalDetails})
+            const res = await api.put(`/trainersourcer/update-profile/${trainerId.id}`, {generalDetails: generalDetails})
             console.log(generalDetails)
             const data = res.data
             console.log(data)
@@ -91,7 +92,7 @@ function ViewGeneralDetails({data, id, bank}) {
         try {
             console.log("object ", trainerDetails)
             // console.log(resume)
-            const res = await axios.put(`http://localhost:5000/api/trainer/reset/${trainerId.id}`)
+            const res = await api.put(`/trainer/reset/${trainerId.id}`)
             console.log(generalDetails)
             const data = res.data
             console.log(data)
@@ -267,7 +268,9 @@ function ViewGeneralDetails({data, id, bank}) {
                 <div className='flex items-center '>
                     <Label className="font-semibold" htmlFor="Aadhar Cards">Aadhar Card</Label>
                     {/* <a href={bank.aadharCard}>Aadhar</a> */}
-                    <a target='_blank' href={bank.aadharCard} className='py-2 text-sm bg-blue-900 text-white ml-2 border rounded-none px-4'>Download</a>
+                    {
+                        bank.aadharCard ? <a target='_blank' href={bank.aadharCard} className='py-2 text-sm bg-blue-900 text-white ml-2 border rounded-none px-4'>Download</a> : <p className='ml-2'>Not Uploaded</p>
+                    }
                 </div>
 
 

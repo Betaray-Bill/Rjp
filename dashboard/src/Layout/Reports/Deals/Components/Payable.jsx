@@ -11,6 +11,7 @@ import {
     TableHeader,
     TableRow
 } from "@/components/ui/table";
+import api from '@/utils/api';
 
 function Payable() {
     const {currentUser} = useSelector(state => state.auth)
@@ -32,7 +33,7 @@ function Payable() {
             if (endDate) 
                 params.append("endDate", endDate);
             
-            const response = await axios.get(`http://localhost:5000/api/reports/payment-due/payable/${currentUser
+            const response = await api.get(`/reports/payment-due/payable/${currentUser
                 ?.employee._id}?${params.toString()}`);
             const data = await response.data;
             console.log(data)

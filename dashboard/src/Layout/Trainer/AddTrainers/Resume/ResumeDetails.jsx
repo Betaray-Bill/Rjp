@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { setResumeDetails } from '@/features/trainerSlice'
+import api from '@/utils/api'
 
 
 function ResumeDetails({data}) {
@@ -27,7 +28,7 @@ function ResumeDetails({data}) {
 
   const checkConnection = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/resumeextractor/check-connection");
+      const response = await api.get("/resumeextractor/check-connection");
       setConnectionStatus(response.data.message);
       setModelStatus(response.data.modelStatus);
     } catch (error) {
@@ -93,7 +94,7 @@ function ResumeDetails({data}) {
     formData.append("resume", file);
     setIsUploading(true)
     try {
-      const response = await axios.post("http://localhost:5000/api/resumeextractor/upload ", formData);
+      const response = await api.post("/resumeextractor/upload ", formData);
       setExtractedData(response.data);
       console.log(response.data)
       const newResume = {

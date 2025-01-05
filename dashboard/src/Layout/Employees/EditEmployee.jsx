@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import axios from 'axios';
+import api from '@/utils/api';
 
 function EditEmployee() {
 
@@ -77,13 +78,13 @@ function EditEmployee() {
     })
     try {
       console.log(roleSelected)
-      const response = await axios.put(`http://localhost:5000/api/employee/update-role/${emp._id}`, {roles:[roleSelected]}); // Replace with your API endpoint
+      const response = await api.put(`/employee/update-role/${emp._id}`, {roles:[roleSelected]}); // Replace with your API endpoint
       console.log('Roles Adding successful:', response.data);
     } catch (error) {
         console.error('Roles Adding failed:', error);
     }
 
-    // http://localhost:5000//api/employee/update-role/${r._id}
+    // http://bas.rjpinfotek.com:5000//api/employee/update-role/${r._id}
 
   }
 

@@ -106,7 +106,7 @@ const getAllCompanyNamesAndIds = asyncHandler(async(req, res) => {
         console.log(companies)
         if (!companies || companies.length === 0) {
             return res
-                .status(404)
+                .status(500)
                 .json({ message: "No companies found" });
         }
 

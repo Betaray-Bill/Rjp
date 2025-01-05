@@ -11,6 +11,7 @@ import {Button} from "@/components/ui/button";
 import {useSelector} from "react-redux";
 import {useToast} from "@/hooks/use-toast";
 import {useQueryClient} from "react-query";
+import api from "@/utils/api";
 
 // Localizer for React Big Calendar
 const localizer = momentLocalizer(moment);
@@ -141,7 +142,7 @@ const CalendarComp = ({eventsDate, workingDates}) => {
         ]
         try {
 
-            const data = await axios.put(`http://localhost:5000/api/trainer/workingDates/${user._id}`, {
+            const data = await api.put(`/trainer/workingDates/${user._id}`, {
                 ...formValues
             })
             const res = await data.data
@@ -269,19 +270,19 @@ const CalendarComp = ({eventsDate, workingDates}) => {
                             <h4 className="font-semibold my-4">Working Dates</h4>
                             <div>
                                 {workingDatesData.map((data, index) => (
-                                    <div key={index} className="border border-gray-300 rounded-md px-4 py-2">
+                                    <div key={index} className="border border-gray-300 rounded-md px-4 mt-2 py-2">
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 Title : {data
                                                     ?.name}
                                             </div>
-                                            <div className="cursor-pointer" onClick={() => deleteEvent(index)}>
+                                            {/* <div className="cursor-pointer" onClick={() => deleteEvent(index)}>
                                                 <ion-icon
                                                     name="trash-outline"
                                                     style={{
                                                     color: "red"
                                                 }}></ion-icon>
-                                            </div>
+                                            </div> */}
                                         </div>
                                         <div>
                                             <span>From : {moment(data.startDate).format("YYYY-MM-DD")}</span>

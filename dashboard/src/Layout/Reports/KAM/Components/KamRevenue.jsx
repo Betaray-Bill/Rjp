@@ -8,6 +8,7 @@ import {useSelector} from 'react-redux'
 import {userAccess} from '@/utils/CheckUserAccess'
 import {RolesEnum} from '@/utils/constants'
 import RevenueResult from '../../Deals/Components/Revenue/RevenueResult'
+import api from '@/utils/api'
 // import RevenueResult from './RevenueResult'
 
 function KamRevenue() {
@@ -52,7 +53,7 @@ function KamRevenue() {
     const fetchKAM = async() => {
         // Fetch client data from API
         try {
-            const response = await axios.get('http://localhost:5000/api/employee/getkeyAccounts');
+            const response = await api.get('/employee/getkeyAccounts');
             const data = await response.data;
             console.log(data)
             setKamData(data);
@@ -65,7 +66,7 @@ function KamRevenue() {
     const fetchCompany = async() => {
         // Fetch client data from API
         try {
-            const response = await axios.get('http://localhost:5000/api/company/getAll-company');
+            const response = await api.get('/company/getAll-company');
             const data = await response.data;
             console.log(data)
             setCompanyData(data);
@@ -97,11 +98,11 @@ function KamRevenue() {
                 params.append("company", company);
 
             // Construct URL dynamically based on params
-            const url = `http://localhost:5000/api/reports/get-revenue/${ID}${params.toString()
+            const url = `/reports/get-revenue/${ID}${params.toString()
                 ? `?${params.toString()}`
                 : ""}`;
 
-            const response = await axios.get(url);
+            const response = await api.get(url);
             const data = response.data; // No need for `await` here, `response.data` is already resolved
             console.log(data);
             setResult(data);

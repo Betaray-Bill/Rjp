@@ -5,6 +5,8 @@ import { useQuery, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import EmployeeDetails from './Components/EmployeeDetails';
 import Roles from './Components/Roles';
+import { useSelector } from 'react-redux';
+import api from '../../utils/api';
 
 function ViewEmployee() {
   
@@ -14,9 +16,12 @@ function ViewEmployee() {
   // const [collapse, setCollapse] = useState(false)
   const queryClient = useQueryClient();
   const {toast} = useToast()
-
+  const {currentUser} = useSelector(state => state.auth)
+  const token = localStorage.getItem('empToken'); // Get the token from localStorage (or any storage)
+  console.log("TOke is", token)
+  console.log(currentUser)
   const fetchEmp = async () => {
-    const response = await axios.get(`http://localhost:5000/api/employee/getemployee/${id.id}`)
+    const response = await api.get(`/employee/getemployee/${id.id}`)
     console.log(response.data.message)
     return response.data.message
   }

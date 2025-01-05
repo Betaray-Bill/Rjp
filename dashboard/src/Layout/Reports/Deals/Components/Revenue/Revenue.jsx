@@ -5,6 +5,7 @@ import {Input} from '@/components/ui/input'
 import {Button} from '@/components/ui/button'
 import {Label} from '@/components/ui/label'
 import RevenueResult from './RevenueResult'
+import api from '@/utils/api'
 
 function Revenue() {
     const [option,
@@ -40,7 +41,7 @@ function Revenue() {
     const fetchKAM = async() => {
         // Fetch client data from API
         try {
-            const response = await axios.get('http://localhost:5000/api/employee/getkeyAccounts');
+            const response = await api.get('/employee/getkeyAccounts');
             const data = await response.data;
             console.log(data)
             setKamData(data);
@@ -53,7 +54,7 @@ function Revenue() {
     const fetchCompany = async() => {
         // Fetch client data from API
         try {
-            const response = await axios.get('http://localhost:5000/api/company/getAll-company');
+            const response = await api.get('/company/getAll-company');
             const data = await response.data;
             console.log(data)
             setCompanyData(data);
@@ -75,7 +76,7 @@ function Revenue() {
             if (endDate) 
                 params.append("endDate", endDate);
             
-            const response = await axios.get(`http://localhost:5000/api/reports/get-revenue/company/${company}?${params.toString()}`);
+            const response = await api.get(`/reports/get-revenue/company/${company}?${params.toString()}`);
             const data = await response.data;
             console.log(data)
             setResult(data);
@@ -97,9 +98,9 @@ function Revenue() {
             if (endDate) params.append("endDate", endDate);
     
             // Construct URL dynamically based on params
-            const url = `http://localhost:5000/api/reports/get-revenue/${kam}${params.toString() ? `?${params.toString()}` : ""}`;
+            const url = `/reports/get-revenue/${kam}${params.toString() ? `?${params.toString()}` : ""}`;
     
-            const response = await axios.get(url);
+            const response = await api.get(url);
             const data = response.data; // No need for `await` here, `response.data` is already resolved
             console.log(data);
             setResult(data);

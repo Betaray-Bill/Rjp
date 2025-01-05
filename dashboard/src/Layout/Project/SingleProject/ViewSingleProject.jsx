@@ -19,6 +19,7 @@ import { RolesEnum } from '@/utils/constants'
 import InvoiceList from './Components/Invoice/InvoiceList'
 import Remainder from './Components/Remainder'
 import Client from './Components/Client'
+import api from '@/utils/api'
 
 const state = {
   ParticipantList: "Participant List",
@@ -60,7 +61,7 @@ function ViewSingleProject() {
 
   const { currentUser } = useSelector(state => state.auth)
   const fetchProjects = async () => {
-    const response = await axios.get(`http://localhost:5000/api/project/get-project/${projectId.projectId}`)
+    const response = await api.get(`/project/get-project/${projectId.projectId}`)
     console.log(response.data)
     setFormData({
       Travel: response.data.project.trainingDelivery.Travel,
@@ -159,7 +160,7 @@ function ViewSingleProject() {
     e.preventDefault();
     try {
       // console.log(object)
-      const response = await axios.put(`http://localhost:5000/api/project/updateCheckList/${projectId.projectId}`, formData);
+      const response = await axios.put(`http://bas.rjpinfotek.com:5000/api/project/updateCheckList/${projectId.projectId}`, formData);
       console.log("Response:", response.data);
       // alert("Form submitted successfully!");
       queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
@@ -193,8 +194,8 @@ function ViewSingleProject() {
 
   const fileUpload = async(e) => {
     console.log(e)
-    // const upload = axios.post("http://localhost:5000/api/filestorage/upload-to-blob", {folderName:`${projectName}`})
-    const upload = await axios.get("http://localhost:5000/api/filestorage/check-blob-connection")
+    // const upload = axios.post("http://bas.rjpinfotek.com:5000/api/filestorage/upload-to-blob", {folderName:`${projectName}`})
+    const upload = await axios.get("http://bas.rjpinfotek.com:5000/api/filestorage/check-blob-connection")
     console.log(upload)
     const res = upload.data
     console.log(res)

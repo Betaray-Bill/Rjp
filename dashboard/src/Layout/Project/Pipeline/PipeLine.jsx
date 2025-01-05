@@ -9,6 +9,7 @@ import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
+import api from '@/utils/api';
 
 // Example usage console.log(StagesEnum.TRAINING_REQUIREMENT); // Output:
 // "Training Requirement"
@@ -34,7 +35,7 @@ function PipeLine() {
     // const {toast} = Fetch Companies
     const fetchCompaniesAndContactPerson = async() => {
         try {
-            const response = await axios.get('http://localhost:5000/api/company/company');
+            const response = await api.get('/company/company');
             const data = await response.data;
             setCompanyData(data.companies);
         } catch (error) {
@@ -59,7 +60,8 @@ function PipeLine() {
                 params.append("startDate", startDate);
             if (endDate) 
                 params.append("endDate", endDate);
-            const response = await axios.get(`http://localhost:5000/api/project/projects-employees/${currentUser.employee._id}?${params.toString()}`);
+            
+            const response = await api.get(`/project/projects-employees/${currentUser.employee._id}?${params.toString()}`);
             setProjects(response.data.projects);
             
          

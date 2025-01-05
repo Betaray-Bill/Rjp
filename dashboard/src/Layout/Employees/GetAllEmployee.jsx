@@ -11,18 +11,27 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 import { useQuery } from 'react-query';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {setAllEmp} from '@/features/employeeSlice';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import api from '@/utils/api';
   
 
 function GetAllEmployee() {
     const dispatch = useDispatch()
+    const {currentUser} = useSelector(state => state.auth)
 
     const getAll = async() => {
-        const response = await axios.get('http://localhost:5000/api/employee/getAll'); // Replace with your API endpoint
-        return response.data
+        const response = await api.get('/employee/getAll')
+        // , {
+            // withCredentials: true, // Ensures cookies are included in the request
+            // headers: {
+            //     Authorization: token ? `Bearer ${token}` : '', // Set the token, if available
+            // },
+        //   });
+          console.log(response.data)
+          return response.data;
     }
 
     const {data, refetch} = useQuery({

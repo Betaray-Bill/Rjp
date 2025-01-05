@@ -20,6 +20,7 @@ import AzureBlobUploader from './Pages/AzureBlobUploader'
 import SingleProject from './Layout/Home/Deals/Project/SingleProject'
 import TrainingDomains from './Pages/TrainingDomains'
 import ResumeDisplay from './Layout/Resume/ResumeDisplay'
+import api from './utils/api'
 
 
 function App() {
@@ -28,7 +29,7 @@ function App() {
   
   axios.defaults.withCredentials = true;
   const signOut = async() => {
-    await axios.get('http://localhost:5000/api/trainer/signout')
+    await api.get('/trainer/signout')
     dispatch(logout())
     navigate("/login")
   }

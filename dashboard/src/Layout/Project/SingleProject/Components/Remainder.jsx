@@ -7,6 +7,7 @@ import {Label} from '@/components/ui/label';
 import axios from 'axios';
 import {useToast} from '@/hooks/use-toast';
 import {useQueryClient} from 'react-query';
+import api from '@/utils/api';
 
 function Remainder({stages, projectId, remainders}) {
     const [date,
@@ -57,7 +58,7 @@ function Remainder({stages, projectId, remainders}) {
 
         setLoading(true);
         try {
-            const response = await axios.put(`http://localhost:5000/api/project/remainder/${projectId.projectId}`, {
+            const response = await api.put(`/project/remainder/${projectId.projectId}`, {
                 ...requestData
             })
             const result = await response.data

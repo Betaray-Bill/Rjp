@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table"
+import api from '@/utils/api'
 
 function GeneralReports() {
 
@@ -60,7 +61,7 @@ function GeneralReports() {
     const fetchKAM = async() => {
         // Fetch client data from API
         try {
-            const response = await axios.get('http://localhost:5000/api/employee/getkeyAccounts');
+            const response = await api.get('/employee/getkeyAccounts');
             const data = await response.data;
             console.log(data)
             setKamData(data);
@@ -73,7 +74,7 @@ function GeneralReports() {
     const fetchCompany = async() => {
         // Fetch client data from API
         try {
-            const response = await axios.get('http://localhost:5000/api/company/getAll-company');
+            const response = await api.get('/company/getAll-company');
             const data = await response.data;
             console.log(data)
             setCompanyData(data);
@@ -108,11 +109,11 @@ function GeneralReports() {
                 params.append("company", company);
 
             // Construct URL dynamically based on params
-            const url = `http://localhost:5000/api/reports/get-general-reports/${ID}${params.toString()
+            const url = `/reports/get-general-reports/${ID}${params.toString()
                 ? `?${params.toString()}`
                 : ""}`;
 
-            const response = await axios.get(url);
+            const response = await api.get(url);
             const data = response.data; // No need for `await` here, `response.data` is already resolved
             console.log(data);
             setResult(data);
@@ -206,7 +207,7 @@ function GeneralReports() {
                                 <TableRow>
                                     <TableHead>S.no</TableHead>
                                     <TableHead>Name</TableHead>
-                                    <TableHead>Email</TableHead>
+                                    {/* <TableHead>Email</TableHead> */}
                                     <TableHead>Company</TableHead>
                                     <TableHead>Number of Training</TableHead>
                                 </TableRow>
@@ -216,7 +217,7 @@ function GeneralReports() {
                                     <TableRow>
                                         <TableCell>{_i + 1}</TableCell>
                                         <TableCell className="font-semibold">{}</TableCell>
-                                        <TableCell> Email</TableCell>
+                                        {/* <TableCell> {Email}</TableCell> */}
                                         <TableCell>{e._id}</TableCell>
                                         <TableCell>{e.projectNames.length}</TableCell>
                                     </TableRow>

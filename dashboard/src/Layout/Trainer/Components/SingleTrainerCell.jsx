@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select"
 import {Input} from '@/components/ui/input'
 import {useQueryClient} from 'react-query'
+import api from '@/utils/api'
 
 function SingleTrainerCell({trainer, limit, page, index}) {
     const params = useParams()
@@ -73,7 +74,7 @@ function SingleTrainerCell({trainer, limit, page, index}) {
         };
 
         try {
-            const res = await axios.put(`http://localhost:5000/api/trainersourcer/remarks/${trainer._id}`, updatedData, {
+            const res = await api.put(`/trainersourcer/remarks/${trainer._id}`, updatedData, {
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -110,7 +111,7 @@ function SingleTrainerCell({trainer, limit, page, index}) {
         };
 
         try {
-            const res = await axios.put(`http://localhost:5000/api/trainersourcer/rating/${trainer._id}`, {rating}, {
+            const res = await axios.put(`http://bas.rjpinfotek.com:5000/api/trainersourcer/rating/${trainer._id}`, {rating}, {
                 headers: {
                     "Content-Type": "application/json"
                 }

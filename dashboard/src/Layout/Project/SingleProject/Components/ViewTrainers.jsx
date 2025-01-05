@@ -24,6 +24,7 @@ import {useMutation, useQueryClient} from 'react-query'
 import {useToast} from '@/hooks/use-toast'
 import axios from 'axios'
 import { Checkbox } from '@/components/ui/checkbox'
+import api from '@/utils/api'
 
 function ViewTrainers({trainers}) {
     const projectId = useParams()
@@ -34,7 +35,7 @@ function ViewTrainers({trainers}) {
     const { mutate: deleteTrainer, isLoading } = useMutation(
         async (trainerId) => {
           const response = await axios.put(
-            `http://localhost:5000/api/project/delete-trainers/${projectId.projectId}`,
+            `http://bas.rjpinfotek.com:5000/api/project/delete-trainers/${projectId.projectId}`,
             { trainers: trainerId }
           );
           return response.data;
@@ -69,8 +70,8 @@ function ViewTrainers({trainers}) {
     const isChecked = true
 
     const handleCheckboxChange = async(id) => {
-        const response = await axios.put(
-            `http://localhost:5000/api/project/updateClientCall/${projectId.projectId}`,
+        const response = await api.put(
+            `/project/updateClientCall/${projectId.projectId}`,
             { trainerId: id }
         );
         console.log(response.data)

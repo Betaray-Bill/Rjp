@@ -17,6 +17,7 @@ import {
     TableRow,
   } from "@/components/ui/table"
 import * as XLSX from 'xlsx';
+import api from '@/utils/api'
   
 function TrainerDeployed() {
     const {currentUser} = useSelector(state => state.auth)
@@ -60,7 +61,7 @@ function TrainerDeployed() {
     const fetchTrainerSourcer = async() => {
         // Fetch client data from API
         try {
-            const response = await axios.get('http://localhost:5000/api/employee/gettrainerSourcer');
+            const response = await api.get('/employee/gettrainerSourcer');
             const data = await response.data;
             console.log(data)
             setKamData(data);
@@ -99,11 +100,11 @@ function TrainerDeployed() {
 
 
             // Construct URL dynamically based on params
-            const url = `http://localhost:5000/api/reports/trainer-sourcer/deployed/${ID}${params.toString()
+            const url = `/reports/trainer-sourcer/deployed/${ID}${params.toString()
                 ? `?${params.toString()}`
                 : ""}`;
 
-            const response = await axios.get(url);
+            const response = await api.get(url);
             const data = response.data; // No need for `await` here, `response.data` is already resolved
             console.log(data);
             setResult(data);
@@ -225,7 +226,7 @@ function TrainerDeployed() {
             </TableHeader>
             <TableBody>
                 <TableRow>
-                <TableCell className="font-medium">{option[0].name}</TableCell>
+                <TableCell className="font-medium">{option[0]?.name}</TableCell>
                 <TableCell>{startDate}</TableCell>
                 <TableCell>{endDate}</TableCell>
                 <TableCell className="text-right">{result.totalTrainersDeployed}</TableCell>

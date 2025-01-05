@@ -8,7 +8,7 @@ import Project from "../models/ProjectModel/ProjectModel.js";
 // Login - Trainer with trainerId and Trainer_password
 const trainerLogin = asyncHandler(async(req, res) => {
     const { email, password } = req.body
-    console.log(req.body)
+    console.log("Request from login", req.body)
     if (email === "" || password === "") {
         return res
             .status(400)
@@ -18,7 +18,7 @@ const trainerLogin = asyncHandler(async(req, res) => {
     const trainer = await Trainer.find({ "generalDetails.email": email })
         .populate('resumeVersion')
         // .select("-password")
-    console.log(trainer[0].password, password)
+   
     console.log(trainer)
     try {
         if (trainer && (await argon2.verify(trainer[0].password, password))) {
@@ -28,7 +28,7 @@ const trainerLogin = asyncHandler(async(req, res) => {
             console.log("login token ", token);
             res
                 .status(200)
-                .json({ trainer });
+                .json({ trainer, token });
         } else {
             console.log("error")
             res
@@ -377,7 +377,7 @@ const getAllTrainer = asyncHandler(async(req, res) => {
 
 const getResumeById = asyncHandler(async(req, res) => {
     const { id } = req.params;
-
+    // console.log("Get resume by UD")
     try {
         const resume = await Resume
             .findById(id)

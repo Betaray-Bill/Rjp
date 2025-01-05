@@ -13,6 +13,7 @@ import ViewResume from './ViewTrainer/ViewResume'
 import ViewGeneralDetails from './ViewTrainer/ViewGeneralDetails'
 import ViewTrainingDomain from './ViewTrainer/ViewTrainingDomain'
 import { setCurrentTrainerDetails } from '@/features/currentTrainerSlice'
+import api from '@/utils/api'
 
 function ViewTrainer() {
     const params = useParams()
@@ -26,7 +27,14 @@ function ViewTrainer() {
     // console.log(data)
 
     const getTrainerById = async() => {
-        const response = await axios.get(`http://localhost:5000/api/trainer/details/emp/${params.id}`); // Replace with your API endpoint
+        const token = localStorage.getItem('empToken'); // Get the token from localStorage (or any storage)
+console.log("TOke is", token)
+        const response = await axios.get(`http://bas.rjpinfotek.com:5000/api/trainer/details/emp/${params.id}`, {
+            withCredentials: true, // Ensures cookies are sent with each request
+            headers: {
+                Authorization: `Bearer ${token}`  // Set the token, if available
+            },
+        }); // Replace with your API endpoint
         dispatch(setCurrentTrainerDetails(response.data))
         return response.data
     }
@@ -50,7 +58,7 @@ function ViewTrainer() {
     const submitHandler = async() => {
         try {
             // trainerDetails.id = params.id await
-            // axios.put('http://localhost:5000/api/trainer/update', trainerDetails)
+            // axios.put('http://bas.rjpinfotek.com:5000/api/trainer/update', trainerDetails)
             // console.log("Trainer updated successfully")
             refetch()
             setIsEdit(false)

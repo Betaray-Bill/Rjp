@@ -14,6 +14,7 @@ import {
     TableRow
 } from "@/components/ui/table"
 import { Link } from 'react-router-dom';
+import api from '@/utils/api';
 
 function TrainingCalendar() {
     const [startDate,
@@ -33,7 +34,7 @@ function TrainingCalendar() {
             if (endDate) 
                 params.append("endDate", endDate);
             
-            const response = await axios.get(`http://localhost:5000/api/reports/calendar-view/${currentUser.employee._id}?${params.toString()}`);
+            const response = await api.get(`/reports/calendar-view/${currentUser.employee._id}?${params.toString()}`);
             setProjects(response.data);
 
         } catch (err) {

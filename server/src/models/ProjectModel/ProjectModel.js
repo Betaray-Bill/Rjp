@@ -244,6 +244,9 @@ const projectSchema = new mongoose.Schema({
             },
             description: {
                 type: String
+            },
+            dueDate:{
+                type: Date 
             }
         }]
     }],

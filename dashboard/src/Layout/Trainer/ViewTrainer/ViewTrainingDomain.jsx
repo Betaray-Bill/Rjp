@@ -17,6 +17,7 @@ import { setResumeDetails } from '@/features/trainerSlice'
 import { useParams } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
 import axios from 'axios'
+import api from '@/utils/api'
 
 function ViewTrainingDomain({data, trainingType}) {
     const dispatch = useDispatch();
@@ -147,14 +148,14 @@ function ViewTrainingDomain({data, trainingType}) {
     const submitHandler = async(e) => {
         // e.preventDefault()
         console.log("object")
-        // http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resum
+        // http://bas.rjpinfotek.com:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resum
         // e/671f1f348706010ba634eb8f
-        // console.log(`http://localhost:5000/api/trainer/updateResume/671f1f348706010ba
+        // console.log(`http://bas.rjpinfotek.com:5000/api/trainer/updateResume/671f1f348706010ba
         // 6 34eb92/resume/${data._id}`)
         try {
             console.log("object ", trainerDetails)
             // console.log(resume)
-            const res = await axios.put(`http://localhost:5000/api/trainersourcer/update-profile/${trainerId.id}`, {trainingDomain: trainingDomain})
+            const res = await api.put(`/trainersourcer/update-profile/${trainerId.id}`, {trainingDomain: trainingDomain})
             // console.log(generalDetails)
             const data = res.data
             console.log(data)

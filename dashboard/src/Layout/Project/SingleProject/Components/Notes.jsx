@@ -8,6 +8,7 @@ import {io} from "socket.io-client"
 import axios from 'axios'
 import {useQuery, useQueryClient} from 'react-query'
 import {useSelector} from 'react-redux'
+import api from '@/utils/api'
 // const socket = io("http://localhost:6000");
 
 function Notes({projectName, projectId}) {
@@ -50,7 +51,7 @@ function Notes({projectName, projectId}) {
     }
 
     const fetchNotes = async() => {
-        const response = await axios.get(`http://localhost:5000/api/project/getChat/${projectId}`); // Replace with your API endpoint
+        const response = await api.get(`/project/getChat/${projectId}`); // Replace with your API endpoint
         setData(response.data.notes)
 
         let final = [];
@@ -140,7 +141,7 @@ function Notes({projectName, projectId}) {
                 // Check the blob connection
                 if (fileInputRef.current.value) {
                     console.log("Checking blob connection...");
-                    const result = await axios.get('http://localhost:5000/api/filestorage/check-blob-connection');
+                    const result = await api.get('/filestorage/check-blob-connection');
                     const response = result.data;
                     console.log("Connection check result:", response);
 
@@ -158,7 +159,7 @@ function Notes({projectName, projectId}) {
                         formData.append("timestamps", new Date().toISOString()); // Additional metadata
 
                         // Call the POST API to upload the file
-                        const uploadResult = await axios.post('http://localhost:5000/api/filestorage/upload-to-blob', formData, {
+                        const uploadResult = await api.post('/filestorage/upload-to-blob', formData, {
                             headers: {
                                 "Content-Type": "multipart/form-data"
                             }
@@ -173,7 +174,7 @@ function Notes({projectName, projectId}) {
                             message.file.name = message.file.name || file.name; // Update file name if it's not provided in the message object
 
                             // Post the Chat in the Chat in Backend
-                            const sendMessage = await axios.post(`http://localhost:5000/api/project/addChat/${projectId}`, message);
+                            const sendMessage = await api.post(`/project/addChat/${projectId}`, message);
                             const chatResp = await sendMessage.data
 
                             console.log(chatResp)
@@ -190,7 +191,7 @@ function Notes({projectName, projectId}) {
                     }
                 } else {
                     // Post the Chat in the Chat in Backend
-                    const sendMessage = await axios.post(`http://localhost:5000/api/project/addChat/${projectId}`, message);
+                    const sendMessage = await api.post(`/project/addChat/${projectId}`, message);
                     const chatResp = await sendMessage.data
 
                     console.log(chatResp)

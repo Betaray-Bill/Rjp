@@ -19,6 +19,7 @@ import { RolesEnum } from '../../utils/constants.js'
 import { resetDomainResultsAndSearch } from '@/features/searchTrainerSlice'
 import Sidebar from '@/Layout/Home/Sidebar'
 import { Button } from '@/components/ui/button'
+import api from '@/utils/api'
 
 function Home() {
   const dispatch = useDispatch()
@@ -30,14 +31,15 @@ function Home() {
   };
 
     const {currentUser} = useSelector(state => state.auth)
-
+    console.log(currentUser)
     axios.defaults.withCredentials = true;
     const signOutNow = async() => {
         try{
-          const res = axios.get('http://localhost:5000/api/employee/signout')
+          const res = api.get('http://bas.rjpinfotek.com:5000/api/employee/signout')
           console.log(res.data)
             dispatch(signOut())
             dispatch(resetDomainResultsAndSearch())
+            localStorage.removeItem('empToken');
             navigate('/login')
         }catch(err){
             console.log(err)

@@ -13,6 +13,7 @@ import { userAccess } from '@/utils/CheckUserAccess';
 import { RolesEnum } from '@/utils/constants';
 import { useSelector } from 'react-redux';
 import { toWords } from 'number-to-words';
+import api from '@/utils/api';
     
 function PurchaseOrderFile({
     name,
@@ -66,7 +67,7 @@ function PurchaseOrderFile({
                 console.log(data)
 
                 // console.log(data)
-                const response = await axios.put(`http://localhost:5000/api/project/save-purchaseOrder/${projectId.projectId}/trainer/${id}`, {
+                const response = await api.put(`/project/save-purchaseOrder/${projectId.projectId}/trainer/${id}`, {
                     ...data
                 });
                 console.log(response.data)
@@ -108,7 +109,7 @@ function PurchaseOrderFile({
                     // terms: terms
                 }
                 console.log(data)
-            const response = await axios.put(`http://localhost:5000/api/project/purchaseOrder/${projectId.projectId}/trainer/${id}`, {
+            const response = await api.put(`/project/purchaseOrder/${projectId.projectId}/trainer/${id}`, {
                 ...data
             });
             console.log(response.data)

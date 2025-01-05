@@ -50,7 +50,7 @@ function Profile() {
         if (pass.newpassword === pass.confirmnewpassword) {
             console.log("Same")
             try {
-                const response = await axios.put(`http://localhost:5000/api/employee/updatePassword/${currentUser.employee._id}`, {
+                const response = await axios.put(`http://bas.rjpinfotek.com:5000/api/employee/updatePassword/${currentUser.employee._id}`, {
                     newpassword: pass.newpassword,
                     currentPassword: pass.currentPassword
                 }); // Replace with your API endpoint
@@ -68,7 +68,7 @@ function Profile() {
                 console.error('Password Adding failed:', error);
             }
 
-            // http://localhost:5000/api/trainer/change-password/${user._id}
+            // http://bas.rjpinfotek.com:5000/api/trainer/change-password/${user._id}
         } else {
             alert("Not same")
         }

@@ -267,20 +267,16 @@ const getProjectsByEmp = asyncHandler(async(req, res) => {
 })
 
 // Get All Projects from pipeline
-const getProject = asyncHandler(async(req, res) => {
+const getProject = asyncHandler(async (req, res) => {
     const { empId } = req.params;
     const { companyId, startDate, endDate } = req.query; // Extracting filters from query params
     let assignedProjects = [];
-    console.log("Assigned Projects")
+    console.log("Assigned Projects");
     try {
         // Fetch the employee and their roles
-        const employee = await Employee
-            .findById(empId)
-            .populate('role.roleId');
+        const employee = await Employee.findById(empId).populate('role.roleId');
         if (!employee) {
-            return res
-                .status(404)
-                .json({ message: "Employee not found" });
+            return res.status(404).json({ message: "Employee not found" });
         }
 
         // Loop through roles to identify the employee's responsibilities
@@ -289,28 +285,27 @@ const getProject = asyncHandler(async(req, res) => {
 
             if (role.name === 'KeyAccounts') {
                 // Extract projects assigned to Key Accounts
-                assignedProjects = role
-                    .roleId
-                    .Projects
-                    .map((project) => project.toString());
+                assignedProjects = role.roleId.Projects.map((project) => project.toString());
                 break;
             }
 
             if (role.name === 'ADMIN') {
                 // Admin can access all projects in the pipeline
-                const pipelines = await Pipeline
-                    .find()
-                    .populate({
-                        path: 'stages.projects',
-                        select: 'projectName domain company trainingDates isLost',
-                        populate: {
-                            path: 'projectOwner',
-                            select: 'name email contactDetails.phone'
-                        }
-                    });
+                const pipelines = await Pipeline.find().populate({
+                    path: 'stages.projects',
+                    select: 'projectName domain company trainingDates isLost',
+                    populate: {
+                        path: 'projectOwner',
+                        select: 'name email contactDetails.phone'
+                    }
+                });
 
                 // Flatten all projects into a single array
-                assignedProjects = pipelines.flatMap((pipeline) => pipeline.stages.flatMap((stage) => stage.projects.map((project) => project._id.toString())));
+                assignedProjects = pipelines.flatMap((pipeline) =>
+                    pipeline.stages.flatMap((stage) =>
+                        stage.projects.map((project) => project._id.toString())
+                    )
+                );
                 break;
             }
 
@@ -325,84 +320,82 @@ const getProject = asyncHandler(async(req, res) => {
                     }
                 });
 
-                assignedProjects = pipelines.flatMap((pipeline) => pipeline.stages.filter((stage) => ["Payment", "PO received / Invoice Raised", "Invoice Sent"].includes(stage.name)).flatMap((stage) => stage.projects.map((project) => project._id.toString())));
+                assignedProjects = pipelines.flatMap((pipeline) =>
+                    pipeline.stages
+                        .filter((stage) =>
+                            ["Payment", "PO received / Invoice Raised", "Invoice Sent"].includes(stage.name)
+                        )
+                        .flatMap((stage) =>
+                            stage.projects.map((project) => project._id.toString())
+                        )
+                );
                 break;
             }
         }
 
         // Step 1: Filter by companyId (if provided)
         if (companyId) {
-            const company = await Company
-                .findById(companyId)
-                .populate('Projects');
+            const company = await Company.findById(companyId).populate('Projects');
             if (!company) {
-                return res
-                    .status(404)
-                    .json({ message: "Company not found" });
+                return res.status(404).json({ message: "Company not found" });
             }
 
             // Retain only projects belonging to the given company
-            assignedProjects = assignedProjects.filter((projectId) => company.Projects.some((companyProject) => companyProject._id.toString() === projectId));
+            assignedProjects = assignedProjects.filter((projectId) =>
+                company.Projects.some((companyProject) => companyProject._id.toString() === projectId)
+            );
         }
 
         // Step 2: Filter by dates (if provided)
         if (startDate && endDate) {
             assignedProjects = await Project.find({
-                _id: {
-                    $in: assignedProjects
-                },
-                $or: [{
-                    'trainingDates.startDate': {
-                        $lte: endDate
+                _id: { $in: assignedProjects },
+                $or: [
+                    {
+                        'trainingDates.startDate': { $lte: endDate },
+                        'trainingDates.endDate': { $gte: startDate }
                     },
-                    'trainingDates.endDate': {
-                        $gte: startDate
+                    {
+                        'trainingDates.startDate': { $gte: startDate, $lte: endDate }
+                    },
+                    {
+                        'trainingDates.endDate': { $gte: startDate, $lte: endDate }
                     }
-                }, {
-                    'trainingDates.startDate': {
-                        $gte: startDate,
-                        $lte: endDate
-                    }
-                }, {
-                    'trainingDates.endDate': {
-                        $gte: startDate,
-                        $lte: endDate
-                    }
-                }]
+                ]
             }).populate('projectOwner', 'name email contactDetails.phone');
         } else {
             // If no date filters are provided, fetch projects directly
-            assignedProjects = await Project
-                .find({
-                    _id: {
-                        $in: assignedProjects
-                    }
-                })
-                .populate('projectOwner', 'name email contactDetails.phone');
+            assignedProjects = await Project.find({
+                _id: { $in: assignedProjects }
+            }).populate('projectOwner', 'name email contactDetails.phone');
         }
 
         // Step 3: Group projects by pipeline stages
-        const pipelines = await Pipeline
-            .find()
-            .populate({
-                path: 'stages.projects',
-                match: {
-                    _id: {
-                        $in: assignedProjects.map((p) => p._id)
-                    }
-                }
-            });
+        const pipelines = await Pipeline.find().populate({
+            path: 'stages.projects',
+            match: {
+                _id: { $in: assignedProjects.map((p) => p._id) }
+            },
+            populate: {
+                path: 'projectOwner', // Ensure projectOwner is populated
+                select: 'name email contactDetails.phone'
+            }
+        });
 
-        const result = pipelines.flatMap((pipeline) => pipeline.stages.map((stage) => ({ name: stage.name, projects: stage.projects })));
+        const result = pipelines.flatMap((pipeline) =>
+            pipeline.stages.map((stage) => ({
+                name: stage.name,
+                projects: stage.projects
+            }))
+        );
 
         res.json({ projects: result });
     } catch (err) {
         console.error(err.message);
-        res
-            .status(500)
-            .json({ message: "Server error" });
+        res.status(500).json({ message: "Server error" });
     }
 });
+
 
 // Get Projects By Id
 const getProjectDetails = asyncHandler(async(req, res) => {
@@ -1223,12 +1216,15 @@ const updateInvoice_by_paid = asyncHandler(async(req, res) => {
             trainer.inVoice[req.body.index] = {
                 isPaid: req.body.isPaid,
                 description: req.body.description,
+                dueDate: req.body.dueDate,
                 // isPaid: req.body.isPaid,
             };
         } else {
             const inVoice = trainer.inVoice[req.body.index];
             inVoice.isPaid = req.body.isPaid
-            inVoice.description = req.body.description
+            inVoice.description = req.body.description,
+            inVoice.dueDate= req.body.dueDate
+
         };
         // }
 

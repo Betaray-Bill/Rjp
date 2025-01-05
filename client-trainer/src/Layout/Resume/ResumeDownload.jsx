@@ -10,6 +10,7 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
+import api from '@/utils/api';
 
 // import { Document, Page } from '@react-pdf/renderer'; 
 
@@ -23,7 +24,7 @@ function ResumeDownload() {
     const blue = useRef();
 
     const fetchResume = async(id) => {
-        return axios.get(`http://localhost:5000/api/trainer/resume/${id}`).then(res => res.data);
+        return api.get(`/trainer/resume/${id}`).then(res => res.data);
     }
 
     const roundHeight = (height) => {

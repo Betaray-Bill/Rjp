@@ -757,7 +757,7 @@ const pendingPO = asyncHandler(async(req, res) => {
 })
 
 // Pending PO
-const pendingPayment = asyncHandler(async(req, res) => {
+const pendingPayment = asyncHandler(async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
 
@@ -785,7 +785,7 @@ const pendingPayment = asyncHandler(async(req, res) => {
         // Fetch projects within the specified dates
         const projects = await Project.find(query);
 
-        console.log("Projects: " + projects)
+        console.log("Projects: ", projects);
 
         const result = [];
 
@@ -794,11 +794,11 @@ const pendingPayment = asyncHandler(async(req, res) => {
 
             for (const trainerObj of project.trainers) {
                 // Check if any invoice in the trainer object is unpaid
-                const hasUnpaidInvoices = trainerObj
+                const unpaidInvoices = trainerObj
                     .inVoice
-                    .some(invoice => !invoice.isPaid);
+                    .filter(invoice => !invoice.isPaid);
 
-                if (hasUnpaidInvoices) {
+                for (const invoice of unpaidInvoices) {
                     // Fetch trainer details
                     const trainerDetails = await Trainer
                         .findById(trainerObj.trainer._id)
@@ -811,7 +811,8 @@ const pendingPayment = asyncHandler(async(req, res) => {
                             projectOwner: await Employee
                                 .findById(project.projectOwner)
                                 .select('name'),
-                            projectId: projectId.toString()
+                            projectId: projectId.toString(),
+                            dueDate: invoice.dueDate || 'Not available' // Add dueDate from the invoice
                         });
                     }
                 }
@@ -825,7 +826,7 @@ const pendingPayment = asyncHandler(async(req, res) => {
             .status(500)
             .json({ message: 'Internal server error.' });
     }
-})
+});
 
 // Search Trainer By name, gmail, Id
 const searchTrainer = async(req, res) => {

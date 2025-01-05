@@ -13,13 +13,13 @@ function EmployeeDetails({data}) {
                     <div className='flex flex-col'>
                         <Label className="text-md text-gray-700">Name
                         </Label>
-                        <Input className='mt-2 text-black-900 border-gray-400 font-semibold' value={data.name} ></Input>
+                        <Input className='mt-2 text-black-900 border-gray-400 font-semibold' value={data?.name} ></Input>
                     </div>
 
                     <div className='flex flex-col'>
                         <Label className="text-md text-gray-700">Email
                         </Label>
-                        <Input className='mt-2 text-black-900 border-gray-400 font-semibold' value={data.email} ></Input>
+                        <Input className='mt-2 text-black-900 border-gray-400 font-semibold' value={data?.email} ></Input>
                     </div>
 
                 </div>

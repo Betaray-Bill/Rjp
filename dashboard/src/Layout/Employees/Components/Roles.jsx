@@ -1,5 +1,6 @@
 import {Button} from '@/components/ui/button'
 import {useToast} from '@/hooks/use-toast';
+import api from '@/utils/api';
 import {Label} from '@radix-ui/react-dropdown-menu';
 import axios from 'axios';
 import {space} from 'postcss/lib/list';
@@ -37,7 +38,7 @@ function Roles({data}) {
         event.preventDefault();
 
         try {
-            const response = await axios.put(`http://localhost:5000/api/employee/update-role/${params.id}`, {roles: roles}); //
+            const response = await api.put(`/employee/update-role/${params.id}`, {roles: roles}); //
             console.log('Updating Roles successful:', response.data);
             toast({
                 title: "Employee Roles Updated", //

@@ -20,6 +20,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQueryClient } from 'react-query';
+import api from '@/utils/api';
 
 function    ViewNewResume({data, projects}) {
     const [file, setFile] = useState(null);
@@ -189,14 +190,14 @@ function    ViewNewResume({data, projects}) {
 
     const submitResumeHandler = async(e) => {
         e.preventDefault()
-        // http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/671f1f348706010ba634eb8f
-        // console.log(`http://localhost:5000/api/trainer/updateResume/671f1f348706010ba634eb92/resume/${data._id}`)
+        // /trainer/updateResume/671f1f348706010ba634eb92/resume/671f1f348706010ba634eb8f
+        // console.log(`/trainer/updateResume/671f1f348706010ba634eb92/resume/${data._id}`)
         // console.log(resume)
         try{
             // console.log("object")
             console.log(resume)
             let res = {...resume, domain:value}
-            await axios.post(`http://localhost:5000/api/trainersourcer/${params.id}/copy-resume`, res)
+            await api.post(`/trainersourcer/${params.id}/copy-resume`, res)
 
             toast({
                 title:"New Resume Is Created",

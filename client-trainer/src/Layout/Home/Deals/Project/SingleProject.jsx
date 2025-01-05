@@ -6,17 +6,18 @@ import {useSelector} from 'react-redux';
 import {useParams} from 'react-router-dom';
 import PurchaseOrder from './Components/PO/PurchaseOrder';
 import Invoice from './Components/Invoice/Invoice';
+import api from '@/utils/api';
 
 function SingleProject() {
     const params = useParams()
     const {user} = useSelector((state) => state.auth)
 
     const fetchProject = async() => {
-        const res = await axios.get(`http://localhost:5000/api/project/${params.projectId}/trainer/${user._id}`)
+        const res = await api.get(`/project/${params.projectId}/trainer/${user._id}`)
         return res.data.project;
     }
 
-    // http://localhost:5000/api/project/67361ebbecf02b0117e1a99a/trainer/6735cb6034
+    // http://bas.rjpinfotek.com:5000/api/project/67361ebbecf02b0117e1a99a/trainer/6735cb6034
     // 6a85087117f784
 
     const {data, isLoading, isError} = useQuery([

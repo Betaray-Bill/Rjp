@@ -16,6 +16,7 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
+import api from '@/utils/api'
 
   
   
@@ -72,7 +73,7 @@ function TrainerSourced() {
     const fetchTrainerSourcer = async() => {
         // Fetch client data from API
         try {
-            const response = await axios.get('http://localhost:5000/api/employee/gettrainerSourcer');
+            const response = await api.get('/employee/gettrainerSourcer');
             const data = await response.data;
             console.log(data)
             setKamData(data);
@@ -133,11 +134,11 @@ function TrainerSourced() {
 
 
             // Construct URL dynamically based on params
-            const url = `http://localhost:5000/api/reports/trainer-sourcer/sourced/${ID}${params.toString()
+            const url = `/reports/trainer-sourcer/sourced/${ID}${params.toString()
                 ? `?${params.toString()}`
                 : ""}`;
 
-            const response = await axios.get(url);
+            const response = await api.get(url);
             const data = response.data; // No need for `await` here, `response.data` is already resolved
             console.log(data);
             setResult(data);
@@ -221,7 +222,7 @@ function TrainerSourced() {
                 </TableHeader>
                 <TableBody>
                     <TableRow>
-                    <TableCell className="font-medium">{option && option[0]?.email}</TableCell>
+                    <TableCell className="font-medium">{option && option[0]?.name}</TableCell>
                     <TableCell>{startDate}</TableCell>
                     <TableCell>{endDate}</TableCell>
                     <TableCell className="text-right">{result?.trainers?.length}</TableCell>

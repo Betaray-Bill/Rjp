@@ -13,6 +13,8 @@ import { generateEmpToken, generateToken } from "../utils/generateToken.js";
 const login = asyncHandler(async(req, res) => {
     const { email, password } = req.body;
 
+    console.log("Login Request for emp",req.body)
+
     const employee = await Employee.findOne({ email })
         // .select("password");
     console.log(req.body)
@@ -67,11 +69,14 @@ const login = asyncHandler(async(req, res) => {
             }
 
             // if(employee.role.name === "ADM)
-            let token = generateEmpToken(res, employee._id);
+            let emp = employee._id
+            let token = generateEmpToken(res, emp);
             console.log("login token ", token);
+            console.log("login emp ", emp);
+        
             res
                 .status(200)
-                .json({ employee, rolesDetails });
+                .json({ employee, rolesDetails,token });
         } else {
             res.status(401);
             throw new Error('Invalid email or password');

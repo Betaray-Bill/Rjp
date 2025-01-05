@@ -8,6 +8,7 @@ import {useQueryClient} from 'react-query';
 import {useToast} from '@/hooks/use-toast';
 import axios from 'axios';
 import UploadInvoice from './UploadInvoice';
+import api from '@/utils/api';
 // import { convertToIndianWords } from 'number-to-words'
 
 function GenerateInvoice({purchaseOrder, formData, inVoice, index, projectName}) {
@@ -101,7 +102,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice, index, projectName})
         }
 
         try {
-            const sendUrlToDB = await axios.put(`http://localhost:5000/api/trainer/sendInvoice/project/${params.projectId}/trainer/${user._id}`, {inVoiceNumber: formData.inVoiceNumber});
+            const sendUrlToDB = await api.put(`/trainer/sendInvoice/project/${params.projectId}/trainer/${user._id}`, {inVoiceNumber: formData.inVoiceNumber});
             const resp = await sendUrlToDB.data
             queryClient.invalidateQueries(["projects", params.projectId])
             toast({title: "Invoice Sent Successfully", description: "Your invoice has been sent to RJP.", variant: "success"})

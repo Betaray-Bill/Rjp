@@ -4,6 +4,7 @@ import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import api from '@/utils/api';
 
 function AddCompany() {
     const initialFormData = {
@@ -44,7 +45,7 @@ function AddCompany() {
         //     return;
         // }
         try {
-            const response = await axios.post('http://localhost:5000/api/company/create-company', formData); // Replace with your API endpoint
+            const response = await api.post('/company/create-company', formData); // Replace with your API endpoint
             console.log('Registration successful:', response.data);
             // Handle successful registration (e.g., redirect to login page)
             toast({
