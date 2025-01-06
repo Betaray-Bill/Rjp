@@ -37,7 +37,7 @@ router.put('/update-client-amount/project/:projectId', authEmployeeMiddleware, a
 
 // remainders
 router.put('/remainder/:projectId', authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), addRemainders)
-router.get('/remainders', authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), getRemainders)
+router.get('/remainders/:empId', authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), getRemainders)
 
 
 router.put('/expense/:projectId', authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts", "Finance"]), addExpenses)

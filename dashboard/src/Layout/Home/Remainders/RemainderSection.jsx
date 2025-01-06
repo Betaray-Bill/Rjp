@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table"
 import { Link } from 'react-router-dom'
 import api from '@/utils/api'
+import {useSelector} from 'react-redux';
 
 function RemainderSection() {
 
@@ -19,6 +20,7 @@ function RemainderSection() {
         setStartDate] = useState(new Date().toISOString().split("T")[0])
     const [endDate,
         setEndDate] = useState()
+    const {currentUser} = useSelector(state => state.auth);
 
     useEffect(() => {
         if (startDate && endDate && startDate < endDate) {
@@ -42,9 +44,7 @@ function RemainderSection() {
             if(startDate) query = query + `startDate=${startDate}`
             if(endDate) query = query + `&endDate=${endDate}`
             console.log(query)
-            const response = await api.get(`/project/remainders?${query}`, {
-                withCredentials:true
-            })
+            const response = await api.get(`/project/remainders/${currentUser.employee._id}?${query}`)
             const data = await response.data
             console.log(data)
             setData(data)
@@ -107,15 +107,13 @@ function RemainderSection() {
                                     <TableCell className="font-medium">{_i + 1}</TableCell>
                                     <TableCell>{item.projectName}</TableCell>
                                     <TableCell className="flex-wrap">{item.stages}</TableCell>
-                                    <TableCell>{item
-                                            .remainders[0]
-                                            .date
+                                    <TableCell>{item?.remainders[0]?.date
                                             .split("T")[0]
                                             .split("-")
                                             .reverse()
                                             .join("-")}
                                     </TableCell>
-                                    <TableCell>{item.remainders[0].description}</TableCell>
+                                    <TableCell>{item?.remainders[0]?.description}</TableCell>
                                     <TableCell>
                                       <Link to={`/home/projects/view/${item._id}`} target='_blank' className='border border-blue-800 bg-blue-800 text-white px-3 py-2'>Open</Link>
                                     </TableCell>

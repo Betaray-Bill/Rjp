@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { signOut } from '@/features/authSlice';
+import api from '@/utils/api';
 
 
 function Sidebar() {
@@ -46,7 +47,7 @@ function Sidebar() {
     axios.defaults.withCredentials = true;
     const signOutNow = async() => {
         try {
-            const res = axios.get('http://bas.rjpinfotek.com:5000/api/employee/signout')
+            const res = api.get('/employee/signout')
             console.log(res.data)
             dispatch(signOut())
             localStorage.removeItem('empToken');

@@ -1353,23 +1353,39 @@ const getRemainders = asyncHandler(async(req, res) => {
 
         const startDate = req.query.startDate ? new Date(req.query.startDate) : null;
         const endDate = req.query.endDate ? new Date(req.query.endDate) : null;
-        const userRole = req.user.role; // Assuming `req.user` contains the logged-in user's details
+        // const userRole = req.user.role; // Assuming `req.user` contains the logged-in user's details
         const userId = req.user._id; // Logged-in user's ID
 
         let projects = [];
         let matchQuery = {};
 
-        // Filter projects based on user role
-        if (userRole === 'ADMIN') {
-            // Admin can access all projects
+        const emp = await Employee.findById(userId).exec(); // Fetch employee data
+
+        if (!emp) {
+            return res.status(404).json({ message: "Employee not found." });
+        }
+        
+        // Determine the role
+        const isAdmin = emp.role.some((role) => role.name === 'ADMIN');
+        const isKeyAccounts = emp.role.some((role) => role.name === 'KeyAccounts');
+        
+        if (isAdmin) {
+            // Admin: can access all projects
             matchQuery = {};
-        } else if (userRole === 'KEY_ACCOUNTS') {
-            // Fetch projects the KeyAccounts user is involved in
-            const keyAccount = await KeyAccounts.findOne({ user: userId }).select('projects');
-            if (!keyAccount) {
-                return res.status(404).json({ message: "No projects found for the user." });
+        } else if (isKeyAccounts) {
+            // KeyAccounts: Fetch the KeyAccounts document using the associated roleId
+            const keyAccountRole = emp.role.find((role) => role.name === 'KeyAccounts'); // Get the KeyAccounts role details
+            if (!keyAccountRole || !keyAccountRole.roleId) {
+                return res.status(404).json({ message: "KeyAccounts roleId not found for the employee." });
             }
-            matchQuery = { _id: { $in: keyAccount.projects } };
+        
+            const keyAccount = await KeyAccounts.findById(keyAccountRole.roleId).select('Projects').exec();
+            if (!keyAccount || !keyAccount.Projects.length) {
+                return res.status(404).json({ message: "No projects found for the KeyAccounts user." });
+            }
+        
+            // Match projects associated with the KeyAccounts user
+            matchQuery = { _id: { $in: keyAccount.Projects } };
         }
 
         // Handle reminders based on date range
