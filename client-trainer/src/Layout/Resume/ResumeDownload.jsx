@@ -142,7 +142,7 @@ function ResumeDownload() {
                                     .generalDetails
                                     .name
                                     .toUpperCase()}</h1>
-                            <img src="https://avatars.githubusercontent.com/u/124599?v=4" alt="" className='w-[100px] object-contain mr-6'/>
+                            {/* <img src="https://avatars.githubusercontent.com/u/124599?v=4" alt="" className='w-[100px] object-contain mr-6'/> */}
                         </div>
                         
                         {/* Resume content */}

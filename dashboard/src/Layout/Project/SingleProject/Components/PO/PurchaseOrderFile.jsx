@@ -207,7 +207,7 @@ function PurchaseOrderFile({
                 <div className='grid grid-cols-2 gap-0'>
                     <div className='border border-black p-3'>
                         <h1 className="text-xl font-bold mb-3">RJP Infotek Pvt Ltd</h1>
-                        <p className='text-sm'>No. 34, Santhanan Tower, 2nd Floor,</p>
+                        <p className='text-sm'>No. 34, Sendhan Tower, 2nd Floor,</p>
                         <p className='text-sm'>First Avenue, Jawaharlal Nehru Road,</p>
                         <p className='text-sm'>Ashok Nagar, Chennai, Tamil Nadu - 600083</p>
                         <p className='text-sm mt-4'>
@@ -274,7 +274,7 @@ function PurchaseOrderFile({
                     <div className='border-l border-r  border-black p-3'>
                         <p className="font-semibold mt-3">Bill To:</p>
                         <p className='text-sm'>RJP Infotek Pvt Ltd</p>
-                        <p className='text-sm'>No. 34, Santhanan Tower, 2nd Floor,</p>
+                        <p className='text-sm'>No. 34, Sendhan Tower, 2nd Floor,</p>
                         <p className='text-sm'>First Avenue, Jawaharlal Nehru Road,</p>
                         <p className='text-sm'>Ashok Nagar, Chennai, Tamil Nadu - 600083</p>
                         <p className='text-sm'>Your Phone No.: 044-24731012</p>
