@@ -17,7 +17,7 @@ function Reports() {
 
             <div className='grid grid-cols-3 gap-5 my-5 mt-10'>
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT, RolesEnum.Finance], currentUser?.employee.role) && (
+              userAccess([RolesEnum.ADMIN,  RolesEnum.Finance], currentUser?.employee.role) && (
                 <Link to="reports/deals" className='border border-gray-300 rounded-sm p-3  hover:ease-in-out transition-all hover:drop-shadow-md'>
                     <h3 className='text-black text-lg font-semibold'>Deals</h3>
                     <p className='font-normal text-sm mt-2'>View the performance of your KAM and clients</p>

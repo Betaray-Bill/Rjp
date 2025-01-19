@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useParams } from "react-router-dom";
 import { useQueryClient } from "react-query";
 import { useToast } from "@/hooks/use-toast";
+import api from "@/utils/api";
 
 const expenseOptions = ["Trainer", "Venue", "Travel", "Boarding_Lodging", "cw_lab", "miscellaneous"];
 
@@ -49,7 +50,7 @@ const ExpenseCard = ({ type, onUpdate }) => {
   );
 };
 
-function Expense({ expensesList }) {
+function Expense() {
   const [selectedExpenses, setSelectedExpenses] = useState([]);
   const [expenses, setExpenses] = useState({});
 
@@ -57,24 +58,51 @@ function Expense({ expensesList }) {
   const params = useParams();
   const { toast } = useToast();
 
-  // Initial transformation of expensesList
-  useEffect(() => {
-    const transformedArray = Object.entries(expensesList).map(([key, value]) => ( {
+  const fetchData = async() => {
+    const response = await api.get(
+      `/project/expense/${params.projectId}`,
+      expenses // Send updated `expenses` object
+    );
+    const result = await response.data;
+    console.log(result)
+        const transformedArray = Object.entries(result).map(([key, value]) => ( {
       category: key,
       ...value,
     }));
     setSelectedExpenses(transformedArray);
-    setExpenses(expensesList);
-  }, [expensesList, params.projectId]);
+  }
+
+  useEffect(() => {
+fetchData()
+  }, [])
+
+  // Initial transformation of expensesList
+  // useEffect(() => {
+  //   const transformedArray = Object.entries(expensesList).map(([key, value]) => ( {
+  //     category: key,
+  //     ...value,
+  //   }));
+  //   setSelectedExpenses(transformedArray);
+  //   setExpenses(expensesList);
+  // }, [expensesList, params.projectId]);
 
   // Handle dropdown selection for adding new expense types
   const handleDropdownSelect = (value) => {
-    if (!expenses[value]) {
+    if (!expenses[value] && !selectedExpenses[value]) {
       const newExpense = {
         amount: 0,
         dueDate: "",
         isPaid: false,
       };
+
+      for(let i=0; i<selectedExpenses.length; i++){
+        console.log(selectedExpenses[i],value)
+        if(value == selectedExpenses[i].category){
+          console.log("dupe")
+          toast({ title: "Expenses Already Exists", variant: "success" });
+          return
+        }
+      }
 
       setExpenses({
         ...expenses,
@@ -107,13 +135,14 @@ function Expense({ expensesList }) {
   // Save or update expenses in the backend
   const saveExpenses = async () => {
     try {
-      const response = await axios.put(
-        `http://bas.rjpinfotek.com:5000/api/project/expense/${params.projectId}`,
-        expenses // Send updated `expenses` object
+      const response = await api.put(
+        `/project/expense/${params.projectId}`,
+        {...expenses, ...selectedExpenses} // Send updated `expenses` object
       );
       const result = await response.data;
       queryClient.invalidateQueries(["ViewProject", params.projectId]);
       toast({ title: "Expenses saved successfully", variant: "success" });
+      fetchData()
     //   alert("Expenses saved successfully!");
     } catch (error) {
       console.error(error);

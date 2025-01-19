@@ -147,6 +147,10 @@ const trainerSchema = mongoose.Schema({
         },
         vendorName: {
             type: String
+        },
+        sameasVendor:{
+            type:Boolean,
+            default:false
         }
     },
     trainingDetails: {

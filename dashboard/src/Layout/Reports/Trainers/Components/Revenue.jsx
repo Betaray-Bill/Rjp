@@ -232,6 +232,8 @@ function Revenue() {
                             fetchTrainerDetails(trainer._id);
                             setRecommendations([])
                             setId(trainer)
+                            setSearchQuery('')
+
                         }}>
                             {trainer.trainerId}
                             - {trainer.generalDetails.name}

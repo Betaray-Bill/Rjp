@@ -4,6 +4,7 @@ import authorizeRole from '../middleware/roleMiddleware.js';
 import { addRating, addRemark, getResumeById, getTrainerByEmpId, registerTrainer, updateResume } from '../controllers/TrainerSourcerController.js';
 import { signOut } from '../controllers/AuthController.js';
 import { lockResume, resumeCopy, updateTrainerProfile } from '../controllers/TrainerController.js';
+import checkRoleStatus from '../middleware/checkRoleStatus.js';
 // import multer from 'multer';
 // const upload = multer({ dest: "uploads/" });
 
@@ -27,17 +28,17 @@ router.post("/register-trainer/:trainerId",
 router.get("/signout", authEmployeeMiddleware, signOut)
 
 // Handling Trainer Data
-router.put("/updateResume/:trainer_id/resume/:resume_id", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), updateResume)
+router.put("/updateResume/:trainer_id/resume/:resume_id", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), checkRoleStatus(['ADMIN', "Trainer Sourcer"]), updateResume)
 router.put("/update-profile/:id", authEmployeeMiddleware, updateTrainerProfile)
 router.post("/:id/copy-resume", authEmployeeMiddleware, resumeCopy)
 router.get("/getTrainer/:emp_id", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), getTrainerByEmpId)
-router.put('/updateLockStatus/:id', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer sourcer"]), lockResume)
+router.put('/updateLockStatus/:id', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer sourcer", "KeyAccounts"]), lockResume)
 
 
-router.get("/resume/:id", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), getResumeById)
+router.get("/resume/:id", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer", "KeyAccounts"]), getResumeById)
 // Rating
-router.put('/remarks/:trainerId', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), addRemark)
-router.put('/rating/:trainerId', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), addRating)
+router.put('/remarks/:trainerId', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer", "KeyAccounts"]), addRemark)
+router.put('/rating/:trainerId', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer", "KeyAccounts"]), addRating)
 
 
 

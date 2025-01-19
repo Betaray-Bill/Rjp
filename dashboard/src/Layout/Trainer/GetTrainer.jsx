@@ -109,7 +109,7 @@ function GetTrainer() {
                                             // console.log(`${index + 1}.) ${trainer.email} `)
                                         }}
                                             className="cursor-pointer rounded-md">
-                                                <SingleTrainerCell trainer={trainer} limit={limit} page={page} index={index} />
+                                                <SingleTrainerCell  trainer={trainer} limit={limit} page={page} index={index} />
                                         </TableRow>
                                     ))}
                 </TableBody>

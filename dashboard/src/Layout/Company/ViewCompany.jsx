@@ -48,7 +48,7 @@ function ViewCompany() {
     }
     return (
         <div> 
-            {isLoading && <div>Loading...</div>}
+            {/* {isLoading && <div>Loading...</div>} */}
 
             <div className='flex items-center'>
                 <h2 className='text-lg font-semibold'>View Clients</h2>

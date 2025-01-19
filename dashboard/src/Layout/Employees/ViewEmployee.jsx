@@ -42,6 +42,9 @@ function ViewEmployee() {
   }
   return (
     <div>
+      {/* hi {
+        id.id
+      } */}
       <EmployeeDetails data={data && data}/>
       <Roles data={data && data.role}/>
     </div>

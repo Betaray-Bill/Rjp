@@ -25,6 +25,7 @@ function PurchaseOrderFile({
     poNumber,
     terms,
     type,
+    purchaseorderNumber,
     trainerGST,
     trainerPAN
 }) {
@@ -57,8 +58,8 @@ function PurchaseOrderFile({
                     details: {
                         description: tableRows,
                         type: type,
-                        terms: terms
-
+                        terms: terms,
+                        purchaseorderNumber:purchaseorderNumber
                     },
                     // type: type,
                     poNumber:Number(poNumber),
@@ -101,7 +102,8 @@ function PurchaseOrderFile({
                     details: {
                         description: tableRows,
                         type: type,
-                        terms: terms
+                        terms: terms,
+                        purchaseorderNumber:purchaseorderNumber
 
                     },
                     // type: type,
@@ -223,7 +225,7 @@ function PurchaseOrderFile({
                                     <tbody>
                                         <tr>
                                             <td className="px-2 font-medium">PO No# :</td>
-                                            <td className="px-2">RJP462425</td>
+                                            <td className="px-2">{                    purchaseorderNumber}</td>
                                         </tr>
                                         <tr>
                                             <td className="px-2 font-medium">Date:</td>

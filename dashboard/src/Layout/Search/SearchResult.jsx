@@ -11,9 +11,9 @@ function SearchResult() {
     const handleReset = () => {
         dispatch(resetDomainResultsAndSearch());
     };
-
+    // handleReset()
     // Transform the data to ensure each trainingDomain creates a new row
-    const transformedResults = domainResults.flatMap((res) => res.trainingDomain.map((domain) => ({
+    const transformedResults = domainResults?.flatMap((res) => res?.trainingDomain?.map((domain) => ({
         ...res,
         trainingDomain: domain // Flattened each domain as a new row
     })));

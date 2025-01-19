@@ -5,7 +5,9 @@
     "pm2": "^5.4.3"
   },
   "scripts": {
-    "start": "concurrently \"npm run start --prefix server\" \"npm run dev --prefix dashboard\" \"npm run dev --prefix client-trainer\"  "
-
+    "start": "concurrently \"npm run start --prefix server\" \"npm run dev --prefix dashboard\" \"npm run dev --prefix client-trainer\"  \"npm run dev --prefix main\" "
+  },
+  "devDependencies": {
+    "open-cli": "^8.0.0"
   }
 }

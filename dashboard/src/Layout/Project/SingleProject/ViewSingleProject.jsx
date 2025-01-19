@@ -160,7 +160,7 @@ function ViewSingleProject() {
     e.preventDefault();
     try {
       // console.log(object)
-      const response = await axios.put(`http://bas.rjpinfotek.com:5000/api/project/updateCheckList/${projectId.projectId}`, formData);
+      const response = await api.put(`/project/updateCheckList/${projectId.projectId}`, formData);
       console.log("Response:", response.data);
       // alert("Form submitted successfully!");
       queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
@@ -194,8 +194,8 @@ function ViewSingleProject() {
 
   const fileUpload = async(e) => {
     console.log(e)
-    // const upload = axios.post("http://bas.rjpinfotek.com:5000/api/filestorage/upload-to-blob", {folderName:`${projectName}`})
-    const upload = await axios.get("http://bas.rjpinfotek.com:5000/api/filestorage/check-blob-connection")
+    // const upload = axios.post("/filestorage/upload-to-blob", {folderName:`${projectName}`})
+    const upload = await api.get("/filestorage/check-blob-connection")
     console.log(upload)
     const res = upload.data
     console.log(res)

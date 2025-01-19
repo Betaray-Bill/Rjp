@@ -1,3 +1,4 @@
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { setResumeDetails } from '@/features/trainerSlice';
@@ -26,6 +27,7 @@ function BankDetails() {
         pancard:"",
         aadharCard:"",
         vendorName: "",
+        sameasVendor:false
     })
 
 
@@ -103,6 +105,25 @@ function BankDetails() {
                     <Label htmlFor="pancard_Number">Aadhar Card Number</Label>
                     <Input type="text" id="aadharcard_Number" name="aadharCardNumber" onChange={(e) => handleChange(e)}/>
                 </div>
+
+                <div className='flex items-center'>
+                <Checkbox
+                    name="sameasVendor"
+                    checked={bankDetails.sameasVendor}
+                    onCheckedChange={(checked) =>{
+                        const updatedBankDetails = {...bankDetails, sameasVendor : checked}
+                        setBankDetails(updatedBankDetails);
+                        dispatch(setResumeDetails({
+                          name:"bankDetails",
+                          data:updatedBankDetails
+                        }))
+                    }
+                    }
+                />
+
+                    <Label htmlFor="pancard_Number" className="mx-3">Same as Vendor</Label>
+                    {/* <Checkbox /> */}
+                </div>
 {/* 
                 {
                     trainerDetails?.trainingDetails?.trainerType === "External - Vendor" ? 
@@ -124,7 +145,7 @@ function BankDetails() {
 
             <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-3 mt-3 place-items-center'>
                     <div>
-                        <Label htmlFor="account_Name">Aadhar Card</Label>
+                        <Label htmlFor="account_Name">Address Proof/ ID</Label>
                         {/* <Input type="text" id="account_Card" name="accountName" onChange={(e) => handleChange(e)}/> */}
                         <Input
                             ref={AadharCardRef}

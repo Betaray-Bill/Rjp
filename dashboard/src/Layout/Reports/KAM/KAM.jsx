@@ -30,7 +30,7 @@ function KAM() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="Revenue">Revenue</SelectItem>
-                            <SelectItem value="General_Reports">General Reports</SelectItem>
+                            <SelectItem value="General_Reports">Training Delivered</SelectItem>
                             {/* <SelectItem value="Training Calendar">Training Calendar</SelectItem>
                             <SelectItem value="Payment Due">Payment Due</SelectItem> */}
                         </SelectContent>

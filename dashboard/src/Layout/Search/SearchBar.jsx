@@ -21,6 +21,7 @@ import {resetDomainResultsAndSearch, setDomainResults, setIsSearching, setSearch
 import {Label} from '@/components/ui/label';
 import {    useQuery } from 'react-query';
 import api from '@/utils/api';
+import DatePicker from 'react-datepicker';
 
 function SearchBar({domainSearch}) {
     const [query,
@@ -39,6 +40,10 @@ function SearchBar({domainSearch}) {
         setStartDate] = useState('');
     const [endDate,
         setEndDate] = useState('');
+        const [startTime,
+            setStartTime] = useState('');
+            const [endTime,
+        setEndTime] = useState('');
     const [rating,
         setRating] = useState(null);
     const [mode, setMode] = useState('');
@@ -103,6 +108,8 @@ function SearchBar({domainSearch}) {
         if (startDate) req_query += `&startDate=${startDate}`;
         if (endDate) req_query += `&endDate=${endDate}`;
         if(rating) req_query += `&rating=${rating}`;
+            if (startTime) req_query += `&startTime=${startTime}`;
+            if (endTime) req_query += `&endTime=${endTime}`;
     
         console.log(req_query);
         
@@ -168,6 +175,8 @@ function SearchBar({domainSearch}) {
         setLoading(false);
 
     }
+
+    console.log(startTime)
 
     return (
         <div className=''>
@@ -294,6 +303,41 @@ function SearchBar({domainSearch}) {
                                                             onChange={(e) => setEndDate(e.target.value)}
                                                             className="w-max py-1 px-2 border mt-2 rounded-sm border-gray-700"/>
                                                 </div>
+                                                <div>
+                                <Label>Start Time:</Label>
+                                {/* <Input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} /> */}
+                                <DatePicker
+                                    // selected={formValues.startTime}
+                                    name="startTime"
+                                    selected={startTime}
+                                    onChange={(date) => setStartTime(date)}
+                                    showTimeSelect
+                                    showTimeSelectOnly
+                                    timeIntervals={15}
+                                    timeCaption="Time"
+                                    className="px-3 py-2 border border-gray-400 mt-1 rounded-md ml-2 w-max "
+                                    dateFormat="h:mm aa"
+                                    required/>
+                            </div>
+                            <div>
+                                <Label>End Time:</Label>
+                                {/* <Input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} /> */}
+
+                                <DatePicker
+                                    // selected={formselecteds.endTime}
+                                    name="trainingDates.endTime"
+                                    onChange={(date) => setEndTime(date)}
+
+                                    selected={endTime}
+                                    // onChange={(date) => handleDateChange(date, "trainingDates.endTime")}
+                                    showTimeSelect
+                                    showTimeSelectOnly
+                                    timeIntervals={15}
+                                    timeCaption="Time"
+                                    className="px-3 py-2 border border-gray-400 mt-1 rounded-md ml-2 w-max "
+                                    dateFormat="h:mm aa"
+                                required/>
+                            </div>
                                                 
                                             </div>
                                             </div>

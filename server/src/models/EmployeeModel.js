@@ -24,6 +24,10 @@ const employeeSchema = new mongoose.Schema({
             type: String,
             enum: ['ADMIN', 'Manager', 'Trainer Sourcer', 'KeyAccounts', 'Finance'],
             required: true
+        },
+        disable:{
+            type:Boolean,
+            default: false
         }
     }],
     roleId: [{

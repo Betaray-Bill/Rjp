@@ -81,6 +81,7 @@ function SingleTrainerCell({trainer, limit, page, index}) {
             });
 
             console.log(res.data);
+            queryClient.invalidateQueries(["getAllTrainers", page])
 
             // Update the frontend data
             setData((prev) => prev.map((e) => e.id === updatedData.id
@@ -92,8 +93,8 @@ function SingleTrainerCell({trainer, limit, page, index}) {
 
             setEditRemark(null);
             setShowEdit(false); // Close the edit modal
-            // queryClient(["getTrainerById", currentUser.employee._id])
-            window.location.reload()
+            // queryClient.invalidateQueries(["getAllTrainers", page])
+            // window.location.reload()
 
             setIsEdit(false)
         } catch (err) {
@@ -111,20 +112,21 @@ function SingleTrainerCell({trainer, limit, page, index}) {
         };
 
         try {
-            const res = await axios.put(`http://bas.rjpinfotek.com:5000/api/trainersourcer/rating/${trainer._id}`, {rating}, {
+            const res = await api.put(`/trainersourcer/rating/${trainer._id}`, {rating}, {
                 headers: {
                     "Content-Type": "application/json"
                 }
             });
 
             console.log(res.data);
+            queryClient.invalidateQueries(["getAllTrainers", page])
 
             setEditRemark(null);
             setShowEdit(false); // Close the edit modal
-            // queryClient(["getTrainerById", currentUser.employee._id])
+            // queryClient(["getAllTrainers", page])
             setIsEdit(false)
 
-            window.location.reload()
+            // window.location.reload()
         } catch (err) {
             console.error(err);
         }

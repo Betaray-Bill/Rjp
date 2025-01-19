@@ -18,6 +18,7 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select"
+import { Label } from '@/components/ui/label';
 
 function PurchaseOrder({
     trainerGST,
@@ -40,16 +41,22 @@ function PurchaseOrder({
 
     const [type,
         setType] = useState("")
+        const [purchaseorderNumber,
+            setpoNumber] = useState("")
     const [terms,
         setTerms] = useState([])
     const [task,
         setTask] = useState([])
+
+
         console.log(po)
     useEffect(() => {
         if (isPurchased) {
             // alert("meow")
             setTableRows(po.details.description)
             setType(po?.details.type)
+            setpoNumber(po?.details.purchaseorderNumber)
+
             setTerms(po?.details.terms)
         }
     }, [])
@@ -73,6 +80,8 @@ function PurchaseOrder({
             [name]: value
         });
     };
+
+    console.log(formInput)
 
     // Add new row to the table
     const addRow = () => {
@@ -119,7 +128,7 @@ function PurchaseOrder({
         setFormInput({description: row.description, typeQty: row.typeQty, rate: row.rate, amount: row.amount});
         setEditRowIndex(index);
     };
-
+    console.log(poNumber)
     return (
         <div className='border my-5 rounded-md px-4 drop-shadow-sm'>
             <div className='my-4 font-semibold'>
@@ -134,6 +143,10 @@ function PurchaseOrder({
 
                     </div>
                     <Fragment>
+                        <div className='my-3'>
+                            <Label>Purchase Order Number</Label>
+                            <Input type="text" name="poNumber" onChange={(e) => setpoNumber(e.target.value)}/>
+                        </div>
                         <Select onValueChange={(e) => setType(e)} value={type}>
                             <SelectTrigger className="w-max">
                                 <SelectValue placeholder="Select a Type"/>
@@ -246,6 +259,7 @@ function PurchaseOrder({
             <PurchaseOrderFile
                 id={id}
                 projectName={projectName}
+                purchaseorderNumber={purchaseorderNumber}
                 name ={name}
                 isPurchased={isPurchased}
                 terms={terms}

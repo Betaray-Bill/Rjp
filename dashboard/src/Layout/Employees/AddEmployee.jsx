@@ -35,7 +35,7 @@ function AddEmployee() {
         event.preventDefault();
         
         try {
-            const response = await api.post('/api/employee/register', empData); // Replace with your API endpoint
+            const response = await api.post('/employee/register', empData); // Replace with your API endpoint
             console.log('Registration successful:', response.data);
             toast({
                 title: "Employee Registered",

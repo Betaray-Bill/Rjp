@@ -39,7 +39,8 @@ function Login() {
           localStorage.setItem('jwt', data.data.token);
 
           console.log(data)
-          navigate('/home/dashboard');  
+          navigate('/home/dashboard'); 
+          window.location.reload() 
          
         },
         onSettled: () => {
@@ -104,7 +105,7 @@ function Login() {
                       <Label htmlFor="remember" className="text-xs">Keep me signed in</Label>
                     </div>
                     <a href="#" className="text-xs text-blue-600 hover:underline">
-                      Forgot password?
+                      {/* Forgot password? */}
                     </a>
                   </div>
                   <Button type="submit" className="w-full bg-blue-600 text-white hover:bg-blue-700">
@@ -114,9 +115,9 @@ function Login() {
               </CardContent>
             </Card>
             <div className="mt-4 text-center">
-              <a href="#" className="text-sm text-gray-600 hover:underline">
+              {/* <a href="#" className="text-sm text-gray-600 hover:underline">
                 Trouble signing in?
-              </a>
+              </a> */}
             </div>
           </div>
         </div>

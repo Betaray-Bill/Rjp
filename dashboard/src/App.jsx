@@ -53,7 +53,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/home' element={<Home />}>
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && (
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT, RolesEnum.Finance], currentUser?.employee.role) && (
               <Route path='' element={<HomeWrapper /> } />
               )
             }
@@ -61,17 +61,17 @@ function App() {
 
             {/* Reports */}
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && (
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT,RolesEnum.Finance], currentUser?.employee.role) && (
               <Route path='reports/deals' element={<Deals /> } />
               )
             }
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && (
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT,RolesEnum.Finance], currentUser?.employee.role) && (
               <Route path='reports/trainers' element={<Trainers /> } />
               )
             }
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && (
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT,RolesEnum.Finance], currentUser?.employee.role) && (
               <Route path='reports/key-accounts' element={<KAM /> } />
               )
             }

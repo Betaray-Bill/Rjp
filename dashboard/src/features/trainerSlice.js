@@ -125,7 +125,8 @@ const trainerSlice = createSlice({
                     pancardNumber: "",
                     aadharCardNumber: "",
                     gstNumber: "",
-                    vendorName: ""
+                    vendorName: "",
+                    sameasVendor:false
                 },
                 // Training Details
                 trainingDetails: {

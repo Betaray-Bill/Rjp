@@ -16,12 +16,16 @@ import api from '@/utils/api';
 function Receivable() {
     const {currentUser} = useSelector(state => state.auth)
     const [startDate,
-        setStartDate] = useState("");
+        setStartDate] = useState(new Date().toISOString().split('T')[0]);
     const [endDate,
-        setEndDate] = useState("");
+        setEndDate] = useState(new Date().toISOString().split('T')[0]);
 
     const [expenses,
         setExpenses] = useState([])
+
+    useEffect(() => {
+        fetchPaymentDueReceivable()
+    }, [])
 
     const fetchPaymentDueReceivable = async() => {
         // Fetch client data from API
@@ -90,7 +94,11 @@ function Receivable() {
                                     <TableCell>{expense.companyName}</TableCell>
                                     <TableCell>{expense.amount}</TableCell>
                                     <TableCell>{new Date(expense.dueDate).toLocaleDateString()}</TableCell>
-                                    <TableCell>{Math.ceil((new Date() - new Date(expense.dueDate)) / (1000 * 60 * 60 * 24))}</TableCell>
+                                    <TableCell>
+                                        {Math.ceil((new Date() - new Date(expense.dueDate)) / (1000 * 60 * 60 * 24)) > 0 
+                                            ? `-${Math.ceil((new Date() - new Date(expense.dueDate)) / (1000 * 60 * 60 * 24))} days `
+                                            : `${Math.abs(Math.ceil((new Date() - new Date(expense.dueDate)) / (1000 * 60 * 60 * 24)))} days remaining`}
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

@@ -42,7 +42,7 @@ function Notes({projectName, projectId}) {
         setData] = useState([])
 
     useEffect(() => {
-        // fetchNotes()
+        fetchNotes()
 
     }, [projectId])
 
@@ -197,7 +197,7 @@ function Notes({projectName, projectId}) {
                     console.log(chatResp)
                 }
                 // queryClient.invalidateQueries(['notes', projectId]);
-                // fetchNotes()
+                fetchNotes()
                 setMessage({
                     text: {
                         content: ''
@@ -375,7 +375,7 @@ function Notes({projectName, projectId}) {
 
                                     <Button
                                         onClick={submitMessage}
-                                        className="py-2 rounded-md bg-black text-white ml-3">Send</Button>
+                                        className="py-2 rounded-md bg-black text-white ml-3">Share</Button>
                                 </div>
                             </div>
                         </div>

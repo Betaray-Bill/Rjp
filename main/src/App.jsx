@@ -5,37 +5,40 @@ import './App.css'
 
 function App() {
   const handleRedirect = (url) => {
-    window.open(url, "_blank"); // O  
+    window.location.href = url; 
   };
 
   return (
-    <Fragment>
-    <div className='nav'>
+   <div>
+     <div className='nav'>
       <img src={logo} alt="" />
     </div>
-      <div style={{ textAlign: "center" }}>
-      <h1>Welcome to RJP Infotek</h1>
-      <div className='center'>
-          <div>
-            <button
-            onClick={() => handleRedirect("http://bas.rjpinfotek.com:5173")}
-            style={{ margin: "10px", padding: "10px 20px", fontSize: "16px" }}
-          >
-            Dashboard Login
-          </button>
+      <div className="page">
+          <div style={{ textAlign: "center" }} className='wrapper'>
+          <h1>Welcome to RJP Infotek</h1>
+          <div className='center'>
+              <div>
+                <button
+                onClick={() => handleRedirect("http://bas.rjpinfotek.com:5173")}
+                style={{ margin: "10px", padding: "10px 20px", fontSize: "16px" }}
+              >
+                Dashboard Login
+              </button>
+              </div>
+              <div>
+              <button
+              onClick={() => handleRedirect("http://bas.rjpinfotek.com:5174")}
+              className='bg-pink-400'
+              style={{ margin: "10px", padding: "10px 20px", fontSize: "16px" }}
+            >
+              Trainer Login
+            </button>
+              </div>
           </div>
-          <div>
-          <button
-          onClick={() => handleRedirect("http://bas.rjpinfotek.com:5174")}
-          className='bg-pink-400'
-          style={{ margin: "10px", padding: "10px 20px", fontSize: "16px" }}
-        >
-          Trainer Login
-        </button>
-          </div>
+        </div>
+        
       </div>
-    </div>
-    </Fragment>
+   </div>
   )
 }
 

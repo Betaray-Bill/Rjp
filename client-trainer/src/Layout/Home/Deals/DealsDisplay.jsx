@@ -67,7 +67,7 @@ function DealsDisplay() {
 
           <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'>
             {
-              user && user.projects.reverse()
+              user && user?.projects
               .map((deal, index) => (
                 <Link to={`/home/project/${deal._id}`} key={index}>
                   <DealCard deal={deal} />

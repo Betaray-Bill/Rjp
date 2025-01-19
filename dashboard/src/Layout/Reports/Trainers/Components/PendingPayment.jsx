@@ -18,9 +18,10 @@ import api from '@/utils/api';
 
 function PendingPayment() {
     const [startDate,
-        setStartDate] = useState("");
+        setStartDate] = useState(new Date().toISOString().split('T')[0]);
     const [endDate,
-        setEndDate] = useState("");
+        setEndDate] = useState(new Date().toISOString().split('T')[0]);
+
     const {currentUser} = useSelector(state => state.auth);
     const [projects,
         setProjects] = useState([])

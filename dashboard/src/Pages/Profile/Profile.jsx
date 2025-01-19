@@ -17,6 +17,7 @@ import {
 import axios from 'axios';
 import {useToast} from '@/hooks/use-toast';
 import {sub} from 'date-fns';
+import api from '@/utils/api';
 
 const style = {
     position: 'absolute',
@@ -50,7 +51,7 @@ function Profile() {
         if (pass.newpassword === pass.confirmnewpassword) {
             console.log("Same")
             try {
-                const response = await axios.put(`http://bas.rjpinfotek.com:5000/api/employee/updatePassword/${currentUser.employee._id}`, {
+                const response = await api.put(`/employee/updatePassword/${currentUser.employee._id}`, {
                     newpassword: pass.newpassword,
                     currentPassword: pass.currentPassword
                 }); // Replace with your API endpoint
@@ -68,7 +69,7 @@ function Profile() {
                 console.error('Password Adding failed:', error);
             }
 
-            // http://bas.rjpinfotek.com:5000/api/trainer/change-password/${user._id}
+            // /trainer/change-password/${user._id}
         } else {
             alert("Not same")
         }

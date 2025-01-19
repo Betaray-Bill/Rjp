@@ -183,7 +183,7 @@ function ResumeDisplay() {
         try{
             console.log("object")
             console.log(resume)
-            const r = await api.put(`/trainersourcer/updateResume/${user._id}/resume/${params.id}`, resume)
+            const r = await api.put(`/trainer/updateResume/${user._id}/resume/${params.id}`, resume)
             const res= await r.data
             console.log(res)
             toast({

@@ -60,7 +60,7 @@ function PersonalDetails({data}) {
             <div
                 className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[25px] mb-3 mt-3 place-items-center'>
                 <div>
-                    <Label htmlFor="Name">Name</Label>
+                    <Label htmlFor="Name">Name*</Label>
                     <Input
                         type="text"
                         value={generalDetails.name}
@@ -70,7 +70,7 @@ function PersonalDetails({data}) {
                 </div>
 
                 <div>
-                    <Label htmlFor="Email">Email</Label>
+                    <Label htmlFor="Email">Email*</Label>
                     <Input
                         type="email"
                         value={generalDetails.email}
@@ -81,7 +81,7 @@ function PersonalDetails({data}) {
 
                 <div>
                     <Label htmlFor="Phone Number" className="flex items-center">
-                        <span className='mr-4'>Phone Number
+                        <span className='mr-4'>Phone Number*
                         </span>
                         <ion-icon
                             name="repeat-outline"

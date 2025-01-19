@@ -2,10 +2,6 @@ import axios from 'axios'
 import React, {Fragment, useEffect, useState} from 'react'
 import {useQuery} from 'react-query'
 import {useParams} from 'react-router-dom'
-import PersonalDetails from './AddTrainers/PersonalDetails'
-import BankDetails from './AddTrainers/BankDetails'
-import TrainingDomain from './AddTrainers/TrainingDomain'
-import ResumeDetails from './AddTrainers/Resume/ResumeDetails'
 import {useDispatch, useSelector} from 'react-redux'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {Button} from '@/components/ui/button'
@@ -14,6 +10,7 @@ import ViewGeneralDetails from './ViewTrainer/ViewGeneralDetails'
 import ViewTrainingDomain from './ViewTrainer/ViewTrainingDomain'
 import { setCurrentTrainerDetails } from '@/features/currentTrainerSlice'
 import api from '@/utils/api'
+import BankDetails from './ViewTrainer/BankDetails'
 
 function ViewTrainer() {
     const params = useParams()
@@ -29,7 +26,7 @@ function ViewTrainer() {
     const getTrainerById = async() => {
         const token = localStorage.getItem('empToken'); // Get the token from localStorage (or any storage)
 console.log("TOke is", token)
-        const response = await axios.get(`http://bas.rjpinfotek.com:5000/api/trainer/details/emp/${params.id}`, {
+        const response = await api.get(`/trainer/details/emp/${params.id}`, {
             withCredentials: true, // Ensures cookies are sent with each request
             headers: {
                 Authorization: `Bearer ${token}`  // Set the token, if available
@@ -58,7 +55,7 @@ console.log("TOke is", token)
     const submitHandler = async() => {
         try {
             // trainerDetails.id = params.id await
-            // axios.put('http://bas.rjpinfotek.com:5000/api/trainer/update', trainerDetails)
+            // axios.put('/trainer/update', trainerDetails)
             // console.log("Trainer updated successfully")
             refetch()
             setIsEdit(false)
@@ -95,6 +92,7 @@ console.log("TOke is", token)
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="Details">Details</SelectItem>
+                                            <SelectItem value="Bank Details">Bank Details</SelectItem>
                                             <SelectItem value="Training Domains">Training Domains</SelectItem>
                                             <SelectItem default value="Resumes">Resumes</SelectItem>
                                         </SelectContent>
@@ -107,6 +105,8 @@ console.log("TOke is", token)
                                 <div action="" className='border-t pt-4'>
                                     {viewData === "Details" && <ViewGeneralDetails id={data._id} data={data && data.generalDetails} bank={data && data.bankDetails}/>
     }
+    {viewData === "Bank Details" && <BankDetails id={data._id} data={data && data.bankDetails}/>
+}
                                     {viewData === "Training Domains" && <ViewTrainingDomain trainingType={data && data.trainingDetails.trainerType} id={data._id} data={data && data.trainingDomain}/>
     }
                                     {viewData === "Resumes" && <ViewResume data={data.resumeVersion} projects={data.projects}/>

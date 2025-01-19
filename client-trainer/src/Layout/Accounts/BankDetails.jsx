@@ -125,9 +125,9 @@ function BankDetails() {
                 )}
             </div>
 
-            <div className="grid grid-cols-2 gap-5 border rounded-md mt-7 p-4">
+            <div className="grid grid-cols-1 mg:grid-cols-2 gap-5 border rounded-md mt-7 p-4">
                 <div>
-                    <Label htmlFor="aadharCard">Aadhar Card</Label>
+                    <Label htmlFor="aadharCard">Address Proof</Label>
                     { bankDetails.aadharCard && bankDetails.aadharCard  !== "" ? (
                         <a
                             href={user.bankDetails.aadharCard}
@@ -135,7 +135,7 @@ function BankDetails() {
                             rel="noopener noreferrer"
                             className="px-3 py-2 text-white bg-blue-600 block w-max"
                         >
-                            Download Aadhar Card
+                            Download Address Proof
                         </a>
                     ) : (
                         <Input

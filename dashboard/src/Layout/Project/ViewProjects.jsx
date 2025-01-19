@@ -6,8 +6,11 @@ import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import PipeLine from './Pipeline/PipeLine'
+import { userAccess } from '@/utils/CheckUserAccess'
+import { RolesEnum } from '@/utils/constants'
 
 function ViewProjects() {
+  const {currentUser} = useSelector(state => state.auth)
 
   return (
     <div>
@@ -15,9 +18,14 @@ function ViewProjects() {
             <div className='text-xl font-semibold text-gray-800'>
               Projects
             </div>
-            <Link to="/home/projects/create">
+            {
+             userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role)
+              && (
+                <Link to="/home/projects/create">
                 <Button className="rounded-none bg-blue-700">Create Project</Button>
             </Link>
+              )
+            }
       </div>
 
       {/* View All prev Projects */}

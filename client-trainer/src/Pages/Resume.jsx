@@ -105,7 +105,7 @@ function Resume() {
                 <ResumeForm type="main"/>
             </div>
             :
-            <div className = 'mt-10 m-1 p-2 w-[80vw] min-h-[100vh] bg-white grid place-content-center rounded-md border border-generalBorderColor'>
+            <div className = 'mt-10 m-1 p-2 w-[90vw] md:w-[80vw] min-h-[100vh] bg-white grid place-content-center rounded-md border border-generalBorderColor'>
                 <Outlet />
             </div>
         }

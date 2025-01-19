@@ -496,11 +496,13 @@ const addRating = async(req, res) => {
 
 const getResumeById = asyncHandler(async(req, res) => {
     const { id } = req.params;
-    // console.log("Get resume by UD")
+    console.log("Get resume by UD")
     try {
         const resume = await Resume
             .findById(id)
             .populate({ path: 'trainer_id', select: 'generalDetails.name' })
+
+        console.log(resume)
         if (!resume) {
             return res
                 .status(404)

@@ -282,7 +282,7 @@ const getProject = asyncHandler(async (req, res) => {
         // Loop through roles to identify the employee's responsibilities
         for (let i = 0; i < employee.role.length; i++) {
             const role = employee.role[i];
-
+            console.log("TOLE",role)
             if (role.name === 'KeyAccounts') {
                 // Extract projects assigned to Key Accounts
                 assignedProjects = role.roleId.Projects.map((project) => project.toString());
@@ -912,7 +912,9 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
                 details: {
                     description: req.body.details.description,
                     type: req.body.details.type,
-                    terms: req.body.details.terms
+                    terms: req.body.details.terms,
+                    purchaseorderNumber:req.body.details.purchaseorderNumber
+
                 }
             };
         } else {
@@ -931,7 +933,9 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
             purchaseOrder.details = {
                 description: req.body.details.description,
                 type: req.body.details.type,
-                terms: req.body.details.terms
+                terms: req.body.details.terms,
+                purchaseorderNumber:req.body.details.purchaseorderNumber
+
             };
         }
         // console.log(purchaseOrder) Save the updated project
@@ -991,7 +995,8 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
                 details: {
                     description: req.body.details.description,
                     type: req.body.details.type,
-                    terms: req.body.details.terms
+                    terms: req.body.details.terms,
+                    purchaseorderNumber:req.body.details.purchaseorderNumber
                 }
             };
         } else {
@@ -1005,7 +1010,8 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
             purchaseOrder.details = {
                 description: req.body.details.description,
                 type: req.body.details.type,
-                terms: req.body.details.terms
+                terms: req.body.details.terms,
+                purchaseorderNumber:req.body.details.purchaseorderNumber
             };
         }
         // console.log(purchaseOrder) Save the updated project
@@ -1308,6 +1314,32 @@ const addRemainders = asyncHandler(async(req, res) => {
 });
 
 // Expenses
+const getExpenses = async (req, res) => {
+    try {
+      const { projectId } = req.params;
+  
+      // Find the project by ID
+      const project = await Project.findById(projectId);
+  
+      if (!project) {
+        return res.status(404).json({ message: "Project not found" });
+      }
+  
+      // Filter expenses to include only those where `amount` or `dueDate` is not empty
+      const filteredExpenses = Object.entries(project.expenses || {})
+        .filter(([key, value]) => value.amount > 0 || value.dueDate)
+        .map(([key, value]) => ({
+          category: key,
+          ...value,
+        }));
+  
+      // Return the filtered expenses as an array
+      return res.status(200).json(filteredExpenses);
+    } catch (error) {
+      console.error("Error fetching non-empty expenses:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
 const addExpenses = asyncHandler(async(req, res) => {
     const { date, stages, description, isCompleted } = req.body;
     const projectId = req.params
@@ -1617,8 +1649,34 @@ const updateLost_Won = asyncHandler(async(req, res) => {
     }
 })
 
+//   get ongoing projects
+const getOngoingProjects = async (req, res) => {
+    try {
+      // Get today's date in ISO format
+      const today = new Date().toISOString().split('T')[0];
+        console.log(today)
+      // Find projects where today's date is between startDate and endDate
+      const ongoingProjects = await Project.find({
+        'trainingDates.startDate': { $lte: today },
+        'trainingDates.endDate': { $gte: today }
+      })
+        .select('projectName  trainingDates.startDate trainingDates.endDate stages _id'); // Select only the required fields
+  
+      // Return the ongoing projects as a response
+      if (ongoingProjects.length > 0) {
+        return res.status(200).json(ongoingProjects);
+      } else {
+        return res.status(200).json({ message: 'No ongoing projects found.', ongoingProjects });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Server error' });
+    }
+  };
+
 export {
     createProject,
+    getOngoingProjects,
     getProjectDetails,
     getProjectsByEmp,
     addTrainer,
@@ -1640,6 +1698,7 @@ export {
     acceptOrDecline,
     updateInvoice_by_paid,
     addExpenses,
+    getExpenses,
     addRemainders,
     getRemainders,
     client_invoice_sent,

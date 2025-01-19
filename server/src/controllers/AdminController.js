@@ -287,6 +287,49 @@ const updateEmployeeRole = asyncHandler(async(req, res) => {
 })
 
 
+// Update the role
+const disableEmployeeRole = asyncHandler(async(req, res) => {
+    // Get Roles
+    const { roles } = req.body;
+    console.log(req.body)
+
+    // Get the Id of the Emp
+    const employeeId = req.params.empId
+    try {
+        // Check if the Employee Exist
+        const employee = await Employee.findById(employeeId)
+        console.log("Emp", employee)
+        if (!employee) {
+            return res
+                .status(500)
+                .json({ message: 'Employee does not exist' });
+        }
+
+        // Check if the Roles are not invalid
+        if (roles === undefined || roles === null || roles.length == 0) {
+            return res
+                .status(400)
+                .json({ message: 'Roles are required' });
+        }
+
+        // disable thr Role 
+        for(let i=0; i<employee.role.length; i++){
+            if(roles === employee.role[i].name){
+                employee.role[i].disable = req.body.value
+            }
+        }
+
+        await employee.save();
+        res.status(201)
+            .json({ employee });
+    } catch (err) {
+        return res.status(500)
+            .json({ message: 'Error Adding ROle ', error: err.message });
+    }
+    // Save the employee
+})
+
+
 // Get All Trainers
 
 const getAllTrainers = asyncHandler(async(req, res) => {
@@ -315,6 +358,7 @@ const getAllTrainers = asyncHandler(async(req, res) => {
 export {
     updateEmployeeRole,
     addEmployee,
+    disableEmployeeRole,
     getAllTrainers,
     getAllEmployees,
     getEmployeeById,

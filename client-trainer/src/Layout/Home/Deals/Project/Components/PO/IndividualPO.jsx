@@ -80,7 +80,7 @@ function IndividualPO({purchaseOrder, index}) {
         <div className='border-b border-gray-300 '>
             <div className='py-3 flex items-center justify-between'>
                 <h2>Purchase Order {index+1}</h2>
-                <div className='flex items-center'>
+                <div className='flex items-center '>
                         {
                             purchaseOrder.isAccepted && 
                             <div className='w-full text-center mx-3'>
@@ -149,7 +149,8 @@ function IndividualPO({purchaseOrder, index}) {
                                                 <tbody>
                                                     <tr>
                                                         <td className="px-2 font-medium">PO No# :</td>
-                                                        <td className="px-2">RJP462425</td>
+                        {/* purchaseorderNumber:purchaseorderNumber */}
+                        <td className="px-2">{purchaseOrder.details.purchaseorderNumber}</td>
                                                     </tr>
                                                     <tr>
                                                         <td className="px-2 font-medium">Date:</td>

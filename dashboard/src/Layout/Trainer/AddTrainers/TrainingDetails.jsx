@@ -26,7 +26,7 @@ function TrainingDetails() {
                 className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-3 mt-3 '>
                 {/* Training courses, institution, duration, mode of training */}
                 <div className='flex flex-col'>
-                    <Label htmlFor="trainerType" className="mb-2">Type of Trainer</Label>
+                    <Label htmlFor="trainerType" className="mb-2">Type of Trainer*</Label>
                     <select name="trainerType" id="" onChange={(e) => handleChange(e)} className="w-[300px]">
                         <option value="Select the Type"></option>
                         {trainingTypes.map((mode, index) => (

@@ -120,7 +120,7 @@ function Account() {
     }
 
     return (
-        <div className='grid w-full place-content-center my-4'>
+        <div className='grid w-full place-content-center my-4 pl-[5vw]'>
             <p className='text-md text-gray-700 mt-4 pb-[-2] font-semibold'>Accounts</p>
 
             <div className='mt-8'>
@@ -231,7 +231,7 @@ function Account() {
                             <Label className="text-slate-700" htmlFor="name">
                                 Name
                             </Label>
-                            <Input readOnly={true} id="name" value={generalDetails.name} onChange={handleChange}/>
+                            <Input readOnly={!isEdit} id="name" value={generalDetails.name} onChange={handleChange}/>
                         </div>
                         <div className="space-y-2">
                             <Label className="text-slate-700" htmlFor="email">
@@ -239,7 +239,7 @@ function Account() {
                             </Label>
                             <Input
                                 id="email"
-                                readOnly={true}
+                                readOnly={!isEdit}
                                 type="email"
                                 value={generalDetails.email}
                                 onChange={handleChange}/>

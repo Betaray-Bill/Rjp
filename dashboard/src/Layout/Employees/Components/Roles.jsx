@@ -4,7 +4,8 @@ import api from '@/utils/api';
 import {Label} from '@radix-ui/react-dropdown-menu';
 import axios from 'axios';
 import {space} from 'postcss/lib/list';
-import React, {useState} from 'react'
+import React, {Fragment, useState} from 'react'
+import { useQueryClient } from 'react-query';
 import {useParams} from 'react-router-dom';
 
 function Roles({data}) {
@@ -13,7 +14,8 @@ function Roles({data}) {
     const {toast} = useToast()
     const [roles,
         setRoles] = useState([])
-
+    
+    const queryClient = useQueryClient()
     const params = useParams()
     console.log(params)
     const handleChange = (event) => {
@@ -27,11 +29,22 @@ function Roles({data}) {
         // }
     }
 
-    const handleDeleteSelectedRoles = (e, i) => {
-        setRoles((p) => [
-            ...p.slice(0, i),
-            ...p.slice(i + 1)
-        ]);
+    const handleDeleteSelectedRoles = async(e, value) => {
+        try {
+            console.group("y")
+            const response = await api.put(`/employee/disable-role/${params.id}`, {roles: e, value}); //
+            console.log('Disabling Roles successful:', response.data);
+            toast({
+                title: `Employee Role ${!value ? 'Enables' : 'Diasbled'}`, //
+                // description: "Friday, February 10, 2023 at 5:57 PM"
+                variant: "success"
+            })
+            // window.location.reload()
+            
+            queryClient.invalidateQueries(["ViewEmp", params.id])
+        } catch (error) {
+            console.error('Registration failed:', error);
+        }
     }
 
     const handleSubmit = async(event) => {
@@ -64,20 +77,39 @@ function Roles({data}) {
             <div className='my-4'>
                 <p className='font-semibold text-gray-700 flex'></p>
                 <div className='flex items-center'>
+                    {/* {
+                        params?.id
+                    } */}
                     {data
                         ?.map((e, _i) => (
                             <div
-                                className='bg-blue-50 w-max mr-5 px-4 py-1 border border-black rounded-lg flex items-center'
+                                className=''
                                 key={_i}>
-                                <p>{e.name}</p>
-                                {isEdit && <div className='ml-2 mt-1'>
-                                    <ion-icon
-                                        name="trash-outline"
-                                        style={{
-                                        fontSize: "18px",
-                                        color: "red"
-                                    }}></ion-icon>
-                                </div>
+                                
+                                {isEdit  && <Fragment>
+                                    {
+                                        !e.disable ? 
+                                        (<div   onClick={() => handleDeleteSelectedRoles(e.name,true)} className='w-max mr-5 px-4 py-1 flex items-center ml-2 mt-1 border border-black bg-blue-300 font-semibold '>
+                                            <p>{e.name}</p>
+                                            {/* <div
+                                                onClick={() => handleDeleteSelectedRoles(e.name,false)}
+                                            ></div> */}
+                                            <ion-icon name="close-outline" style={{fontSize:"20px"}}></ion-icon>
+                                            </div>
+                                        ) :
+                                        (<div onClick={() => handleDeleteSelectedRoles(e.name, false)} className='w-max mr-5 px-4 py-1 flex items-center ml-2 mt-1 border border-black bg-red-600 text-white font-semibold'>
+                                            <p className='mr-5'>{e.name}</p>
+                                            {/* <div
+                                            name="eye-outline"
+                                            style={{
+                                            fontSize: "18px",
+                                            color: "red"
+                                        }}  onClick={() => handleDeleteSelectedRoles(e.name, true)}></div> */}
+                                        <ion-icon name="checkmark-done-outline" style={{fontSize:"20px"}}></ion-icon>
+                                        </div>
+                                        )
+                                    }
+                                </Fragment>
 }
                             </div>
                         ))
@@ -118,7 +150,8 @@ function Roles({data}) {
                                     color: "red",
                                     cursor: "pointer"
                                 }}
-                                    onClick={() => handleDeleteSelectedRoles(e, i)}></ion-icon>
+                                    // onClick={() => handleDeleteSelectedRoles(e, i)}
+                                    ></ion-icon>
                             </div>
                         ))
 }

@@ -472,9 +472,36 @@ const addWorkingDates = asyncHandler(async(req, res) => {
         res.status(500).json({ message: err.message })
     }
 })
+const deleteWorkingDate = async (req, res) => {
+    try {
+        const { trainerId } = req.params; // Extract trainerId from the route
+        const { eventId } = req.body; // Extract eventId from the request body
+
+        // Find the user and remove the event by ID
+        const user = await Trainer.findById(trainerId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Remove the event from the workingDates array
+        user.workingDates = user.workingDates.filter(
+            (event) => event._id.toString() !== eventId
+        );
+
+        // Save the updated user document
+        await user.save();
+
+        res.status(200).json({ message: "Event deleted successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Failed to delete event" });
+    }
+};
+
 
 export {
     trainerLogin,
+    deleteWorkingDate,
     acceptNDA,
     updateTrainerProfile,
     addTrainingDates,

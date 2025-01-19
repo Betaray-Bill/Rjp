@@ -11,6 +11,20 @@
   margin: 0xp 0px 0px 20px;
 }
 
+.page{
+  background-image: url('./assets/bg.jpg');
+  height: 90vh;
+  width: 98.5vw;
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  background-position: center;
+  display: grid;
+  background-color: rgba(59, 58, 58, 0.341);
+  background-blend-mode: overlay;
+  place-content: center ;
+}
+
 
 button{
   padding:27px 12pxp;
@@ -24,11 +38,16 @@ button{
   width: max-content;
 }
 
+.wrapper{
+  background-color: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+}
 
 .center{
   display: flex;
   justify-content: center;
-  width: 100vw;
+  /* width: 100vw; */
   /* background-color: aquamarine; */
   flex-direction: column;
 }

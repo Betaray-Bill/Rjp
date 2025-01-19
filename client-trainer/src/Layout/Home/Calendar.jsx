@@ -106,7 +106,7 @@ const CalendarComp = ({eventsDate, workingDates}) => {
         setShow] = useState(false)
     const [formValues,
         setFormValues] = useState({
-        name: "",
+        name: "Holiday",
         startDate: null,
         endDate: null,
         startTime: null,
@@ -146,12 +146,18 @@ const CalendarComp = ({eventsDate, workingDates}) => {
                 ...formValues
             })
             const res = await data.data
-
+            setFormValues({
+                name: "Holiday",
+        startDate: null,
+        endDate: null,
+        startTime: null,
+        endTime: null,
+            })
             console.log(res)
 
             toast({title: "Event Created", description: "New event has been successfully created", variant: "success", duration: 3000})
 
-            queryClient([
+            queryClient.invalidateQueries([
                 "user", user._id
             ],)
 
@@ -161,10 +167,79 @@ const CalendarComp = ({eventsDate, workingDates}) => {
 
     }
 
-    const deleteEvent = async(index) => {
-        e.preventDefault();
-
+    const editEvent = async() => async(index) => {
+        const updatedValue = { 
+            ...workingDatesData[index], 
+            // Example of fields being updated:
+            name: "Updated Event Name",
+            startDate: new Date(),
+            endDate: new Date()
+        };
+    
+        const updatedWorkingDates = workingDatesData.map((item, i) =>
+            i === index ? updatedValue : item
+        );
+    
+        setWorkingDatesData(updatedWorkingDates);
+    
+        try {
+            const data = await api.put(`/trainer/workingDates/${user._id}`, updatedValue);
+            const res = await data.data;
+    
+            console.log(res);
+    
+            toast({
+                title: "Event Updated",
+                description: "Event has been successfully updated",
+                variant: "success",
+                duration: 3000,
+            });
+    
+            queryClient.invalidateQueries(["user", user._id]);
+        } catch (err) {
+            toast({
+                title: "Error",
+                description: "Failed to update event",
+                variant: "error",
+                duration: 3000,
+            });
+        }
     }
+
+    const deleteEvent = async (index) => {
+        // Remove the item from the array
+        const updatedWorkingDates = workingDatesData.filter((_, i) => i !== index);
+    
+        // Update the state
+        setWorkingDatesData(updatedWorkingDates);
+    
+        try {
+            // Send a request to delete the event in the backend
+            const data = await api.delete(`/trainer/workingDates/${user._id}`, {
+                data: { eventId: workingDatesData[index]._id }, // Pass the ID of the event
+            });
+            const res = await data.data;
+    
+            console.log(res);
+    
+            toast({
+                title: "Event Deleted",
+                description: "Event has been successfully deleted",
+                variant: "success",
+                duration: 3000,
+            });
+    
+            queryClient.invalidateQueries(["user", user._id]);
+        } catch (err) {
+            toast({
+                title: "Error",
+                description: "Failed to delete event",
+                variant: "error",
+                duration: 3000,
+            });
+        }
+    };
+    
 
     return (
         <div className="  h-max p-3">
@@ -208,10 +283,12 @@ const CalendarComp = ({eventsDate, workingDates}) => {
                             <div className="flex flex-col">
                                 <Label>Title:</Label>
                                 <Input
+                                    // disabled={true}
                                     type="text"
-                                    value={formValues.title}
+                                    // placeholder="Holiday"
+                                    value={formValues.title ? formValues.title: "Holiday"}
                                     className="px-3 py-2 border border-gray-400 rounded-sm mt-1"
-                                    onChange={(e) => handleInputChange("name", e.target.value)}
+                                    // onChange={(e) => handleInputChange("name", e.target.value)}
                                     required/>
                             </div>
                             <div className="flex flex-col">
@@ -270,24 +347,32 @@ const CalendarComp = ({eventsDate, workingDates}) => {
                             <h4 className="font-semibold my-4">Working Dates</h4>
                             <div>
                                 {workingDatesData.map((data, index) => (
-                                    <div key={index} className="border border-gray-300 rounded-md px-4 mt-2 py-2">
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                Title : {data
-                                                    ?.name}
-                                            </div>
-                                            {/* <div className="cursor-pointer" onClick={() => deleteEvent(index)}>
-                                                <ion-icon
-                                                    name="trash-outline"
-                                                    style={{
-                                                    color: "red"
-                                                }}></ion-icon>
-                                            </div> */}
-                                        </div>
+                                    <div key={index} className="border border-gray-300 rounded-md px-4 mt-2 py-2 flex items-center justify-between ">
                                         <div>
-                                            <span>From : {moment(data.startDate).format("YYYY-MM-DD")}</span>
-                                            <span className="ml-5">End : {moment(data.endDate).format("YYYY-MM-DD")}</span>
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <span className="font-semibold">Title</span> : {data
+                                                        ?.name}
+                                                </div>
+                                                {/* <div className="cursor-pointer" onClick={() => deleteEvent(index)}>
+                                                    <ion-icon
+                                                        name="trash-outline"
+                                                        style={{
+                                                        color: "red"
+                                                    }}></ion-icon>
+                                                </div> */}
+                                            </div>
+                                            <div>
+                                                <span><span className="font-semibold">From</span> : {moment(data.startDate).format("YYYY-MM-DD")}</span>
+                                                <span className="ml-5">End : {moment(data.endDate).format("YYYY-MM-DD")}</span>
+                                            </div>
                                         </div>
+                                        <div className="flex items-center justify-between">
+                                            <div onClick={() => editEvent(index)}><ion-icon name="pencil-outline"></ion-icon></div>
+                                            <div className="ml-3" onClick={() => deleteEvent(index)}>
+                                                    <ion-icon name="trash-outline" style={{ color: "red" }}></ion-icon>
+                                                </div>
+                                            </div>
                                     </div>
                                 ))}
                             </div>

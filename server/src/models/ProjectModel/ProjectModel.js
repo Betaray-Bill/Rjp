@@ -212,7 +212,10 @@ const projectSchema = new mongoose.Schema({
                 },
                 terms: [{
                     type: String
-                }]
+                }],
+                purchaseorderNumber:{
+                    type:String
+                }
             }
         }],
         isClientCallDone: {

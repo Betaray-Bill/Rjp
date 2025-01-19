@@ -138,7 +138,7 @@ function ResumeDownload() {
                             </div>
                         </div>
                         <div className="flex items-center justify-between">
-                            <h1 className="text-3xl font-bold text-resumeText mb-10">{data && data.trainer_id
+                            <h1 className="text-3xl font-bold text-resumeText">{data && data.trainer_id
                                     .generalDetails
                                     .name
                                     .toUpperCase()}</h1>

@@ -16,25 +16,29 @@ import api from '@/utils/api';
 function Payable() {
     const {currentUser} = useSelector(state => state.auth)
     const [startDate,
-        setStartDate] = useState("");
+        setStartDate] = useState(new Date().toISOString().split('T')[0]);
     const [endDate,
-        setEndDate] = useState("");
+        setEndDate] = useState(new Date().toISOString().split('T')[0]);
 
     const [expenses,
         setExpenses] = useState([])
 
+    useEffect(() => {
+        fetchPaymentDuePayable()
+    }, [])
+
     const fetchPaymentDuePayable = async() => {
         // Fetch client data from API
         try {
+            console.log(startDate, endDate)
             const params = new URLSearchParams();
 
             if (startDate) 
                 params.append("startDate", startDate);
             if (endDate) 
                 params.append("endDate", endDate);
-            
-            const response = await api.get(`/reports/payment-due/payable/${currentUser
-                ?.employee._id}?${params.toString()}`);
+            console.log(params.toString())
+            const response = await api.get(`/reports/payment-due/payable/${currentUser?.employee._id}?${params.toString()}`);
             const data = await response.data;
             console.log(data)
             // setKamData(data);
@@ -91,7 +95,12 @@ function Payable() {
                                     <TableCell>{expense.expenseName}</TableCell>
                                     <TableCell>{expense.amount}</TableCell>
                                     <TableCell>{new Date(expense.dueDate).toLocaleDateString()}</TableCell>
-                                    <TableCell>{Math.ceil((new Date() - new Date(expense.dueDate)) / (1000 * 60 * 60 * 24))}</TableCell>
+                                    <TableCell>
+                                        {Math.ceil((new Date() - new Date(expense.dueDate)) / (1000 * 60 * 60 * 24)) > 0 
+                                            ? `-${Math.ceil((new Date() - new Date(expense.dueDate)) / (1000 * 60 * 60 * 24))} days `
+                                            : `${Math.abs(Math.ceil((new Date() - new Date(expense.dueDate)) / (1000 * 60 * 60 * 24)))} days remaining`}
+                                    </TableCell>
+
 
                                 </TableRow>
                             ))}

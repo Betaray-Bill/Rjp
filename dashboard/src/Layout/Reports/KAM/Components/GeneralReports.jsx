@@ -125,7 +125,7 @@ function GeneralReports() {
 
   return (
     <div className='mt-5'>
-      <h2 className='my-3 font-semibold ml-2'>General Reports</h2>
+      <h2 className='my-3 font-semibold ml-2'>Training Delivered</h2>
       {userAccess([RolesEnum.ADMIN], currentUser
                 ?.employee.role) && (
                 <Fragment>

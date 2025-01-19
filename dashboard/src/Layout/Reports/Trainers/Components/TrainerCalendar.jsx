@@ -133,6 +133,7 @@ const TrainerCalendar = () => {
         } catch (error) {
             console.error("Error fetching recommendations:", error);
         }
+
       }
     };
 
@@ -174,6 +175,7 @@ const TrainerCalendar = () => {
                             onClick={() =>{ 
                               fetchTrainerDetails(trainer.trainerId); 
                               setRecommendations([])
+                              setSearchQuery('')
                             }}>
                             {trainer.trainerId}
                             - {trainer.generalDetails.name}
