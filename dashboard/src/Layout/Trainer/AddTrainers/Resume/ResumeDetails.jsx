@@ -249,7 +249,7 @@ function ResumeDetails({data}) {
   return ( 
       <div>
         <div className='flex items-center justify-between'>
-          <h2 className='text-slate-700 text-lg py-4 font-semibold'>Resume Details</h2>
+          <h2 className='text-slate-700 text-lg py-4 font-semibold'>Resume Details <span className='text-red-600'>*</span></h2>
 
           <div className="w-full max-w-sm items-center gap-1.5 hidden">
             <Input  ref={fileInputRef} id="resume" type="file" onChange={handleFileChange} accept=".pdf,.docx" />

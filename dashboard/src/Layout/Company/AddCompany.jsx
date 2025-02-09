@@ -11,7 +11,8 @@ function AddCompany() {
         companyName: '',
         contact_name: '',
         contact_email: '',
-        contact_phone_number: ''
+        contact_phone_number: '',
+        department:''
     };
     const {toast} = useToast()
     const [formData,
@@ -99,11 +100,21 @@ function AddCompany() {
                                 onChange={handleChange}
                                 required/>
                         </div>
-
+                        {/* department */}
                         <div>
                             <Label htmlFor="contact_phone_number">Contact Phone Number:</Label>
                             <Input type="tel" // Use "tel" for phone number Input
                                 id="contact_phone_number" name="contact_phone_number" value={formData.contact_phone_number} onChange={handleChange} required/>
+                        </div>
+                        <div>
+                            <Label htmlFor="department">Department:</Label>
+                            <Input
+                                type="text"
+                                id="department"
+                                name="department"
+                                value={formData.department}
+                                onChange={handleChange}
+                                required/>
                         </div>
                     </div>
 

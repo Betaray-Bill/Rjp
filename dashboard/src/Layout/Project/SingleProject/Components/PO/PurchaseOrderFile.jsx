@@ -14,6 +14,7 @@ import { RolesEnum } from '@/utils/constants';
 import { useSelector } from 'react-redux';
 import { toWords } from 'number-to-words';
 import api from '@/utils/api';
+import Roles from '@/Layout/Employees/Components/Roles';
     
 function PurchaseOrderFile({
     name,
@@ -22,11 +23,13 @@ function PurchaseOrderFile({
     id,
     projectName,
     address,
+    time,
     poNumber,
     terms,
     type,
     purchaseorderNumber,
     trainerGST,
+    trainerBankDetails,
     trainerPAN
 }) {
     const queryClient = useQueryClient();
@@ -99,6 +102,7 @@ function PurchaseOrderFile({
                 const data = {
                     // url:res.url,
                     name: `${name} - Purchase Order`,
+                    time: new Date(),
                     details: {
                         description: tableRows,
                         type: type,
@@ -157,7 +161,7 @@ function PurchaseOrderFile({
     }
 
     console.log("FOrm Data", tableRows, terms, type)
-
+    // console.log(time)
     return (
         <Fragment>
             {
@@ -167,7 +171,7 @@ function PurchaseOrderFile({
                         <div>
                             <Button className="rounded-none" onClick={handleSavePO}>Save</Button>
                         </div>
-                        {userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) &&
+                        {userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) &&
                         <Button 
                             className="rounded-none ml-4 bg-white border-black border text-black hover:bg-blue-700 hover:text-white" 
                             onClick={handleSendPO} disabled={!canSend}
@@ -178,7 +182,7 @@ function PurchaseOrderFile({
                 )
             }
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) && 
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT, RolesEnum.Finance], currentUser?.employee.role) && 
               (isPurchased?
                 <div className="flex justify-end m-4">
                         <Button onClick={handleOnlyDownload}>{isDownloading
@@ -186,11 +190,11 @@ function PurchaseOrderFile({
                                 : "Download "}</Button>
                     </div>
                 : <div className="flex justify-end m-4">
-                    <Button onClick={handleSendPO}>{isDownloading
+                    <Button onClick={handleOnlyDownload}>{isDownloading
                             ? isUploading
                                 ? "UPloading...."
                                 : "Downloading"
-                            : "Download And Send"}</Button>
+                            : "Download"}</Button>
                 </div>)
             }
 
@@ -214,8 +218,6 @@ function PurchaseOrderFile({
                         <p className='text-sm'>Ashok Nagar, Chennai, Tamil Nadu - 600083</p>
                         <p className='text-sm mt-4'>
                             <span className='font-semibold mt-3'>CIN</span>: U72300TN2000PTC046181</p>
-                        {/* <p className='text-sm'>
-                            <span className='font-semibold'>GSTIN</span>: 33AAFCA8917Q1Z5</p> */}
                     </div>
                     <div className='border-t border-r border-b border-black p-3'>
                         <h1 className="text-xl text-center mb-3 font-bold"></h1>
@@ -225,32 +227,22 @@ function PurchaseOrderFile({
                                     <tbody>
                                         <tr>
                                             <td className="px-2 font-medium">PO No# :</td>
-                                            <td className="px-2">{                    purchaseorderNumber}</td>
+                                            <td className="px-2">{purchaseorderNumber}</td>
                                         </tr>
                                         <tr>
-                                            <td className="px-2 font-medium">Date:</td>
-                                            <td className="px-2">{new Date()
-                                                    .toISOString()
-                                                    .split('T')[0]
-                                                    .split('-')
-                                                    .reverse()
-                                                    .join('-')}</td>
+                                            <td className="px-2 font-medium">Date: </td>
+                                            <td className="px-2">{ 
+                                            new Date()
+                                            .toISOString()
+                                            .split('T')[0]
+                                            .split('-')
+                                            .reverse()
+                                            .join('-')}</td>
                                         </tr>
                                         <tr>
                                             <td className="px-2 font-medium">RJP GSTIN:</td>
                                             <td className="px-2">33AABCR8275Q1ZP</td>
                                         </tr>
-                                        {/* {trainerGST && <tr>
-                                            <td className="px-2 font-medium">Code:</td>
-                                            <td className="px-2">{isTNGST
-                                                    ? 33
-                                                    : `${trainerGST[0]}${trainerGST[0]}`}</td>
-                                        </tr>
-}
-                                        <tr>
-                                            <td className="px-2 font-medium">Place of Supply:</td>
-                                            <td className="px-2">Chennai, India</td>
-                                        </tr> */}
                                         <tr>
                                             <td className="px-2 font-medium">PAN:</td>
                                             <td className="px-2">AABCR8275Q</td>
@@ -262,6 +254,7 @@ function PurchaseOrderFile({
                     </div>
                     <div className=' border-black p-3 border-l border-bs'>
                         <p className="font-semibold mt-4">To:</p>
+                        <p className='text-sm'>{trainerBankDetails?.sameasVendor ? name : trainerBankDetails?.vendorName }</p>
                         <p className='text-sm'>{address.flat_doorNo_street}</p>
                         <p className='text-sm'>{address.area}</p>
                         <p className='text-sm'>{address.townOrCity}, {address.state}, {address.pincode}</p>
@@ -310,12 +303,12 @@ function PurchaseOrderFile({
                                         {row.hsnSac}
                                     </td>
                                     <td className="border border-gray-300 px-4 py-2 text-center">
-                                        {row.typeQty}
+                                        {row.typeQty ? row.typeQty: null}
                                     </td>
                                     <td className="border border-gray-300 px-4 py-2 text-right">
-                                        INR {row
+                                        { row.rate ? "INR" + row
                                             .rate
-                                            .toLocaleString()}
+                                            .toLocaleString() : null}
                                     </td>
                                     <td className="border border-gray-300 px-4 py-2 text-right">
                                         INR {row
@@ -362,6 +355,7 @@ function PurchaseOrderFile({
 
                             <tr className="font-bold">
                                 <td colSpan="4" className="border border-gray-300 px-4 py-2">
+
                                     INR{" "} {toWords(Number((tableRows.reduce((total, row) => total + row.amount, 0) ))).toLocaleUpperCase()} {" "}
                                     Only
                                 </td>

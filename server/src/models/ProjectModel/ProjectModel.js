@@ -106,32 +106,35 @@ const projectSchema = new mongoose.Schema({
     trainingDates: {
         startDate: {
             type: Date,
-            required: true
+            // required: true
         },
         endDate: {
             type: Date,
-            required: true
+            // required: true
         },
         startTime: {
+
+
+            
             type: String, // e.g., "09:00 AM"
-            required: true
+            // required: true
         },
         endTime: {
             type: String, // e.g., "05:00 PM"
-            required: true
+            // required: true
         },
         specialTimings: [{
             date: {
                 type: Date,
-                required: true
+                // required: true
             },
             startTime: {
                 type: String, // e.g., "09:00 AM"
-                required: true
+                // required: true
             },
             endTime: {
                 type: String, // e.g., "05:00 PM"
-                required: true
+                // required: true
             }
         }]
     },
@@ -173,6 +176,9 @@ const projectSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false
             },
+            declineReason: {
+                type: String
+            },
             isReIssue: {
                 type: Boolean,
                 default: false
@@ -188,23 +194,23 @@ const projectSchema = new mongoose.Schema({
                 description: [{
                     description: {
                         type: String,
-                        required: true
+                        // required: true
                     },
                     hsnSac: {
                         type: String,
-                        required: true
+                        // required: true
                     },
                     typeQty: {
                         type: Number,
-                        required: true
+                        // required: true
                     },
                     rate: {
                         type: Number,
-                        required: true
+                        // required: true
                     },
                     amount: {
                         type: Number,
-                        required: true
+                        // required: true
                     }
                 }],
                 type: {

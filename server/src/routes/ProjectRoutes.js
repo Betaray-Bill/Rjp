@@ -53,7 +53,7 @@ router.put("/updateLostWon/:projectId", authEmployeeMiddleware, authorizeRole(["
 
 router.get("/:projectId/trainer/:trainerId", authMiddleware, getProjectForTrainer)
 
-router.get("/ongoing", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), getOngoingProjects)
+router.get("/ongoing/:employeeId", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), getOngoingProjects)
 
 
 export default router

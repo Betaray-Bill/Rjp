@@ -37,6 +37,8 @@ import Deals from './Layout/Reports/Deals/Deals'
 import Trainers from './Layout/Reports/Trainers/Trainers'
 import KAM from './Layout/Reports/KAM/KAM'
 import TrainerSOurcer from './Layout/Reports/TrainerSourcer/TrainerSOurcer'
+import Domains from './Pages/Domains/Domains'
+import Roles from './Layout/Employees/Components/Roles'
 
 
 function App() {
@@ -53,7 +55,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/home' element={<Home />}>
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT, RolesEnum.Finance], currentUser?.employee.role) && (
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT, RolesEnum.Finance, RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) && (
               <Route path='' element={<HomeWrapper /> } />
               )
             }
@@ -66,7 +68,7 @@ function App() {
               )
             }
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT,RolesEnum.Finance], currentUser?.employee.role) && (
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT,RolesEnum.Finance, RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) && (
               <Route path='reports/trainers' element={<Trainers /> } />
               )
             }
@@ -84,7 +86,7 @@ function App() {
             {/* trainers */}
 
             {
-              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role) && 
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT, RolesEnum.TRAINER_SOURCER], currentUser?.employee.role) && 
               <Route path='search' element={<Search />} />
             }
             {
@@ -133,6 +135,12 @@ function App() {
                 <Route path=''  index element={<ViewProjects />} />
                 <Route path='create' element={<AddProject />} />
                 <Route path='view/:projectId' element={<ViewSingleProject />} />
+               </Route>
+            }
+            {
+              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT ], currentUser?.employee.role) &&
+               <Route path='domains' element={<Domains />}>
+                
                </Route>
             }
             <Route path='profile' element={<Profile />} />

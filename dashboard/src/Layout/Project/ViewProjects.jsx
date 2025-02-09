@@ -22,7 +22,7 @@ function ViewProjects() {
              userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser?.employee.role)
               && (
                 <Link to="/home/projects/create">
-                <Button className="rounded-none bg-blue-700">Create Project</Button>
+                <Button className="rounded-none bg-blue-700">Create Deal</Button>
             </Link>
               )
             }

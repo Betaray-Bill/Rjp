@@ -3,7 +3,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 // Create a Company - new Company for a deal
 const createCompany = asyncHandler(async(req, res) => {
-    const { companyName, contact_name, c, contact_phone_number } = req.body
+    const { companyName,department, contact_name, contact_email, contact_phone_number } = req.body
 
     // check if the company exists
     const existingCompany = await Company.findOne({ companyName: companyName })
@@ -17,8 +17,9 @@ const createCompany = asyncHandler(async(req, res) => {
 
         const companyContact = new CompanyContact({
             contactName: contact_name,
-            contactEmail: contact_name,
-            contactPhoneNumber: contact_phone_number
+            contactEmail: contact_email,
+            contactPhoneNumber: contact_phone_number,
+            department:department
         })
 
         await companyContact.save();

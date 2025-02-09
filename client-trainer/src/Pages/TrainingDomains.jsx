@@ -44,10 +44,24 @@ function TrainingDomains() {
 
     const {user} = useSelector(state => state.auth)
     console.log(user && user.trainingDomain)
+    // const {trainerDetails} = useSelector(state => state.trainer)
+    const [domainsData, setDomainsData] = useState([])
+
+
+    const fetchDomains = async () => {
+        try {
+            const response = await api.get("/domains");
+            setDomainsData(response.data.domains);
+            setFilterResults(response.data.domains);
+        } catch (error) {
+            console.error("Error fetching domains:", error);
+        }
+    };
 
     useEffect(() => {
         console.log("dataa ", user.trainingDomain)
         setTrainingDomain(user.trainingDomain)
+        fetchDomains()
         // dispatch(setResumeDetails({name: "trainingDomain", data: data}));
     }, [user.trainingDomain])
 
@@ -114,63 +128,56 @@ function TrainingDomains() {
         // dispatch(setResumeDetails({ name: "trainingDomain", data: updatedDomains }));
     }
 
+    // New filtering logic for the updated domain structure
     const getFilteredResults = (searchTerm) => {
-        setValue(searchTerm)
-        console.log(searchTerm)
-        if (!searchTerm) 
-            return [];
-        console.log("searchTerm", searchTerm)
+        setValue(searchTerm);
+    
+        if (!searchTerm) {
+            setFilterResults(domainsData);
+            return;
+        }
+    
         const lowercasedTerm = searchTerm.toLowerCase();
-
-        const a = domains.map((domain) => {
-            const filteredSubtopics = domain
-                .subtopics
-                .map((subtopic) => {
-                    // Include subtopic if its name or topic matches, or any of its points match
-                    const matchesSubtopic = subtopic
-                        .subtopic
-                        .toLowerCase()
-                        .includes(lowercasedTerm);
-                    const matchesTopic = domain
-                        .topic
-                        .toLowerCase()
-                        .includes(lowercasedTerm);
-
-                    // Filter points that match the search term
-                    const filteredPoints = subtopic
-                        .points
-                        .filter((point) => point.toLowerCase().includes(lowercasedTerm));
-
-                    // If subtopic or topic matches, include all points; otherwise, include only
-                    // filtered points
-                    if (matchesSubtopic || matchesTopic || filteredPoints.length > 0) {
-                        return {
-                            ...subtopic,
-                            points: matchesSubtopic || matchesTopic
-                                ? subtopic.points
-                                : filteredPoints
-                        };
-                    }
-
-                    return null;
-                })
-                .filter((subtopic) => subtopic !== null);
-
-            // Include the domain if it has any matching subtopics
-            if (filteredSubtopics.length > 0) {
-                return {
-                    ...domain,
-                    subtopics: filteredSubtopics
-                };
-            }
-
-            return null;
-        }).filter((domain) => domain !== null);
-
-        console.log("A ", a)
-        setFilterResults(a);
+    
+        const filteredDomains = domainsData
+            .map(domainGroup => {
+                const filteredDomainsList = domainGroup.domains
+                    .map(domain => {
+                        // Check if the search term matches the domain name
+                        if (domain.name.toLowerCase() === lowercasedTerm) {
+                            return domain;
+                        }
+    
+                        // Check if the search term matches any subdomain
+                        const subdomainMatch = domain.subdomains.some(
+                            subdomain => subdomain.toLowerCase().includes(lowercasedTerm)
+                        );
+    
+                        // If subdomain matches or the domain name includes the search term, return the full domain
+                        if (domain.name.toLowerCase().includes(lowercasedTerm) || subdomainMatch) {
+                            return {
+                                ...domain,
+                                subdomains: domain.subdomains // Return full subdomain list
+                            };
+                        }
+    
+                        return null;
+                    })
+                    .filter(domain => domain !== null);
+    
+                if (filteredDomainsList.length > 0) {
+                    return {
+                        ...domainGroup,
+                        domains: filteredDomainsList
+                    };
+                }
+                return null;
+            })
+            .filter(group => group !== null);
+    
+        setFilterResults(filteredDomains);
     };
-
+    
     const [filteredResults,
         setFilterResults] = useState(domains);
     // console.log(domains)
@@ -241,71 +248,73 @@ function TrainingDomains() {
                 // <div className='bg-white mt-10 rounded-md p-5'>
                     <div className='flex flex-col'>
                 
-                        <Popover open={open} onOpenChange={setOpen} className="w-[70vw] md:w-[70vw] justify-start p-2">
-                            <PopoverTrigger asChild className='p-6 rounded-full'>
-                                <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    aria-expanded={open}
-                                    className="w-[70vw] justify-between"
-                                >
-                                    {!value ? (
-                                        <span className="flex items-center justify-between">
-                                            <ion-icon
-                                                name="search-outline"
-                                                style={{ fontSize: "18px", marginRight: "12px" }}
+                <Popover open={open} onOpenChange={setOpen} className="w-[70vw] md:w-[70vw] justify-start p-2">
+                        <PopoverTrigger asChild className='p-6 rounded-full'>
+                            <Button
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={open}
+                                className="w-[70vw] justify-between"
+                            >
+                                {!value ? (
+                                    <span className="flex items-center justify-between">
+                                        <ion-icon
+                                            name="search-outline"
+                                            style={{ fontSize: "18px", marginRight: "12px" }}
+                                        ></ion-icon>
+                                        Select Domain
+                                    </span>
+                                ) : (
+                                    <span className='flex items-center align-middle'>
+                                        <h2 className='text-black font-semibold border-r-2 pr-4'>
+                                            Results :
+                                        </h2>
+                                        <div className='flex items-center justify-between align-middle ml-10 text-slate-700'>
+                                            <span>{value}</span>
+                                            <ion-icon 
+                                                name="close-outline" 
+                                                style={{ fontSize: "18px", marginLeft: "12px" }} 
+                                                onClick={() => {
+                                                    setOpen(false);
+                                                    setValue('');
+                                                    setFilterResults(domainsData);
+                                                }}
                                             ></ion-icon>
-                                            Select Domain
-                                        </span>
-                                    ) : (
-                                        <span className='flex items-center align-middle'>
-                                            <h2 className='text-black font-semibold border-r-2 pr-4'>
-                                                Results :
-                                            </h2>
-                                            <div className='flex items-center justify-between  align-middle ml-10 text-slate-700'>
-                                                <span>{value}</span>
-                                                <ion-icon name="close-outline" style={{ fontSize: "18px", marginLeft: "12px" }} onClick={
-                                                    () => {
-                                                        setOpen(false);
-                                                        setValue('');
-                                                        setFilterResults(domains);
-                                                    }
-                                                }></ion-icon>
-                                            </div>
-                                        </span>
-                                    )}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[70vw] p-0">
-                                <Command>
-                                    <Input  className="w-max min-w-[55vw]  m-2 focus:ring-0 focus:ring-offset-0"    
-                                        placeholder="Search Domain by..... "
-                                        onChange={(e) => getFilteredResults(e.target.value)}
-                                        // value={value}
-                                    />
-                                    <CommandList>
-                                        {/* <CommandEmpty>No results found.</CommandEmpty> */}
-                                        {filteredResults?.map((domain) => (
-                                            <CommandGroup key={domain.topic} heading={domain.topic}>
-                                                {domain.subtopics.map((subtopic) => (
-                                                    <CommandGroup key={subtopic.subtopic} heading={subtopic.subtopic}>
-                                                        {subtopic.points.map((point) => (
-                                                            <CommandItem
-                                                                key={point}
-                                                                value={point}
-                                                                onSelect={() =>{ handleSearchTerm(point); setOpen(false)}}
-                                                            >
-                                                                {point}
-                                                            </CommandItem>
-                                                        ))}
-                                                    </CommandGroup>
-                                                ))}
-                                            </CommandGroup>
-                                        ))}
-                                    </CommandList>
-                                </Command>
-                            </PopoverContent>
-                        </Popover>
+                                        </div>
+                                    </span>
+                                )}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[70vw] p-0">
+                            <Command>
+                                <Input  
+                                    className="w-max min-w-[55vw] m-2 focus:ring-0 focus:ring-offset-0"    
+                                    placeholder="Search Domain by..... "
+                                    onChange={(e) => getFilteredResults(e.target.value)}
+                                />
+                                <CommandList>
+                                    <CommandEmpty>No results found.</CommandEmpty>
+                                    {filteredResults?.map((domainGroup) => (
+                                        <CommandGroup key={domainGroup._id}>
+                                            {domainGroup?.domains?.map((domain) => (
+                                                <CommandGroup key={domain._id} heading={domain.name}>
+                                                    {domain.subdomains.map((subdomain) => (
+                                                        <CommandItem
+                                                            key={subdomain}
+                                                            value={subdomain}
+                                                            onSelect={() => handleSearchTerm(subdomain)}
+                                                        >
+                                                            {subdomain}
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            ))}
+                                        </CommandGroup>
+                                    ))}
+                                </CommandList>
+                            </Command>
+                        </PopoverContent>
+                    </Popover>
                     </div>
                 // </div>
 

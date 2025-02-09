@@ -103,9 +103,9 @@ console.log("TOke is", token)
 
                             <div className='mt-5'>
                                 <div action="" className='border-t pt-4'>
-                                    {viewData === "Details" && <ViewGeneralDetails id={data._id} data={data && data.generalDetails} bank={data && data.bankDetails}/>
+                                    {viewData === "Details" && <ViewGeneralDetails id={data._id} data={data && data.generalDetails} bank={data && data.bankDetails} training={data && data.trainingDetails}/>
     }
-    {viewData === "Bank Details" && <BankDetails id={data._id} data={data && data.bankDetails}/>
+    {viewData === "Bank Details" && <BankDetails id={data._id} name={data && data.generalDetails.name} data={data && data.bankDetails}/>
 }
                                     {viewData === "Training Domains" && <ViewTrainingDomain trainingType={data && data.trainingDetails.trainerType} id={data._id} data={data && data.trainingDomain}/>
     }

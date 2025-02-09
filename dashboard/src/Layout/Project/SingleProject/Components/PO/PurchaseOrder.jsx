@@ -26,7 +26,7 @@ function PurchaseOrder({
     name,
     poNumber,
     id,
-    po,
+    po,trainerBankDetails,
     trainerPAN,
     address,
     projectName
@@ -48,7 +48,8 @@ function PurchaseOrder({
     const [task,
         setTask] = useState([])
 
-
+    const [time, setTime] = useState(new Date(po.time))
+    console.log(time)
         console.log(po)
     useEffect(() => {
         if (isPurchased) {
@@ -85,7 +86,7 @@ function PurchaseOrder({
 
     // Add new row to the table
     const addRow = () => {
-        if (formInput.description && formInput.typeQty && formInput.rate) {
+        if (formInput.description && formInput.amount) {
             if (editRowIndex !== null) {
                 // Save edited row
                 const updatedRows = [...tableRows];
@@ -94,7 +95,7 @@ function PurchaseOrder({
                     description: formInput.description,
                     typeQty: Number(formInput.typeQty),
                     rate: Number(formInput.rate),
-                    amount: Number(formInput.typeQty) * Number(formInput.rate)
+                    amount: Number(formInput.amount)  ? Number(formInput.amount) : Number(formInput.typeQty) * Number(formInput.rate)
                 };
                 setTableRows(updatedRows);
                 setEditRowIndex(null); // Exit edit mode
@@ -107,7 +108,8 @@ function PurchaseOrder({
                         hsnSac: "993293",
                         typeQty: Number(formInput.typeQty),
                         rate: Number(formInput.rate),
-                        amount: Number(formInput.typeQty) * Number(formInput.rate)
+                        amount: Number(formInput.amount)  ? Number(formInput.amount) : Number(formInput.typeQty) * Number(formInput.rate)
+
                     }
                 ]);
             }
@@ -128,13 +130,17 @@ function PurchaseOrder({
         setFormInput({description: row.description, typeQty: row.typeQty, rate: row.rate, amount: row.amount});
         setEditRowIndex(index);
     };
+
+    const deleteRow = (index) => {
+        setTableRows(tableRows.filter((row, i) => i !== index));
+    }
     console.log(poNumber)
     return (
         <div className='border my-5 rounded-md px-4 drop-shadow-sm'>
             <div className='my-4 font-semibold'>
-                Purchase Order for trainers 
+                Purchase Order for trainers  {name}
             </div>
-
+           
             {/* FORM */}
             <div>
                 <div className="my-5">
@@ -184,7 +190,7 @@ function PurchaseOrder({
                                 type="number"
                                 name="amount"
                                 min={1}
-                                value={formInput.rate * formInput.typeQty}
+                                value={formInput.rate ? (formInput.rate * formInput.typeQty) : formInput.amount}
                                 onChange={handleChange}
                                 placeholder="Enter Amount"
                                 className="border p-2 rounded w-full"/>
@@ -222,6 +228,8 @@ function PurchaseOrder({
                                     </div>
                                     <div>
                                         <Button onClick={() => editRow(index)}>Edit</Button>
+                                        <Button className="bg-red-600 ml-2" onClick={() => deleteRow(index)}>Delete</Button>
+
                                     </div>
                                 </div>
                             ))
@@ -269,6 +277,8 @@ function PurchaseOrder({
                 trainerPAN={trainerPAN}
                 address={address}
                 poNumber={poNumber}
+                trainerBankDetails={trainerBankDetails}
+                time={time}
             />
 
         </div>

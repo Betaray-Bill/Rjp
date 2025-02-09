@@ -15,7 +15,7 @@ function Client({expenses, clientDetails}) {
     const queryClient = useQueryClient()
     const {toast} = useToast()
     const [isChecked,
-        setIsChecked] = useState(clientDetails.invoiceSent);
+        setIsChecked] = useState(clientDetails.invoiceSentClient ? true:false);
 
     const [data,setData] = useState({
         amount:clientDetails.amount ? clientDetails.amount : "",
@@ -31,7 +31,7 @@ function Client({expenses, clientDetails}) {
             const result = await response.data
             console.log(result)
             queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
-            toast({title: "Remainder saved successfully", variant: "success", duration: 2000})
+            toast({title: "Invoice sent to the client", variant: "success", duration: 2000})
             // alert("Remainder saved successfully!"); setDate(""); setRemarks("");
             // setIsCompleted(false); if (onSuccess) onSuccess(result);
         } catch (error) {
@@ -54,7 +54,7 @@ function Client({expenses, clientDetails}) {
             const result = await response.data
             console.log(result)
             queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
-            toast({title: "Remainder saved successfully", variant: "success", duration: 2000})
+            toast({title: "Saved successfully", variant: "success", duration: 2000})
             // alert("Remainder saved successfully!"); setDate(""); setRemarks("");
             // setIsCompleted(false); if (onSuccess) onSuccess(result);
         } catch (error) {
@@ -74,9 +74,10 @@ function Client({expenses, clientDetails}) {
             </div>
 
             {/* Invoice Sent */}
+         
             <div className='border border-gray-300 rounded-md my-2 px-3 font-semibold py-2'>
                 <div className='flex items-center justify-start'>
-                    {isChecked
+                    {clientDetails.invoiceSentClient  
                         ? <ion-icon
                                 name="checkmark-done-outline"
                                 style={{

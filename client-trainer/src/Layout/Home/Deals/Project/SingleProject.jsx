@@ -1,6 +1,6 @@
 import {Label} from '@/components/ui/label';
 import axios from 'axios';
-import React from 'react'
+import React, { Fragment } from 'react'
 import {useQuery} from 'react-query';
 import {useSelector} from 'react-redux';
 import {useParams} from 'react-router-dom';
@@ -124,13 +124,18 @@ function SingleProject() {
 }
                 </div>
             </div>
+            {
+                user.trainingDetails.trainerType !== "Internal" &&
+            
+            <Fragment>
+                <PurchaseOrder purchaseOrder={data.trainers[0].purchaseOrder}/>
 
-            <PurchaseOrder purchaseOrder={data.trainers[0].purchaseOrder}/>
-
-            <Invoice
-                purchaseOrder={data.trainers[0].purchaseOrder}
-                projectName={data.projectName}
-                inVoice={data.trainers[0].inVoice}/>
+                <Invoice
+                    purchaseOrder={data.trainers[0].purchaseOrder}
+                    projectName={data.projectName}
+                    inVoice={data.trainers[0].inVoice}/>
+            </Fragment>
+            }
         </div>
     )
 }

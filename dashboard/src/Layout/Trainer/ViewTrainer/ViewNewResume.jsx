@@ -189,14 +189,14 @@ function    ViewNewResume({data, projects}) {
       };
 
     const submitResumeHandler = async(e) => {
-        e.preventDefault()
+        // e.preventDefault()
         // /trainer/updateResume/671f1f348706010ba634eb92/resume/671f1f348706010ba634eb8f
         // console.log(`/trainer/updateResume/671f1f348706010ba634eb92/resume/${data._id}`)
         // console.log(resume)
         try{
             // console.log("object")
             console.log(resume)
-            let res = {...resume, domain:value}
+            let res = {...resume, domain:domainName}
             await api.post(`/trainersourcer/${params.id}/copy-resume`, res)
 
             toast({
@@ -274,33 +274,37 @@ function    ViewNewResume({data, projects}) {
     };
 
     const [resLoading, setResLoading] = useState(false)
-        const sortDataByDomain = (domain) => {
-            // Helper function to sort a single array based on the domain
-            const sortArray = (array, domain) => {
-                if (Array.isArray(array)) {
-                    return [...array].sort((a, b) => { // Use spread to create a new array
-                        let aContainsDomain = a.toLowerCase().includes(domain.toLowerCase());
-                        let bContainsDomain = b.toLowerCase().includes(domain.toLowerCase());
-                        return bContainsDomain - aContainsDomain; // Sort items with domain first
-                    });
-                }
-                return array;
-            };
-        
-            // Create a deep clone of the `resume` object to avoid direct mutations
-            let data = JSON.parse(JSON.stringify(resume)); // Deep clone
-        
-            // Iterate over each key in the data object and sort if it's an array
-            for (let key in data) {
-                if (Array.isArray(data[key]) && data[key].length > 0 && key !== "projects") {
-                    data[key] = sortArray(data[key], domain); // Sort and reassign the cloned array
-                }
-            }
-        
-            setResume(data); // Update the state with the sorted data
-            // return data;
-            console.log(data)
-        };
+   
+    const [domainName, setDomainName] = useState("")
+    const sortDataByDomain = () => {
+      console.log(domainName)
+      // Helper function to sort a single array based on the domain
+      const sortArray = (array, domainName) => {
+          if (Array.isArray(array)) {
+              return [...array].sort((a, b) => { // Use spread to create a new array
+                  let aContainsDomain = a.toLowerCase().includes(domainName.toLowerCase());
+                  let bContainsDomain = b.toLowerCase().includes(domainName.toLowerCase());
+                  return bContainsDomain - aContainsDomain; // Sort items with domain first
+              });
+          }
+          return array;
+      };
+  
+      // Create a deep clone of the `resume` object to avoid direct mutations
+      let data = JSON.parse(JSON.stringify(resume)); // Deep clone
+  
+      // Iterate over each key in the data object and sort if it's an array
+      for (let key in data) {
+          if (Array.isArray(data[key]) && data[key].length > 0 && key !== "projects") {
+              data[key] = sortArray(data[key], domainName); // Sort and reassign the cloned array
+          }
+      }
+  
+      setResume(data); // Update the state with the sorted data
+      // return data;
+      console.log(data)
+  };
+
     
     // Example usage with "Ansible" as the domain
     // sortDataByDomain("Ansible");
@@ -328,7 +332,7 @@ function    ViewNewResume({data, projects}) {
         {/* {
             !resLoading ? */}
         
-            <form onSubmit={submitResumeHandler}>
+            <div>
 
                 <div className='flex items-center justify-between my-9'>
                     <div>
@@ -354,72 +358,13 @@ function    ViewNewResume({data, projects}) {
                             )
                         }
                     </div>
-                    <Popover open={open} onOpenChange={setOpen} className="justify-start p-2">
-                                <PopoverTrigger asChild className='p-6 rounded-md'>
-                                    <Button
-                                        variant="outline"
-                                        role="combobox"
-                                        aria-expanded={open}
-                                        className="justify-between"
-                                    >
-                                        {!value ? (
-                                            <span className="flex items-center justify-between">
-                                                <ion-icon
-                                                    name="search-outline"
-                                                    style={{ fontSize: "18px", marginRight: "12px" }}
-                                                ></ion-icon>
-                                                Select Domain
-                                            </span>
-                                        ) : (
-                                            <span className='flex items-center align-middle'>
-
-                                                <div className='flex items-center justify-between  align-middle ml-10 text-slate-700'>
-                                                    <span>{value}</span>
-                                                    {/* <ion-icon name="close-outline" style={{ fontSize: "18px", marginLeft: "12px" }} onClick={
-                                                        () => {
-                                                            setOpen(false);
-                                                            setValue('');
-                                                            setFilterResults(domains);
-                                                        }
-                                                    }></ion-icon> */}
-                                                </div>
-                                            </span>
-                                        )}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className=" p-0">
-                                    <Command>
-                                        <Input  className="w-max m-2 focus:ring-0 focus:ring-offset-0"    
-                                            placeholder="Search Domain by..... "
-                                            onChange={(e) =>{
-                                                getFilteredResults(e.target.value)
-                                                console.log(e)
-                                            }}
-                                            // value={value}
-                                        />
-                                        <CommandList>
-                                            {/* <CommandEmpty>No results found.</CommandEmpty> */}
-                                            {filteredResults?.map((domain) => (
-                                                <CommandGroup key={domain.topic} heading={domain.topic}>
-                                                    {domain.subtopics.map((subtopic) => (
-                                                        <CommandGroup key={subtopic.subtopic} heading={subtopic.subtopic}>
-                                                            {subtopic.points.map((point) => (
-                                                                <CommandItem
-                                                                    key={point}
-                                                                    value={point}
-                                                                    onSelect={() => handleSearchTerm(point)}
-                                                                >
-                                                                    {point}
-                                                                </CommandItem>
-                                                            ))}
-                                                        </CommandGroup>
-                                                    ))}
-                                                </CommandGroup>
-                                            ))}
-                                        </CommandList>
-                                    </Command>
-                                </PopoverContent>
-                    </Popover>
+                    <div className='p-4'>
+                      <div>Domain Name</div>
+                      <div className='flex items-center '>
+                        <Input value={domainName} onChange={(e) => setDomainName(e.target.value)} placeholder='Type your domain name' />
+                        <Button className="rounded-none ml-4" onClick={() => sortDataByDomain()}>Filter</Button>
+                      </div>
+                    </div> 
                 </div>
 
                 <div className='grid grid-cols-1 md:grid-cols-1 items-start '>
@@ -537,9 +482,9 @@ function    ViewNewResume({data, projects}) {
     
                 </div>
                 <div className='justify-center flex mt-8'>
-                <Button type="submit">Submit</Button>
+                    <Button type="submit" onClick={() => submitResumeHandler()}>Submit</Button>
                 </div>
-            </form> 
+            </div> 
             {/* : 
             <div className='w-max grid place-content-center'>
                 <img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" alt="" />

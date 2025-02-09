@@ -152,7 +152,7 @@ function EditEmployee() {
                               <SelectContent position="popper">
                                 <SelectItem value="ADMIN">ADMIN</SelectItem>
                                 <SelectItem value="Manager">Manager</SelectItem>
-                                <SelectItem value="Trainer Sourcer">Trainer Sourcer</SelectItem>
+                                <SelectItem value="TrainerSourcer">Trainer Sourcer</SelectItem>
                                 <SelectItem value="KeyAccounts">KeyAccounts</SelectItem>
                               </SelectContent>
                             </Select>

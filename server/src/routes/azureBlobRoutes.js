@@ -144,13 +144,27 @@ router.post("/upload-aadhar-pan/trainer/:trainer", upload.fields([
         console.log(3)
         // const resultPan = await uploadPanAndAadharToBlob(pancard, "pancard", trainer);
         // const resultAadhar = await uploadPanAndAadharToBlob(aadharCard, "aadharCard", trainer);
+        let result = {};
+        if (resultPan !== undefined) {
+            // resultPan = await uploadPanAndAadharToBlob(pancard, "pancard", trainer);/
+            result.panCard = resultPan.url
+            
+        }
+        console.log(2, result)
 
+        if (resultAadhar !== undefined) {
+            result.aadharCard =  resultAadhar.url
+            console.log("inside adhar", result)
+            // resultAadhar = await uploadPanAndAadharToBlob(aadharCard, "aadharCard", trainer);
+        }
+        console.log(4)
         res
             .status(200)
             .json({
                 message: "Files uploaded successfully",
-                pancard: resultPan ? resultPan.url : null,
-                aadharCard: resultAadhar ? resultAadhar.url : null
+                ...result
+                // panCard: resultPan ? resultPan.url : null,
+                // aadharCard: resultAadhar ? resultAadhar.url : null
             });
     } catch (error) {
         console.log("error")

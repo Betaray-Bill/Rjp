@@ -387,6 +387,7 @@ const paymentDuePayable = asyncHandler(async (req, res) => {
 });
 
 // Payment Receivable
+// Payment Receivable
 const paymentDueReceivable = asyncHandler(async (req, res) => {
     try {
         // Get employee ID, startDate, and endDate from request
@@ -422,6 +423,7 @@ const paymentDueReceivable = asyncHandler(async (req, res) => {
                         _id: 1,
                         projectName: 1,
                         clientDetails: 1,
+                        stages:1,
                         "company.name": 1,
                     },
                 },
@@ -444,6 +446,9 @@ const paymentDueReceivable = asyncHandler(async (req, res) => {
             const clientDetails = project.clientDetails;
 
             if (clientDetails) {
+                // Handle date logic
+                const today = new Date();
+
                 const isWithinRange =
                     startDate &&
                     endDate &&
@@ -451,16 +456,33 @@ const paymentDueReceivable = asyncHandler(async (req, res) => {
                     new Date(clientDetails.dueDate) >= new Date(startDate) &&
                     new Date(clientDetails.dueDate) <= new Date(endDate);
 
-                const isOverdue =
-                    clientDetails.dueDate && new Date(clientDetails.dueDate) < new Date() && !clientDetails.invoiceSentClient;
+                const isStartDateOnly =
+                    startDate &&
+                    !endDate &&
+                    clientDetails.startDate &&
+                    new Date(clientDetails.startDate) >= new Date(startDate);
 
-                if ((isWithinRange || isOverdue) && !clientDetails.invoiceSentClient) {
+                const isEndDateOnly =
+                    endDate &&
+                    !startDate &&
+                    clientDetails.endDate &&
+                    new Date(clientDetails.endDate) <= new Date(endDate);
+
+                const isDefaultRange =
+                    !startDate && !endDate && clientDetails.dueDate && new Date(clientDetails.dueDate) <= today;
+
+                // Filter based on the updated logic
+                if (
+                    (isWithinRange || isStartDateOnly || isEndDateOnly || isDefaultRange) &&
+                    clientDetails.invoiceSentClient === true &&
+                    clientDetails.stages !== "Payment"
+                ) {
                     paymentEntries.push({
                         projectName: project.projectName,
                         dueDate: clientDetails.dueDate,
                         amount: clientDetails.amount,
                         companyName: project.company?.name || "Unknown",
-                        status: isOverdue ? "Overdue" : "Due",
+                        status: new Date(clientDetails.dueDate) < today ? "Overdue" : "Due",
                     });
                 }
             }
@@ -473,6 +495,7 @@ const paymentDueReceivable = asyncHandler(async (req, res) => {
         return res.status(500).json({ message: "Error getting receivables", error: err.message });
     }
 });
+
 
 // Forecast
 const Forecast = async (req, res) => {
@@ -641,8 +664,10 @@ const getTrainingDetailsByKAM = asyncHandler(async(req, res) => {
         // Fetch the employee by ID
         const employee = await Employee.findById(employeeId);
         if (!employee) {
-            throw new Error("Employee not found");
+            throw new Error("Employee not found");  
         }
+
+        let empName = employee.name;
 
         const adminRole = employee
             .role
@@ -699,7 +724,7 @@ const getTrainingDetailsByKAM = asyncHandler(async(req, res) => {
                 $project: {
                     _id: 1, // Include the company name
                     projectCount: 1, // Include the project count
-
+                    name:empName,
                     'ownerDetails.name': 1,
                     'ownerDetails.email': 1,
                     projectNames: {
@@ -751,7 +776,7 @@ const getTrainingDetailsByKAM = asyncHandler(async(req, res) => {
                 $project: {
                     _id: 1, // Include the company name
                     projectCount: 1, // Include the project count
-
+                    name:empName,
                     'ownerDetails.name': 1,
                     'ownerDetails.email': 1,
                     projectNames: {
@@ -763,9 +788,13 @@ const getTrainingDetailsByKAM = asyncHandler(async(req, res) => {
                     } // Extract project names
                 }
             }]);
+
+            // console.log(projects)
         } else {
             throw new Error("Employee role does not have access to projects");
         }
+        console.log(projects)
+
 
         return res
             .status(200)
@@ -778,35 +807,37 @@ const getTrainingDetailsByKAM = asyncHandler(async(req, res) => {
 })
 
 // Pending Pending PO
-const pendingPO = asyncHandler(async(req, res) => {
+const pendingPO = asyncHandler(async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
 
-        if (!startDate || !endDate) {
-            return res
-                .status(400)
-                .json({ message: "Start date and end date are required." });
+        // Build query based on date conditions
+        const query = {};
+
+        if (startDate && endDate) {
+            // Both startDate and endDate are provided
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            query['trainingDates.startDate'] = { $gte: start, $lte: end };
+            query['trainingDates.endDate'] = { $gte: start, $lte: end };
+        } else if (startDate) {
+            // Only startDate is provided
+            const start = new Date(startDate);
+            query['trainingDates.startDate'] = { $gte: start };
+        } else if (endDate) {
+            // Only endDate is provided
+            const end = new Date(endDate);
+            query['trainingDates.endDate'] = { $lte: end };
+        } else {
+            // Neither startDate nor endDate is provided, default to projects up to today's date
+            const today = new Date();
+            query['trainingDates.endDate'] = { $lte: today };
         }
 
-        // Parse dates
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-
-        // Build query with date filtering
-        const query = {};
-        query['trainingDates.startDate'] = {
-            $gte: start,
-            $lte: end
-        };
-        query['trainingDates.endDate'] = {
-            $gte: start,
-            $lte: end
-        };
-
-        // Fetch projects within the specified dates
+        // Fetch projects based on the query
         const projects = await Project.find(query);
 
-        console.log("Projects: " + projects)
+        console.log("Projects: " + projects);
 
         const result = [];
 
@@ -816,6 +847,9 @@ const pendingPO = asyncHandler(async(req, res) => {
             const pendingTrainers = project
                 .trainers
                 .filter(trainer => {
+                    // Skip internal trainers
+                    if (trainer.trainingDetails.trainerType === "Internal") return false;
+
                     // Skip if no purchaseOrder exists
                     if (!trainer.purchaseOrder || trainer.purchaseOrder.length === 0)
                         return true;
@@ -851,7 +885,7 @@ const pendingPO = asyncHandler(async(req, res) => {
             }
         }
 
-        console.log(result)
+        console.log(result);
 
         return res.json(result);
     } catch (error) {
@@ -860,7 +894,210 @@ const pendingPO = asyncHandler(async(req, res) => {
             .status(500)
             .json({ message: "Internal server error." });
     }
+});
+
+
+// Pending Pending PO
+const TrainerpendingPO = asyncHandler(async (req, res) => {
+    try {
+        const { trainerId } = req.params; // Get trainerId from the request parameters
+        const { startDate, endDate } = req.query; // Get optional date filters from query
+    
+        if (!trainerId) {
+          return res.status(400).json({ message: "Trainer ID is required." });
+        }
+    
+        // Step 1: Retrieve trainer with projects
+        const trainer = await Trainer.findById(trainerId).populate("projects");
+    
+        if (!trainer) {
+          return res.status(404).json({ message: "Trainer not found." });
+        }
+    
+        let projects = trainer.projects;
+
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+      
+            projects = projects.filter((project) => {
+              const projectStartDate = new Date(project.trainingDates.startDate);
+              const projectEndDate = new Date(project.trainingDates.endDate);
+      
+              return projectStartDate >= start && projectEndDate <= end;
+            });
+          }
+      
+          // Step 3: Filter projects to ensure the trainer exists in the project data
+          projects = projects.filter((project) =>
+            project.trainers.some((trainerEntry) =>
+              trainerEntry.trainer._id.equals(trainerId)
+            )
+          );
+
+        // Fetch projects based on the query
+        // const projects = await Project.find(query);
+
+        console.log("Projects: " + projects);
+
+        const result = [];
+
+        for (const project of projects) {
+            console.log(`Processing project: ${project.projectName}`);
+
+            const pendingTrainers = project
+                .trainers
+                .filter(trainer => {
+                    // Skip internal trainers
+                    if (trainer.trainingDetails?.trainerType === "Internal") return false;
+
+                    if(trainerId == trainer.trainer._id){
+
+                    // Skip if no purchaseOrder exists
+                    if (!trainer.purchaseOrder || trainer.purchaseOrder.length === 0)
+                        return true;
+
+                    // Check if any PO is incomplete
+                    return trainer
+                        .purchaseOrder
+                        .some(po => {
+                            const { type, description, terms } = po.details || {};
+                            return !type || !description || description.length === 0 || !terms || terms.length === 0;
+                        });
+                    }
+                });
+
+            console.log(`Pending Trainers: ${JSON.stringify(pendingTrainers, null, 2)}`);
+
+            // Push relevant trainer data into result array
+            for (const trainer of pendingTrainers) {
+                const trainerDetails = await Trainer
+                    .findById(trainer.trainer._id)
+                    .select('generalDetails.name');
+
+                // Add to result if trainer details exist
+                if (trainerDetails) {
+                    result.push({
+                        projectId: project._id,
+                        projectName: project.projectName,
+                        trainerName: trainerDetails.generalDetails.name || 'Unknown',
+                        projectOwner: await Employee
+                            .findById(project.projectOwner)
+                            .select('name') || 'Unknown'
+                    });
+                }
+            }
+        }
+
+        console.log(result);
+
+        return res.json(result);
+    } catch (error) {
+        console.error('Error fetching trainers with pending POs:', error);
+        return res
+            .status(500)
+            .json({ message: "Internal server error." });
+    }
+
 })
+// Trainer Payment Due
+const trainerPaymentDue = asyncHandler(async (req, res) => {
+    try {
+      const { trainerId } = req.params; // Get trainerId from request parameters
+      const { startDate, endDate } = req.query; // Get optional date filters from query
+  
+      if (!trainerId) {
+        return res.status(400).json({ message: "Trainer ID is required." });
+      }
+  
+      // Step 1: Retrieve the trainer with associated projects
+      const trainer = await Trainer.findById(trainerId).populate("projects");
+  
+      if (!trainer) {
+        return res.status(404).json({ message: "Trainer not found." });
+      }
+  
+      let projects = trainer.projects;
+  
+      // Step 2: Filter projects by training dates if startDate and/or endDate are provided
+      if (startDate || endDate) {
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+  
+        projects = projects.filter((project) => {
+          const projectStartDate = new Date(project.trainingDates.startDate);
+          const projectEndDate = new Date(project.trainingDates.endDate);
+  
+          return (
+            (!start || projectStartDate >= start) && 
+            (!end || projectEndDate <= end)
+          );
+        });
+      }
+  
+      // Step 3: Filter projects to ensure the trainer exists in the project data
+      projects = projects.filter((project) =>
+        project.trainers.some((trainerEntry) =>
+          trainerEntry.trainer._id.equals(trainerId)
+        )
+      );
+  
+      const result = [];
+  
+      // Step 4: Process each project to extract unpaid invoices for the trainer
+      for (const project of projects) {
+        const { projectName, projectOwner, _id: projectId } = project;
+  
+        for (const trainerObj of project.trainers) {
+          if (trainerId == trainerObj.trainer) {
+            const unpaidInvoices = trainerObj.inVoice.filter(
+              (invoice) =>
+                !invoice.isPaid && // Only unpaid invoices
+                (
+                  (!startDate && !endDate) || // Default: include all unpaid invoices
+                  (startDate && new Date(invoice.dueDate) >= new Date(startDate)) ||
+                  (endDate && new Date(invoice.dueDate) <= new Date(endDate)) ||
+                  (startDate && endDate &&
+                    new Date(invoice.dueDate) >= new Date(startDate) &&
+                    new Date(invoice.dueDate) <= new Date(endDate))
+                )
+            );
+  
+            // Step 5: Add unpaid invoices to the result
+            for (const invoice of unpaidInvoices) {
+              const dueDate = new Date(invoice.dueDate);
+              const isOverdue = dueDate < new Date();
+  
+              const trainerDetails = await Trainer.findById(
+                trainerObj.trainer._id
+              ).select("generalDetails.name");
+  
+              if (trainerDetails) {
+                const ownerDetails = await Employee.findById(projectOwner).select(
+                  "name"
+                );
+  
+                result.push({
+                  trainingName: projectName,
+                  trainerName: trainerDetails.generalDetails.name || "Unknown",
+                  projectOwner: ownerDetails?.name || "Unknown",
+                  projectId: projectId.toString(),
+                  dueDate: invoice.dueDate || "Not available",
+                  status: isOverdue ? "Overdue" : "Pending",
+                });
+              }
+            }
+          }
+        }
+      }
+  
+      return res.json(result);
+    } catch (error) {
+      console.error("Error fetching trainers with pending payments:", error);
+  
+      return res.status(500).json({ message: "Internal server error." });
+    }
+  });
 
 // Pending Payment
 const pendingPayment = asyncHandler(async (req, res) => {
@@ -1032,7 +1269,7 @@ const trainersSourced = asyncHandler(async (req, res) => {
         }
 
         const isAdmin = employee.role.some(r => r.name === "ADMIN");
-        const isTrainerSourcer = employee.role.some(r => r.name === "Trainer Sourcer");
+        const isTrainerSourcer = employee.role.some(r => r.name === "TrainerSourcer");
 
         if (!isAdmin && !isTrainerSourcer) {
             return res.status(403).json({ message: "Employee role does not have access to trainers." });
@@ -1068,14 +1305,14 @@ const trainersSourced = asyncHandler(async (req, res) => {
 
             trainers = result.map(r => r._id);
         } else if (isTrainerSourcer) {
-            const trainerSourcerRole = employee.role.find(r => r.name === "Trainer Sourcer");
+            const trainerSourcerRole = employee.role.find(r => r.name === "TrainerSourcer");
             const trainerSourcer = await TrainerSourcer.findById(trainerSourcerRole.roleId).populate({
                 path: "registeredTrainers",
                 select: { generalDetails: 1, trainerId: 1 },
             });
 
             if (!trainerSourcer) {
-                return res.status(404).json({ message: "Trainer Sourcer data not found." });
+                return res.status(404).json({ message: "TrainerSourcer data not found." });
             }
 
             const registeredTrainers = trainerSourcer.registeredTrainers.map(tr => tr._id);
@@ -1097,7 +1334,7 @@ const trainersSourced = asyncHandler(async (req, res) => {
     }
 });
 
-// Trainer Sourcer No of trainer methods Sourced in a period
+// TrainerSourcer No of trainer methods Sourced in a period
 const trainersDeployed = asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
     const employeeId = req.params.employeeId;
@@ -1109,7 +1346,7 @@ const trainersDeployed = asyncHandler(async (req, res) => {
         }
 
         const isAdmin = employee.role.some(r => r.name === "ADMIN");
-        const isTrainerSourcer = employee.role.some(r => r.name === "Trainer Sourcer");
+        const isTrainerSourcer = employee.role.some(r => r.name === "TrainerSourcer");
 
         if (!isAdmin && !isTrainerSourcer) {
             return res.status(403).json({ message: "Employee role does not have access to trainers." });
@@ -1145,14 +1382,14 @@ const trainersDeployed = asyncHandler(async (req, res) => {
 
             totalTrainersDeployed = result.length > 0 ? result[0].totalTrainers : 0;
         } else if (isTrainerSourcer) {
-            const trainerSourcerRole = employee.role.find(r => r.name === "Trainer Sourcer");
+            const trainerSourcerRole = employee.role.find(r => r.name === "TrainerSourcer");
             const trainerSourcer = await TrainerSourcer.findById(trainerSourcerRole.roleId).populate({
                 path: "registeredTrainers",
                 select: { generalDetails: 1, trainerId: 1 },
             });
 
             if (!trainerSourcer) {
-                return res.status(404).json({ message: "Trainer Sourcer data not found." });
+                return res.status(404).json({ message: "TrainerSourcer data not found." });
             }
 
             const registeredTrainers = trainerSourcer.registeredTrainers.map(tr => tr._id);
@@ -1175,37 +1412,60 @@ const trainersDeployed = asyncHandler(async (req, res) => {
 });
 
 // Trainer wise report
-const trainerRevenueReport = asyncHandler(async(req, res) => {
+const trainerRevenueReport = asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
     const trainerId = req.params.trainerId;
+
     try {
-        // if (!startDate || !endDate) {
-        //     return res
-        //         .status(400)
-        //         .json({ message: "Start date and end date are required." });
-        // }
+        // Parse the dates for filtering if provided
+        let start = null;
+        let end = null;
 
-        // Parse the dates for filtering
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        let query = {};
+        if (startDate) start = new Date(startDate);
+        if (endDate) end = new Date(endDate);
 
+        // Prepare the date query logic
+        let dateCondition = {};
         if (startDate && endDate) {
-            query = {
-                'trainingDates.startDate': {
-                    $gte: new Date(startDate),
-                    $lte: new Date(endDate)
-                },
-                'trainingDates.endDate': {
-                    $gte: new Date(startDate),
-                    $lte: new Date(endDate)
-                }
+            dateCondition = {
+                $or: [
+                    {
+                        $and: [
+                            { $gte: ["$$project.trainingDates.startDate", start] },
+                            { $lte: ["$$project.trainingDates.startDate", end] },
+                        ],
+                    },
+                    {
+                        $and: [
+                            { $gte: ["$$project.trainingDates.endDate", start] },
+                            { $lte: ["$$project.trainingDates.endDate", end] },
+                        ],
+                    },
+                    {
+                        $and: [
+                            { $lte: ["$$project.trainingDates.startDate", start] },
+                            { $gte: ["$$project.trainingDates.endDate", end] },
+                        ],
+                    },
+                ],
+            };
+        } else if (startDate) {
+            dateCondition = {
+                $and: [
+                    { $gte: ["$$project.trainingDates.startDate", start] },
+                ],
+            };
+        } else if (endDate) {
+            dateCondition = {
+                $and: [
+                    { $lte: ["$$project.trainingDates.endDate", end] },
+                ],
             };
         }
-        query['clientDetails.invoiceSentClient'] = true
 
-        // Find the trainer by ID
-        const trainer = await Trainer.aggregate([{
+        // Aggregation pipeline
+        const trainer = await Trainer.aggregate([
+            {
                 $match: {
                     _id: new mongoose.Types.ObjectId(trainerId),
                 },
@@ -1224,27 +1484,7 @@ const trainerRevenueReport = asyncHandler(async(req, res) => {
                         $filter: {
                             input: "$projects",
                             as: "project",
-                            cond: {
-                                $or: [{
-                                        $and: [
-                                            { $gte: ["$$project.trainingDates.startDate", start] },
-                                            { $lte: ["$$project.trainingDates.startDate", end] },
-                                        ],
-                                    },
-                                    {
-                                        $and: [
-                                            { $gte: ["$$project.trainingDates.endDate", start] },
-                                            { $lte: ["$$project.trainingDates.endDate", end] },
-                                        ],
-                                    },
-                                    {
-                                        $and: [
-                                            { $lte: ["$$project.trainingDates.startDate", start] },
-                                            { $gte: ["$$project.trainingDates.endDate", end] },
-                                        ],
-                                    },
-                                ],
-                            },
+                            cond: startDate || endDate ? dateCondition : {}, // Apply date filter only if dates are provided
                         },
                     },
                 },
@@ -1307,22 +1547,104 @@ const trainerRevenueReport = asyncHandler(async(req, res) => {
             },
         ]);
 
+        console.log(trainer)
 
         if (!trainer) {
-            return res
-                .status(404)
-                .json({ message: "Trainer not found." });
+            return res.status(404).json({ message: "Trainer not found." });
         }
 
-        return res.status(200).json(trainer)
-
+        return res.status(200).json(trainer);
     } catch (err) {
         console.error("Error parsing dates:", err);
-        return res
-            .status(500)
-            .json({ message: "Internal Server Error" });
+        return res.status(500).json({ message: "Internal Server Error" });
     }
-})
+});
+
+
+const trainerOccupancy = asyncHandler(async (req, res) => {
+    try {
+        const { trainerId } = req.params;
+        const { startDate, endDate } = req.query;
+
+        if (!trainerId) {
+            return res.status(400).json({ message: "Trainer ID is required." });
+        }
+
+        const trainer = await Trainer.findById(trainerId).populate("projects");
+
+        if (!trainer) {
+            return res.status(404).json({ message: "Trainer not found." });
+        }
+
+        let projects = trainer.projects;
+
+        if (startDate || endDate) {
+            const start = startDate ? new Date(startDate) : null;
+            const end = endDate ? new Date(endDate) : null;
+
+            projects = projects.filter((project) => {
+                const projectStartDate = new Date(project.trainingDates.startDate);
+                const projectEndDate = new Date(project.trainingDates.endDate);
+
+                return (
+                    (!start || projectStartDate >= start) &&
+                    (!end || projectEndDate <= end)
+                );
+            });
+        }
+
+        const result = await Promise.all(
+            projects.map(async (project) => {
+                const { projectName, domain, trainingDates, projectOwner, company } = project;
+                const { startDate: trainingStartDate, endDate: trainingEndDate, startTime, endTime, specialTimings } = trainingDates;
+
+                let totalHours = 0;
+
+                if (startTime && endTime) {
+                    const start = new Date(startTime);
+                    const end = new Date(endTime);
+                    const totalDays = Math.ceil((new Date(trainingEndDate) - new Date(trainingStartDate)) / (1000 * 60 * 60 * 24)) + 1;
+                    
+                    const totalHoursPerDay = (end.getUTCHours() - start.getUTCHours()) + (end.getUTCMinutes() - start.getUTCMinutes()) / 60;
+                    totalHours += totalHoursPerDay * totalDays;
+                }
+
+                if (specialTimings && Array.isArray(specialTimings)) {
+                    specialTimings.forEach(({ startDate, endDate, startTime, endTime }) => {
+                        if (startDate && endDate && startTime && endTime) {
+                            const specialStart = new Date(startTime);
+                            const specialEnd = new Date(endTime);
+                            const specialDays = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
+                            
+                            const specialHoursPerDay = (specialEnd.getUTCHours() - specialStart.getUTCHours()) + (specialEnd.getUTCMinutes() - specialStart.getUTCMinutes()) / 60;
+                            totalHours += specialHoursPerDay * specialDays;
+                        }
+                    });
+                }
+
+                const ownerDetails = await Employee.findById(projectOwner).select("name");
+                const companyName = company?.name || "Unknown";
+
+                return {
+                    projectName,
+                    domain,
+                    trainingDates: { startDate: trainingStartDate, endDate: trainingEndDate },
+                    totalHours,
+                    companyName,
+                    projectOwner: ownerDetails?.name || "Unknown",
+                };
+            })
+        );
+
+        return res.json(result);
+    } catch (error) {
+        console.error("Error fetching trainer projects:", error);
+        return res.status(500).json({ message: "Internal server error." });
+    }
+});
+
+//   export default trainerProjectsController;
+//   
 
 export {
     getRevenueByEmployees,
@@ -1338,5 +1660,8 @@ export {
     trainersDeployed,
     paymentDuePayable,
     paymentDueReceivable,
-    trainerRevenueReport
+    trainerRevenueReport,
+    TrainerpendingPO,
+    trainerPaymentDue,
+    trainerOccupancy
 }

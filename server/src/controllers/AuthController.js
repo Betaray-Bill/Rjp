@@ -30,7 +30,7 @@ const login = asyncHandler(async(req, res) => {
                 console.log("EMp ROle specs : ", roleData)
                 rolesDetails.push(roleData)
             }
-            if (rolesExtract[i].name === "Trainer Sourcer") {
+            if (rolesExtract[i].name === "TrainerSourcer") {
                 let roleData = await TrainerSourcer.findById(rolesExtract[i].roleId)
                 console.log("EMp ROle specs : ", roleData)
                 rolesDetails.push(roleData)

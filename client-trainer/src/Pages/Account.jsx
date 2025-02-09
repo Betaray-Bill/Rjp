@@ -329,7 +329,9 @@ function Account() {
 
             </div>
 
-            <BankDetails />
+            {
+                user && user.trainingDetails.trainerType !== 'Internal' && <BankDetails />
+            }
 
             <p className='text-end text-red-500 mt-10'>To update your details please contact the company</p>
         </div>

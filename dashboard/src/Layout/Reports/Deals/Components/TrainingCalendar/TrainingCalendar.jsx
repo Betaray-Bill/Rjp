@@ -91,10 +91,10 @@ function TrainingCalendar() {
                                 <TableRow>
                                     <TableCell className="font-medium">{_i+1}</TableCell>
                                     <TableCell>{e.projectName}</TableCell>
-                                    <TableCell>{e.company.name}</TableCell>
-                                    <TableCell>{e.ownerDetails[0].name}</TableCell>
-                                    <TableCell >{e.trainingDates.startDate.split("T")[0].split("-").reverse().join("-")}</TableCell>
-                                    <TableCell >{e.trainingDates.endDate.split("T")[0].split("-").reverse().join("-")}</TableCell>
+                                    <TableCell>{e.company?.name}</TableCell>
+                                    <TableCell>{e.ownerDetails[0]?.name}</TableCell>
+                                    <TableCell >{e.trainingDates?.startDate && e.trainingDates?.startDate.split("T")[0].split("-").reverse().join("-")}</TableCell>
+                                    <TableCell >{e.trainingDates.endDate && e.trainingDates.endDate?.split("T")[0].split("-").reverse().join("-")}</TableCell>
                                     <TableCell>
                                         <Link to={`/home/projects/view/${e._id}`} target='_blank' className='px-3 py-2 bg-blue-300'>View</Link>
                                     </TableCell>

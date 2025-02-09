@@ -22,7 +22,7 @@ const employeeSchema = new mongoose.Schema({
         },
         name: {
             type: String,
-            enum: ['ADMIN', 'Manager', 'Trainer Sourcer', 'KeyAccounts', 'Finance'],
+            enum: ['ADMIN', 'Manager', 'TrainerSourcer', 'KeyAccounts', 'Finance'],
             required: true
         },
         disable:{

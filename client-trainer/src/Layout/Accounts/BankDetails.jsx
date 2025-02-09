@@ -114,7 +114,7 @@ function BankDetails() {
         <div className="w-[90vw] lg:w-[80vw] mt-8 p-6 bg-white rounded-md">
             <div className="flex items-center justify-between">
                 <h2 className="text-slate-700 text-lg py-4 font-semibold">Bank Details</h2>
-                {isEdit ? (
+                {/* {isEdit ? (
                     <Button className="rounded-none" onClick={submitFiles}>
                         Submit
                     </Button>
@@ -122,7 +122,65 @@ function BankDetails() {
                     <Button className="rounded-none" onClick={() => setIsEdit(true)}>
                         Edit
                     </Button>
-                )}
+                )} */}
+            </div>
+
+            <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-3 mt-3 border rounded-md mt-7 p-4'>
+                {/* Account name, number, bank name, branch, IFSC code, Pancard number, Aadhar  */}
+
+                {/* If external vendor - GST , vendor name */}
+                <div>
+                    <Label htmlFor="account_Name">Bank Account Name</Label>
+                    <Input type="text" id="account_Name" name="accountName" value={bankDetails.accountName}/>
+                </div>
+
+                <div>
+                    <Label htmlFor="account_Number">Account Number</Label>
+                    <Input type="number" min={1} id="account_Number" name="accountNumber" value={bankDetails.accountNumber}/>
+                </div>
+
+                <div>
+                    <Label htmlFor="bankName">Bank Name</Label>
+                    <Input type="text" id="bankName" name="bankName" value={bankDetails.bankName}/>
+                </div>
+
+                <div>
+                    <Label htmlFor="bank_Branch">Bank Branch</Label>
+                    <Input type="text" id="bank_Branch" name="bankBranch" value={bankDetails.bankBranch}/>
+                </div>
+
+                <div>
+                    <Label htmlFor="bank_IFSC_code">Bank IFSC Code</Label>
+                    <Input type="text" id="bank_IFSC_code" name="bankIFSCCode" value={bankDetails.bankIFSCCode}/>
+                </div>
+
+                <div>
+                    <Label htmlFor="pancard_Number">PAN Card Number</Label>
+                    <Input type="text" id="pancard_Number" name="pancardNumber" value={bankDetails.pancardNumber}/>
+                </div>
+
+                <div>
+                    <Label htmlFor="pancard_Number">Aadhar Card Number</Label>
+                    <Input type="text" id="aadharcard_Number" name="aadharCardNumber" value={bankDetails.aadharCardNumber}/>
+                </div>
+
+{/* 
+                {
+                    trainerDetails?.trainingDetails?.trainerType === "External - Vendor" ? 
+                    (
+                        <Fragment> */}
+                            <div>
+                                <Label htmlFor="vendorName">Vendor Name</Label>
+                                <Input type="text" id="vendorName" name="vendorName" value={bankDetails.vendorName}/>
+                            </div>
+                            <div>
+                                <Label htmlFor="gstNumber">GST Number</Label>
+                                <Input type="text" id="gstNumber" name="gstNumber" value={bankDetails.gstNumber}/>
+                            </div>
+                        {/* </Fragment>
+                    ) : null
+                } */}
+
             </div>
 
             <div className="grid grid-cols-1 mg:grid-cols-2 gap-5 border rounded-md mt-7 p-4">

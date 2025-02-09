@@ -107,6 +107,8 @@ function Home() {
         setIsOpen(!isOpen);
     };
 
+    console.log(user.trainingDetails.trainerType === "Internal")
+
     return (
         <div className='flex w-screen h-screen overflow-hidden'>
             {/* SideBar */}

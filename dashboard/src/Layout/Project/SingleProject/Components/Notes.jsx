@@ -9,6 +9,7 @@ import axios from 'axios'
 import {useQuery, useQueryClient} from 'react-query'
 import {useSelector} from 'react-redux'
 import api from '@/utils/api'
+import { toast, useToast } from '@/hooks/use-toast'
 // const socket = io("http://localhost:6000");
 
 function Notes({projectName, projectId}) {
@@ -18,7 +19,7 @@ function Notes({projectName, projectId}) {
         setIsLoading] = useState(false);
     const queryClient = useQueryClient();
     const {currentUser} = useSelector(state => state.auth)
-
+        const {toast} = useToast()
     useEffect(() => {
         // fetchNotes()
     }, [projectId])
@@ -135,7 +136,7 @@ function Notes({projectName, projectId}) {
 
     const submitMessage = async() => {
         console.log(message)
-        if (message) {
+        // if (message.text.content !== "" && file.name !== "") {
 
             try {
                 // Check the blob connection
@@ -218,7 +219,13 @@ function Notes({projectName, projectId}) {
             // Emit the message to the socket
             console.log("Message sent successfully!");
 
-        }
+        // }else{
+        //     toast({
+        //         title: "Please add a note or upload a file",
+        //         // message: "Please add a note or upload a file",
+        //         // type: "destructive"
+        //     })
+        // }
         await queryClient.invalidateQueries(['notes', projectId]);
 
     }

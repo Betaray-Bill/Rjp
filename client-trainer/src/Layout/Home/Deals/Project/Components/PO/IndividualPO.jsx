@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
 import { useToast } from '@/hooks/use-toast'
 import api from '@/utils/api'
+import { Input } from '@/components/ui/input'
 
 function IndividualPO({purchaseOrder, index}) {
 
@@ -52,19 +53,23 @@ function IndividualPO({purchaseOrder, index}) {
     }
 
 
+    const [isDeclined, setIsDeclined] = useState(false)
+    const [declineReason,setDeclinedReason] = useState('')
+
     const handleAcceptDeclinePO = async(val) => {
         try {
             // console.log(a)
             const response = await api.put(`/project/accept-decline/${params.projectId}/trainer/${user._id}`, {
                 isAccepted:val,
-                poNumber:index
+                poNumber:index,
+                declineReason:declineReason ? declineReason : null
             });
             console.log(response.data)
             queryClient.invalidateQueries(['projects', params.projectId]);
             toast({
                 title: val ? "Po Accepted" : "PO Declined",
                 // description: "Purchase Order has been downloaded as a PDF",
-                // variant: "success",
+                variant: "success",
                 // duration: 5000
             })
             // const sendDataToBackend = await api.put const res console.log("FOrm Data",
@@ -186,7 +191,9 @@ function IndividualPO({purchaseOrder, index}) {
                                     </div>
                                 </div>
                                 <div className=' border-black p-3 border-l border-bs'>
-                                    <p className="font-semibold mt-4">To:</p>
+                                    <p className="font-semibold mt-4">To: </p>
+                                <p className='text-sm'>{user.bankDetails?.sameasVendor ? user.generalDetails.   name : user.bankDetails?.vendorName }</p>
+
                                     <p className='text-sm'>{user.generalDetails.address.flat_doorNo_street}</p>
                                     <p className='text-sm'>{user.generalDetails.address.area}</p>
                                     <p className='text-sm'>{user.generalDetails.address.townOrCity}, {user.generalDetails.address.state}, {user.generalDetails.address.pincode}</p>
@@ -338,6 +345,7 @@ function IndividualPO({purchaseOrder, index}) {
                        {
                         !purchaseOrder.isAccepted &&
                         (
+                            !isDeclined ? 
                             <Fragment>
                                 <div className='mx-4'>
                                     <Button className="rounded-none bg-green-700 font-semibold" onClick={() => handleAcceptDeclinePO(true)}>
@@ -346,12 +354,15 @@ function IndividualPO({purchaseOrder, index}) {
                                     </Button>
                                 </div>
                                 <div className='mx-4'>
-                                    <Button className="rounded-none bg-white border border-red-600 text-red-600 hover:bg-red-600 hover:text-white"  onClick={() => handleAcceptDeclinePO(false)}>
+                                    <Button className="rounded-none bg-white border border-red-600 text-red-600 hover:bg-red-600 hover:text-white"  onClick={() => setIsDeclined(true)}>
                                         <ion-icon name="close-outline" style={{fontSize:"20px"}}></ion-icon>
                                         <span className='ml-1 font-semibold'>Decline</span>
                                     </Button>
                                 </div>
-                            </Fragment>
+                            </Fragment> : <div className='flex items-center'>
+                                <Input type="text" placeholder="Reason for Decline" value={declineReason} onChange={(e) => setDeclinedReason(e.target.value)} className="border border-gray-300 rounded-sm px-2 py-1"/>
+                                <Button className="rounded-none bg-red-600 text-white ml-3" onClick={() => handleAcceptDeclinePO(false)}>Declined PO</Button>
+                            </div>
                         )
                        }
                     </div>

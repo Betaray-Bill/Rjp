@@ -2,7 +2,7 @@
 export const RolesEnum = Object.freeze({
     ADMIN: 'ADMIN',
     Finance: 'Finance',
-    TRAINER_SOURCER: 'Trainer Sourcer',
+    TRAINER_SOURCER: 'TrainerSourcer',
     KEY_ACCOUNT: 'KeyAccounts',
     // Add more roles as needed
 });
@@ -19,9 +19,9 @@ export const stages = Object.freeze({
     PAYMENT: "Payment",
 });
 
-export const trainingTypes = ['Internal', 'External - Freelancer', 'External - Full Time', 'External - Vendor']
+export const trainingTypes = ['Internal', 'External - Freelancer','External - Working Professional', 'External - Full Time', 'External - Vendor']
 
-export const trainingModesEnum = ['Full Time - Online', 'Full Time - Offline', 'Part Time - Online', 'Part Time - Offline']
+export const trainingModesEnum = ['Full Time - Online', 'Full Time - Offline', 'Part Time - Online', 'Part Time - Offline','All']
 
 export const domains = [{
     "topic": "ITIS",

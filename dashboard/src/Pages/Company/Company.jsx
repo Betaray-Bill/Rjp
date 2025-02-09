@@ -10,7 +10,7 @@ function Company() {
     return (
         <div className=' h-max min-h-[80vh] px-3'>
             <div className='flex items-center text-end justify-end w-full mb-3'>
-                {userAccess([RolesEnum.ADMIN], currentUser
+                {userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser
                     ?.employee.role) && (
                         <Link
                         to="/home/company/add-contact"
@@ -26,7 +26,7 @@ function Company() {
                 )
                 // add-contact
 }
-                {userAccess([RolesEnum.ADMIN], currentUser
+                {userAccess([RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT], currentUser
                     ?.employee.role) && (
                     <Link
                         to="/home/company/add-company"

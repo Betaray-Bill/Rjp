@@ -146,7 +146,7 @@ const getAllTrainerSourcer = asyncHandler(async(req, res) => {
             },
             {
                 $match: {
-                    "role.name": "Trainer Sourcer" // Match documents where the role name is KeyAccounts
+                    "role.name": "TrainerSourcer" // Match documents where the role name is KeyAccounts
                 }
             },
             {

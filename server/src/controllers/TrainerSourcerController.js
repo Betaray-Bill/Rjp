@@ -25,7 +25,16 @@ const registerTrainer = asyncHandler(async(req, res) => {
         // already registered" }); } Register the Main Resume and get its Id from its
         // collections
         let resumeId, mainResume
-        if (req.body.mainResume && req.body.mainResume.technicalSkills.length > 0) {
+        if (
+            req.body.mainResume &&
+            Object.keys(req.body.mainResume).some(
+                (key) => 
+                    req.body.mainResume[key] !== null && 
+                    req.body.mainResume[key] !== undefined &&
+                    req.body.mainResume[key] !== "" &&
+                    (!Array.isArray(req.body.mainResume[key]) || req.body.mainResume[key].length > 0)
+            )
+        ) {
             mainResume = new Resume({
                 professionalSummary: req.body.mainResume.professionalSummary,
                 technicalSkills: req.body.mainResume.technicalSkills,
@@ -57,6 +66,7 @@ const registerTrainer = asyncHandler(async(req, res) => {
                 whatsappNumber: req.body.generalDetails.whatsappNumber,
                 alternateNumber: req.body.generalDetails.alternateNumber,
                 dateOfBirth: req.body.generalDetails.dateOfBirth,
+                sourcedFrom: req.body.generalDetails.sourcedFrom,
                 address: {
                     flat_doorNo_street: req.body.generalDetails.address.flat_doorNo_street,
                     area: req.body.generalDetails.address.area,
@@ -76,7 +86,8 @@ const registerTrainer = asyncHandler(async(req, res) => {
                 gstNumber: req.body.bankDetails.gstNumber,
                 vendorName: req.body.bankDetails.vendorName,
                 panCard: req.body.bankDetails.panCard,
-                aadharCard: req.body.bankDetails.aadharCard
+                aadharCard: req.body.bankDetails.aadharCard,
+                remarks:req.body.bankDetails.remarks
             },
             trainingDetails: {
                 trainerType: req.body.trainingDetails.trainerType,
@@ -115,14 +126,14 @@ const registerTrainer = asyncHandler(async(req, res) => {
             await resume.save()
         }
 
-        // save the Trainers Id in the trainer Sourcer's Docs
+        // save the Trainers Id in the trainerSourcer's Docs
         const emp = await Employee.findById(trainerId)
         if (emp) {
             console.log("Inside EMp", emp.role)
                 // get the TrainerSourcer Id and then push the trainers Id in the docs
             for (let i = 0; i < emp.role.length; i++) {
                 console.log(emp.role[i].name)
-                if (emp.role[i].name === 'Trainer Sourcer') {
+                if (emp.role[i].name === 'TrainerSourcer') {
                     console.log("Tainer Src")
                     await TrainerSourcer.findByIdAndUpdate(emp.role[i].roleId, {
                         $push: {
@@ -349,7 +360,7 @@ const getTrainerByEmpId = asyncHandler(async(req, res) => {
             // get the TrainerSourcer Id and then push the trainers Id in the docs
         for (let i = 0; i < Emp.role.length; i++) {
             console.log(Emp.role[i].name)
-            if (Emp.role[i].name === 'Trainer Sourcer') {
+            if (Emp.role[i].name === 'TrainerSourcer') {
                 const trainers = await TrainerSourcer
                     .findById(Emp.role[i].roleId)
                     .populate('registeredTrainers')

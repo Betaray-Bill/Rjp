@@ -83,7 +83,7 @@ function Sidebar() {
                     </span>
                 </Link>
                 {userAccess([
-                    RolesEnum.ADMIN, RolesEnum.MANAGER, RolesEnum.KEY_ACCOUNT
+                    RolesEnum.ADMIN, RolesEnum.TRAINER_SOURCER, RolesEnum.KEY_ACCOUNT
                 ], currentUser
                     ?.employee.role) && <Link
                         to="/home/search"
@@ -117,7 +117,7 @@ function Sidebar() {
                         }}
                             className=""></ion-icon>
                         <span className='ml-2 text-[16px] text-black'>
-                            <p className='text-black'>Projects</p>
+                            <p className='text-black'>Deals</p>
                         </span>
                     </Link>
                 }
@@ -160,7 +160,7 @@ function Sidebar() {
                     </Link>
 }
               {userAccess([
-                    RolesEnum.ADMIN, RolesEnum.MANAGER
+                    RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT
                 ], currentUser
                     ?.employee.role) && <Link
                         to="/home/company"
@@ -175,6 +175,27 @@ function Sidebar() {
                             className=""></ion-icon>
                         <span className='ml-2 text-[16px] text-black'>
                             <p className='text-black'>Company</p>
+                        </span>
+                    </Link>
+}
+
+
+{userAccess([
+                    RolesEnum.ADMIN, RolesEnum.KEY_ACCOUNT
+                ], currentUser
+                    ?.employee.role) && <Link
+                        to="/home/domains"
+                        className={`flex items-center nav-link rounded-md py-2 px-[8px] mt-2 ${isActive('domains')
+                        ? "bg-blue-100"
+                        : "bg-white"}`}>
+                        <ion-icon
+                            name="globe-outline"
+                            style={{
+                            fontSize: "18px"
+                        }}
+                            className=""></ion-icon>
+                        <span className='ml-2 text-[16px] text-black'>
+                            <p className='text-black'>Domains</p>
                         </span>
                     </Link>
 }

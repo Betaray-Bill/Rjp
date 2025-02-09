@@ -67,6 +67,7 @@ function Revenue() {
 
                 const data = await response.data;
                 setRecommendations(data);
+                console.log(data)
             } catch (error) {
                 console.error("Error fetching recommendations:", error);
             }
@@ -232,7 +233,7 @@ function Revenue() {
                             fetchTrainerDetails(trainer._id);
                             setRecommendations([])
                             setId(trainer)
-                            setSearchQuery('')
+                            setSearchQuery(trainer.generalDetails.name)
 
                         }}>
                             {trainer.trainerId}

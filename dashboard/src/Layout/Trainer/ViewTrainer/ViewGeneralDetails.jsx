@@ -10,7 +10,7 @@ import {useQueryClient} from 'react-query';
 import { useToast } from '@/hooks/use-toast';
 import api from '@/utils/api';
 
-function ViewGeneralDetails({data, id, bank}) {
+function ViewGeneralDetails({data, id, bank, training}) {
     const trainerId = useParams()
     const queryClient = useQueryClient()
     const dispatch = useDispatch();
@@ -36,10 +36,19 @@ function ViewGeneralDetails({data, id, bank}) {
         }
     })
 
+    const [trainingDetails, setTrainingDetails] = useState({
+        trainerType: "",
+        modeOfTraining: []
+    })
+
     useEffect(() => {
         if (data) {
             console.log(data)
             setGeneralDetails(data)
+        }
+
+        if(training){
+            setTrainingDetails(training)
         }
     }, [data])
 
@@ -265,9 +274,8 @@ function ViewGeneralDetails({data, id, bank}) {
                         onChange={(e) => handleAddressChange(e)}/>
                 </div>
 
-                <div className='flex items-center '>
-                    <Label className="font-semibold" htmlFor="Aadhar Cards">Aadhar Card</Label>
-                    {/* <a href={bank.aadharCard}>Aadhar</a> */}
+                {/* <div className='flex items-center '>
+                    <Label className="font-semibold" htmlFor="Aadhar Cards">Address Proof/ID </Label>
                     {
                         bank.aadharCard ? <a target='_blank' href={bank.aadharCard} className='py-2 text-sm bg-blue-900 text-white ml-2 border rounded-none px-4'>Download</a> : <p className='ml-2'>Not Uploaded</p>
                     }
@@ -275,11 +283,44 @@ function ViewGeneralDetails({data, id, bank}) {
 
 
                 <div className='flex items-center '>
-                    <Label className="font-semibold" htmlFor="pan Cards">Pan Card</Label>
-                    {/* <a target='_blank' href={bank.panCard}>pan</a> */}
-                    <a target='_blank' href={bank?.panCard} className='py-2 text-sm bg-blue-900 text-white ml-2 border rounded-none px-4'>Download</a>
-                </div>
+                    <Label className="font-semibold" htmlFor="pan Cards">Pan Card</Label> 
+                    {bank.panCard ?<a target='_blank' href={bank?.panCard} className='py-2 text-sm bg-blue-900 text-white ml-2 border rounded-none px-4'>Download</a> : <p className='ml-2'>Not Uploaded</p>}
+                </div> */}
 
+            </div>
+
+            <div className='border border-gray-300 rounded-md mt-5 p-4'>
+                <h2 className='font-semibold'>Training Details</h2>
+
+                <div className='mt-5 grid grid-cols-3'>
+                    <div className=''>
+                        <Label>Trainer Type</Label>
+                        <Input 
+                            readOnly={!isEdit}
+                            type="text"
+                            value={trainingDetails.trainerType ? trainingDetails.trainerType : null}
+                            id="state"
+                            name="state"
+                            onChange={(e) => setTrainingDetails({...trainingDetails, trainerType:e.target.value})}/>
+                    </div>
+                    {
+                        trainingDetails.modeOfTraining.length > 0  &&  (trainingDetails.modeOfTraining[0] !== '' )?
+                    
+                            <div>
+                                <Label>Mode Of Trainings</Label>
+
+                                <div className='mt-2 flex items-center'>
+                                {
+                                    trainingDetails.modeOfTraining?.map((e, _i) => (
+                                        <p key={_i} className=' w-max'>{_i+1}.) {e}</p>
+                                    ))
+                                }
+                                </div>
+                    </div> : null
+
+                    }
+                    {/* </div> */}
+                </div>
             </div>
 
 

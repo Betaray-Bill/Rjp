@@ -13,8 +13,8 @@ function InvoiceList({trainers, projectName}) {
             </div>
 
             {/* Trainers */}
-            {trainers && trainers.map((trainer, index) => (
-                <div className="border border-gray-200 my-2 rounded-sm p-3">
+            {trainers && trainers.map((trainer, index) => {
+                return trainer?.trainer?.trainingDetails?.trainerType !== "Internal" && <div className="border border-gray-200 my-2 rounded-sm p-3">
                     <div className='flex items-center justify-between pb-2' key={index}>
                         {/* <div className='flex items-center'>
                             <span>{index + 1}.)</span>
@@ -44,14 +44,14 @@ function InvoiceList({trainers, projectName}) {
                         {trainer && trainer.inVoice.length > 0
                             ? (trainer.inVoice.map((invoice, invoiceIndex) => (
                                 <div key={invoiceIndex} className='flex items-start justify-between py-4'>
-                                    <InvoiceContent key={invoiceIndex} index={invoiceIndex} id={trainer.trainer._id} invoice={invoice}/>
+                                    <InvoiceContent key={invoiceIndex} trainer={trainer} index={invoiceIndex} id={trainer.trainer._id} invoice={invoice}/>
                                 </div>
                             )))
                             : null
 }
                     </div>
                 </div>
-            ))
+})
 }
 
         </div>

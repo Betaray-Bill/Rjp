@@ -67,6 +67,7 @@ function SearchBar({domainSearch}) {
         setQuery('')
     }
 
+    const {currentUser} = useSelector(state => state.auth)
 
 
     useEffect(() => {
@@ -94,12 +95,12 @@ function SearchBar({domainSearch}) {
             setSearchDomain(domainSearch)
         }
     }, [domainSearch])
-
+    console.log(currentUser)
     // Search Query
     const fetchSearchResults = async () => {
         const q = {};
         
-        let req_query = `/trainer/search?domain=${encodeURIComponent(query.trim())}`;
+        let req_query = `/trainer/search/${currentUser?.employee._id}?domain=${encodeURIComponent(query.trim())}`;
         
         if (startPrice) req_query += `&price[gte]=${Number(startPrice)}`;
         if (endPrice) req_query += `&price[lte]=${Number(endPrice)}`;

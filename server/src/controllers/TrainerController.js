@@ -472,6 +472,29 @@ const addWorkingDates = asyncHandler(async(req, res) => {
         res.status(500).json({ message: err.message })
     }
 })
+
+
+const updateWorkingDates = asyncHandler(async(req, res) => {
+    const { trainerId } = req.params;
+    // const { startDate, endDate, position } = req.body;
+    console.log(req.body)
+
+    try {
+        await Trainer.findByIdAndUpdate(trainerId, {
+            // $push: {
+                workingDates: req.body
+            // }
+        }, { new: true })
+
+        res
+            .status(200)
+            .json({ message: "Working dates added successfully" });
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: err.message })
+    }
+})
 const deleteWorkingDate = async (req, res) => {
     try {
         const { trainerId } = req.params; // Extract trainerId from the route
@@ -499,6 +522,47 @@ const deleteWorkingDate = async (req, res) => {
 };
 
 
+// Update Resume from the main resume
+const updateResumeFromMainResume = asyncHandler(async(req, res) => {
+    try{
+        const resumeId = req.params.resumeId;
+        const trainerId = req.params.trainerId;
+        const mainResumeId = req.params.mainResumeId
+
+        // Find the main resume
+        const mainResume = await Resume.findById(mainResumeId); 
+        if(!mainResume){
+            return res.status(404).json({message: "Main Resume not found"});
+        }   
+
+        // Update the resume
+        await Resume.findByIdAndUpdate(resumeId, {
+            $set: {
+                professionalSummary: mainResume.professionalSummary,
+                technicalSkills: mainResume.technicalSkills,
+                careerHistory: mainResume.careerHistory,
+                certifications: mainResume.certifications,
+                education: mainResume.education,
+                trainingsDelivered: mainResume.trainingsDelivered,
+                clientele: mainResume.clientele,
+                experience: mainResume.experience,
+                // domain: mainResume.domain,
+                trainer_id: trainerId,
+                isMainResume: false
+            }
+        }, { new: true });
+
+        res.status(200).json({message: "Resume updated successfully"});
+        
+
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Failed to Update the Resume " });
+    }
+})
+
+
 export {
     trainerLogin,
     deleteWorkingDate,
@@ -515,5 +579,6 @@ export {
     // updateData,
     addMainResume,
     resetPassword,
-    addWorkingDates
+    addWorkingDates,updateWorkingDates,
+    updateResumeFromMainResume
 }

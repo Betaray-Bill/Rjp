@@ -11,9 +11,11 @@ import {
   } from "@/components/ui/table"
 import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
   
 
 function OnGoingPoject(){
+    const {currentUser} = useSelector(state => state.auth)
 
     useEffect(() => {
         fetchData()
@@ -22,7 +24,7 @@ function OnGoingPoject(){
 
     const fetchData = async() => {
         try{
-            const rsponse = await api.get('/project/ongoing');
+            const rsponse = await api.get(`/project/ongoing/${currentUser.employee._id}`);
             const res = await rsponse.data;
             setResult(res)
             console.log(res)
@@ -37,7 +39,7 @@ function OnGoingPoject(){
             <div className='flex items-center justify-between'>
                 <div className='font-semibold flex items-center '>
                     <ion-icon name="bar-chart-outline" style={{ fontSize: "23px" }}></ion-icon>
-                    <span className='ml-2 text-lg'>On Going Projects</span>
+                    <span className='ml-2 text-lg'>In Progress Deals</span>
                 </div>
             </div>
 
@@ -68,7 +70,7 @@ function OnGoingPoject(){
                                     <TableCell>{e.trainingDates.endDate.split('T')[0]}</TableCell>
                                     <TableCell>
                                         <Link to={`/home/projects/view/${e._id}`}>
-                                            <Button>View</Button>
+                                            <p className='px-3 py-2 bg-black text-white w-max'>View</p>
                                         </Link>
                                     </TableCell>
                                     </TableRow> 
@@ -80,7 +82,7 @@ function OnGoingPoject(){
 
                         </div>
                     ) : <div className='font-light flex justify-center my-'>
-                        <p>No Projects on-going</p>
+                        <p>No Deals In-progress</p>
                     </div>
                 }
             </div>

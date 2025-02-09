@@ -28,11 +28,13 @@ import {
 import {Input} from '@/components/ui/input'
 import {useQueryClient} from 'react-query'
 import api from '@/utils/api'
+import { useToast } from '@/hooks/use-toast'
 
 function SingleTrainerCell({trainer, limit, page, index}) {
     const params = useParams()
     const {currentUser} = useSelector((state) => state.auth);
     const queryClient = useQueryClient()
+    const {toast} = useToast()
     const [isEdit,
         setIsEdit] = useState(false);
     const [rating,
@@ -81,7 +83,11 @@ function SingleTrainerCell({trainer, limit, page, index}) {
             });
 
             console.log(res.data);
-            queryClient.invalidateQueries(["getAllTrainers", page])
+            // queryClient.invalidateQueries(["getAllTrainers", page])
+            toast({
+                title:"Remarks Updated",
+                variant:"success"
+            })
 
             // Update the frontend data
             setData((prev) => prev.map((e) => e.id === updatedData.id
@@ -93,10 +99,11 @@ function SingleTrainerCell({trainer, limit, page, index}) {
 
             setEditRemark(null);
             setShowEdit(false); // Close the edit modal
-            // queryClient.invalidateQueries(["getAllTrainers", page])
+            queryClient.invalidateQueries(["getAllTrainers", page])
             // window.location.reload()
 
             setIsEdit(false)
+
         } catch (err) {
             console.error(err);
         }
@@ -117,6 +124,10 @@ function SingleTrainerCell({trainer, limit, page, index}) {
                     "Content-Type": "application/json"
                 }
             });
+            toast({
+                title:"Rating Updated",
+                variant:"success"
+            })
 
             console.log(res.data);
             queryClient.invalidateQueries(["getAllTrainers", page])
@@ -125,6 +136,7 @@ function SingleTrainerCell({trainer, limit, page, index}) {
             setShowEdit(false); // Close the edit modal
             // queryClient(["getAllTrainers", page])
             setIsEdit(false)
+            
 
             // window.location.reload()
         } catch (err) {
@@ -214,7 +226,7 @@ function SingleTrainerCell({trainer, limit, page, index}) {
                                 </div>
                             </div>
 
-                            {showEdit && (
+                            { 
                                 <div className="mt-5">
                                     <DialogTitle>Edit Feedback</DialogTitle>
                                     <div className="mt-4">
@@ -228,7 +240,7 @@ function SingleTrainerCell({trainer, limit, page, index}) {
                                     </div>
 
                                 </div>
-                            )}
+                            }
                             <div className="my-4">
                                 <Button onClick={submitEditedRemark}>Save</Button>
                             </div>

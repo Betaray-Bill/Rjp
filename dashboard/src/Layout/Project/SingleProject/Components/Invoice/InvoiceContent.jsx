@@ -8,7 +8,7 @@ import React, {Fragment, useState} from 'react'
 import { useQueryClient } from 'react-query'
 import { useParams } from 'react-router-dom'
 
-function InvoiceContent({index, invoice ,id}) {
+function InvoiceContent({index, invoice ,id, trainer}) {
     const [show,
         setShow] = useState(false)
     const {toast} = useToast()

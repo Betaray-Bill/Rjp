@@ -156,7 +156,7 @@ function Remainder({stages, projectId, remainders}) {
                                             style={{
                                             fontSize: "20px"
                                         }}></ion-icon>
-                                        <span className='mx-2 text-md'>End Date</span>
+                                        <span className='mx-2 text-md'>Reminder Date</span>
                                     </Label>
                                     <input
                                         type="date"

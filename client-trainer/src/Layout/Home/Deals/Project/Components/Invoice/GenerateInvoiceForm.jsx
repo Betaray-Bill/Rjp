@@ -11,10 +11,12 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select"
+import { useSelector } from 'react-redux'
 function GenerateInvoiceForm({purchaseOrder, inVoice, index , projectName}) {
 
     const [formData,
         setFormData] = useState({inVoiceNumber: '', GST: ''})
+        const {user} = useSelector(state => state.auth)
 
     return (
         <div>
@@ -40,7 +42,9 @@ function GenerateInvoiceForm({purchaseOrder, inVoice, index , projectName}) {
 
                         </div>
  
-
+                        {
+                            user && user.bankDetails.gstNumber &&
+                        
                         <Select  onValueChange={(e) => setFormData({...formData, GST:e})} >
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Select a GST Type "/>
@@ -53,6 +57,7 @@ function GenerateInvoiceForm({purchaseOrder, inVoice, index , projectName}) {
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
+}
                     </div>
                 </form>
             </Fragment>

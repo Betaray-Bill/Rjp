@@ -49,9 +49,24 @@ function AddProject() {
     const {allEmployee} = useSelector(state => state.employee)
     const {currentUser} = useSelector(state => state.auth)
     const queryClient = useQueryClient();
-    
-
+    const [selectedDomain, setSelectedDomain] = useState("");
+    const [domainsData, setDomainsData] = useState([]);
+    const fetchDomains = async () => {
+        // setLoading(true);
+        try {
+          const response = await api.get("/domains");
+        //   setDomains(response.data.domains);
+        setDomainsData(response.data.domains);
+        } catch (error) {
+          console.error("Error fetching domains:", error);
+        }
+        // setLoading(false);
+      };
     const dispatch = useDispatch()
+
+    useEffect(() => {
+        fetchDomains()
+    }, [])
     
     // Domain Search States
     const [open,
@@ -129,6 +144,57 @@ function AddProject() {
 
      
     };
+    console.log('domain ', domainsData)
+
+    const getFilteredResults = (searchTerm) => {
+        setValue(searchTerm);
+    
+        if (!searchTerm) {
+            setFilterResults(domainsData);
+            return;
+        }
+    
+        const lowercasedTerm = searchTerm.toLowerCase();
+    
+        const filteredDomains = domainsData
+            .map(domainGroup => {
+                const filteredDomainsList = domainGroup.domains
+                    .map(domain => {
+                        // Check if the search term matches the domain name
+                        if (domain.name.toLowerCase() === lowercasedTerm) {
+                            return domain;
+                        }
+    
+                        // Check if the search term matches any subdomain
+                        const subdomainMatch = domain.subdomains.some(
+                            subdomain => subdomain.toLowerCase().includes(lowercasedTerm)
+                        );
+    
+                        // If subdomain matches or the domain name includes the search term, return the full domain
+                        if (domain.name.toLowerCase().includes(lowercasedTerm) || subdomainMatch) {
+                            return {
+                                ...domain,
+                                subdomains: domain.subdomains // Return full subdomain list
+                            };
+                        }
+    
+                        return null;
+                    })
+                    .filter(domain => domain !== null);
+    
+                if (filteredDomainsList.length > 0) {
+                    return {
+                        ...domainGroup,
+                        domains: filteredDomainsList
+                    };
+                }
+                return null;
+            })
+            .filter(group => group !== null);
+    
+        setFilterResults(filteredDomains);
+    };
+    
     
     const addSpecialTiming = () => {
         setProjectData((prevData) => ({
@@ -218,47 +284,47 @@ function AddProject() {
 
     // console.log(projectData)
   
-    const getFilteredResults = (searchTerm) => {
-        setValue(searchTerm)
-        // console.log(searchTerm)
-        if (!searchTerm) return [];
-        // console.log("searchTerm", searchTerm)
-        const lowercasedTerm = searchTerm.toLowerCase();
+    // const getFilteredResults = (searchTerm) => {
+    //     setValue(searchTerm)
+    //     // console.log(searchTerm)
+    //     if (!searchTerm) return [];
+    //     // console.log("searchTerm", searchTerm)
+    //     const lowercasedTerm = searchTerm.toLowerCase();
 
-        const a = domains   
-            .map((domain) => {
-                const filteredSubtopics = domain.subtopics
-                    .map((subtopic) => {
-                        // Include subtopic if its name or topic matches, or any of its points match
-                        const matchesSubtopic = subtopic.subtopic.toLowerCase().includes(lowercasedTerm);
-                        const matchesTopic = domain.topic.toLowerCase().includes(lowercasedTerm);
+    //     const a = domains   
+    //         .map((domain) => {
+    //             const filteredSubtopics = domain.subtopics
+    //                 .map((subtopic) => {
+    //                     // Include subtopic if its name or topic matches, or any of its points match
+    //                     const matchesSubtopic = subtopic.subtopic.toLowerCase().includes(lowercasedTerm);
+    //                     const matchesTopic = domain.topic.toLowerCase().includes(lowercasedTerm);
 
-                        // Filter points that match the search term
-                        const filteredPoints = subtopic.points.filter((point) =>
-                            point.toLowerCase().includes(lowercasedTerm)
-                        );
+    //                     // Filter points that match the search term
+    //                     const filteredPoints = subtopic.points.filter((point) =>
+    //                         point.toLowerCase().includes(lowercasedTerm)
+    //                     );
 
-                        // If subtopic or topic matches, include all points; otherwise, include only filtered points
-                        if (matchesSubtopic || matchesTopic || filteredPoints.length > 0) {
-                            return { ...subtopic, points: matchesSubtopic || matchesTopic ? subtopic.points : filteredPoints };
-                        }
+    //                     // If subtopic or topic matches, include all points; otherwise, include only filtered points
+    //                     if (matchesSubtopic || matchesTopic || filteredPoints.length > 0) {
+    //                         return { ...subtopic, points: matchesSubtopic || matchesTopic ? subtopic.points : filteredPoints };
+    //                     }
 
-                        return null;
-                    })
-                    .filter((subtopic) => subtopic !== null);
+    //                     return null;
+    //                 })
+    //                 .filter((subtopic) => subtopic !== null);
 
-                // Include the domain if it has any matching subtopics
-                if (filteredSubtopics.length > 0) {
-                    return { ...domain, subtopics: filteredSubtopics };
-                }
+    //             // Include the domain if it has any matching subtopics
+    //             if (filteredSubtopics.length > 0) {
+    //                 return { ...domain, subtopics: filteredSubtopics };
+    //             }
 
-                return null;
-            })
-            .filter((domain) => domain !== null);
+    //             return null;
+    //         })
+    //         .filter((domain) => domain !== null);
 
-        // console.log("A ", a)
-        setFilterResults(a);
-    };
+    //     // console.log("A ", a)
+    //     setFilterResults(a);
+    // };
 
     const [filteredResults, setFilterResults] = useState(domains);
     // console.log(domains)
@@ -394,18 +460,18 @@ function AddProject() {
     return (
         <div className=''>
             <div className='border-b-[1px] pb-5'>
-                <h2 className='font-semibold text-lg'>Create Project</h2>
+                <h2 className='font-semibold text-lg'>Create Deal</h2>
             </div>
             <div className='mt-8'>
-                {/* Project details form */}
+                {/* Deal details form */}
                 <form onSubmit={handleSubmit}>
                     <div className='border rounded-md py-5 px-3'>
                         <div>
-                            <h2 className='font-semibold '>Project Information</h2>
+                            <h2 className='font-semibold '>Deal Information</h2>
                         </div>
                         <div className="grid grid-cols-2 gap-8 mt-8">
                             <div className="flex items-center justify-between">
-                                <Label className="font-normal mr-4">Project Name</Label>
+                                <Label className="font-normal mr-4">Deal Name <span className='text-red-600'>*</span></Label>
                                 <Input
                                     type="text"
                                     name="projectName"
@@ -414,7 +480,7 @@ function AddProject() {
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <Label className="font-normal mr-4">Company Name</Label>
+                                <Label className="font-normal mr-4">Company Name <span className='text-red-600'>*</span></Label>
                                 <select name="company.name" className='w-[300px]' id="" onChange={(value) => {
                                     handleChange(value)
                                     // console.log(value.target.value)
@@ -429,77 +495,84 @@ function AddProject() {
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <Label className="font-normal mr-4">Domain</Label>
-                                <Popover open={open} onOpenChange={setOpen} >
-                                    <PopoverTrigger asChild className='p-2 rounded-md w-max min-w-[300px]:'>
-                                        <Button
-                                            variant="outline"
-                                            role="combobox"
-                                            aria-expanded={open}
-                                            className="justify-between"
-                                        >
-                                            {!projectData.domain ? (
-                                                <span className="flex items-center justify-between">
-                                                    <ion-icon
-                                                        name="search-outline"
-                                                        style={{ fontSize: "18px", marginRight: "12px" }}
-                                                    ></ion-icon>
-                                                    Select Domain
-                                                </span>
-                                            ) : (
-                                                <span className='flex items-center align-middle'>
-                                                    <div className='flex items-center justify-between  text-slate-900'>
-                                                        <span>{projectData.domain}</span>
-                                                        <ion-icon name="close-outline" style={{ fontSize: "18px", marginLeft: "12px" }} onClick={
-                                                            () => {
-                                                                setOpen(false);
-                                                                setValue('');
-                                                                setFilterResults(domains);
-                                                            }
-                                                        }></ion-icon>
-                                                    </div>
-                                                </span>
-                                            )}
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className=" p-0">
-                                        <Command>
-                                            <Input  className="w-max m-2 focus:ring-0 focus:ring-offset-0"    
-                                                placeholder="Search Domain by..... "
-                                                onChange={(e) => getFilteredResults(e.target.value)}
-                                                value={value}
-                                            />
-                                            <CommandList>
-                                                <CommandEmpty>No results found.</CommandEmpty>
-                                                {filteredResults?.map((domain) => (
-                                                    <CommandGroup key={domain.topic} heading={domain.topic}>
-                                                        {domain.subtopics.map((subtopic) => (
-                                                            <CommandGroup key={subtopic.subtopic} heading={subtopic.subtopic}>
-                                                                {subtopic.points.map((point) => (
-                                                                    <CommandItem
-                                                                        key={point}
-                                                                        value={point}
-                                                                        onSelect={() => {
-                                                                            // console.log("object", point)
-                                                                            setProjectData(prevData => ({
-                                                                                ...prevData,
-                                                                                domain: point
-                                                                            }))
-                                                                            setOpen(false);
-                                                                            setValue()
-                                                                        }}
-                                                                    >
-                                                                        {point}
-                                                                    </CommandItem>
-                                                                ))}
-                                                            </CommandGroup>
-                                                        ))}
-                                                    </CommandGroup>
-                                                ))}
-                                            </CommandList>
-                                        </Command>
-                                    </PopoverContent>
-                                </Popover>
+                                <Label className="font-normal mr-4">Training Technology <span className='text-red-600'>*</span></Label>
+                                <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-[300px] justify-between"
+                >
+                    {!selectedDomain ? (
+                        <span className="flex items-center text-gray-500">
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            Select Domain
+                        </span>
+                    ) : (
+                        <span className="flex items-center justify-between w-full">
+                            <span>{selectedDomain}</span>
+                            <button 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedDomain("");
+                                    setValue("");
+                                    // console.log(e)
+                                }}
+                                className="ml-2 text-gray-500 hover:text-gray-700"
+                            >
+                                ✕
+                            </button>
+                        </span>
+                    )}
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[300px] p-0">
+                <div className="flex flex-col">
+                    <Input
+                        className="flex m-2 border rounded"
+                        placeholder="Search domains..."
+                        value={value}
+                        onChange={(e) => getFilteredResults(e.target.value)}
+                    />
+                    <div className="max-h-[300px] overflow-y-auto">
+                        {filteredResults.length === 0 ? (
+                            <div className="p-2 text-sm text-gray-500">No results found.</div>
+                        ) : (
+                            filteredResults.map((domainGroup) => (
+                                <div key={domainGroup._id}>
+                                    {domainGroup?.domains?.map((domain) => (
+                                        <div key={domain._id}>
+                                            <div className="px-2 py-1.5 text-sm font-semibold text-gray-900 bg-gray-100">
+                                                {domain.name}
+                                            </div>
+                                            {domain.subdomains.map((subdomain) => (
+                                                <button
+                                                    key={subdomain}
+                                                    className="w-full px-2 py-1.5 text-sm text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                                                    onClick={() => {
+                                                        setSelectedDomain(subdomain);
+                                                        setOpen(false);
+                                                        setValue("");
+                                    console.log(subdomain)
+                                    setProjectData({...projectData, domain:subdomain})
+
+                                                    }}
+                                                >
+                                                    {subdomain}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    ))}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+            </PopoverContent>
+        </Popover>
                             </div>
 
                             <div className="flex items-center justify-between">
@@ -558,7 +631,7 @@ function AddProject() {
                                     selected={projectData.trainingDates.startDate}
                                      onChange={(date) => handleDateChange(date, "trainingDates.startDate")}
                                     className="px-3 py-2 border border-gray-400 mt-1 rounded-md"
-                                    required/>
+                                    />
                                    
                             </div>
 
@@ -571,7 +644,7 @@ function AddProject() {
                                      onChange={(date) => handleDateChange(date, "trainingDates.endDate")}
                                     dateFormat="dd/MM/yyyy"
                                     className="px-3 py-2 border border-gray-400 mt-1 rounded-md ml-2"
-                                    required/>
+                                    />
                             </div>
                             <div>
                                 <Label>Start Time:</Label>
@@ -586,7 +659,7 @@ function AddProject() {
                                     timeCaption="Time"
                                     className="px-3 py-2 border border-gray-400 mt-1 rounded-md ml-2"
                                     dateFormat="h:mm aa"
-                                    required/>
+                                    />
                             </div>
                             <div>
                                 <Label>End Time:</Label>
@@ -601,7 +674,7 @@ function AddProject() {
                                     timeCaption="Time"
                                     className="px-3 py-2 border border-gray-400 mt-1 rounded-md ml-2"
                                     dateFormat="h:mm aa"
-                                    required/>
+                                    />
                             </div>
 
                             {/* <div className="flex items-center ">
@@ -677,7 +750,7 @@ function AddProject() {
                         <div className="grid grid-cols-2 gap-8 mt-8">
                             {/* Other fields for company and contact details */}
                             <div className="flex items-center justify-between">
-                                <Label className="font-normal mr-4">Contact Name</Label>
+                                <Label className="font-normal mr-4">Contact Name <span className='text-red-600'>*</span></Label>
                                 <select name="contactDetails.contactName" id="" className='w-[300px]' onChange={(e) => {
                                     console.log(e.target.value)
                                     handleContactChange(e.target.value)
@@ -697,7 +770,7 @@ function AddProject() {
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <Label className="font-normal mr-4">Contact Email</Label>
+                                <Label className="font-normal mr-4">Contact Email <span className='text-red-600'>*</span></Label>
                                 <Input
                                     type="email"
                                     name="contactDetails.contactEmail"
@@ -706,7 +779,7 @@ function AddProject() {
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <Label className="font-normal mr-4">Contact Number</Label>
+                                <Label className="font-normal mr-4">Contact Number <span className='text-red-600'>*</span></Label>
                                 <Input
                                     type="text"
                                     name="contactDetails.contactPhoneNumber"
@@ -716,122 +789,7 @@ function AddProject() {
                         </div>
                     </div>
 
-                    {/* Employee Adding Section */}
-                    {/* <div className='mt-10 border rounded-md py-5 px-3'>
-                        <div>
-                            <h2 className='font-semibold '>Employees Information</h2>
-                        </div>
-                        <div className='mt-8'>
-        
-                            Search Employees - add btn
-                            <div className='relative'>
-                                <div className='flex items-center justify-between'>
-                                    <div className='border px-2 w-max flex items-center rounded-md'>
-                                        <ion-icon name="search-outline" style={{fontSize:"20px", marginRight:"10px"}}></ion-icon>
-                                        <Input
-                                            placeholder="Search emails..."
-                                            value={searchTerm}
-                                            onChange={(e) => {
-                                                handleSearchEmployee(event.target.value)
-                                                setSearchTerm(event.target.value)
-                                            }}
-                                            className="max-w-lg border-none"
-                                        />
-                                    </div>
-                                    <div className="flex items-center">
-                                        <ion-icon name="checkmark-done-outline" style={{fontSize:"20px", color:"#4CAF50"}}></ion-icon>
-                                        <span>Selected {selectedEmployees.length} Employees</span>
-                                    </div>
-                                </div>
-
-                                {
-                                    (employees.length > 0 && searchTerm !== "") && (
-                                        <div className='absolute w-max z-50 bg-white border rounded-md mt-[4px] mb-10 shadow-md'>
-                                            <div className="ml-2">
-                                                <div className='flex items-center my-2 cursor-pointer px-2 justify-between'>
-                                                            <Table>
-                                                                <TableCaption>A list of your recent invoices.</TableCaption>
-                                                                <TableHeader>
-                                                                    <TableRow>
-                                                                        <TableHead className="w-[100px]">S.no</TableHead>
-                                                                        <TableHead>Name</TableHead>
-                                                                        <TableHead>Email</TableHead>
-                                                                        <TableHead>Role</TableHead>
-                                                                        <TableHead></TableHead>
-                                                                    </TableRow>
-                                                                </TableHeader>
-                                                                <TableBody>
-                                                                {
-                                                                    employees.map((emp, _i) => (
-                                                                        <TableRow key={_i} className="hover:bg-gray-100">
-                                                                            <TableCell className="font-medium">{_i+1}</TableCell>
-                                                                            <TableCell>{emp.name}</TableCell>
-                                                                            <TableCell>{emp.email}</TableCell>
-                                                                            <TableCell>
-                                                                                {
-                                                                                    emp.role?.map((role, _j) => (
-                                                                                        <span className='border px-[12px] mx-2 bg-blue-200 rounded-full'>{role.name}</span>
-                                                                                    ))
-                                                                                }
-                                                                            </TableCell>
-                                                                            <Button className="rounded-none" onClick={() => handleSelectedEmployee(emp)}>Add +</Button>
-                                                                        </TableRow>
-                                                                    ))
-                                                                }
-                                                                    
-                                                                </TableBody>
-                                                            </Table>
-                                                            
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                            </div>
-
-                            {
-                                (selectedEmployees && selectedEmployees.length > 0) && 
-                                    <div className='mt-10'>
-                                        <Table>
-                                            <TableCaption>Selected Employees for the Training.</TableCaption>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead className="w-[100px]">S.no</TableHead>
-                                                    <TableHead>Name</TableHead>
-                                                    <TableHead>Email</TableHead>
-                                                    <TableHead>Role</TableHead>
-                                                    <TableHead></TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {
-                                                    selectedEmployees.map((emp, _i) => (
-                                                        <TableRow key={_i} className="hover:bg-gray-100">
-                                                            <TableCell className="font-medium">{_i+1}</TableCell>
-                                                            <TableCell>{emp.name}</TableCell>
-                                                            <TableCell>{emp.email}</TableCell>
-                                                            <TableCell>
-                                                                {
-                                                                    emp.role?.map((role, _j) => (
-                                                                        <span className='border px-[12px] mx-2 bg-blue-200 rounded-full'>{role.name}</span>
-                                                                    ))
-                                                                }
-                                                            </TableCell>
-                                                            <TableCell className="rounded-none cursor-pointer" onClick={() => handleDeleteSelectedEmployee(emp)}>
-                                                                <ion-icon name="trash-outline" style={{fontSize:"24px", color:"red"}}></ion-icon>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                }
-                                                
-                                            </TableBody>
-                                        </Table>
-                                    </div>
-                            }
-
-                        </div>
-                    </div> */}
-
+       
                     <div className='flex justify-center my-10'>
                         <Button type="submit">Submit</Button>
                     </div>

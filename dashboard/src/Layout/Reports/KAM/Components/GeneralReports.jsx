@@ -216,7 +216,7 @@ function GeneralReports() {
                                 {result && (result.map((e, _i) => (
                                     <TableRow>
                                         <TableCell>{_i + 1}</TableCell>
-                                        <TableCell className="font-semibold">{}</TableCell>
+                                        <TableCell className="font-semibold">{e.name}</TableCell>
                                         {/* <TableCell> {Email}</TableCell> */}
                                         <TableCell>{e._id}</TableCell>
                                         <TableCell>{e.projectNames.length}</TableCell>

@@ -25,7 +25,7 @@ function ViewCompany() {
             throw error
         }
     }
-    // http://localhost:5000/api/company/company
+    
     const {data: companies, isLoading, error} = useQuery(['ViewCompanies'], fetchAllCompanies, {
         // enabled: !!projectId.projectId,
         staleTime: 1000 * 60 * 5, // data stays fresh for 5 minutes

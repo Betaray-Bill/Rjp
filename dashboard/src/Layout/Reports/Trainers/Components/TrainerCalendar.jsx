@@ -188,7 +188,7 @@ const TrainerCalendar = () => {
                     <p>Name: <span className="font-semibold">{selectedTrainer.generalDetails.name}</span></p>
                     <p>Trainer ID: <span className="font-semibold">{selectedTrainer.trainerId}</span></p>
                     <h3 className="text-lg font-semibold mt-10">Calendar</h3>
-                    <CalendarComp eventsDate={selectedTrainer.projects.map(e => e.trainingDates)} workingDates={selectedTrainer.workingDates}/>
+                    <CalendarComp workingDates={selectedTrainer.workingDates}/>
                     {/* {selectedTrainer
                         .projects
                         .map((project) => (

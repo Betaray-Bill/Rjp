@@ -2,12 +2,13 @@ import {Button} from '@/components/ui/button'
 import React, {useState} from 'react'
 import PurchaseOrder from './PurchaseOrder'
 
-function IndividualPO({po, trainer, projectName, index}) {
+function  IndividualPO({po, trainer, projectName, index}) {
     const [showForm,
         setShowForm] = useState(false)
 
     return (
         <div className='my-3 border-t py-3'>
+          
             {/* {index+1} */}
             <div className='flex items-center justify-between py-[4px]'>
                 <span className='font-medium text-sm'>Purchase Order {index+1} {po.isReIssue && <p className='text-blue-700'>[Re Issue]</p>}</span>
@@ -25,7 +26,7 @@ function IndividualPO({po, trainer, projectName, index}) {
                                     {
                                         po.isDeclined && (
                                             <div className='flex items-center'>
-                                                <p className=' text-red-600'>Declined</p>
+                                                <p className='text-sm text-red-600'>Declined - {po.declineReason}</p>
                                                 <Button
                                                     className="rounded-none border mx-3 "  onClick={() => setShowForm(true)}>Re-Issue</Button>
                                             </div>
@@ -75,7 +76,11 @@ function IndividualPO({po, trainer, projectName, index}) {
                 address={trainer.trainer.generalDetails.address}
                 trainerGST={trainer.trainer.bankDetails.gstNumber}
                 trainerPAN={trainer.trainer.bankDetails.pancardNumber}
+                trainerBankDetails={trainer?.trainer?.bankDetails}
             />}
+            {/* {
+                JSON.stringify(trainer.trainer.bankDetails)
+            } */}
         </div>
     )
 }

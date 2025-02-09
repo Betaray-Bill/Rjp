@@ -2,6 +2,7 @@
   import { useSelector } from 'react-redux';
   import CalendarComp from '../Layout/Home/Calendar.jsx'
   import DealsDisplay from '@/Layout/Home/Deals/DealsDisplay.jsx';
+import Reports from '@/Layout/Home/Reports/Reports.jsx';
 
 
   function Dashboard() {
@@ -28,7 +29,20 @@
 
     return (
       <div className='mx-auto grid place-content-center'>
+
         <p className='text-md text-gray-700 mt-4 pb-[-2] font-semibold'>Dashboard</p>
+
+        <div className='my-'>
+          <div className='w-[90vw] lg:w-[80vw]  bg-white rounded-md border border-generalBorderColor'>
+            <div className="border-b mt-4 pb-4">
+              <span className="text-slate-800 font-semibold flex items-center ml-10">
+                <ion-icon name="layers-outline" style={{fontSize:"34px", color:"#3e4093"}}></ion-icon>
+                <span className='ml-4 text-xl'>Reports</span>
+              </span>
+            </div>
+            <Reports />
+          </div>
+        </div>
         {/* Calendar Only for the Internal Trainers */}
           {/* {   
               user?.trainingDetails.trainerType == 'Internal' ?  */}

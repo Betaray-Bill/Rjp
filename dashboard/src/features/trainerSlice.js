@@ -9,7 +9,8 @@ const initialState = {
             phoneNumber: Number(),
             whatsappNumber: Number(),
             alternateNumber: Number(),
-            dateOfBirth: Date()
+            dateOfBirth: Date(),
+            sourcedFrom:""
         },
         // Bank Details
         bankDetails: {
@@ -24,11 +25,12 @@ const initialState = {
             vendorName: "",
             panCard: "",
             aadharCard: "",
+            remarks:""
         },
         // Training Details
         trainingDetails: {
             trainerType: "",
-            modeOfTraining: ""
+            modeOfTraining: []
         },
         //  Training Domain
         trainingDomain: [],
@@ -87,7 +89,7 @@ const trainerSlice = createSlice({
                 },
                 trainingDetails: {
                     trainerType: "",
-                    modeOfTraining: ""
+                    modeOfTraining: []
                 },
                 trainingDomain: [],
                 mainResume: {
@@ -124,6 +126,8 @@ const trainerSlice = createSlice({
                     bankIFSCCode: "",
                     pancardNumber: "",
                     aadharCardNumber: "",
+                    aadharCard: "",
+                    pancard:   "",
                     gstNumber: "",
                     vendorName: "",
                     sameasVendor:false
@@ -131,7 +135,7 @@ const trainerSlice = createSlice({
                 // Training Details
                 trainingDetails: {
                     trainerType: "",
-                    modeOfTraining: ""
+                    modeOfTraining: []
                 },
                 //  Training Domain
                 trainingDomain: [],

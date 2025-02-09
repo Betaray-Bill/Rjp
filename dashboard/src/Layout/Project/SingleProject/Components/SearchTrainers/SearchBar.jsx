@@ -20,6 +20,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 import { Link } from 'react-router-dom';
 import api from '@/utils/api';
+import { useSelector } from 'react-redux';
 
 function SearchBar({domain, id, trainingDates}) {
     const queryClient = useQueryClient();
@@ -36,9 +37,9 @@ function SearchBar({domain, id, trainingDates}) {
     const [endPrice,
         setEndPrice] = useState('');
     const [startDate,
-        setStartDate] = useState(trainingDates && trainingDates.startDate.split("T")[0]);
+        setStartDate] = useState(trainingDates?.startDate && trainingDates?.startDate?.split("T")[0]);
     const [endDate,
-        setEndDate] = useState(trainingDates && trainingDates.endDate.split("T")[0]);
+        setEndDate] = useState(trainingDates?.endDate && trainingDates?.endDate?.split("T")[0]);
     const [rating,
         setRating] = useState(null);
     const [mode, setMode] = useState('');
@@ -59,12 +60,14 @@ function SearchBar({domain, id, trainingDates}) {
             setStartPrice('')
         }
     }, [filter])
+ 
+    const {currentUser} = useSelector(state => state.auth)
 
 
     // Search Query
     const fetchSearchResults = async () => {
         let encodedDomain = encodeURIComponent(domain)
-        let req_query = `/trainer/search?domain=${encodedDomain.trim()}`;
+        let req_query = `/trainer/search/${currentUser?.employee._id}?domain=${encodedDomain.trim()}`;
         if (startPrice) req_query += `&price[gte]=${Number(startPrice)}`;
         if (endPrice) req_query += `&price[lte]=${Number(endPrice)}`;
         if (mode) req_query += `&mode=${encodeURIComponent(mode)}`;

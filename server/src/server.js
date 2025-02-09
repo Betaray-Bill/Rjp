@@ -9,6 +9,7 @@ import reportRoutes from "./routes/ReportRoutes.js";
 import trainerSourcerRoutes from "./routes/TrainerSourcerRoutes.js";
 import trainerRoutes from "./routes/TrainerRoutes.js";
 import projectRoutes from "./routes/ProjectRoutes.js";
+import domainRoutes from "./routes/DomainRoutes.js";
 import azureRoutes from "./routes/azureRoutes.js";
 import helmet from "helmet";
 import azureBlobRoutes from "./routes/azureBlobRoutes.js";
@@ -124,6 +125,8 @@ app.use("/api/resumeextractor", azureRoutes);
 app.use("/api/filestorage", azureBlobRoutes);
 app.use("/api/project", projectRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/domains", domainRoutes);
+
 
 // Utility to handle async errors
 const asyncHandler = (fn) => (req, res, next) =>
@@ -146,38 +149,3 @@ app.listen(PORT, "0.0.0.0", () => {
 
 
 
-
-
-
-
-
-
-// const { EmailClient } = require("@azure/communication-email");
-
-// const connectionString = "endpoint=https://rjpemail.india.communication.azure.com/;accesskey=Epn13P4r80FdmTyMCdha57HeLnn9K4qHPvJknNVZ0Uiw1uaIjrSyJQQJ99AKACULyCpYBCSUAAAAAZCSZ9oX";
-// const client = new EmailClient(connectionString);
-
-// async function main() {
-//     const emailMessage = {
-//         senderAddress: "DoNotReply@<from_domain>",
-//         content: {
-//             subject: "Test Email",
-//             plainText: "Hello world via email.",
-//             html: `
-// 			<html>
-// 				<body>
-// 					<h1>Hello world via email.</h1>
-// 				</body>
-// 			</html>`,
-//         },
-//         recipients: {
-//             to: [{ address: "<to_email>" }],
-//         },
-
-//     };
-
-//     const poller = await client.beginSend(emailMessage);
-//     const result = await poller.pollUntilDone();
-// }
-
-// main();

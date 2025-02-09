@@ -274,15 +274,17 @@ const getProject = asyncHandler(async (req, res) => {
     console.log("Assigned Projects");
     try {
         // Fetch the employee and their roles
+        console.log(1);
         const employee = await Employee.findById(empId).populate('role.roleId');
         if (!employee) {
             return res.status(404).json({ message: "Employee not found" });
         }
+        console.log(employee.role);
 
         // Loop through roles to identify the employee's responsibilities
         for (let i = 0; i < employee.role.length; i++) {
             const role = employee.role[i];
-            console.log("TOLE",role)
+            console.log("ROLE", role);
             if (role.name === 'KeyAccounts') {
                 // Extract projects assigned to Key Accounts
                 assignedProjects = role.roleId.Projects.map((project) => project.toString());
@@ -348,20 +350,17 @@ const getProject = asyncHandler(async (req, res) => {
 
         // Step 2: Filter by dates (if provided)
         if (startDate && endDate) {
+            // If both startDate and endDate are provided, fetch projects within this range
             assignedProjects = await Project.find({
                 _id: { $in: assignedProjects },
-                $or: [
-                    {
-                        'trainingDates.startDate': { $lte: endDate },
-                        'trainingDates.endDate': { $gte: startDate }
-                    },
-                    {
-                        'trainingDates.startDate': { $gte: startDate, $lte: endDate }
-                    },
-                    {
-                        'trainingDates.endDate': { $gte: startDate, $lte: endDate }
-                    }
-                ]
+                'trainingDates.startDate': { $lte: endDate },
+                'trainingDates.endDate': { $gte: startDate }
+            }).populate('projectOwner', 'name email contactDetails.phone');
+        } else if (startDate) {
+            // If only startDate is provided, fetch projects that start on or after the given date
+            assignedProjects = await Project.find({
+                _id: { $in: assignedProjects },
+                'trainingDates.startDate': { $gte: startDate }
             }).populate('projectOwner', 'name email contactDetails.phone');
         } else {
             // If no date filters are provided, fetch projects directly
@@ -388,13 +387,14 @@ const getProject = asyncHandler(async (req, res) => {
                 projects: stage.projects
             }))
         );
-
+        console.log('last');
         res.json({ projects: result });
     } catch (err) {
-        console.error(err.message);
+        console.error(err);
         res.status(500).json({ message: "Server error" });
     }
 });
+
 
 
 // Get Projects By Id
@@ -410,7 +410,7 @@ const getProjectDetails = asyncHandler(async(req, res) => {
                 path: "resumeVersion"
             },
             select: 'generalDetails.name generalDetails.address generalDetails.email trainingDetails.' +
-                'trainerType bankDetails.gstNumber bankDetails.pancardNumber', // Only fetch the 'name' and 'role' fields
+                'trainerType bankDetails', // Only fetch the 'name' and 'role' fields
         })
         .populate({
             path: 'trainers.resume',
@@ -458,13 +458,13 @@ const updateStage = asyncHandler(async(req, res) => {
     console.log("StageName ", stageName)
     const projects = await Project.findById(projectId)
     console.log(projects)
-    const session = await Project.startSession(); // Use a session for transaction
-    session.startTransaction();
+    // const session = await Project.startSession(); // Use a session for transaction
+    // session.startTransaction();
     console.log(1)
 
     const project = await Project
         .findById(projectId)
-        .session(session);
+        // .session(session);
     if (!project) {
         throw new Error("Project not found");
     }
@@ -479,7 +479,7 @@ const updateStage = asyncHandler(async(req, res) => {
             }
         }, {
             new: true,
-            session
+            // session
         });
         if (!stage) {
             throw new Error("Previous stage not found");
@@ -495,7 +495,7 @@ const updateStage = asyncHandler(async(req, res) => {
             }
         }, {
             new: true,
-            session
+            // session
         });
         if (!newStage) {
             throw new Error("New stage not found");
@@ -508,19 +508,19 @@ const updateStage = asyncHandler(async(req, res) => {
             }
         }, {
             new: true,
-            session
+            // session
         });
 
-        await session.commitTransaction();
-        session.endSession();
+        // await session.commitTransaction();
+        // session.endSession();
 
-        res
+        return res
             .status(200)
             .json({ message: "Stage updated successfully", project });
 
     } catch (err) {
-        await session.abortTransaction();
-        session.endSession();
+        // await session.abortTransaction();
+        // session.endSession();
         res
             .status(500)
             .json({ message: 'Error Updating Stage', error: err.message });
@@ -908,7 +908,7 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
                 isAccepted: false,
                 // isReIssue: false,
                 name: req.body.name,
-                time: new Date(),
+                time:  req.body.time,
                 details: {
                     description: req.body.details.description,
                     type: req.body.details.type,
@@ -929,7 +929,7 @@ const uploadPOUrl_Trainer = asyncHandler(async(req, res) => {
             purchaseOrder.isAccepted = false;
             purchaseOrder.poNumber = req.body.poNumber;
             purchaseOrder.name = req.body.name;
-            purchaseOrder.time = new Date();
+            purchaseOrder.time = req.body.time;
             purchaseOrder.details = {
                 description: req.body.details.description,
                 type: req.body.details.type,
@@ -989,7 +989,7 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
             trainer.purchaseOrder[req.body.poNumber] = {
                 poNumber: req.body.poNumber,
                 name: req.body.name,
-                time: new Date(),
+                time:  req.body.time,
                 isDeclined: false,
                 isAccepted: false,
                 details: {
@@ -1006,7 +1006,7 @@ const savePurchaseOrder = asyncHandler(async(req, res) => {
             purchaseOrder.isAccepted = false;
             purchaseOrder.poNumber = req.body.poNumber;
             purchaseOrder.name = req.body.name;
-            purchaseOrder.time = new Date();
+            purchaseOrder.time =  req.body.time;
             purchaseOrder.details = {
                 description: req.body.details.description,
                 type: req.body.details.type,
@@ -1057,12 +1057,15 @@ const acceptOrDecline = asyncHandler(async(req, res) => {
                 // Add a new entry if the index doesn't exist
                 trainer.purchaseOrder[req.body.poNumber] = {
                     isAccepted: req.body.isAccepted,
-                    isDeclined: false
+                    isDeclined: false,
+                    declineReason:''
                 };
             } else {
                 let purchaseOrder = trainer.purchaseOrder[req.body.poNumber];
                 purchaseOrder.isAccepted = req.body.isAccepted
                 purchaseOrder.isDeclined = false
+                purchaseOrder.declineReason = ''
+
             }
         } else {
             console.log("DEclined Section")
@@ -1071,13 +1074,16 @@ const acceptOrDecline = asyncHandler(async(req, res) => {
                 trainer.purchaseOrder[req.body.poNumber] = {
                     isAccepted: false,
                     canSend: false,
-                    isDeclined: true
+                    isDeclined: true,
+                    declineReason:req.body.declineReason
                 };
             } else {
                 let purchaseOrder = trainer.purchaseOrder[req.body.poNumber];
                 purchaseOrder.isAccepted = false
                 purchaseOrder.isDeclined = true
                 purchaseOrder.canSend = false
+                purchaseOrder.declineReason=req.body.declineReason
+
                     // isDeclined:true
             }
             // console.log(purchaseOrder)
@@ -1651,28 +1657,67 @@ const updateLost_Won = asyncHandler(async(req, res) => {
 
 //   get ongoing projects
 const getOngoingProjects = async (req, res) => {
+    const employeeId = req.params.employeeId; // Assuming employeeId is provided in the request params
     try {
       // Get today's date in ISO format
       const today = new Date().toISOString().split('T')[0];
-        console.log(today)
-      // Find projects where today's date is between startDate and endDate
-      const ongoingProjects = await Project.find({
-        'trainingDates.startDate': { $lte: today },
-        'trainingDates.endDate': { $gte: today }
-      })
-        .select('projectName  trainingDates.startDate trainingDates.endDate stages _id'); // Select only the required fields
+  
+      // Fetch the employee's details along with their roles
+      const employee = await Employee.findById(employeeId).select("name role");
+      if (!employee) {
+        return res.status(404).json({ message: "Employee not found." });
+      }
+  
+      const isAdmin = employee.role.some((r) => r.name === "ADMIN");
+      const isKeyAccount = employee.role.some((r) => r.name === "Key Accounts");
+  
+      let ongoingProjects = [];
+  
+      if (isAdmin) {
+        // Admin gets all ongoing projects
+        ongoingProjects = await Project.find({
+          "trainingDates.startDate": { $lte: today },
+          "trainingDates.endDate": { $gte: today },
+        }).select(
+          "projectName trainingDates.startDate trainingDates.endDate stages _id"
+        );
+      } else if (isKeyAccount) {
+        // Key Accounts employees only get projects assigned to them
+        const keyAccountRole = employee.role.find((r) => r.name === "Key Accounts");
+        const keyAccount = await KeyAccounts.findById(keyAccountRole.roleId).populate({
+          path: "assignedProjects",
+          match: {
+            "trainingDates.startDate": { $lte: today },
+            "trainingDates.endDate": { $gte: today },
+          },
+          select: "projectName trainingDates.startDate trainingDates.endDate stages _id",
+        });
+  
+        if (!keyAccount) {
+          return res.status(404).json({ message: "Key Account data not found." });
+        }
+  
+        ongoingProjects = keyAccount.assignedProjects;
+      } else {
+        return res
+          .status(200)
+          .json({ message: "Employee role does not have access to projects." });
+      }
   
       // Return the ongoing projects as a response
       if (ongoingProjects.length > 0) {
         return res.status(200).json(ongoingProjects);
       } else {
-        return res.status(200).json({ message: 'No ongoing projects found.', ongoingProjects });
+        return res
+          .status(200)
+          .json({ message: "No ongoing projects found.", ongoingProjects });
       }
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Server error' });
+      return res.status(500).json({ message: "Server error", error: error.message });
     }
   };
+  
 
 export {
     createProject,

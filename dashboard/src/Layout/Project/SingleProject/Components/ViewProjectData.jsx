@@ -42,18 +42,27 @@ function ViewProjectData({projects, lost_won_open_status}) {
         setIsChanging] = useState(false)
     const changeStage = async(e) => {
         try {
+            // alert("0")
+
             // console.log(e.target.value)
             const res = await api.put(`/project/updateStage/${projectId.projectId}`, {stageName: e.target.value})
             const data = await res.data
+            // alert("1")
+
             // console.log(data)
             setIsChanging(false)
             queryClient.invalidateQueries(['projects', currentUser.employee._id]);
-            queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
+            // alert("2")
 
+            queryClient.invalidateQueries(['ViewProject', projectId.projectId]);
+            // alert("3")
+
+            // alert("4")
             toast({
                 title: `${projectName} Pipeline Stage Updated`,
                 // description: `${projectName} S`,
             })
+            // alert("5")
 
         } catch (error) {
             console.error(error)

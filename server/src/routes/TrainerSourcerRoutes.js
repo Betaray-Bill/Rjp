@@ -11,34 +11,34 @@ import checkRoleStatus from '../middleware/checkRoleStatus.js';
 const router = express.Router();
 
 
-router.get("/", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), (req, res) => {
-    res.status(200).send("Inside the Trainer Sourcer")
+router.get("/", authEmployeeMiddleware, authorizeRole(["ADMIN", "TrainerSourcer"]), (req, res) => {
+    res.status(200).send("Inside the TrainerSourcer")
 })
 
 router.post("/register-trainer/:trainerId",
     authEmployeeMiddleware,
-    authorizeRole(["ADMIN", "Trainer Sourcer"]),
+    authorizeRole(["ADMIN", "TrainerSourcer"]),
     registerTrainer
 )
 
 
-// router.post("/upload", upload.single("resume"), authMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), uploadResumeToAzureAndExtractText)
+// router.post("/upload", upload.single("resume"), authMiddleware, authorizeRole(["ADMIN", "TrainerSourcer"]), uploadResumeToAzureAndExtractText)
 
 
 router.get("/signout", authEmployeeMiddleware, signOut)
 
 // Handling Trainer Data
-router.put("/updateResume/:trainer_id/resume/:resume_id", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), checkRoleStatus(['ADMIN', "Trainer Sourcer"]), updateResume)
+router.put("/updateResume/:trainer_id/resume/:resume_id", authEmployeeMiddleware, authorizeRole(["ADMIN", "TrainerSourcer", "KeyAccounts"]), checkRoleStatus(['ADMIN', "TrainerSourcer"]), updateResume)
 router.put("/update-profile/:id", authEmployeeMiddleware, updateTrainerProfile)
 router.post("/:id/copy-resume", authEmployeeMiddleware, resumeCopy)
-router.get("/getTrainer/:emp_id", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer"]), getTrainerByEmpId)
-router.put('/updateLockStatus/:id', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer sourcer", "KeyAccounts"]), lockResume)
+router.get("/getTrainer/:emp_id", authEmployeeMiddleware, authorizeRole(["ADMIN", "TrainerSourcer"]), getTrainerByEmpId)
+router.put('/updateLockStatus/:id', authEmployeeMiddleware, authorizeRole(["ADMIN", "TrainerSourcer", "KeyAccounts"]), lockResume)
 
 
-router.get("/resume/:id", authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer", "KeyAccounts"]), getResumeById)
+router.get("/resume/:id", authEmployeeMiddleware, authorizeRole(["ADMIN", "TrainerSourcer", "KeyAccounts"]), getResumeById)
 // Rating
-router.put('/remarks/:trainerId', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer", "KeyAccounts"]), addRemark)
-router.put('/rating/:trainerId', authEmployeeMiddleware, authorizeRole(["ADMIN", "Trainer Sourcer", "KeyAccounts"]), addRating)
+router.put('/remarks/:trainerId', authEmployeeMiddleware, authorizeRole(["ADMIN", "TrainerSourcer", "KeyAccounts"]), addRemark)
+router.put('/rating/:trainerId', authEmployeeMiddleware, authorizeRole(["ADMIN", "TrainerSourcer", "KeyAccounts"]), addRating)
 
 
 

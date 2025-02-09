@@ -109,6 +109,9 @@ const trainerSchema = mongoose.Schema({
                 //     rim: true,
                 //    ?
             },
+        },
+        sourcedFrom:{
+            type:String
         }
     },
     bankDetails: {
@@ -150,7 +153,10 @@ const trainerSchema = mongoose.Schema({
         },
         sameasVendor:{
             type:Boolean,
-            default:false
+            default:true
+        },
+        remarks:{
+            type:String
         }
     },
     trainingDetails: {
@@ -161,9 +167,9 @@ const trainerSchema = mongoose.Schema({
             // ],
             // required: true
         },
-        modeOfTraining: {
+        modeOfTraining: [{
             type: String
-        }
+        }]
     },
     trainingDomain: [{
         domain: {

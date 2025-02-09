@@ -17,7 +17,7 @@ router.post("/register", addEmployee)
 router.put("/updatePassword/:empId", authEmployeeMiddleware, updatePassword)
 
 router.get("/signout", authEmployeeMiddleware, signOut)
-router.get("/getAll", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]),checkRoleStatus(["ADMIN", "KeyAccounts"]) , getAllEmployees)
+router.get("/getAll", authEmployeeMiddleware, authorizeRole(["ADMIN"]),checkRoleStatus(["ADMIN"]) , getAllEmployees)
 
 // Get Single Emp
 router.get("/getemployee", authEmployeeMiddleware, authorizeRole(["ADMIN"]),checkRoleStatus(["ADMIN"]), getEmployeeById)
@@ -31,7 +31,7 @@ router.get("/gettrainerSourcer", authEmployeeMiddleware, authorizeRole(["ADMIN"]
 router.put("/update-role/:empId", authEmployeeMiddleware, authorizeRole(["ADMIN"]),checkRoleStatus(["ADMIN"]), updateEmployeeRole)
 router.put("/disable-role/:empId", authEmployeeMiddleware, authorizeRole(["ADMIN"]),checkRoleStatus(["ADMIN"]), disableEmployeeRole)
 
-router.get("/get-all-trainers", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts", "Trainer Sourcer"]),checkRoleStatus(["ADMIN", "KeyAccounts", "Trainer Sourcer"]), getAllTrainers)
+router.get("/get-all-trainers", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts", "TrainerSourcer"]),checkRoleStatus(["ADMIN", "KeyAccounts", "Trainer Sourcer"]), getAllTrainers)
 
 // Company and Deal
 // router.post("/create-company", authEmployeeMiddleware, authorizeRole(["ADMIN", "KeyAccounts"]), createCompany)

@@ -151,7 +151,8 @@ function GenerateInvoice({purchaseOrder, formData, inVoice, index, projectName})
             <div
                 className="max-w-6xl mx-auto p-4 text-sm w-[90vw] lg:w-[80vw] "
                 id="invoiceRef"
-                ref={invoiceRef}>
+                ref={invoiceRef}
+            >
                 <div
                     className="text-center grid place-content-center justify-center font-bold text-lg border-b border-black pb-2">
                     {/* <img src={logo} alt="" className='w-[100px]'/> */}
@@ -162,8 +163,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice, index, projectName})
                 <div className="grid grid-cols-3 border-b border-black ">
                     <div className='p-4 border-l border-black border-r '>
                         <p>
-                            <span className="font-semibold uppercase">{user.generalDetails.name}</span>
-                            {/* XXXXXXXX */}
+                            <span className="font-semibold uppercase">{user.bankDetails?.sameasVendor ? user.generalDetails.name : user.bankDetails?.vendorName}</span>
                         </p>
                         <p className='mt-2'>
                             <span className="font-medium">
@@ -319,8 +319,14 @@ function GenerateInvoice({purchaseOrder, formData, inVoice, index, projectName})
                             <tr className="border-b border-black">
                                 <th className="border-r border-black px-2 py-1">S.No</th>
                                 <th className="border-r border-black px-2 py-1">Description of Service</th>
-                                <th className="border-r border-black px-2 py-1">HSN/SAC</th>
-                                <th className="border-r border-black px-2 py-1">GST Rate</th>
+                                {
+                                    user.bankDetails.gstNumber &&
+                                
+                                <Fragment>
+                                    <th className="border-r border-black px-2 py-1">HSN/SAC</th>
+                                    <th className="border-r border-black px-2 py-1">GST Rate</th>
+                                </Fragment>
+}
                                 <th className="border-r border-black px-2 py-1">{purchaseOrder
                                         ?.details.type}</th>
                                 <th className="border-r border-black px-2 py-1">Rate/Day</th>
@@ -339,12 +345,18 @@ function GenerateInvoice({purchaseOrder, formData, inVoice, index, projectName})
                                         <td className="border border-gray-600 px-4 py-2">
                                             {row.description}
                                         </td>
+                                        {
+                                    user.bankDetails.gstNumber &&
+
+                                        <Fragment>
                                         <td className="border border-gray-600 px-4 py-2 text-center">
                                             {row.hsnSac}
                                         </td>
                                         <td className="border border-gray-600 px-4 py-2 text-center">
                                             18%
                                         </td>
+                                        </Fragment>
+                            }
                                         <td className="border border-gray-600 px-4 py-2 text-center">
                                             {row.typeQty}
                                         </td>
@@ -364,7 +376,7 @@ function GenerateInvoice({purchaseOrder, formData, inVoice, index, projectName})
                             {/* <tr>Hi</tr> */}
                             <tr className=''>
                                 <td></td>
-                                <td colSpan="5" className="border border-gray-600 border-t py-1 text-center ">Total Taxable Value</td>
+                                <td colSpan={user.bankDetails.gstNumber ? "5" : "3"} className="border border-gray-600 border-t py-1 text-center ">Total Taxable Value</td>
                                 <td className=''>
                                     INR {purchaseOrder
                                         .details
@@ -381,7 +393,10 @@ function GenerateInvoice({purchaseOrder, formData, inVoice, index, projectName})
                                 <td className="border border-gray-600 px-4 py-1"></td>
                                 <td className="border border-gray-600 px-4 py-1"></td>
                             </tr> */}
-                            {formData.GST !== "IGST"
+                            {
+                                user.bankDetails.gstNumber  ?
+                            
+                            formData.GST !== "IGST"
                                 ? <Fragment>
                                         <tr>
                                             <td className="border border-gray-600 px-4 py-1"></td>
@@ -423,37 +438,41 @@ function GenerateInvoice({purchaseOrder, formData, inVoice, index, projectName})
                                         INR {purchaseOrder
                                             .details
                                             .description
-                                            .reduce((total, row) => total + row.amount, 0) * 0.18
+                                            .reduce((total, row) => total + row.amount, 0) * (user.bankDetails.gstNumber ? 1 :0.18)
 }
                                     </td>
 
-                                </tr>
+                                </tr> : null
 }
 
                             <tr className='font-semibold'>
                                 <td className="border border-gray-600 px-4 py-1"></td>
-                                <td colSpan="2" className="border text-center border-gray-600 px-4 py-1">Tax Amount : GST</td>
-                                <td className="border border-gray-600 px-4 py-1"></td>
-                                <td className="border border-gray-600 px-4 py-1"></td>
+                                <td colSpan="2" className="border text-center border-gray-600 px-4 py-1">Tax Amount{user.bankDetails.gstNumber ? ": GST" : null}</td>
+                                {
+                                    user.bankDetails.gstNumber &&
+                                    <Fragment>
+                                        <td className="border border-gray-600 px-4 py-1"></td>
+                                        <td className="border border-gray-600 px-4 py-1"></td></Fragment>
+                                }
                                 <td className="border border-gray-600 px-4 py-1"></td>
                                 <td
                                     className="border border-b-2 border-r-0 border-t-2 border-gray-600  px-4 py-1">
-                                    INR {(purchaseOrder.details.description.reduce((total, row) => total + row.amount, 0) * 0.09 * 2) + purchaseOrder.details.description.reduce((total, row) => total + row.amount, 0)
+                                    INR {(purchaseOrder.details.description.reduce((total, row) => total + row.amount, 0) *(user.bankDetails.gstNumber && 0.09 * 2)) + purchaseOrder.details.description.reduce((total, row) => total + row.amount, 0)
 }
                                 </td>
 
                             </tr>
 
                             <tr className='text-center border-gray-600 border'>
-                                <td colSpan="7">
+                                <td colSpan={user.bankDetails.gstNumber ? "7" : "5"}>
                                    INR {convertToIndianWords(
                                         Number(purchaseOrder
                                             .details
                                             .description
-                                            .reduce((total, row) => total + row.amount, 0)) + Number(purchaseOrder
+                                            .reduce((total, row) => total + row.amount, 0)) +( user.bankDetails.gstNumber && Number(purchaseOrder
                                             .details
                                             .description
-                                            .reduce((total, row) => total + row.amount, 0)) * 0.18)}</td>
+                                            .reduce((total, row) => total + row.amount, 0)) * 0.18))}</td>
                             </tr>
                         </tbody>
                     </table>

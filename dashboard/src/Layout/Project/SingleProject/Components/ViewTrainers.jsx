@@ -34,8 +34,8 @@ function ViewTrainers({trainers}) {
 
     const { mutate: deleteTrainer, isLoading } = useMutation(
         async (trainerId) => {
-          const response = await axios.put(
-            `http://bas.rjpinfotek.com:5000/api/project/delete-trainers/${projectId.projectId}`,
+          const response = await api.put(
+            `/project/delete-trainers/${projectId.projectId}`,
             { trainers: trainerId }
           );
           return response.data;
@@ -83,8 +83,8 @@ function ViewTrainers({trainers}) {
     }
 
     const handleIsFinalized = async(id) => {
-        const response = await axios.put(
-            `http://localhost:5000/api/project/isFinalized/${projectId.projectId}`,
+        const response = await api.put(
+            `/project/isFinalized/${projectId.projectId}`,
             { trainerId: id }
         );
         console.log(response.data)
