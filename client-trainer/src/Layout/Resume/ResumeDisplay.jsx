@@ -96,13 +96,38 @@ function ResumeDisplay() {
   };
 
   // Handler to add a new empty textarea for a specific field
-  const handleAdd = (field, index) => {
+  const handleAdd = (field) => {
+          setResume((prevState) => {
+            console.log(prevState)
+              return {
+                  ...prevState,
+                  [field]: [
+                      ...prevState[field],
+                      ''
+                  ], // Add empty string to the field array
+              };
+          });
+  };
+
+  const handleAddBetween = (field, index) => {
+    console.log("Field is ", field, index)
+    console.log(resume[field])
     setResume(prevState => {
-        const updatedField = prevState[field] ? [...prevState[field]] : [];
-        updatedField.splice(index + 1, 0, "");
+        let updatedField = Array.isArray(prevState[field]) ? [...prevState[field]] : [];
+
+        if (updatedField.length === 0) {
+            updatedField.push('');
+        } else if (index !== null && index >= 0 && index < updatedField.length) {
+            updatedField.splice(index + 1, 0, '');
+        } else {
+            updatedField.push('');
+        }
+
         return { ...prevState, [field]: updatedField };
     });
 };
+
+console.log(resume)
 
 
   // Handler to delete an item from a specific field
@@ -129,56 +154,51 @@ function ResumeDisplay() {
                       onChange={(e) => handleChange(e, fieldName, 0)}
                       placeholder={`Type your ${fieldName}`}
                       className=" text-gray-800 text-sm outline-none border-collapse border-none"/>
-                        <ion-icon
-                            name="add-outline"
-                            style={{
-                            fontSize: "18px"
-                        }}
-                            onClick={() =>  handleAdd(fieldArray, 0)}></ion-icon>
               </div>
           )
       }
       return Array.isArray(fieldArray) ? 
       fieldArray?.map((value, index) => (
-       <Fragment>
-            <div className='flex justify-end'>
-                <ion-icon
-                name="add-outline"
+        <Fragment>
+        <div className='flex justify-end'>
+            <ion-icon
+            name="add-outline"
+            style={{
+            fontSize: "18px"
+        }}
+            onClick={() => handleAddBetween(fieldName, index)}></ion-icon>
+        </div>
+        <div
+            key={index}
+            className='py-2 flex justify-between align-top items-start border    border-gray-200 p-2 my-2 rounded-md'>
+            <Textarea
+                value={value}
+                readOnly={resume.isLocked}
+                onChange={(e) => handleChange(e, fieldName, index)}
+                placeholder={`Type your ${fieldName}`}
+                className="text-gray-800 text-sm outline-none border-collapse border-none"/>
+            <ion-icon
+                name="trash-outline"
                 style={{
-                fontSize: "18px"
+                color: "rgba(246, 43, 43, 0.644)",
+                fontSize: "18px",
+                cursor: "pointer"
             }}
-                onClick={() => handleAdd(fieldArray, index)}></ion-icon>
-            </div>
-            <div
-                key={index}
-                className='py-2 flex justify-between align-top items-start border border-gray-200 p-2 my-2 rounded-md'>
-                <Textarea
-                    value={value}
-                    readOnly={resume.isLocked}
-                    onChange={(e) => handleChange(e, fieldName, index)}
-                    placeholder={`Type your ${fieldName}`}
-                    className="text-gray-800 text-sm outline-none border-collapse border-none"/>
-                <ion-icon
-                    name="trash-outline"
-                    style={{
-                    color: "rgba(246, 43, 43, 0.644)",
-                    fontSize: "18px",
-                    cursor: "pointer"
-                }}
-                    onClick={() => handleDelete(fieldName, index)}></ion-icon>
-            </div>
-       </Fragment>
+                onClick={() => handleDelete(fieldName, index)}></ion-icon>
+        </div>
+        </Fragment>
+
       )) : 
       <Fragment>
-         <div className='flex justify-end'>
-                <ion-icon
-                name="add-outline"
-                style={{
-                fontSize: "18px"
-            }}
-                onClick={() => handleAdd(fieldArray, index)}></ion-icon>
-            </div>
-        <div
+      <div className='flex justify-end'>
+          <ion-icon
+          name="add-outline"
+          style={{
+          fontSize: "18px"
+      }}
+          onClick={() => handleAddBetween(fieldName, index)}></ion-icon>
+      </div>
+      <div
           className='py-2 flex justify-between align-top items-start border    border-gray-200 px-2 my-2 rounded-md'>
           <Textarea
               value={fieldArray}
@@ -196,11 +216,14 @@ function ResumeDisplay() {
               onClick={() => handleDelete(fieldName, index)}></ion-icon>
       </div>
       </Fragment>
+
     };
 
 
     const submitResumeHandler = async(e) => {
         e.preventDefault()
+        // /trainer/updateResume/671f1f348706010ba634eb92/resume/671f1f348706010ba634eb8f
+        // console.log(`/trainer/updateResume/671f1f348706010ba634eb92/resume/${data._id}`)
         try{
             console.log("object")
             console.log(resume)
@@ -221,43 +244,16 @@ function ResumeDisplay() {
 
 
 
-    const fetchMainResume = async() => {
-        try{
-            const response = await api.put(`/trainer/updateResumeFromMain/${user._id}/main/${user.resumeVersion[0]._id}/resume/${params.id}`)
-            console.log(response.data)
-            setResume(response.data)
-            queryClient.invalidateQueries(['resume', params.id]);
-            toast({
-                title:"Resume is updated from Main Resume",
-                variant:"success"
-            })
-        }catch(err){
-            toast({
-                title:"Failed to update the resume",
-                variant:"destructive"
-            })
-        }
-    }
-
-
-
 
     return (
         <div>
-            <div className='flex items-center justify-end px-4 pt-3'>
-                <div className='mr-4'>
-                    {
-                        !resume.isMainResume ? <Button className="rounded-none  bg-blue-800" onClick={fetchMainResume}>Update from Main</Button> : null
-                    }
-                </div>
+            <div className='flex items-center justify-between px-4 pt-3'>
                 <div>
                     {
-                        resume.isLocked ? <ion-icon style={{fontSize:"20px"}} name="lock-closed-outline"></ion-icon> :                 
-                        <Button className="rounded-none  bg-blue-800" disabled={resume.isLocked} onClick={submitResumeHandler}>Save</Button>
-
+                        resume.isLocked ? <ion-icon style={{fontSize:"20px"}} name="lock-closed-outline"></ion-icon> : <ion-icon style={{fontSize:"20px"}} name="lock-open-outline"></ion-icon>
                     }
                 </div>
-                {/* <Button className="rounded-none  bg-blue-800" disabled={resume.isLocked} onClick={submitResumeHandler}>Save</Button> */}
+                <Button className="rounded-none  bg-blue-800" disabled={resume.isLocked} onClick={submitResumeHandler}>Save</Button>
    
             </div>
         {
@@ -271,12 +267,12 @@ function ResumeDisplay() {
                 <div className='mt-4 rounded-sm p-2'>
                     <h3 className='font-semibold flex justify-between items-center'>
                         <span>Professional Summary:</span>
-                        {/* <ion-icon
+                        <ion-icon
                             name="add-outline"
                             style={{
                             fontSize: "18px"
                         }}
-                            onClick={() => handleAdd('professionalSummary')}></ion-icon> */}
+                            onClick={() => handleAdd('professionalSummary')}></ion-icon>
                     </h3>
                     {renderTextareas(resume.professionalSummary, 'professionalSummary')}
                 </div>

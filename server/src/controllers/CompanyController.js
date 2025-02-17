@@ -60,7 +60,7 @@ const getCompanyDetails = asyncHandler(async(req, res) => {
 const createContact = asyncHandler(async(req, res) => {
     const { companyId } = req.params;
     console.log("Com Is", companyId)
-    const { contact_name, contact_email, contact_phone_number } = req.body;
+    const { contact_name, contact_email, contact_phone_number, department } = req.body;
     let details = {
         contact_name,
         contact_email,
@@ -70,7 +70,8 @@ const createContact = asyncHandler(async(req, res) => {
         const companyContact = new CompanyContact({
             contactName: contact_name,
             contactEmail: contact_email,
-            contactPhoneNumber: contact_phone_number
+            contactPhoneNumber: contact_phone_number,
+            department:department
         })
 
         await companyContact.save();
@@ -122,6 +123,86 @@ const getAllCompanyNamesAndIds = asyncHandler(async(req, res) => {
     }
 })
 
+//edit contact details
+const editContactDetails = asyncHandler(async(req, res) => {
+    const { companyId } = req.params;
+    const { contactName,
+        contactEmail,
+        contactPhoneNumber,
+        department } = req.body;
+
+    try{
+        const company = await Company.findById(companyId).populate('contact_details');
+        console.log(company)
+
+
+
+        if(!company){
+            return res
+                .status(404)
+                .json({ message: "Company not found" });
+        }
+
+        const getContactPerson = company.contact_details.find(contact => contact.contactEmail === contactEmail);
+        console.log(getContactPerson)
+
+        if(!getContactPerson){
+            return res
+                .status(404)
+                .json({ message: "Contact not found" });
+        }
+
+        const editContact = await CompanyContact.findByIdAndUpdate(getContactPerson._id, {
+            contactName,
+            contactEmail,
+            contactPhoneNumber,
+            department
+        }, { new: true });
+
+        res
+            .status(200)
+            .json({ message: "Contact details updated successfully", editContact });
+
+
+    }catch(err){
+        console.error("Error updating contact details:", err);
+        res
+            .status(500)
+            .json({ error: "Internal server error" });
+    }
+})
+
+//Delete contact details
+const deleteContactDetails = asyncHandler(async(req, res) => {
+    const { companyId } = req.params;
+    const { contactId } = req.params;
+
+    try{
+        const company = await Company.findById(companyId)
+        console.log(company)
+
+        if(!company){
+            return res
+                .status(404)
+                .json({ message: "Company not found" });
+        }
+        // company.contact_details = company.contact_details.filter(contact => contact._id === contactId);
+    //    await  company.save()
+        await CompanyContact.findByIdAndDelete(contactId);
+
+        res
+            .status(200)
+            .json({ message: "Contact details deleted successfully"});
+
+
+    }catch(err){
+        console.error("Error updating contact details:", err);
+        res
+            .status(500)
+            .json({ error: "Internal server error" });
+    }
+})
+
 // get Company Name and Id
 const getCompanyAndId = asyncHandler(async(req, res) => {
     // const { companyId } = req.params;
@@ -139,4 +220,4 @@ const getCompanyAndId = asyncHandler(async(req, res) => {
 
 })
 
-export { createCompany, getCompanyDetails, getAllCompanyNamesAndIds, createContact, getCompanyAndId }
+export { createCompany, getCompanyDetails,editContactDetails, deleteContactDetails,getAllCompanyNamesAndIds, createContact, getCompanyAndId }

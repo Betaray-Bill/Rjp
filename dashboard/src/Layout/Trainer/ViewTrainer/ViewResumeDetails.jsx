@@ -5,7 +5,7 @@ import { setResumeDetails } from '@/features/trainerSlice';
 import { useToast } from '@/hooks/use-toast';
 import api from '@/utils/api';
 import axios from 'axios';
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, Fragment } from 'react'
 import { useQueryClient } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -118,6 +118,25 @@ function ViewResumeDetails({data, isNew}) {
                 };
             });
     };
+
+    
+  const handleAddBetween = (field, index) => {
+    console.log("Field is ", field, index)
+    console.log(resume[field])
+    setResume(prevState => {
+        let updatedField = Array.isArray(prevState[field]) ? [...prevState[field]] : [];
+
+        if (updatedField.length === 0) {
+            updatedField.push('');
+        } else if (index !== null && index >= 0 && index < updatedField.length) {
+            updatedField.splice(index + 1, 0, '');
+        } else {
+            updatedField.push('');
+        }
+
+        return { ...prevState, [field]: updatedField };
+    });
+};
   
     // Handler to delete an item from a specific field
     const handleDelete = (field, index) => {
@@ -134,6 +153,7 @@ function ViewResumeDetails({data, isNew}) {
     const renderTextareas = (fieldArray, fieldName) => {
         if (fieldArray?.length === 0) {
             return (
+
                 <div
                     key={0}
                     className='py-2 flex justify-between align-top items-start border border-gray-200 px-2 my-2 rounded-md'>
@@ -148,6 +168,15 @@ function ViewResumeDetails({data, isNew}) {
         }
         return Array.isArray(fieldArray) ? 
         fieldArray?.map((value, index) => (
+            <Fragment>
+            <div className='flex justify-end'>
+                <ion-icon
+                name="add-outline"
+                style={{
+                fontSize: "18px"
+            }}
+                onClick={() => handleAddBetween(fieldName, index)}></ion-icon>
+            </div>
           <div
               key={index}
               className='py-2 flex justify-between align-top items-start border    border-gray-200 p-2 my-2 rounded-md'>
@@ -166,7 +195,17 @@ function ViewResumeDetails({data, isNew}) {
               }}
                   onClick={() => handleDelete(fieldName, index)}></ion-icon>
           </div>
-        )) : <div
+        </Fragment>
+        )) : 
+        <Fragment>
+        <div className='flex justify-end'>
+            <ion-icon
+            name="add-outline"
+            style={{
+            fontSize: "18px"
+        }}
+            onClick={() => handleAddBetween(fieldName, index)}></ion-icon>
+        </div><div
             className='py-2 flex justify-between align-top items-start border    border-gray-200 px-2 my-2 rounded-md'>
             <Textarea
                 value={fieldArray}
@@ -183,6 +222,7 @@ function ViewResumeDetails({data, isNew}) {
             }}
                 onClick={() => handleDelete(fieldName, index)}></ion-icon>
         </div>
+        </Fragment>
       };
 
     const submitResumeHandler = async(e) => {

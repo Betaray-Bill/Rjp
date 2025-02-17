@@ -55,6 +55,28 @@ const deleteSubdomain = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
+
+  
+// Delete Domain
+const deleteDomain = async (req, res) => {
+  try {
+          const { domainName, subdomain } = req.body;
+          console.log(req.body)
+
+    let domainsDoc = await Domains.deleteOne({
+      "domains.name": domainName
+    })
+
+    res.status(200).json({ message: "Domain deleted successfully", domains: domainsDoc.domains });
+
+
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 const editSubdomain = async (req, res) => {
     try {
       const { domainName, oldSubdomain, newSubdomain } = req.body;
@@ -134,5 +156,6 @@ const addDomain = async (req, res) => {
     deleteSubdomain,
     editSubdomain,
     addSubdomain,
+    deleteDomain,
     addDomain
   }

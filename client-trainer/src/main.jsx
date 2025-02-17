@@ -26,7 +26,7 @@ createRoot(document.getElementById('root')).render(
         <Provider store={store}>
           <PersistGate persistor={persistor} loading={null}>
             <App />
-            <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
+            {/* <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools> */}
             <Toaster />
           </PersistGate>
         </Provider>

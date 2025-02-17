@@ -31,7 +31,7 @@ function Reports() {
                 <Link to="reports/trainers" className='border border-gray-300 rounded-sm p-3  hover:ease-in-out transition-all hover:drop-shadow-md'>
                     <h3 className='text-black text-lg font-semibold'>Trainers</h3>
                     <p className='font-normal text-sm mt-2'>View the Trainers Performance</p>
-                </Link>
+              </Link>
               )
             }
 

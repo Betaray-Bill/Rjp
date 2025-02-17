@@ -98,6 +98,20 @@ console.log(domains)
     }
   };
 
+   // Delete a specific subdomain
+   const handleDeleteDomain = async (domain) => {
+    try {
+      const response = await api.delete("/domains/delete-domain", {
+        data: { domainName: domain },
+      });
+      alert(response.data.message);
+      fetchDomains();
+    } catch (error) {
+      console.error("Error deleting domain:", error);
+      alert(error.response?.data?.error || "Error deleting subdomain");
+    }
+  };
+
   return (
     <div className="p-4">
       <h1 className="text-lg font-semibold">Domain Manager</h1>
@@ -231,7 +245,16 @@ console.log(domains)
       <div className="my-4 border border-gray-400 p-3 rounded-md">
         {domains.map((domain) => (
           <div key={domain._id} className="mb-4">
-            <h3 className="font-semibold">{domain.domains[0]?.name}</h3>
+            <div className="flex items-center">
+              <h3 className="font-semibold">{domain.domains[0]?.name}</h3>
+              <Button
+                      variant="outline"
+                      className="text-red-500 ml-2"
+                      onClick={() => handleDeleteDomain(domain.domains[0]?.name)}
+                    >
+                      Delete
+                  </Button>
+            </div>
             <ul className="ml-4 list-disc">
               {domain.domains[0]?.subdomains.map((subdomain) => (
                 <li key={subdomain} className="flex my-1 justify-between items-center">

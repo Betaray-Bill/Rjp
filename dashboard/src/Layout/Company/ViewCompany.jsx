@@ -12,9 +12,23 @@ import {
 } from "@/components/ui/table"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import api from '@/utils/api'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
+import EditContact from './EditContact'
+import { useToast } from '@/hooks/use-toast'
+  
 
 function ViewCompany() {
-
+    const {toast} = useToast()
+    // con
     const fetchAllCompanies = async() => {
         try {
             const response = await api.get(`/company/company`)
@@ -36,6 +50,8 @@ function ViewCompany() {
         setSelectedClient] = useState('')
 
     const [clients, setClient] = useState([])
+    const [companyId, setcompanyId] = useState('')
+
 
     const handleClient = (e) => {
         console.log(e)
@@ -43,9 +59,25 @@ function ViewCompany() {
         if(e){
             const selectedCompany = companies.filter((company) => company.companyName == e)
             setClient(selectedCompany[0].contact_details)
+            setcompanyId(selectedCompany[0]._id)
             console.log(selectedCompany)
         }
     }
+
+
+    const deleteContact = async(e) => {
+        // console.log(formData)
+        // e.preventDefault();
+        try {
+            const response = await api.delete(`/company/delete-contact/${companyId}/${e}`);
+            alert('Contact Deleted Successfully');
+            
+          
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     return (
         <div> 
             {/* {isLoading && <div>Loading...</div>} */}
@@ -76,6 +108,9 @@ function ViewCompany() {
 
             { clients && (
                 <div className='mt-4'>
+                    <div>
+                        <Input placeholder="Search Contact Person" />
+                    </div>
                     {/* <h2 className='mt-4 font-semibold text-md'>{selectedClient}</h2> */}
                     <Table>
                         <TableHeader>
@@ -84,6 +119,8 @@ function ViewCompany() {
                                 <TableHead>Contact Email</TableHead>
                                 <TableHead>Contact Phone</TableHead>
                                 <TableHead>Department</TableHead>
+                                <TableHead></TableHead>
+                                <TableHead></TableHead>
                                 {/* <TableHead>Department</TableHead> */}
                             </TableRow>
                         </TableHeader>
@@ -94,6 +131,28 @@ function ViewCompany() {
                                     <TableCell>{company.contactEmail}</TableCell>
                                     <TableCell>{company.contactPhoneNumber}</TableCell>
                                     <TableCell>{company.department || "N/A"}</TableCell>
+                                    <TableCell>
+                                        <div className='flex items-center'>
+                                            {/* <Button className="mx-2 border-none border-radius-none">Edit</Button> */}
+                                            <Dialog>
+                                                <DialogTrigger>
+                                                    <Button className="mx-2 border-none border-radius-none">Edit</Button>
+                                                </DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogHeader>
+                                                    <DialogTitle>Edit Contact Details</DialogTitle>
+                                                    <DialogDescription>
+                                                        <EditContact company={company} companyId={companyId}/>
+                                                    </DialogDescription>
+                                                    </DialogHeader>
+                                                </DialogContent>
+                                            </Dialog>
+
+                                            <div>
+                                                <ion-icon name="trash-outline" style={{color:'red', fontSize:"20px"}} onClick={() => deleteContact(company._id)}></ion-icon>
+                                            </div>
+                                        </div>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

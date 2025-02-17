@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/pagination";
 import SingleTrainerCell from './Components/SingleTrainerCell';
 import api from '@/utils/api';
+import { Input } from '@/components/ui/input';
 
 function GetTrainer() {
     const [trainer, setTrainer] = useState([]);
@@ -35,17 +36,19 @@ function GetTrainer() {
     const dispatch = useDispatch();
     const { currentUser } = useSelector(state => state.auth);
     const queryClient = useQueryClient();
+    const [trainers, setTrainers] = useState([]);
 
     const getAll = async (page, limit, searchQuery = '') => {
         const token = localStorage.getItem('empToken');
-        console.log("Token is", token);
+        // console.log("Token is", token);
         const response = await axios.get(`http://bas.rjpinfotek.com:5000/api/trainersourcer/getTrainer/${currentUser.employee._id}?page=${page}&limit=${limit}&search=${searchQuery}`, {
             withCredentials: true,
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
-        console.log(response.data.trainers);
+        // console.log(response.data.trainers);
+        
         return response.data;
     };
 
@@ -55,38 +58,64 @@ function GetTrainer() {
         staleTime: 1000 * 60 * 5, // data stays fresh for 5 minutes
         cacheTime: 1000 * 60 * 10,
     });
+    // const [trainers, setTrainers] = useState([]);
 
     // Handler to trigger the search
-    const handleSearch = (e) => {
-        setSearchQuery(e.target.value);
+    const handleSearch = () => {
+       
         setPage(1); // Reset to the first page when search query changes
+
+        // Filter Data
+        console.log("Search Query is",searchQuery);
+        if(data?.trainers?.length > 0){
+            const filteredData = data.trainers.filter((trainer) => {
+                return trainer.generalDetails.name.toLowerCase().includes(searchQuery.toLowerCase());
+            });
+            console.log("Filtered Data is", filteredData);
+            setTrainers(filteredData);
+        }
+
     };
 
     // Reset the search to show all trainers
     const handleCancelSearch = () => {
         setSearchQuery('');
         setPage(1);
+        setTrainers([]);
+        queryClient.invalidateQueries("getAllTrainers");
     };
+
+    // console.log
 
     return (
         <div>
             {/* Search Input */}
             <div className='flex items-center justify-between'>
-                {/* <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    placeholder="Search by name"
-                    className="border border-gray-300 px-3 py-2 rounded-md"
-                />
-                {searchQuery && (
-                    <button
-                        onClick={handleCancelSearch}
-                        className="ml-2 text-sm text-red-500"
-                    >
-                        Cancel
-                    </button>
-                )} */}
+                <div className='flex items-center justify-start'>
+                    <Input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value) }
+                        placeholder="Search by name"
+                        className="border border-gray-300 px-3 py-2 rounded-md"
+                    />
+                    {searchQuery && (
+                        <div>
+                            <button
+                                onClick={handleSearch}
+                                className="ml-2 text-sm text-black-500 bg-black px-4 text-white py-2 mx-3"
+                            >
+                                Search
+                            </button>
+                            <button
+                                onClick={handleCancelSearch}
+                                className="ml-2 text-sm text-red-500"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    )}
+                </div>
                 <p onClick={() => refetch()} className="flex items-center bg-blue-100 border border-black rounded-md cursor-pointer px-[10px] w-max py-[3px] mb-4">
                     <ion-icon name="sync-outline"></ion-icon>
                     <span>Sync</span>
@@ -113,11 +142,20 @@ function GetTrainer() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {data?.trainers?.length > 0 && data?.trainers?.map((trainer, index) => (
-                        <TableRow key={index}>
-                            <SingleTrainerCell trainer={trainer} limit={limit} page={page} index={index} />
-                        </TableRow>
-                    ))}
+                    {
+                        searchQuery && trainers.length > 0 ? 
+                        trainers?.map((trainer, index) => (
+                            <TableRow key={index}>
+                                <SingleTrainerCell trainer={trainer} limit={limit} page={page} index={index} />
+                            </TableRow>
+                        ))
+                        :
+                        data?.trainers?.length > 0 && data?.trainers?.map((trainer, index) => (
+                            <TableRow key={index}>
+                                <SingleTrainerCell trainer={trainer} limit={limit} page={page} index={index} />
+                            </TableRow>
+                        ))
+                    }
                 </TableBody>
             </Table>
 
