@@ -115,7 +115,7 @@ const projectSchema = new mongoose.Schema({
         startTime: {
 
 
-            
+
             type: String, // e.g., "09:00 AM"
             // required: true
         },
@@ -157,6 +157,16 @@ const projectSchema = new mongoose.Schema({
     },
     // trainers: [{     type: mongoose.Schema.Types.ObjectId,     ref: 'Trainer' }],
     trainers: [{
+        trainingDates: {
+            startDate: {
+                type: Date,
+                // required: true
+            },
+            endDate: {
+                type: Date,
+                // required: true
+            }
+        },
         trainer: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Trainer'
@@ -219,8 +229,8 @@ const projectSchema = new mongoose.Schema({
                 terms: [{
                     type: String
                 }],
-                purchaseorderNumber:{
-                    type:String
+                purchaseorderNumber: {
+                    type: String
                 }
             }
         }],
@@ -254,8 +264,8 @@ const projectSchema = new mongoose.Schema({
             description: {
                 type: String
             },
-            dueDate:{
-                type: Date 
+            dueDate: {
+                type: Date
             }
         }]
     }],

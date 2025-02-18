@@ -41,7 +41,7 @@ function GetTrainer() {
     const getAll = async (page, limit, searchQuery = '') => {
         const token = localStorage.getItem('empToken');
         // console.log("Token is", token);
-        const response = await axios.get(`http://bas.rjpinfotek.com:5000/api/trainersourcer/getTrainer/${currentUser.employee._id}?page=${page}&limit=${limit}&search=${searchQuery}`, {
+        const response = await api.get(`/trainersourcer/getTrainer/${currentUser.employee._id}?page=${page}&limit=${limit}&search=${searchQuery}`, {
             withCredentials: true,
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -61,8 +61,8 @@ function GetTrainer() {
     // const [trainers, setTrainers] = useState([]);
 
     // Handler to trigger the search
-    const handleSearch = () => {
-       
+    const handleSearch = (e) => {
+       e.preventDefault()
         setPage(1); // Reset to the first page when search query changes
 
         // Filter Data
@@ -102,7 +102,7 @@ function GetTrainer() {
                     {searchQuery && (
                         <div>
                             <button
-                                onClick={handleSearch}
+                                onClick={() => handleSearch()}
                                 className="ml-2 text-sm text-black-500 bg-black px-4 text-white py-2 mx-3"
                             >
                                 Search
@@ -116,16 +116,18 @@ function GetTrainer() {
                         </div>
                     )}
                 </div>
-                <p onClick={() => refetch()} className="flex items-center bg-blue-100 border border-black rounded-md cursor-pointer px-[10px] w-max py-[3px] mb-4">
-                    <ion-icon name="sync-outline"></ion-icon>
-                    <span>Sync</span>
-                </p>
-                <Link to="/home/trainer/add">
-                    <Button>
-                        <ion-icon name="add-outline" style={{ fontSize: "20px" }}></ion-icon>
-                        <span>Add Trainer</span>
-                    </Button>
-                </Link>
+                <div className='flex items-center justify-between'>
+                    <p onClick={() => refetch()} className="flex mx-5 items-center bg-blue-100 border border-black rounded-md cursor-pointer px-[10px] w-max py-[3px] ">
+                        <ion-icon name="sync-outline"></ion-icon>
+                        <span>Sync</span>
+                    </p>
+                    <Link to="/home/trainer/add">
+                        <Button>
+                            <ion-icon name="add-outline" style={{ fontSize: "20px" }}></ion-icon>
+                            <span>Add Trainer</span>
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             {/* Table */}

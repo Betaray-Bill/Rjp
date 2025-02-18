@@ -3,7 +3,7 @@ const token = localStorage.getItem('jwt'); // Get the token from localStorage (o
 console.log("Trainer Token  is", token)
 // Create an Axios instance
 const api = axios.create({
-    baseURL: 'http://bas.rjpinfotek.com:5000/api', // Base URL for API requests
+    baseURL: 'http://localhost:5000/api', // Base URL for API requests
     withCredentials: true, // Ensures cookies are sent with each request
     headers: {
         Authorization: `Bearer ${token}`  // Set the token, if available

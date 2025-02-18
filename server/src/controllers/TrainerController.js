@@ -18,7 +18,7 @@ const trainerLogin = asyncHandler(async(req, res) => {
     const trainer = await Trainer.find({ "generalDetails.email": email })
         .populate('resumeVersion')
         // .select("-password")
-   
+
     console.log(trainer)
     try {
         if (trainer && (await argon2.verify(trainer[0].password, password))) {
@@ -482,8 +482,8 @@ const updateWorkingDates = asyncHandler(async(req, res) => {
     try {
         await Trainer.findByIdAndUpdate(trainerId, {
             // $push: {
-                workingDates: req.body
-            // }
+            workingDates: req.body
+                // }
         }, { new: true })
 
         res
@@ -495,7 +495,7 @@ const updateWorkingDates = asyncHandler(async(req, res) => {
         res.status(500).json({ message: err.message })
     }
 })
-const deleteWorkingDate = async (req, res) => {
+const deleteWorkingDate = async(req, res) => {
     try {
         const { trainerId } = req.params; // Extract trainerId from the route
         const { eventId } = req.body; // Extract eventId from the request body
@@ -524,16 +524,16 @@ const deleteWorkingDate = async (req, res) => {
 
 // Update Resume from the main resume
 const updateResumeFromMainResume = asyncHandler(async(req, res) => {
-    try{
+    try {
         const resumeId = req.params.resumeId;
         const trainerId = req.params.trainerId;
         const mainResumeId = req.params.mainResumeId
 
         // Find the main resume
-        const mainResume = await Resume.findById(mainResumeId); 
-        if(!mainResume){
-            return res.status(404).json({message: "Main Resume not found"});
-        }   
+        const mainResume = await Resume.findById(mainResumeId);
+        if (!mainResume) {
+            return res.status(404).json({ message: "Main Resume not found" });
+        }
 
         // Update the resume
         await Resume.findByIdAndUpdate(resumeId, {
@@ -552,8 +552,8 @@ const updateResumeFromMainResume = asyncHandler(async(req, res) => {
             }
         }, { new: true });
 
-        res.status(200).json({message: "Resume updated successfully"});
-        
+        res.status(200).json({ message: "Resume updated successfully" });
+
 
 
     } catch (err) {
@@ -561,6 +561,7 @@ const updateResumeFromMainResume = asyncHandler(async(req, res) => {
         res.status(500).json({ message: "Failed to Update the Resume " });
     }
 })
+
 
 
 export {
@@ -579,6 +580,7 @@ export {
     // updateData,
     addMainResume,
     resetPassword,
-    addWorkingDates,updateWorkingDates,
+    addWorkingDates,
+    updateWorkingDates,
     updateResumeFromMainResume
 }
