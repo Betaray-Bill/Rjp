@@ -20,6 +20,8 @@ import InvoiceList from './Components/Invoice/InvoiceList'
 import Remainder from './Components/Remainder'
 import Client from './Components/Client'
 import api from '@/utils/api'
+import { Input } from '@/components/ui/input'
+import SelectTrainer from './Components/SelectTrainer'
 
 const state = {
   ParticipantList: "Participant List",
@@ -234,12 +236,18 @@ function ViewSingleProject() {
 
       {/* Show the Trainers Added to the  */}
       <div className='border rounded-md mt-8 py-4 px-3 shadow-sm border-gray-300'>
-        <div className='flex items-center justify-between'>
+        <div className='flex items-center justify-between mb-5'>
           <div className='font-semibold'>Trainers</div>
-          <Button onClick={scrollToSection} className='flex items-center bg-blue-950 rounded-none'>
-            <ion-icon name="search-outline" style={{fontSize:"20px"}}></ion-icon>
-            <span>Search Trainer</span>
-          </Button>
+          <div className='flex items-center'>
+            <div className='mx-4'>
+              {/* Select Trainers */}
+              <SelectTrainer />
+            </div>
+            <Button onClick={scrollToSection} className='flex items-center bg-blue-950 rounded-none'>
+              <ion-icon name="search-outline" style={{fontSize:"20px"}}></ion-icon>
+              <span>Choose Trainer</span>
+            </Button>
+          </div>
         </div>
         <div>
           {/* Search Bar */}

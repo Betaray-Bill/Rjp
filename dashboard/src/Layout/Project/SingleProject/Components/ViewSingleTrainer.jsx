@@ -31,10 +31,11 @@ function ViewSingleTrainer({trainer, index}) {
     const projectId = useParams()
     const queryClient = useQueryClient();
     const {toast} = useToast()
+    console.log(trainer)
     const [dates, setDates] = useState(
         {
-            startDate:'',
-            endDate:''
+            startDate: trainer.trainingDates.startDate ? new Date(trainer.trainingDates.startDate).toISOString().split('T')[0] : new Date(),
+            endDate: trainer.trainingDates.endDate ? new Date(trainer.trainingDates.endDate).toISOString().split('T')[0]  : new Date()
         }
     )
     // const [deleteTrainers, setDeleteTrainers] = useState([])
@@ -94,7 +95,7 @@ function ViewSingleTrainer({trainer, index}) {
                 trainerId: trainer.trainer._id,
                 date: dates,
                 // type: type
-            });
+                });
             console.log(response.data)
             queryClient.invalidateQueries(['ViewProject', projectId.projectId]); // Refetch updated project data
             toast({variant: "success", title: "Trainer date updated successfully"});
@@ -103,7 +104,7 @@ function ViewSingleTrainer({trainer, index}) {
             toast({variant: "destructive", title: "Trainer date update failed"});
         }
 
-        // setIsEdit(false)
+        setIsEdit(false)
     }
 
     return (

@@ -1,26 +1,11 @@
-import React, {useEffect, useState} from 'react'
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
+import React from 'react'
 import {
     Table,
     TableBody,
-    TableCell,
     TableHead,
     TableHeader,
     TableRow
 } from "@/components/ui/table"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogFooter,
-    DialogTitle,
-    DialogClose,
-    DialogTrigger
-} from "@/components/ui/dialog"
-import {Link, useParams} from 'react-router-dom'
-import {useMutation, useQueryClient} from 'react-query'
-import {useToast} from '@/hooks/use-toast'
 import ViewSingleTrainer from './ViewSingleTrainer'
 
 function ViewTrainers({trainers}) {

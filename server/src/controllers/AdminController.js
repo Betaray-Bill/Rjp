@@ -313,8 +313,8 @@ const disableEmployeeRole = asyncHandler(async(req, res) => {
         }
 
         // disable thr Role 
-        for(let i=0; i<employee.role.length; i++){
-            if(roles === employee.role[i].name){
+        for (let i = 0; i < employee.role.length; i++) {
+            if (roles === employee.role[i].name) {
                 employee.role[i].disable = req.body.value
             }
         }
@@ -354,6 +354,27 @@ const getAllTrainers = asyncHandler(async(req, res) => {
     }
 })
 
+// Get Trainer By Name
+const findTrainersByName = asyncHandler(async(req, res) => {
+    try {
+        const { search } = req.query;
+        console.log(req.query)
+        if (!search) {
+
+            return res.status(400).json({ message: 'Name query parameter is required' });
+        }
+
+        const trainers = await Trainer.find({ 'generalDetails.name': { $regex: search, $options: 'i' } }, // Case-insensitive search
+            { _id: 1, generalDetails: 1, trainerId: 1 } // Only return _id (trainerId) and generalDetails
+        );
+
+        return res.status(200).json(trainers);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+})
+
 
 export {
     updateEmployeeRole,
@@ -364,5 +385,6 @@ export {
     getEmployeeById,
     getEmployee,
     getAllTrainerSourcer,
-    getAllKeysAccounts
+    getAllKeysAccounts,
+    findTrainersByName
 }
