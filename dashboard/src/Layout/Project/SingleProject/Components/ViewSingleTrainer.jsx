@@ -34,8 +34,8 @@ function ViewSingleTrainer({trainer, index}) {
     console.log(trainer)
     const [dates, setDates] = useState(
         {
-            startDate: trainer.trainingDates.startDate ? new Date(trainer.trainingDates.startDate).toISOString().split('T')[0] : new Date(),
-            endDate: trainer.trainingDates.endDate ? new Date(trainer.trainingDates.endDate).toISOString().split('T')[0]  : new Date()
+            startDate: trainer.trainingDates?.startDate ? new Date(trainer.trainingDates.startDate).toISOString().split('T')[0] : new Date(),
+            endDate: trainer.trainingDates?.endDate ? new Date(trainer.trainingDates.endDate).toISOString().split('T')[0]  : new Date()
         }
     )
     // const [deleteTrainers, setDeleteTrainers] = useState([])
