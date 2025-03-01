@@ -1,7 +1,7 @@
 import express from 'express';
 import { authEmployeeMiddleware } from '../middleware/authMiddleware.js';
 import authorizeRole from '../middleware/roleMiddleware.js';
-import { addRating, addRemark, getResumeById, getTrainerByEmpId, registerTrainer, updateResume } from '../controllers/TrainerSourcerController.js';
+import { addRating, addRemark, getResumeById, getTrainerByEmpId, registerTrainer, updateResume, uploadMainResume } from '../controllers/TrainerSourcerController.js';
 import { signOut } from '../controllers/AuthController.js';
 import { lockResume, resumeCopy, updateTrainerProfile } from '../controllers/TrainerController.js';
 import checkRoleStatus from '../middleware/checkRoleStatus.js';
@@ -21,8 +21,11 @@ router.post("/register-trainer/:trainerId",
     registerTrainer
 )
 
-
-// router.post("/upload", upload.single("resume"), authMiddleware, authorizeRole(["ADMIN", "TrainerSourcer"]), uploadResumeToAzureAndExtractText)
+router.post("/uploadMainResume/:trainerId", authEmployeeMiddleware,
+        authorizeRole(["ADMIN", "TrainerSourcer"]),
+        uploadMainResume
+    )
+    // router.post("/upload", upload.single("resume"), authMiddleware, authorizeRole(["ADMIN", "TrainerSourcer"]), uploadResumeToAzureAndExtractText)
 
 
 router.get("/signout", authEmployeeMiddleware, signOut)
@@ -36,7 +39,7 @@ router.put('/updateLockStatus/:id', authEmployeeMiddleware, authorizeRole(["ADMI
 
 
 router.get("/resume/:id", authEmployeeMiddleware, authorizeRole(["ADMIN", "TrainerSourcer", "KeyAccounts"]), getResumeById)
-// Rating
+    // Rating
 router.put('/remarks/:trainerId', authEmployeeMiddleware, authorizeRole(["ADMIN", "TrainerSourcer", "KeyAccounts"]), addRemark)
 router.put('/rating/:trainerId', authEmployeeMiddleware, authorizeRole(["ADMIN", "TrainerSourcer", "KeyAccounts"]), addRating)
 

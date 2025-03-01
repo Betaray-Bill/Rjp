@@ -8,6 +8,40 @@ const upload = multer(); // Use multer with buffer storage
 
 router.get("/check-blob-connection", checkBlobConnection);
 
+// MULTER FUNCTION
+
+// Configure multer storage dynamically
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const { projectName } = req.body;
+
+        if (!projectName) {
+            return cb(new Error("Project name is required"), null);
+        }
+
+        const uploadPath = path.join(__dirname, "../uploads", projectName);
+
+        // Create directory if it doesn't exist
+        fs.mkdirSync(uploadPath, { recursive: true });
+
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        const { fileName, timestamps } = req.body;
+
+        if (!fileName) {
+            return cb(new Error("File name is required"), null);
+        }
+
+        // Generate dynamic file name (e.g., `timestamp-fileName.ext`)
+        const ext = path.extname(file.originalname);
+        const dynamicFileName = `${timestamps || Date.now()}-${fileName}${ext}`;
+
+        cb(null, dynamicFileName);
+    },
+});
+
+
 
 // Endpoint to handle file upload with folder name
 router.post("/upload-to-blob", upload.single("file"), async(req, res) => {
@@ -138,24 +172,24 @@ router.post("/upload-aadhar-pan/trainer/:trainer", upload.fields([
         }
         console.log(2)
 
-        if (files.aadharCard && files.aadharCard[0].fieldname &&  files.aadharCard[0].fieldname) {
+        if (files.aadharCard && files.aadharCard[0].fieldname && files.aadharCard[0].fieldname) {
             resultAadhar = await uploadPanAndAadharToBlob(aadharCard, "aadharCard", trainer);
         }
         console.log(3)
-        // const resultPan = await uploadPanAndAadharToBlob(pancard, "pancard", trainer);
-        // const resultAadhar = await uploadPanAndAadharToBlob(aadharCard, "aadharCard", trainer);
+            // const resultPan = await uploadPanAndAadharToBlob(pancard, "pancard", trainer);
+            // const resultAadhar = await uploadPanAndAadharToBlob(aadharCard, "aadharCard", trainer);
         let result = {};
         if (resultPan !== undefined) {
             // resultPan = await uploadPanAndAadharToBlob(pancard, "pancard", trainer);/
             result.panCard = resultPan.url
-            
+
         }
         console.log(2, result)
 
         if (resultAadhar !== undefined) {
-            result.aadharCard =  resultAadhar.url
+            result.aadharCard = resultAadhar.url
             console.log("inside adhar", result)
-            // resultAadhar = await uploadPanAndAadharToBlob(aadharCard, "aadharCard", trainer);
+                // resultAadhar = await uploadPanAndAadharToBlob(aadharCard, "aadharCard", trainer);
         }
         console.log(4)
         res

@@ -28,11 +28,11 @@ const registerTrainer = asyncHandler(async(req, res) => {
         if (
             req.body.mainResume &&
             Object.keys(req.body.mainResume).some(
-                (key) => 
-                    req.body.mainResume[key] !== null && 
-                    req.body.mainResume[key] !== undefined &&
-                    req.body.mainResume[key] !== "" &&
-                    (!Array.isArray(req.body.mainResume[key]) || req.body.mainResume[key].length > 0)
+                (key) =>
+                req.body.mainResume[key] !== null &&
+                req.body.mainResume[key] !== undefined &&
+                req.body.mainResume[key] !== "" &&
+                (!Array.isArray(req.body.mainResume[key]) || req.body.mainResume[key].length > 0)
             )
         ) {
             mainResume = new Resume({
@@ -87,7 +87,7 @@ const registerTrainer = asyncHandler(async(req, res) => {
                 vendorName: req.body.bankDetails.vendorName,
                 panCard: req.body.bankDetails.panCard,
                 aadharCard: req.body.bankDetails.aadharCard,
-                remarks:req.body.bankDetails.remarks
+                remarks: req.body.bankDetails.remarks
             },
             trainingDetails: {
                 trainerType: req.body.trainingDetails.trainerType,
@@ -170,6 +170,57 @@ const registerTrainer = asyncHandler(async(req, res) => {
             .json({ message: 'Trainer Not Added to the Server', err: err });
     }
 });
+
+// Upload Main Resume
+const uploadMainResume = asyncHandler(async(req, res) => {
+    const trainerId = req.params.trainerId
+
+    try {
+        if (
+            req.body.mainResume &&
+            Object.keys(req.body.mainResume).some(
+                (key) =>
+                req.body.mainResume[key] !== null &&
+                req.body.mainResume[key] !== undefined &&
+                req.body.mainResume[key] !== "" &&
+                (!Array.isArray(req.body.mainResume[key]) || req.body.mainResume[key].length > 0)
+            )
+        ) {
+            mainResume = new Resume({
+                professionalSummary: req.body.mainResume.professionalSummary,
+                technicalSkills: req.body.mainResume.technicalSkills,
+                careerHistory: req.body.mainResume.careerHistory,
+                certifications: req.body.mainResume.certifications,
+                education: req.body.mainResume.education,
+                trainingsDelivered: req.body.mainResume.trainingsDelivered,
+                clientele: req.body.mainResume.clientele,
+                experience: req.body.mainResume.experience,
+                domain: req.body.mainResume.trainingName ?
+                    req.body.mainResume.trainingName : "Main Resume",
+                isMainResume: true
+            })
+            await mainResume.save();
+            // console.log("Main Resume saved", mainResume)
+
+            // get the Trainer Id and save it in the resume version docs
+            const resume = await Resume.findByIdAndUpdate(mainResume._id, {
+                trainer_id: trainerId
+            }, { new: true });
+            await resume.save()
+
+            // Save the resume Id in the Trainer's Docs
+            const trainer = await Trainer.findById(trainerId);
+            trainer.resumeVersion.push(mainResume._id);
+            await trainer.save()
+                // console.log("Trainer Updated", trainer)
+
+            res.status(201).json({ message: 'Resume uploaded successfully', resume: resume, success: true });
+        }
+
+    } catch (err) {
+
+    }
+})
 
 // Upload the Resume to azure and extract the text
 const uploadResumeToAzureAndExtractText = asyncHandler(async(req, res) => {
@@ -529,4 +580,4 @@ const getResumeById = asyncHandler(async(req, res) => {
     }
 })
 
-export { registerTrainer,getResumeById, updateResume, addRemark, addRating, uploadResumeToAzureAndExtractText, getTrainerByEmpId }
+export { registerTrainer, uploadMainResume, getResumeById, updateResume, addRemark, addRating, uploadResumeToAzureAndExtractText, getTrainerByEmpId }
